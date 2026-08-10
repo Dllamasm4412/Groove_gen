@@ -1,0 +1,23 @@
+GrooveGen v1.0
+Snapshot date: 2026-06-03
+Owner: Daniel Llamas (PhD, CU Boulder — Brain Music Lab / ATLAS)
+
+v1.0 scope
+==========
+Parametric, literature-grounded groove-stimulus generator (Python; pretty_midi + FluidSynth).
+- Five knobs LOCKED to literature target bands and verified by manipulation checks:
+    syncopation (Witek index)  0 / 16 / 32 / 49
+    event density (onsets/bar) 5 / 9 / 15 / 25
+    swing (swing fraction)     50% / 56% / 62% / 67%
+    tempo (BPM, if swept)      70 / 95 / 115 / 150
+    microtiming (ms RMS, ctrl) 0 / 5.9 / 12.6 / 29.5
+- Frozen, time-invariant study bed (hero_study): isolates each knob as the sole variable.
+- 5 bed profiles: hero (demo song), hero_study (study bed), dorian_vamp, pop_loop, anthemic_lift.
+- 20-stimulus manifest (5 knobs x 4 levels) logging achieved manipulation-check values.
+- Sophia secondary analysis (n=122 / 643 unique tracks) grounding the bed feature profile.
+
+Not in v1.0 (planned)
+=====================
+- DL-generated harmonic/melodic bed + GrooveGen drum overlay (A+B summer paper).
+- MusicGen audio-bed exploration.
+- Human groove-rating study (full n>=40 deferred to fall; possible n~5 pilot).

@@ -1,0 +1,127 @@
+{
+  "data": {
+    "n_feature_tracks": 644,
+    "n_unique_songs_in_survey": 704,
+    "n_merged_with_song_dance": 644,
+    "song_dance_range": [
+      13.0,
+      94.0
+    ],
+    "song_dance_mean_sd": [
+      59.67546583850932,
+      13.86241954066395
+    ]
+  },
+  "layer1": {
+    "H1_convergent": {
+      "pearson_r": 0.2191,
+      "pearson_95ci": [
+        0.1025,
+        0.379
+      ],
+      "spearman_rho": 0.3962,
+      "threshold": 0.5,
+      "pass": false
+    },
+    "H2_discriminant": {
+      "r_groove_dance": 0.2191,
+      "r_groove_energy": 0.1699,
+      "pass": true
+    },
+    "H3_witek_invertedU": {
+      "linear_beta": -1.4457,
+      "quadratic_beta": 0.2198,
+      "quadratic_p": 0.2141,
+      "quadratic_negative": false,
+      "pass": false,
+      "note": "Inverted-U requires NEGATIVE, significant quadratic term."
+    },
+    "H4_janata_tempoband": {
+      "n_in_110_130": 203,
+      "mean_dance_inband": 66.1,
+      "mean_dance_outband": 56.78,
+      "diff": 9.31,
+      "t_test_p": 0.0
+    }
+  },
+  "layer2": {
+    "n_tracks": 643,
+    "features_used": [
+      "tempo_final",
+      "lhl_syncopation_mean",
+      "hpss_percussive_ratio",
+      "onset_density",
+      "beat_consistency",
+      "low_band_energy_ratio",
+      "spectral_flatness_mean"
+    ],
+    "feature_name_substitutions": {
+      "onset_rate->onset_density": "prereg name not in file; using onset_density",
+      "spectral_flux_mean->spectral_flatness_mean": "spectral_flux not extracted; flatness used as proxy timbre feature"
+    },
+    "in_sample_R2": 0.1987,
+    "in_sample_adjR2": 0.1898,
+    "cv_R2_mean": 0.1763,
+    "cv_R2_sd": 0.0448,
+    "cv_spearman_mean": 0.439,
+    "cv_spearman_sd": 0.0529,
+    "standardized_betas": {
+      "tempo_final": {
+        "beta_std": -2.234,
+        "95ci": [
+          -3.231,
+          -1.238
+        ],
+        "p": 0.0
+      },
+      "lhl_syncopation_mean": {
+        "beta_std": -0.571,
+        "95ci": [
+          -1.589,
+          0.446
+        ],
+        "p": 0.2705
+      },
+      "hpss_percussive_ratio": {
+        "beta_std": 4.657,
+        "95ci": [
+          3.573,
+          5.741
+        ],
+        "p": 0.0
+      },
+      "onset_density": {
+        "beta_std": 0.695,
+        "95ci": [
+          -0.296,
+          1.686
+        ],
+        "p": 0.1691
+      },
+      "beat_consistency": {
+        "beta_std": 1.346,
+        "95ci": [
+          0.327,
+          2.366
+        ],
+        "p": 0.0097
+      },
+      "low_band_energy_ratio": {
+        "beta_std": 2.974,
+        "95ci": [
+          1.98,
+          3.968
+        ],
+        "p": 0.0
+      },
+      "spectral_flatness_mean": {
+        "beta_std": -1.234,
+        "95ci": [
+          -2.368,
+          -0.1
+        ],
+        "p": 0.0329
+      }
+    }
+  }
+}

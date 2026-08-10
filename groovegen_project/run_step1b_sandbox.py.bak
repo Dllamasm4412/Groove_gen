@@ -1,0 +1,89 @@
+"""
+Step 1b sandbox test — see /home/user/workspace/step1b_spec.md.
+Run from groovegen_project/ so `groovegen` package imports resolve.
+"""
+import json
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from groovegen.groovegen import GrooveParams
+from groovegen.continuous import detect_bed_tempo, render_piece, crossfade_pieces
+
+SALSA_BED = "/home/user/workspace/uploaded_attachments/63787d33f08b41dba1d938272f63641a/download-3.wav"
+RNB_BED = "/home/user/workspace/uploaded_attachments/c11d88d97a6f4aaf95cdfc94d6b36941/download.wav"
+OUT_DIR = "/home/user/workspace/step1b_outputs"
+os.makedirs(OUT_DIR, exist_ok=True)
+
+report = {}
+
+# --- (a) detect_bed_tempo for both beds ---
+print("=" * 70)
+print("(a) detect_bed_tempo")
+salsa_tempo = detect_bed_tempo(SALSA_BED)
+rnb_tempo = detect_bed_tempo(RNB_BED)
+print("salsa:", json.dumps(salsa_tempo, indent=2))
+print("rnb:  ", json.dumps(rnb_tempo, indent=2))
+report["tempo_detect"] = {"salsa": salsa_tempo, "rnb": rnb_tempo}
+
+# --- (b) render two discrete pieces ---
+print("=" * 70)
+print("(b) render_piece salsa + rnb")
+
+base_salsa = GrooveParams(
+    tempo_bpm=96.0,  # placeholder; render_piece overrides with detected tempo
+    event_density=7,
+    drum_style="latin/salsa",
+    bed_profile="hero_study",  # bed audio comes from the wav, not this; harmless default
+    with_bed=False,
+)
+piece_salsa = render_piece(
+    base_salsa, SALSA_BED, out_stem=os.path.join(OUT_DIR, "piece_salsa"),
+    seconds=16.0, seed=1, subtle=True,
+)
+print("piece_salsa tempo_bpm:", piece_salsa["tempo_bpm"])
+print("piece_salsa duration_s:", piece_salsa["duration_s"])
+print("piece_salsa phrase_densities:", piece_salsa["phrase_densities"])
+print("piece_salsa hat_spine_steps:", piece_salsa["hat_spine_steps"])
+print("piece_salsa hat_spine_constant_every_bar:", piece_salsa["hat_spine_constant_every_bar"])
+
+base_rnb = GrooveParams(
+    tempo_bpm=96.0,
+    event_density=6,
+    drum_style="r&b/soul",
+    bed_profile="hero_study",
+    with_bed=False,
+)
+piece_rnb = render_piece(
+    base_rnb, RNB_BED, out_stem=os.path.join(OUT_DIR, "piece_rnb"),
+    seconds=16.0, seed=2, subtle=True,
+)
+print("piece_rnb tempo_bpm:", piece_rnb["tempo_bpm"])
+print("piece_rnb duration_s:", piece_rnb["duration_s"])
+print("piece_rnb phrase_densities:", piece_rnb["phrase_densities"])
+print("piece_rnb hat_spine_steps:", piece_rnb["hat_spine_steps"])
+print("piece_rnb hat_spine_constant_every_bar:", piece_rnb["hat_spine_constant_every_bar"])
+
+report["piece_salsa"] = {k: v for k, v in piece_salsa.items() if k != "per_bar_stats"}
+report["piece_rnb"] = {k: v for k, v in piece_rnb.items() if k != "per_bar_stats"}
+report["piece_salsa_per_bar_stats"] = piece_salsa["per_bar_stats"]
+report["piece_rnb_per_bar_stats"] = piece_rnb["per_bar_stats"]
+
+# --- (e) crossfade_pieces (optional continuity), different tempos -> time-stretch ---
+print("=" * 70)
+print("(e) crossfade_pieces (optional continuity demo)")
+xfade_meta = crossfade_pieces(
+    [piece_salsa["wav_path"], piece_rnb["wav_path"]],
+    [piece_salsa["tempo_bpm"], piece_rnb["tempo_bpm"]],
+    out_wav=os.path.join(OUT_DIR, "continuous_optional.wav"),
+    xfade_s=2.0,
+)
+print(json.dumps(xfade_meta, indent=2))
+report["crossfade_pieces"] = xfade_meta
+
+with open(os.path.join(OUT_DIR, "step1b_report.json"), "w") as f:
+    json.dump(report, f, indent=2, default=str)
+
+print("=" * 70)
+print("DONE. Report written to", os.path.join(OUT_DIR, "step1b_report.json"))

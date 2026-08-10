@@ -1,0 +1,31 @@
+# GrooveGen Python dependencies
+# Also requires these *system* packages (apt-get on Linux/Colab):
+#   fluidsynth fluid-soundfont-gm   (soundfont rendering)
+#   rubberband-cli                  (pitch-preserving bed re-timing; see groovegen/bed_library.py)
+pretty_midi>=0.2.10
+pyfluidsynth>=1.3.0
+pyloudnorm>=0.1.1
+soundfile>=0.12
+librosa>=0.10
+pyrubberband>=0.3.0
+# --- MusicGen bed-generation path (LIB_build_beds.ipynb / BC) — PIN EXACTLY ---
+# transformers 4.44.2 needs huggingface_hub<1.0; current Colab ships hub 1.x, so
+# pin all three together (a self-healing guard in the notebooks re-pins if needed).
+transformers==4.44.2
+huggingface_hub>=0.23.2,<0.26
+tokenizers<0.20
+torch>=2.0
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+statsmodels>=0.14
+pandas>=2.0
+matplotlib>=3.7
+seaborn>=0.12
+pillow>=10.0
+# notebooks
+jupyter
+nbformat
+ipykernel
+# web UI (app.py)
+gradio>=4.0

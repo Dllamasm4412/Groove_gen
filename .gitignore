@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+._*
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Secrets
+.env
+.env.local
+*.key
+
+# Large binary artifacts
+*.wav
+*.mp4
+*.mp3
+*.flac
+*.sf2
+
+# Session data
+groovegen_pilot/sessions/*.csv
+!groovegen_pilot/sessions/.gitkeep
+
+# PPG recording data
+**/rr_recordings/*.csv
+
+# OS/editor cruft
+*.swp
+*~
+Thumbs.db

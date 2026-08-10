@@ -1,0 +1,4 @@
+[0:a]showwaves=s=1280x400:mode=cline:colors=0x20808D:rate=25,format=yuv420p[wv];
+color=c=0x171614:s=1280x720:d=73.4[bg];
+[bg][wv]overlay=0:200[bgv];
+[bgv]drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='GrooveGen Phase 1 - consolidated per-bar renderer':fontcolor=white:fontsize=34:x=(w-tw)/2:y=60,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='pop - 100 BPM - tier sweep 1 to 5 to 1 (bed + drums scale with intensity)':fontcolor=0xFFC553:fontsize=22:x=(w-tw)/2:y=120[v]

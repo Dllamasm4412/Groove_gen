@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""Build the Sophia update memo PDF with embedded figures."""
+import urllib.request
+from pathlib import Path
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.lib.colors import HexColor
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Image,
+                                PageBreak, ListFlowable, ListItem)
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+
+ROOT = Path("/home/user/workspace/groovegen_project")
+FIG = ROOT / "outputs" / "figures"
+OUT = ROOT / "SOPHIA_UPDATE_MEMO.pdf"
+
+# ---- fonts ----
+FONT_DIR = Path("/tmp/fonts"); FONT_DIR.mkdir(exist_ok=True)
+fonts = {
+    "DMSans": "https://github.com/google/fonts/raw/main/ofl/dmsans/DMSans%5Bopsz%2Cwght%5D.ttf",
+    "Inter": "https://github.com/google/fonts/raw/main/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf",
+}
+for name, url in fonts.items():
+    p = FONT_DIR / f"{name}.ttf"
+    if not p.exists():
+        urllib.request.urlretrieve(url, p)
+    pdfmetrics.registerFont(TTFont(name, str(p)))
+
+# ---- palette ----
+INK   = HexColor("#28251D")
+MUTED = HexColor("#7A7974")
+TEAL  = HexColor("#01696F")
+BG    = HexColor("#F7F6F2")
+RULE  = HexColor("#D4D1CA")
+
+styles = getSampleStyleSheet()
+H_TITLE = ParagraphStyle("HT", parent=styles["Title"], fontName="DMSans",
+                         fontSize=24, leading=28, textColor=INK, spaceAfter=4)
+SUB = ParagraphStyle("SUB", parent=styles["Normal"], fontName="Inter",
+                     fontSize=10.5, leading=15, textColor=MUTED, spaceAfter=2)
+H1 = ParagraphStyle("H1", parent=styles["Heading1"], fontName="DMSans",
+                    fontSize=15, leading=19, textColor=TEAL, spaceBefore=16, spaceAfter=6)
+H2 = ParagraphStyle("H2", parent=styles["Heading2"], fontName="DMSans",
+                    fontSize=12, leading=16, textColor=INK, spaceBefore=10, spaceAfter=4)
+BODY = ParagraphStyle("BODY", parent=styles["Normal"], fontName="Inter",
+                      fontSize=10.5, leading=15.5, textColor=INK, spaceAfter=8)
+CAP = ParagraphStyle("CAP", parent=styles["Normal"], fontName="Inter",
+                     fontSize=8.5, leading=12, textColor=MUTED, spaceAfter=14, spaceBefore=3)
+BULLET = ParagraphStyle("BUL", parent=BODY, leftIndent=4, spaceAfter=4)
+
+def bullets(items):
+    return ListFlowable(
+        [ListItem(Paragraph(t, BULLET), leftIndent=12, value="•") for t in items],
+        bulletType="bullet", start="•", bulletColor=TEAL, leftIndent=14)
+
+def fig(path, width=6.4*inch, caption=None):
+    from PIL import Image as PILImage
+    iw, ih = PILImage.open(path).size
+    h = width * ih / iw
+    flows = [Image(str(path), width=width, height=h)]
+    if caption:
+        flows.append(Paragraph(caption, CAP))
+    return flows
+
+def header_footer(c, doc):
+    c.saveState()
+    c.setFont("Inter", 8); c.setFillColor(MUTED)
+    c.drawString(doc.leftMargin, 30, "GrooveGen — update for Sophia")
+    c.drawRightString(doc.width + doc.leftMargin, 30, f"Page {doc.page}")
+    c.setStrokeColor(RULE); c.setLineWidth(0.5)
+    c.line(doc.leftMargin, 42, doc.width + doc.leftMargin, 42)
+    c.restoreState()
+
+doc = SimpleDocTemplate(str(OUT), pagesize=letter,
+                        leftMargin=0.85*inch, rightMargin=0.85*inch,
+                        topMargin=0.85*inch, bottomMargin=0.7*inch,
+                        title="GrooveGen — Update Memo for Sophia",
+                        author="Perplexity Computer")
+S = []
+
+# ---- header ----
+S.append(Paragraph("GrooveGen — where we are and what's next", H_TITLE))
+S.append(Paragraph("A short update on the groove-music generation project · "
+                   "Daniel Llamas (Brain Music Lab / ATLAS, CU Boulder) · June 3, 2026", SUB))
+S.append(Spacer(1, 6))
+S.append(Paragraph(
+    "Hi Sophia — here's a plain-language summary of what the groove-generation system now does, "
+    "how your dataset shaped it, what it already proves without any new participants, and the plan "
+    "for the summer and fall. Nothing here requires action from you; it's a status share so we're "
+    "aligned on direction.", BODY))
+
+# ---- 1. one-paragraph what ----
+S.append(Paragraph("The short version", H1))
+S.append(Paragraph(
+    "I built <b>GrooveGen</b>: a small software system that generates short, looping pieces of music "
+    "designed to make people want to move (the \"groove\" feeling). The key idea is a clean "
+    "experimental separation. There is a <b>constant musical bed</b> — a fixed bass-and-chords loop "
+    "that never changes — and on top of it sits a <b>drum kit whose groove properties we can dial up "
+    "and down</b> with a handful of \"knobs.\" Because the bed is frozen and only the drums move, any "
+    "change a listener feels can be attributed to the knob we turned, not to the music drifting "
+    "underneath.", BODY))
+
+# ---- 2. how your data shaped it ----
+S.append(Paragraph("How your dataset shaped the music", H1))
+S.append(Paragraph(
+    "The constant bed is not arbitrary — its musical character is grounded in a secondary analysis of "
+    "your dataset (122-participant survey, 643 unique tracks with audio features). I looked at the "
+    "tracks participants chose for sensory-motor appreciation that <i>also</i> scored highest on "
+    "danceability (n = 83), and matched the bed to their average profile: 120 BPM, 4/4, bass-forward, "
+    "with prominent sustained harmony and a slightly positive mood. That became a bass-forward "
+    "A-Dorian vamp (Am7 - D/A).", BODY))
+S.append(Paragraph("Two findings from your data justify the design", H2))
+S.append(bullets([
+    "<b>Percussiveness and bass are the strongest danceability predictors</b> in real recordings "
+    "(standardized effects of +4.66 and +2.97, both clearly above zero). This is why the generator "
+    "deliberately emphasizes drums and low-end.",
+    "<b>The 110-130 BPM tempo sweet-spot replicates</b>: tracks in that band are about 9 danceability "
+    "points higher (p &lt; .001) — matching the literature and our tempo knob.",
+    "<b>The classic syncopation \"inverted-U\" does NOT appear</b> in this naturalistic commercial "
+    "audio. That sounds like a problem but it's actually the cleanest motivation for the whole "
+    "project: the syncopation effect can't be recovered from passively-listened commercial songs, so "
+    "it has to be studied with <i>controlled</i>, parametric stimuli — which is exactly what GrooveGen "
+    "produces.",
+]))
+for f in fig(FIG / "layer2_betas.png", width=6.0*inch,
+             caption="Figure 1. From your dataset: which acoustic features predict danceability. "
+                     "Percussiveness (hpss percussive ratio) and bass (low band energy ratio) "
+                     "dominate — the two dimensions the generator emphasizes."):
+    S.append(f)
+
+S.append(PageBreak())
+for f in fig(FIG / "layer1_validation.png", width=6.6*inch,
+             caption="Figure 2. Three checks against Spotify danceability. The tempo sweet-spot "
+                     "replicates (right panel); the syncopation inverted-U does not appear in "
+                     "commercial audio (middle panel) — motivating controlled stimuli."):
+    S.append(f)
+
+# ---- 3. the knobs ----
+S.append(Paragraph("What the system can control (the knobs)", H1))
+S.append(Paragraph(
+    "Each knob corresponds to a musical property the groove literature says matters. For each one I set "
+    "four discrete levels spanning the published response curve, then <b>verified by automated "
+    "measurement</b> that the rendered music actually hits those values — not just that we asked for "
+    "them. All five knobs are now locked and validated:", BODY))
+S.append(bullets([
+    "<b>Syncopation</b> (off-beat placement): 0 / 16 / 32 / 49 on the Witek index — level 2 sits right "
+    "at the literature's groove sweet-spot, level 3 deliberately past it.",
+    "<b>Event density</b> (how busy the drums are): 5 / 9 / 15 / 25 onsets per bar.",
+    "<b>Swing</b> (the shuffle feel): 50% / 56% / 62% / 67%, straddling the 60-67% sweet zone.",
+    "<b>Tempo</b>: 70 / 95 / 115 / 150 BPM (optional knob).",
+    "<b>Microtiming</b> (timing looseness, used as a control): 0 to ~30 ms.",
+]))
+S.append(Paragraph(
+    "Crucially, the knobs move <b>independently</b> — turning syncopation up doesn't secretly change "
+    "density — so a listener effect can be cleanly attributed to one variable.", BODY))
+for f in fig(FIG / "knob_level_straddle.png", width=6.6*inch,
+             caption="Figure 3. The teal dots are GrooveGen's actual rendered levels; the curves and "
+                     "shaded bands are the literature's groove response. Our levels now span each "
+                     "curve, including the syncopation sweet-spot."):
+    S.append(f)
+
+# ---- 4. what it proves now ----
+S.append(Paragraph("What this already proves — with no new participants", H1))
+S.append(Paragraph(
+    "Even before any human study, the system stands on three verified results: (1) every knob lands in "
+    "its literature target band; (2) the knobs are independent of one another; and (3) the bed is truly "
+    "constant across all stimuli. Together these make GrooveGen a reproducible, validated "
+    "groove-stimulus generator — publishable on its engineering merits at a venue like NIME, SMC, or "
+    "ICMC.", BODY))
+
+# ---- 5. the plan ----
+S.append(Paragraph("The plan — summer and fall", H1))
+S.append(Paragraph(
+    "Because recruiting 40+ participants is realistically a fall activity, we're splitting the work so "
+    "something is publishable sooner without waiting on the full study:", BODY))
+S.append(Paragraph("Summer (no large study required)", H2))
+S.append(bullets([
+    "<b>Add a deep-learning bed generator.</b> Instead of hand-authoring the bed, use a pretrained AI "
+    "music model to generate it (starting with a symbolic/MIDI model so we keep full control of the "
+    "drums), then overlay GrooveGen's knob-controlled drums. This adds a genuine "
+    "\"controllable-generation\" novelty on top of the validated engine, and it's the realization of "
+    "the \"generate the bed, add our drums\" idea.",
+    "<b>Write the system/methods paper</b> describing the generator and its validation.",
+    "<b>Possible small pilot (n ~ 5).</b> If a handful of listeners are available, run a quick "
+    "feasibility check to confirm people perceive the knob levels as intended and that the rating "
+    "questions work — this de-risks the full study (pending IRB).",
+]))
+S.append(Paragraph("Fall", H2))
+S.append(bullets([
+    "<b>The full groove-rating study</b> (n &gt;= 40), using the validated 20-stimulus set, with "
+    "self-report ratings first and PPG + respiration as a later stage.",
+]))
+
+S.append(Paragraph("Bottom line", H1))
+S.append(Paragraph(
+    "The generation system is built and validated. Your dataset is what grounds the music and gives the "
+    "study its scientific motivation. We can publish the system this summer and run the full human "
+    "study in the fall — no time is lost by deferring recruitment. Happy to walk through any of this "
+    "whenever useful.", BODY))
+
+doc.build(S, onFirstPage=header_footer, onLaterPages=header_footer)
+print("WROTE", OUT)

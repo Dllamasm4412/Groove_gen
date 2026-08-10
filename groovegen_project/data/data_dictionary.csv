@@ -1,0 +1,43 @@
+,Column name,Data type,Range,Description
+,Participant,string,,Assigned participant identifier.
+Demographics,Gender,string,,"Participant gender: ""M"" (male); ""F"" (female); ""NB"" (non-binary); ""GNC"" (gender nonconforming/gender queer); ""A"" (agender); ""TS"" (two spirit)"
+,Ethnicity,string,,"Participant ethicity: ""B"" (Black/African American); ""W"" (White/Caucasian); ""A"" (Asian); ""ME"" (Middle Eastern/Arab); ""L"" (Latino/Hispanic); ""NAT"" (Native American/Alaskan Native/First Nation); ""PI"" (Native Hawaiian/Pacific Islander)"
+,Age,integer,18-25,Participant age in years.
+Musical training & experience,Music_importance,integer,1-7,"Response to survey question: ""how important is music to you?"" (rating: 1, not at all; 7, extremely)."
+,Time_listening,string,4 bins,"Self-reported hours per week listening to music. Participants' free responses binned into one of four categories: 0-9 hours, 10-19 hours, 20-29 hours, Over 30 hours."
+,Active_musician,string,2 bins,"Response to survey question: ""would you consider youself to be an active musician?"" (yes/no)"
+,Musical_training,integer,0-3,"Level of musical training/experience: 0 (none); 1 (minimal); 2 (moderate); 3 (significant). Participants' free responses (""briefly describe your level of music training/experience"") were coded by researchers."
+eBMRQ derivatives,eBMRQ,integer,24-120,Raw-addition score on the extended Barcelona Music Reward Questionnaire. Note that a score of less than or equal to 69 has been used as an indicator of musical anhedonia.
+,MS_raw,integer,4-20,"Raw-addition score on the extended Barcelona Music Reward Questionnaire ""music-seeking"" subscale."
+,EE_raw,integer,4-20,"Raw-addition score on the extended Barcelona Music Reward Questionnaire ""emotion-evocation"" subscale."
+,MR_raw,integer,4-20,"Raw-addition score on the extended Barcelona Music Reward Questionnaire ""mood-regulation"" subscale."
+,SM_raw,integer,4-20,"Raw-addition score on the extended Barcelona Music Reward Questionnaire ""sensory-motor"" subscale."
+,SR_raw,integer,4-20,"Raw-addition score on the extended Barcelona Music Reward Questionnaire ""social-reward"" subscale."
+,AM_raw,integer,4-20,"Raw-addition score on the extended Barcelona Music Reward Questionnaire ""absorption in music"" subscale."
+,eBMRQ_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire."
+,MS_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire ""music-seeking"" subscale."
+,EE_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire ""emotion-evocation"" subscale."
+,MR_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire ""mood-regulation"" subscale."
+,SM_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire ""sensory-motor"" subscale."
+,SR_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire ""social-reward"" subscale."
+,AM_factor,float,,"Factor score (T-value, mean=50, sd=10) for extended Barcelona Music Reward Questionnaire ""absorption in music"" subscale."
+BFI derivatives,extraversion,float,1-5,"Big Five Inventory ""extraversion"" subscale score (average item score)."
+,agreeableness,float,1-5,"Big Five Inventory ""agreeableness"" subscale score (average item score)."
+,conscientiousness,float,1-5,"Big Five Inventory ""conscientiousness"" subscale score (average item score)."
+,neuroticism,float,1-5,"Big Five Inventory ""neuroticism"" subscale score (average item score)."
+,openness,float,1-5,"Big Five Inventory ""openness"" subscale score (average item score)."
+IRI derivatives,PT,integer,0-28,"Interpersonal Reactivity Index ""perspective taking"" subscale score (raw addition score)."
+Song information,music_condition,string,4 bins,"Music condition heard during the trial (Two of each type per participant, labeled A or B, see ""pair"" attribute below): ""sensory-motor"" (participant-selected, structural appreciation); ""self-relevant"" (participant-selected, self-oriented appreciation); ""peer"" (experimenter-selected, deceived to think this is another listener's self-relevant song); ""computer"" (experimenter-selected, deceived to think this was chosen by a non-human agent)."
+,song_title,string,,Song title.
+,song_artist,string,,Song artist(s).
+,song_length,float,0-6,"Song length in minutes. Derived from Spotify API ""track duration ms"" measure."
+,song_popularity,integer,0-100,"Spotify API ""track popularity"" measure (0: least popular; 100: most popular)."
+,song_bpm,integer,20-200,"Spotify API ""track tempo"" in beats per minute, rounded to a whole number."
+,song_dance,integer,0-100,"Spotify API ""track danceability"" measure (0: least danceable; 100: most danceable)."
+,song_energy,integer,0-100,"Spotify API ""track energy"" measure (0: low energy; 100: high energy)."
+,song_valence,integer,0-100,"Spotify API ""track valence"" measure (0: negative valence; 100: positive valence)."
+,trackID,string,,Song's Spotify ID.
+,artistID,string,,"Artist's Spotify ID. If the song has multiple artists, the ID listed is only for the first artist."
+,artist_genres,list,,"List of artist's genres from Spotify, genres are separated by commas."
+,song_link,string,,Song YouTube link from which the audio was played for participants. Only songs used during the task have links in this column.
+,pair,character,A or B,"Used for matching purposes during the stimulus selection process. ""A"" songs are most similar to each other, and ""B"" songs are most similar to each other."

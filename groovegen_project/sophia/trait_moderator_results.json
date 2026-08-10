@@ -1,0 +1,33 @@
+{
+  "mixedlm": {
+    "condition_main_beta": 4.926,
+    "condition_main_p": 0.0,
+    "interaction_cond_x_SMfactor_beta_per_SD": -0.0397,
+    "interaction_p": 0.9678,
+    "n_trials": 488,
+    "n_participants": 122
+  },
+  "per_participant_gap": {
+    "n": 122,
+    "mean_gap": 4.93,
+    "sd_gap": 8.76,
+    "pearson_r": -0.005,
+    "pearson_p": 0.9603,
+    "spearman_rho": 0.024,
+    "spearman_p": 0.7903
+  },
+  "sensitivity": {
+    "gap_vs_SM_raw": {
+      "pearson_r": -0.005,
+      "p": 0.9533
+    },
+    "gap_vs_SM_factor": {
+      "pearson_r": -0.005,
+      "p": 0.9603
+    },
+    "gap_vs_eBMRQ_factor": {
+      "pearson_r": 0.03,
+      "p": 0.7452
+    }
+  }
+}

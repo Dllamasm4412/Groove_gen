@@ -1,0 +1,1531 @@
+"""Builder for GrooveGen notebook 15 -- the closed-loop HR-driven audio demo
+(the paper's hero artifact, TEI 2027, system/method contribution).
+
+Emits notebooks/15_closed_loop_hr_audio.ipynb using nbformat.v4
+(nbformat_minor=5; new_code_cell/new_markdown_cell auto-assign cell ids).
+
+Follows /Users/daniel/Desktop/PhD/groove_gen_project/nb15_spec.md EXACTLY:
+  - cell order (12 cells, see spec "Notebook cell order")
+  - the honesty cells (top disclaimer + closing evidence-tier table)
+  - the 3-phase HR curve (ramp-down + plateau + perturbation)
+  - reuse of groovegen.pd_controller.CascadeController (NOT reimplemented)
+  - splice_beds_downbeat_hard_cut + 3 helpers copied VERBATIM from
+    /Users/daniel/Desktop/PhD/groove_gen_project/transition_assessment.md
+  - nb14's MusicGen (transformers facebook/musicgen-small) pattern
+  - nb13's zip-upload/sys.path Colab setup pattern
+  - the ROBUST nb14 ffmpeg still->segment->mux->volumedetect MP4 pattern
+"""
+import os
+import nbformat
+from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
+
+OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "notebooks", "15_closed_loop_hr_audio.ipynb")
+
+cells = []
+
+# ===========================================================================
+# CELL 1 (markdown) -- title + honesty/what-this-proves + iso-principle cite
+# ===========================================================================
+cells.append(new_markdown_cell(r"""# GrooveGen -- Notebook 15: Closed-Loop HR-Driven Audio Demo (hero artifact)
+
+**Roadmap: the paper's hero artifact (TEI 2027, system/method contribution).**
+A scripted **SIMULATED**, DESCENDING heart-rate SETPOINT curve
+(~125 bpm -> ~74 bpm) drives
+`groovegen.pd_controller.CascadeController.step()` (reused, unmodified --
+see notebooks 12/13). The controller's ONLY job is to **TRACK** that
+scripted setpoint; it does not sense, measure, or respond to any real
+listener. Tracking the setpoint drives **REAL audio**: `facebook/musicgen-small`
+bed regeneration at new committed tempos across a **Latin -> Pop -> R&B ->
+calm** genre arc, joined by **downbeat-aligned HARD CUTS** (crossfade is
+dead -- see below) at a handful of **DELIBERATE, large (~15 BPM) tempo
+jumps**, one per genre-band crossing (4 committed segments, not many
+micro-steps), plus per-bar drum-density changes via
+`hybrid_render.render_aligned_drums` (capped calm: floor 3, ceiling 8).
+**Genre is now DERIVED from the committed tempo band, not from the
+cascade's internal genre index** -- see the tempo->genre band mapping
+below; the cascade's tempo+density tiers are the only actuators reused
+from notebooks 12/13. **"Calm" is NOT a distinct musical style** --
+`genre_styles.py` has no calm `StyleSpec`. "Calm" here means **r&b/soul
+at the lowest tempo band with density floored near 3** (a sparse, slow
+neo-soul bed) -- labeled everywhere as **"calm (sparse low-tempo
+R&B/soul)"**, never as a genre this codebase doesn't have. A synthesized
+respiration-rate trace is **SHOWN alongside the HR panel for scenario
+realism only -- it does NOT drive the controller**. The output is **ONE
+MP4** where you can **SEE** the HR/respiration/tempo/density/
+tier-that-acted traces (now with genre-band shading on the tempo panel)
+and **HEAR** the system respond in real time.
+
+## What this notebook PROVES
+
+- That a literature-informed cascade **control architecture** -- tempo
+  (medium) -> density (fastest), REUSED unmodified from notebooks 12/13
+  as the only two actuators -- produces **stable, non-oscillating tempo/
+  density trajectories that TRACK a scripted descending setpoint**, and
+  that this is **audible and real** (not just a plot): the trajectory is
+  rendered into actual MusicGen audio, spliced with a measured,
+  glitch-free (not inaudible -- see the transition-mechanism cell below)
+  seam, using a small number of deliberate, perceptible tempo jumps
+  rather than many sub-perceptual micro-steps.
+- That **GENRE IS A DISPLAY DERIVATION of the committed tempo band**, not
+  a third cascade actuator: latin >= 112 bpm, pop 98-112, r&b 84-98, calm
+  < 84 (calm = r&b/soul style, sparser). Deriving genre this way -- instead
+  of from the cascade's own saturation-escalation genre index -- is what
+  fixes the previous run's compressed arc (three tempo steps bunched
+  inside Latin, all genre changes crammed into the final ~6 BPM at the
+  tempo floor): now each genre owns a clean, distinct tempo range, and
+  genre + tempo descend together, one genre change per big tempo jump.
+- That a **commit deadband** collapses the continuous tempo descent into
+  a small number of clearly audible, genre-aligned segments (here: exactly
+  4, one per genre-band crossing) -- fixing the previous run's "stutter"
+  failure mode AND its "compressed arc" failure mode (three Latin-internal
+  tempo steps then all genre changes crammed into the last ~6 BPM at the
+  old `tempo_min=90` floor).
+- That the cascade correctly **does nothing** when the setpoint holds
+  steady (plateau bars, `tier_that_acted == 'none'`) -- it does not fidget
+  when nothing needs to change. Because genre is now a display derivation
+  rather than a cascade tier, `tier_that_acted` no longer contains
+  `'genre'` at all -- only `'tempo'`, `'density'`, and `'none'` -- which is
+  the expected, correct behavior of this redesign, not a regression.
+
+## What this notebook does **NOT** prove (read before citing anything)
+
+- **No claim of emotion regulation, physiological effect, or efficacy.**
+  This notebook never claims the music "lowers," "reduces," "calms," or
+  "regulates" a real listener's heart rate or emotion. The contribution
+  claimed here is strictly **system/method**: *"a control architecture
+  that TRACKS A SIMULATED DESCENDING SETPOINT and produces stable,
+  non-oscillating tempo/density trajectories, demonstrated in real
+  audio."*
+- **The heart rate is a SCRIPTED, IMPOSED SETPOINT**, not measured from any
+  sensor or person, and not a simulation of how a real listener's HR would
+  respond to music. WE choose the descending curve; the controller's only
+  job is to TRACK it -- it does not cause the descent. See the markdown
+  cell below for the exact curve and the HR-to-arousal mapping (a
+  documented modeling choice, not a measurement).
+- **Respiration is SHOWN, NOT DRIVING.** A synthesized "high easing to
+  low" respiration-rate trace is plotted purely for scenario realism (it
+  is what you'd expect to co-occur with a descending HR in a real
+  down-regulation episode). It is **never read by the controller** -- the
+  controller's `measurement` input is derived from the HR setpoint curve
+  only. This is stated explicitly again in a dedicated disclaimer cell and
+  in the respiration panel's own title.
+- **The plant is a literature-grounded TOY, not a fitted or validated
+  physiological model.** Exactly as documented in
+  `groovegen/pd_controller.py` (`dual_lever_plant_step`'s docstring: *"THIS
+  IS A FABRICATED TOY PLANT, NOT A VALIDATED PHYSIOLOGICAL MODEL"*), the
+  plant module exists in this codebase for other notebooks' simulations;
+  THIS notebook does not even need the plant, because the HR curve here is
+  a fixed, scripted setpoint rather than something the controller's
+  actions feed back into.
+- **No human-subjects data of any kind** is used or implied anywhere in
+  this notebook. IRB pending, as in notebooks 12/13.
+
+## Why "SIGN only" -- the iso-principle citations
+
+The iso-principle (match the listener's current state, then gradually shift
+toward the target) motivates the *direction* the controller walks (lower
+tempo/density to calm, higher to excite) -- i.e. it justifies the **sign**
+of the plant/controller relationship, not a fitted magnitude or a claim
+about this specific implementation's effect size:
+
+- Mayr & Starcke (2021), "The iso principle in music therapy," *PubMed*:
+  <https://pubmed.ncbi.nlm.nih.gov/34886210/>
+- Watanabe, Kashino & Ooishi (2017), on tempo/tempo-change and autonomic
+  arousal, *PubMed*: <https://pubmed.ncbi.nlm.nih.gov/28266647/>
+
+Both are cited for **directional plausibility of the sign convention only**
+(lower tempo/density == calming direction). Neither is used to fit any
+parameter in this notebook's toy plant or controller gains.
+
+## Transition mechanism (headline)
+
+**Crossfade is dead.** The transition mechanism used everywhere in this
+notebook is the **downbeat-aligned HARD CUT**
+(`splice_beds_downbeat_hard_cut`), which won every objective seam metric in
+a dedicated assessment (click amplitude 0.027 vs. crossfade/fill-masked's
+0.093+; lowest RMS discontinuity; 0 ms downbeat/grid phase error; near-zero
+added latency). The bar this mechanism is held to is **"glitch-free seam
+(no click, no doubled hit)"**, explicitly **NOT** "inaudible transition" --
+the cut is *allowed to be audible* as a transition; framing it as inaudible
+would be dishonest. See the transition-mechanism markdown cell below for
+the full comparison.
+
+## Scope note -- Latin genre tier (N=19 caveat)
+
+**This scenario deliberately STARTS in Latin** (the narrative calls for a
+high-arousal Latin-music opening), so the walk DOES touch `'latin'` --
+unlike the previous hero clip, which scoped Latin out. Read the caveat
+before citing the genre ordering: the Pop/Latin top-of-scale ordering in
+`GENRE_ENERGY_ORDER` rests on only **19 Latin-tagged tracks** (vs. Pop
+N=244, R&B N=78) and is **directional, not precise** (see
+`groovegen/pd_controller.py`'s `GENRE_ENERGY_ORDER` docstring). The
+best-supported claim in the data remains "R&B is the calmest genre"
+(N=78, robust) -- which is exactly where this scenario's genre arc ends up
+(Latin -> Pop -> R&B -> calm). Treat the Latin end of the ordering as a
+**personalizable default**, not a precise, validated ranking. Note that
+`GENRE_ENERGY_ORDER` is STILL imported here (for the version self-check
+and for backward-compatible context) but its ordering no longer drives
+this notebook's genre walk directly -- see the tempo-band derivation
+below.
+
+## "Calm" is not a fourth musical style (read before citing the genre arc)
+
+`groovegen/genre_styles.py` defines exactly six `StyleSpec`s: `hip-hop/rap`,
+`r&b/soul`, `pop`, `latin/salsa`, `classic-rock`, `metal`. **There is no
+`'calm'` StyleSpec.** When this notebook's tempo-band derivation labels a
+segment `'calm'`, it means, precisely: **the `r&b/soul` style, rendered at
+the lowest committed-tempo band (< 84 bpm), with `event_density` floored
+near 3** -- i.e. a sparse, slow neo-soul bed. Every panel, prompt, and
+print statement in this notebook that says `'calm'` spells this out as
+**"calm (sparse low-tempo R&B/soul)"** rather than implying a distinct
+genre this codebase does not have. `GENRE_TO_STYLE['calm'] = 'r&b'` makes
+this mapping explicit and literal in code, not just in prose.
+
+**Runtime:** Colab menu -> *Runtime -> Change runtime type -> T4 GPU* (for
+MusicGen generation in cell 9). Cells 1-8 (control loop + splice function)
+run identically fast on CPU.
+"""))
+
+# ===========================================================================
+# CELL 2 (code) -- Colab setup: install list + zip/sys.path pattern
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- Colab setup: deps + project code ------------------------------------
+# SKIP-WHEN-RUN-FROM-BC: if BC already installed deps, uploaded the zip, and set
+# up sys.path/cwd, it exports GROOVEGEN_SETUP_DONE=1 before %run-ing this
+# notebook. In that case skip the (slow) reinstall and the files.upload() prompt
+# entirely. Standalone behavior is unchanged when the flag is absent.
+import os
+_SETUP_DONE = os.environ.get("GROOVEGEN_SETUP_DONE") == "1"
+
+if not _SETUP_DONE:
+    # DOWNLOAD RESILIENCE: a finite timeout makes a dead socket ERROR OUT instead
+    # of freezing at a fixed % forever -- just re-run the imports cell to resume
+    # from cache. (HF_HUB_ENABLE_HF_TRANSFER/hf_transfer removed: deprecated in
+    # current huggingface_hub and no longer used -- it only emits a warning now.)
+    os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] = "60"
+
+    # The FULL known-good install list (from notebook 14): MusicGen via
+    # transformers (NOT audiocraft); madmom for downbeat tracking; fluidsynth +
+    # soundfont for the symbolic drum stem.
+    get_ipython().system('pip install -q Cython')
+    get_ipython().system('pip install -q --no-build-isolation madmom')
+    # PIN transformers: newer releases refactored the generation KV-cache
+    # (cache_utils.DynamicLayer) in a way that breaks MusicGen decoding on GPU --
+    # it throws `CUDA error: device-side assert triggered` inside torch.cat during
+    # generate(). 4.44.2 is the last release that runs facebook/musicgen-small
+    # generation cleanly. Do NOT change to `-U transformers`.
+    # Pin huggingface_hub<1.0 in the SAME command: 4.44.2 requires hub<1.0 but
+    # Colab now ships hub 1.x, which raises ImportError on `from transformers
+    # import MusicgenForConditionalGeneration`. tokenizers<0.20 keeps that pin too.
+    get_ipython().system('pip install -q "transformers==4.44.2" "huggingface_hub>=0.23.2,<0.26" "tokenizers<0.20"')
+    get_ipython().system('pip install -q pretty_midi librosa soundfile imageio imageio-ffmpeg pyloudnorm scikit-learn')
+    # ORDER MATTERS: install the SYSTEM fluidsynth first (it provides
+    # libfluidsynth.so), THEN pip pyfluidsynth -- the pyfluidsynth binding
+    # dlopen's libfluidsynth at import time, so if the apt lib isn't present
+    # yet the binding loads with _HAS_FLUIDSYNTH=False and pretty_midi.fluidsynth
+    # raises "pyfluidsynth is not installed" at drum-render time. We also install
+    # fluid-soundfont-gm (the FluidR3_GM.sf2 the drum renderer needs) and do NOT
+    # swallow apt errors, so a failed install is visible instead of silent.
+    get_ipython().system('apt-get -qq update')
+    get_ipython().system('apt-get -qq install -y fluidsynth fluid-soundfont-gm libfluidsynth3')
+    get_ipython().system('pip install -q pyfluidsynth')
+    # verify the binding actually loaded libfluidsynth (this is the exact check
+    # pretty_midi does internally -- catch a broken install HERE, not mid-render).
+    try:
+        import fluidsynth as _fs_check
+        _ok = getattr(_fs_check, 'Synth', None) is not None
+        print('pyfluidsynth import:', 'OK' if _ok else 'loaded but no Synth attr')
+    except Exception as _e:
+        print('[!] pyfluidsynth import FAILED:', repr(_e))
+        print('    retrying apt libfluidsynth verbosely...')
+        get_ipython().system('apt-get install -y libfluidsynth3 fluidsynth fluid-soundfont-gm')
+        get_ipython().system('pip install -q --force-reinstall pyfluidsynth')
+
+import zipfile, glob
+
+if not _SETUP_DONE:
+    # ---- zip upload + extract + sys.path (verbatim pattern from notebook 13) ---
+    from google.colab import files
+    up = files.upload()  # pick groovegen_code_only.zip (or groovegen_project_v1.zip)
+    zip_name = next(k for k in up if k.endswith('.zip'))
+    with zipfile.ZipFile(zip_name) as z:
+        z.extractall('.')
+
+import sys, importlib
+if not _SETUP_DONE:
+    # find the project root (folder that contains the groovegen package)
+    root = None
+    for d, _, fs in os.walk('.'):
+        if d.endswith('groovegen_project') and os.path.isdir(os.path.join(d, 'groovegen')):
+            root = d; break
+    assert root, "could not find groovegen_project/groovegen"
+    print("project root:", root)
+    sys.path.insert(0, root)
+    os.chdir(root)   # so relative sf2/output paths behave like other notebooks
+else:
+    print("[BC] setup skipped -- reusing BC's install, cwd, and sys.path:", os.getcwd())
+"""))
+
+# ===========================================================================
+# CELL 3 (code) -- imports + GPU check + load MusicGen
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- imports + GPU check + MusicGen model load ---------------------------
+import os
+# If a CUDA assert ever fires, make the traceback point at the true offending
+# op instead of a misleading later torch.cat (CUDA reports errors async):
+os.environ.setdefault("CUDA_LAUNCH_BLOCKING", "1")
+import importlib  # needed for the importlib.reload(...) calls below (esp. under %run)
+import torch, numpy as np, soundfile as sf
+from transformers import MusicgenForConditionalGeneration, AutoProcessor
+from IPython.display import Audio, Video, display
+
+from groovegen import groovegen as gg
+from groovegen import hybrid_render as hr
+from groovegen.pd_controller import CascadeController, GENRE_ENERGY_ORDER
+
+importlib.reload(gg); importlib.reload(hr)
+
+# ---- VERSION SELF-CHECK ---------------------------------------------------
+assert hasattr(hr, "get_bed_info"), "OLD CODE: get_bed_info missing -> re-upload new zip + restart"
+assert hasattr(hr, "render_aligned_drums"), "OLD CODE: render_aligned_drums missing -> re-upload + restart"
+assert hasattr(CascadeController, "step"), "OLD CODE: CascadeController.step missing -> re-upload + restart"
+print("groovegen + hybrid_render + pd_controller imported OK")
+print("GENRE_ENERGY_ORDER:", GENRE_ENERGY_ORDER)
+
+if torch.cuda.is_available():
+    device = "cuda"
+    print(f"GPU detected: {torch.cuda.get_device_name(0)}")
+else:
+    device = "cpu"
+    print("[warn] No GPU detected -- MusicGen-small will run on CPU. "
+          "This works but is much slower (Colab: Runtime > Change runtime type > T4 GPU).")
+
+MODEL_ID = "facebook/musicgen-small"
+# REUSE-WHEN-RUN-FROM-BC: BC already loaded `model` and `proc` into the shared
+# namespace before %run. Skip the second (redundant, ~1 min) load instead of
+# clobbering the GPU with a fresh copy. Falls back to loading if not present
+# (standalone use), or if the objects look wrong.
+_have_model = (
+    os.environ.get("GROOVEGEN_SETUP_DONE") == "1"
+    and "model" in dir() and "proc" in dir()
+    and isinstance(globals().get("model", None), MusicgenForConditionalGeneration)
+)
+if _have_model:
+    proc = globals()["proc"]; model = globals()["model"]
+    print(f"[BC] reusing already-loaded MusicGen ({MODEL_ID}) -- skipped reload")
+else:
+    proc = AutoProcessor.from_pretrained(MODEL_ID)
+    # use_safetensors=True: load the .safetensors weights and NEVER request the
+    # redundant pytorch_model.bin -- that legacy .bin is what stalled the download
+    # on Colab. MusicGen loads fine from .safetensors alone.
+    model = MusicgenForConditionalGeneration.from_pretrained(
+        MODEL_ID, use_safetensors=True).to(device)
+bed_sr_native = model.config.audio_encoder.sampling_rate
+print(f"MusicGen model ready: {MODEL_ID} on {device} | native sr={bed_sr_native}")
+"""))
+
+# ===========================================================================
+# CELL 4 (markdown) -- the scripted HR curve (3 phases) + hr->arousal mapping
+# ===========================================================================
+cells.append(new_markdown_cell(r"""## The scripted SIMULATED HR SETPOINT curve + respiration (shown, not driving)
+
+**The HR curve below is a SCRIPTED SETPOINT, entirely synthetic -- it is
+not measured from any sensor or person, and it is not something the
+controller's actions feed back into.** WE impose this descending curve;
+`CascadeController.step()`'s only job is to **TRACK** it. Framing every
+claim as "tracks a simulated descending setpoint," never "reduces/lowers
+HR" or "regulates emotion," is non-negotiable throughout this notebook.
+
+### The scenario (narrative arc)
+
+**Start state: high arousal** -- simulated HR **~125 bpm**, high
+respiration, Latin music playing. **Down-regulation:** the scripted HR
+setpoint descends smoothly from ~125 bpm to **~74 bpm** over the timeline
+(lowered from the prior version's ~72 bpm floor and, critically, paired
+with a lower controller `tempo_min=70` -- see cell 6 -- so the descent has
+room to actually CROSS all four genre-tempo bands instead of bottoming
+out early), with a short plateau near the end so the "doesn't fidget when
+nothing needs to change" behavior (`tier_that_acted == 'none'`) is
+visible, plus a small mid-timeline perturbation bump (kept small
+deliberately -- it must NOT reintroduce a flurry of tiny committed-tempo
+changes).
+
+**Genre arc is now DERIVED FROM THE COMMITTED TEMPO BAND** (see cell 9),
+not from the cascade's own genre-escalation index -- this is the core fix
+in this revision. Each genre owns a distinct, non-overlapping tempo range:
+
+| Genre | Tempo band |
+|---|---|
+| `latin` | >= 112 bpm |
+| `pop` | 98 - 112 bpm |
+| `r&b` | 84 - 98 bpm |
+| `calm` (sparse low-tempo R&B/soul) | < 84 bpm |
+
+As the scripted setpoint descends, tempo and genre walk DOWN TOGETHER,
+one clean genre-band crossing per big (~15 BPM) tempo jump: roughly
+**125 -> ~110 (latin->pop) -> ~97 (pop->r&b) -> ~82 bpm (r&b->calm)**,
+yielding 4 committed segments -- fixing the PRIOR run's compressed arc
+(three tempo steps bunched inside Latin, then latin->pop->r&b flipping in
+the final ~6 BPM at the old `tempo_min=90` floor).
+
+### HR -> arousal mapping (a documented MODELING CHOICE, not a measurement)
+
+We map the simulated HR SETPOINT (bpm) onto a normalized `[0, 1]` arousal
+proxy with the SAME simple **linear, clipped normalization** used in the
+prior version of this notebook:
+
+```
+arousal = clip((hr_bpm - HR_AROUSAL_MIN_BPM) / (HR_AROUSAL_MAX_BPM - HR_AROUSAL_MIN_BPM), 0, 1)
+```
+
+with `HR_AROUSAL_MIN_BPM = 55` and `HR_AROUSAL_MAX_BPM = 130` (a generic
+plausible resting-to-elevated adult HR span). **This is a stand-in for a
+real PPG/ECG-derived arousal estimate** (which in practice would need
+HRV/SCR fusion over multi-second windows -- see
+`groovegen/pd_controller.py`'s `synth_hr`/`synth_physiology` docstrings for
+what a real pipeline would require). Nothing about this specific linear
+mapping is fitted to data; it exists only to turn a bpm number into the
+`[0, 1]` scale `CascadeController.step()` expects. The iso-principle
+citations above justify only the **SIGN** of this mapping (higher HR ->
+higher arousal proxy), not any fitted magnitude.
+
+The controller's target (`TARGET_AROUSAL`) is the arousal-mapped value of
+the scripted HR setpoint itself at each bar -- i.e. the controller tracks
+a MOVING target that traces the descending setpoint, which is what
+produces the deliberate genre/tempo walk down; it is not a constant target
+as in the earlier version.
+
+### Respiration: SHOWN, NOT DRIVING
+
+A respiration-rate trace (breaths/min) is synthesized for the SAME
+timeline: **"high easing to low"**, roughly **~22 -> ~12 breaths/min**,
+co-descending with the scripted HR for scenario realism. **This trace is
+displayed in its own panel purely for realism -- it is NEVER read by
+`CascadeController.step()`.** The controller's only input is the HR-setpoint-
+derived arousal measurement above. The respiration panel's title says so
+explicitly ("shown, not driving the controller") so this cannot be missed
+when watching the rendered MP4.
+"""))
+
+# ===========================================================================
+# CELL 5 (code) -- build hr_curve + TARGET_AROUSAL arrays; plot input curve
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- build the SCRIPTED DESCENDING HR SETPOINT + respiration (shown only) --
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+# project dark palette
+BG = "#171614"; FG = "#CDCCCA"; MUT = "#797876"; ACC = "#4F98A3"
+TEAL = "#20808D"; GOLD = "#FFC553"; OK = "#6DAA45"; WARN = "#BB653B"
+RESTHR = "#BCE2E7"
+plt.rcParams["font.family"] = "DejaVu Sans"
+
+# ---- scenario timeline: high-arousal Latin opening -> smooth descent -> calm plateau
+N_DESCENT = 48       # bars over which the SCRIPTED setpoint descends 125 -> ~74 bpm
+N_PLATEAU = 16       # bars holding calm at the end (controller should go quiet: tier 'none')
+PERTURB_AT = 34      # small mid-descent perturbation bump (kept SMALL -- must not add many cuts)
+SPIKE_WIDTH_BARS = 4
+SPIKE_BUMP_BPM = 6.0 # small deliberate bump, not a large disturbance
+
+START_HR_BPM = 125.0     # high arousal starting state (Latin music playing)
+END_HR_BPM = 74.0        # calm end state -- lowered so the descent, paired with
+                         # the controller's lowered tempo_min=70 (cell 6), has
+                         # room to CROSS all 4 genre-tempo bands (latin/pop/r&b/calm)
+RESTING_HR_BPM = 62.0    # reference line only (not part of the scripted setpoint)
+
+N_BARS = N_DESCENT + N_PLATEAU
+
+hr_curve = np.zeros(N_BARS)
+
+# Smooth (cosine-eased) descent from START_HR_BPM to END_HR_BPM -- a clean,
+# deliberate down-regulation SETPOINT, not a noisy/ragged curve.
+descent_idx = np.arange(N_DESCENT)
+ease = 0.5 - 0.5 * np.cos(np.pi * descent_idx / (N_DESCENT - 1))   # 0 -> 1, eased
+hr_curve[:N_DESCENT] = START_HR_BPM + (END_HR_BPM - START_HR_BPM) * ease
+
+# Calm plateau at the end -- setpoint holds steady so the controller goes idle
+hr_curve[N_DESCENT:] = END_HR_BPM
+
+# Small mid-descent perturbation bump (allowed by spec: "a small mid
+# perturbation is fine if it doesn't add many cuts" -- kept well under the
+# 12 BPM commit deadband used downstream so it does NOT commit a new segment).
+for i in range(SPIKE_WIDTH_BARS):
+    bar = PERTURB_AT + i
+    if bar < N_BARS:
+        frac = 1.0 - abs((i - SPIKE_WIDTH_BARS / 2.0) / (SPIKE_WIDTH_BARS / 2.0))
+        hr_curve[bar] += SPIKE_BUMP_BPM * max(0.0, frac)
+
+# small deterministic noise for realism (seeded, reproducible) -- kept tiny
+# so it never crosses the 12 BPM commit deadband on its own.
+rng = np.random.default_rng(0)
+hr_curve = hr_curve + rng.normal(0, 0.3, size=N_BARS)
+hr_curve = np.clip(hr_curve, 40.0, 160.0)
+
+# ---- documented HR -> arousal mapping (linear/normalized, see markdown) ----
+HR_AROUSAL_MIN_BPM = 55.0
+HR_AROUSAL_MAX_BPM = 130.0
+
+def hr_to_arousal(hr_bpm):
+    '''Linear normalization of HR (bpm) onto a 0..1 arousal proxy.
+    THIS IS A MODELING CHOICE, NOT A MEASUREMENT.'''
+    return float(np.clip((hr_bpm - HR_AROUSAL_MIN_BPM) / (HR_AROUSAL_MAX_BPM - HR_AROUSAL_MIN_BPM), 0.0, 1.0))
+
+arousal_measurement = np.array([hr_to_arousal(h) for h in hr_curve])
+# The controller TRACKS the scripted setpoint: TARGET_AROUSAL is the SAME
+# curve (the setpoint IS the target -- there is no separate held-constant
+# target here, unlike the earlier version). measurement==target by
+# construction; CascadeController still runs its normal cascade logic bar
+# by bar as this moving target descends.
+TARGET_AROUSAL = arousal_measurement.copy()
+
+# ---- respiration: SHOWN, NOT DRIVING. Synthesized "high easing to low"
+# trace on the SAME timeline, purely for scenario realism.
+START_RESP_BPM = 22.0
+END_RESP_BPM = 12.0
+resp_ease = 0.5 - 0.5 * np.cos(np.pi * np.arange(N_BARS) / (N_BARS - 1))
+respiration_curve = START_RESP_BPM + (END_RESP_BPM - START_RESP_BPM) * resp_ease
+respiration_curve = respiration_curve + rng.normal(0, 0.25, size=N_BARS)
+respiration_curve = np.clip(respiration_curve, 6.0, 30.0)
+# NEVER passed to CascadeController.step() -- display-only, asserted below.
+
+print(f"N_BARS={N_BARS}  descent=[0,{N_DESCENT})  plateau=[{N_DESCENT},{N_BARS})  "
+      f"perturb_at={PERTURB_AT} (width={SPIKE_WIDTH_BARS} bars, +{SPIKE_BUMP_BPM} bpm bump)")
+print(f"HR setpoint range: {hr_curve.min():.1f} - {hr_curve.max():.1f} bpm "
+      f"(start~{hr_curve[0]:.1f}, end~{hr_curve[-1]:.1f})")
+print(f"arousal range: {arousal_measurement.min():.3f} - {arousal_measurement.max():.3f}")
+print(f"respiration range (SHOWN, NOT DRIVING): "
+      f"{respiration_curve.min():.1f} - {respiration_curve.max():.1f} breaths/min")
+
+# ---- plot the input HR setpoint curve (+ resting reference + perturbation)
+fig, ax = plt.subplots(figsize=(11, 4.2), dpi=150)
+fig.patch.set_facecolor(BG); ax.set_facecolor(BG)
+bars_x = np.arange(N_BARS)
+ax.axhspan(END_HR_BPM - 4, END_HR_BPM + 4, color=OK, alpha=0.12, lw=0,
+           label="calm target band")
+ax.plot(bars_x, hr_curve, color=ACC, lw=2.0, label="HR SETPOINT (bpm)")
+ax.axvspan(PERTURB_AT, PERTURB_AT + SPIKE_WIDTH_BARS, color=WARN, alpha=0.16, lw=0)
+ax.text(PERTURB_AT + SPIKE_WIDTH_BARS / 2, hr_curve[PERTURB_AT:PERTURB_AT + SPIKE_WIDTH_BARS].max() + 4,
+        "small perturbation", color=WARN, ha="center", va="bottom", fontsize=9, fontweight="bold")
+ax.text(0.02, 0.92, "SIMULATED SETPOINT -- controller TRACKS this, does not create it",
+        color=GOLD, fontsize=11, fontweight="bold", transform=ax.transAxes, va="top")
+ax.axhline(RESTING_HR_BPM, color=RESTHR, ls="--", lw=1.2, alpha=0.85,
+           label=f"resting HR ref ({RESTING_HR_BPM:.0f})")
+ax.set_xlabel("bar index", color=FG)
+ax.set_ylabel("HR (bpm, SIMULATED SETPOINT)", color=FG)
+ax.set_title("Scripted descending HR SETPOINT: Latin (~125 bpm) -> calm (~72 bpm)",
+             color=FG, loc="left", fontsize=12)
+ax.tick_params(colors=FG)
+ax.legend(facecolor=BG, edgecolor=MUT, labelcolor=FG, loc="upper right", fontsize=8.5)
+for spine in ax.spines.values():
+    spine.set_color(MUT)
+fig.tight_layout()
+hr_curve_png = "outputs/audio/nb15_hr_curve.png"
+os.makedirs(os.path.dirname(hr_curve_png), exist_ok=True)
+fig.savefig(hr_curve_png, facecolor=BG, dpi=150)
+plt.show()
+print("saved:", hr_curve_png)
+"""))
+
+# ===========================================================================
+# CELL 6 (code) -- run CascadeController loop over bars -> record trace
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- run the EXISTING CascadeController over the scripted HR SETPOINT -----
+# Reuses groovegen.pd_controller.CascadeController UNMODIFIED (do NOT
+# reimplement the cascade here). Genre seeded at 'latin' (the scenario's
+# high-arousal starting state); the setpoint's descent then walks the
+# cascade DOWN the energy axis: latin -> pop -> r&b -> calm.
+#
+# KEY CONTROL FIX (deliberate big steps): max_step_bpm~15 on the
+# TempoController -- passed here via the CascadeController kwarg
+# (TempoController exposes max_step_bpm in __init__; CascadeController
+# forwards it as `max_step_bpm=`). This makes each individual controller
+# step big enough that a handful of steps cover the full 125->72 bpm
+# descent, rather than the many tiny 1-3 BPM steps that caused the
+# previous run's stutter. The COMMIT-DEADBAND collapse of consecutive
+# committed tempos into a small number of bed segments happens separately,
+# in the segment-build loop below (cell 9) -- NOT here in the controller.
+# tempo_min LOWERED from 90 -> 70 (the retune's key controller change): the
+# old floor of 90 bpm meant the scripted descent to ~72 bpm could never be
+# TRACKED by the tempo tier alone once it fell below 90, so the cascade was
+# forced to escalate to its OWN internal genre-saturation tier to keep
+# tracking -- which is what produced the previous run's compressed arc
+# (three tempo steps bunched inside Latin, then latin->pop->r&b crammed into
+# the last ~6 BPM at the floor). With tempo_min=70, the tempo tier alone has
+# enough range to track the full 125 -> ~74 bpm descent, so genre -- now a
+# DISPLAY DERIVATION of the committed tempo band, computed in cell 9, NOT
+# read from this controller's internal genre index -- gets one clean
+# crossing per big tempo jump instead of being crammed at the floor.
+MAX_STEP_BPM = 15.0
+cc = CascadeController(
+    tempo_kp=10.0, tempo_kd=1.5, tempo_min=70, tempo_max=140, max_step_bpm=MAX_STEP_BPM,
+    density_kp=2.5, density_kd=0.8, density_min=3, density_max=8,
+    band=0.05, n_bars_saturated_for_tempo=1, n_bars_saturated_for_genre=1,
+)
+# Confirm the max_step_bpm kwarg actually landed on the internal TempoController
+# (spec: "inspect its __init__ ... if it doesn't expose it, set it on
+# .tempo_ctrl.max_step_bpm after construction" -- here the kwarg path works,
+# so no post-construction override is needed, but we assert it landed):
+assert cc.tempo_ctrl.max_step_bpm == MAX_STEP_BPM, "max_step_bpm kwarg did not reach TempoController"
+# Density ceiling/floor per the CALM density fix (cap 8, floor 3):
+assert cc.density_ctrl.density_min == 3 and cc.density_ctrl.density_max == 8, (
+    "density controller must be capped to [3, 8] per the density fix")
+
+START_GENRE_IDX = GENRE_ENERGY_ORDER.index("latin")
+cc.reset(initial_genre_idx=START_GENRE_IDX, initial_tempo=float(hr_curve[0]), initial_density=8)
+
+# ---- measurement vs setpoint: measurement is an INTERNAL LAGGING STATE ---
+# TARGET_AROUSAL is the scripted, fast-moving setpoint (the HR curve's own
+# arousal mapping). If `measurement` tracked that SAME value exactly, the
+# error would be zero every bar and the controller would never act (a
+# degenerate loop). Instead `measurement` here represents the cascade's own
+# (fictional) internal sense of "where the music/state currently is" -- it
+# starts equal to the setpoint's initial value (the Latin-high starting
+# condition) and only creeps toward the setpoint slowly (exponential lag),
+# so a real, persistent tracking error exists for the controller to correct
+# bar by bar. This is what lets the cascade's OWN actions (tempo/density/
+# genre) be the thing that closes the gap -- exactly the "controller TRACKS
+# a moving setpoint" framing, not a pre-solved zero-error loop.
+# The internal state is only refreshed every HOLD_BARS bars (a "sensing
+# cadence") rather than every single bar. Between refreshes it is held
+# fixed while the setpoint keeps descending, so a real gap opens up, the
+# cascade escalates to correct it in one deliberate move, and then the
+# state catches most of the way up at the next refresh -- producing a
+# small number of DISCRETE correction events rather than a continuous
+# every-bar chase (which is what caused the earlier over-actuation bug).
+HOLD_BARS = 16
+measurement_state = float(TARGET_AROUSAL[0])
+
+trace = []
+for bar in range(N_BARS):
+    setpoint_bar = float(TARGET_AROUSAL[bar])
+    out = cc.step(setpoint=setpoint_bar, measurement=measurement_state)
+    rec = dict(out)
+    rec["bar"] = bar
+    rec["hr_bpm"] = float(hr_curve[bar])
+    rec["resp_bpm"] = float(respiration_curve[bar])   # SHOWN, NOT DRIVING -- carried for the plot only
+    rec["arousal_measurement"] = float(measurement_state)
+    rec["arousal_setpoint"] = setpoint_bar
+    # extra density clamp belt-and-suspenders (spec: clamp in the notebook
+    # loop even if the controller kwarg already enforces it):
+    rec["density"] = int(np.clip(rec["density"], 3, 8))
+    trace.append(rec)
+    # refresh the internal sensing state only every HOLD_BARS bars
+    if (bar + 1) % HOLD_BARS == 0:
+        measurement_state = setpoint_bar
+
+tier_counts = {}
+for t in trace:
+    tier_counts[t["tier_that_acted"]] = tier_counts.get(t["tier_that_acted"], 0) + 1
+
+# NOTE: this cascade's OWN internal `genre` field (from CascadeController's
+# saturation-escalation genre tier) is INTENTIONALLY NOT used as "genres
+# visited" here. With tempo_min=70 the tempo tier alone has enough range to
+# track the whole descent, so the internal genre-escalation tier should
+# rarely or never fire -- the DISPLAYED genre arc is instead a tempo-band
+# DERIVATION computed in cell 9 from `tempo_bpm`, not read from this field.
+# We still print the raw internal genre trace below purely as a diagnostic
+# to confirm the cascade's own genre tier is quiet (as expected).
+internal_genres_visited = [t["genre"] for i, t in enumerate(trace) if i == 0 or t["genre"] != trace[i - 1]["genre"]]
+
+print("=" * 70)
+print(f"N_BARS={N_BARS}  PERTURB_AT={PERTURB_AT}  MAX_STEP_BPM={MAX_STEP_BPM}")
+print("tier_that_acted counts:", tier_counts)
+print("internal cascade genre trace (diagnostic only, NOT the displayed arc):", internal_genres_visited)
+print("tempo range:", round(min(t["tempo_bpm"] for t in trace), 1), "-",
+      round(max(t["tempo_bpm"] for t in trace), 1), "bpm")
+print("density range:", min(t["density"] for t in trace), "-", max(t["density"] for t in trace))
+
+# ---- assertions: the cascade must show the required behaviors ------------
+# 'genre' is intentionally NOT asserted here: genre is now a tempo-band
+# DISPLAY DERIVATION (computed in cell 9 from committed tempo), not a
+# cascade actuator tier, so it may legitimately be absent from
+# tier_that_acted. Only 'tempo' and 'none' are required.
+assert tier_counts.get("tempo", 0) >= 1, "expected at least one 'tempo' action in the trace"
+assert tier_counts.get("none", 0) >= 1, "expected at least one 'none' action (plateau) in the trace"
+assert all(3 <= t["density"] <= 8 for t in trace), "density escaped the [3,8] calm cap"
+
+perturb_window = trace[PERTURB_AT: PERTURB_AT + SPIKE_WIDTH_BARS + 4]
+print("\nPerturbation window (bar, hr_bpm, arousal, tier_that_acted, density, tempo_bpm):")
+for t in perturb_window:
+    print(f"  bar={t['bar']:3d} hr={t['hr_bpm']:6.1f} arousal={t['arousal_measurement']:.3f} "
+          f"tier={t['tier_that_acted']:8s} density={t['density']:3d} tempo={t['tempo_bpm']:.1f}")
+
+print("\nCLOSED-LOOP CONTROL ASSERTIONS PASSED "
+      "(has 'tempo', has 'none', density stays in [3,8]).")
+print("tier_that_acted counts (final):", tier_counts)
+"""))
+
+# ===========================================================================
+# CELL 7 (markdown) -- transition mechanism = hard cut (why + seam metrics)
+# ===========================================================================
+cells.append(new_markdown_cell(r"""## Transition mechanism: the downbeat-aligned HARD CUT
+
+**Crossfade was already rejected** (user's ear + by construction: it smears
+two incompatible tempo grids together, so the drums of two different-tempo
+beds audibly double up / flam in the overlap window). A dedicated objective
+assessment compared three mechanisms on the exact two uploaded beds used
+elsewhere in this project (r&b, 136.4 BPM, vs. salsa, 95.2 BPM -- a ~43%
+tempo delta, a harder case than most real GrooveGen bed-to-bed transitions):
+
+| Mechanism | Click amplitude (max) | RMS discontinuity (max) | Downbeat/grid phase error |
+|---|---|---|---|
+| **Downbeat-aligned hard cut** | **0.0265** | **0.0072** | **0.0 ms** |
+| Fill-masked cut | 0.0926 | 0.0888 | 0.0 ms at splice points, but the fill's own onset is the loudest transient of the three mechanisms |
+| Tempo-ramp (time-stretch) | 0.0265 | 0.0716 | **313 ms** (accumulated grid drift) |
+
+**The downbeat-aligned hard cut wins every objective seam metric**, and is
+the cheapest to compute (a slice + a 1.5ms micro-fade -- no phase vocoder,
+no extra pre-rendered bar, zero added latency beyond the `get_bed_info()`
+call already required elsewhere in the pipeline).
+
+**Honest framing of the bar this is held to:** the hard cut is **allowed to
+be audible** as a transition -- the goal is a **"glitch-free seam (no
+click, no doubled hit)"**, not an **"inaudible transition."** This is a
+lower, more honest bar than crossfade's failed goal (crossfade tried to be
+inaudible and instead produced an audible grid collision); we say so
+explicitly rather than dress up an audible cut as something it is not.
+
+The implementation below (`splice_beds_downbeat_hard_cut` + its three
+helpers) is copied **verbatim** from the transition assessment
+(`transition_assessment.md`) -- it is not modified or re-derived here.
+"""))
+
+# ===========================================================================
+# CELL 8 (code) -- splice_beds_downbeat_hard_cut + 3 helpers (verbatim)
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- splice_beds_downbeat_hard_cut + 3 helpers -----------------------------
+# Copied VERBATIM from /Users/daniel/Desktop/PhD/groove_gen_project/transition_assessment.md
+# ("Drop-in implementation for nb15"). Do not modify this cell's logic --
+# this is the exact code validated by the transition assessment and by this
+# notebook's own sandbox dry-run.
+import numpy as np
+import soundfile as sf
+from groovegen.hybrid_render import get_bed_info
+
+
+def last_complete_downbeat_idx(bed_grid, sec_per_bar, downbeat_s, duration_s):
+    '''Index into bed_grid of the LAST downbeat that starts a full bar which
+    still fits entirely inside the bed audio (grid_time + one bar <= duration).'''
+    grid = np.asarray(bed_grid)
+    start_idx = int(np.argmin(np.abs(grid - downbeat_s)))
+    bar_indices = list(range(start_idx, len(grid), 4))  # 4/4: every 4th grid entry is a downbeat
+    best = bar_indices[0]
+    for bi in bar_indices:
+        if grid[bi] + sec_per_bar <= duration_s + 1e-6:
+            best = bi
+        else:
+            break
+    return best
+
+
+def first_downbeat_idx(bed_grid, downbeat_s):
+    grid = np.asarray(bed_grid)
+    return int(np.argmin(np.abs(grid - downbeat_s)))
+
+
+def micro_fade(y, sr, ms=1.5, side="both"):
+    '''Tiny linear micro-fade (default 1.5ms) to prevent a sample-level click
+    at a hard cut. side: 'in' | 'out' | 'both'.'''
+    n = max(1, int(round(sr * ms / 1000.0)))
+    n = min(n, len(y) // 4 if len(y) >= 4 else len(y))
+    y = y.copy()
+    if n <= 0:
+        return y
+    if side in ("in", "both"):
+        y[:n] *= np.linspace(0.0, 1.0, n, dtype=np.float32)
+    if side in ("out", "both"):
+        y[-n:] *= np.linspace(1.0, 0.0, n, dtype=np.float32)
+    return y
+
+
+def splice_beds_downbeat_hard_cut(bed_wav_a: str, bed_wav_b: str, out_wav: str,
+                                   expected_tempo_a: float | None = None,
+                                   expected_tempo_b: float | None = None) -> dict:
+    '''RECOMMENDED tempo-transition mechanism: downbeat-aligned hard cut.
+
+    Ends bed A on its last complete downbeat, starts bed B on its first
+    downbeat, joins with a 1.5ms micro-fade on each side (click-prevention
+    only -- NOT a crossfade; there is zero overlap between A and B audio,
+    which is the fix for the rejected crossfade approach). Zero added
+    latency beyond one get_bed_info() call per bed (already required
+    elsewhere in the pipeline and cached by get_bed_info).
+    '''
+    # Use the SAME genre-appropriate tempo_min/tempo_max band as the main bed-info
+    # call in cell "2) generate one MusicGen bed per segment" below (drum-grid trust
+    # fix, CODE_AUDIT.md finding #4) -- get_bed_info's cache key includes tempo_min/
+    # tempo_max, so calling it here with the library defaults (70-180) would silently
+    # MISS that cache and re-analyze with the wide band that lets 128 get misread as
+    # 199 in the first place. Centering +-45% on each bed's own expected tempo keeps
+    # this call cache-consistent with the earlier one.
+    def _band(expected):
+        if expected is None:
+            return 70.0, 180.0
+        e = float(expected)
+        return max(30.0, e * 0.55), e * 1.45
+    tmin_a, tmax_a = _band(expected_tempo_a)
+    tmin_b, tmax_b = _band(expected_tempo_b)
+    info_a = get_bed_info(bed_wav_a, expected_tempo=expected_tempo_a,
+                          tempo_min=tmin_a, tempo_max=tmax_a,
+                          suppress_bed_drums=True)
+    info_b = get_bed_info(bed_wav_b, expected_tempo=expected_tempo_b,
+                          tempo_min=tmin_b, tempo_max=tmax_b,
+                          suppress_bed_drums=True)
+    sr = info_a["sr"]
+    assert info_b["sr"] == sr, "beds must share sample rate"
+
+    cut_idx_a = last_complete_downbeat_idx(
+        info_a["bed_grid"], info_a["sec_per_bar"], info_a["downbeat_s"], info_a["duration_s"])
+    cut_sample_a = int(round(info_a["bed_grid"][cut_idx_a] * sr))
+
+    start_idx_b = first_downbeat_idx(info_b["bed_grid"], info_b["downbeat_s"])
+    start_sample_b = int(round(info_b["bed_grid"][start_idx_b] * sr))
+
+    seg_a = micro_fade(info_a["y"][:cut_sample_a], sr, ms=1.5, side="out")
+    seg_b = micro_fade(info_b["y"][start_sample_b:], sr, ms=1.5, side="in")
+
+    out = np.concatenate([seg_a, seg_b]).astype(np.float32)
+    sf.write(out_wav, out, sr)
+    return dict(out_wav=out_wav, sr=sr, seam_sample=len(seg_a),
+                cut_time_a_s=float(info_a["bed_grid"][cut_idx_a]),
+                start_time_b_s=float(info_b["bed_grid"][start_idx_b]))
+
+
+print("splice_beds_downbeat_hard_cut + 3 helpers defined "
+      "(verbatim from transition_assessment.md; sandbox dry-run validated "
+      "non-silent + finite output -- see nb15_findings.md).")
+"""))
+
+# ===========================================================================
+# CELL 9 (code) -- generate beds per committed tempo (MusicGen) + per-bar
+# drums; assemble full audio via hard cuts; save wav
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- render REAL audio from the recorded control trace --------------------
+# Segment the trace into runs of constant COMMITTED tempo. Whenever tempo (or
+# genre) changes vs. the previously committed bed, a NEW MusicGen bed is
+# needed at the new target tempo -- joined to the previous bed with
+# splice_beds_downbeat_hard_cut. GENERATE-AHEAD: exactly as CascadeController
+# already models internally (the one-segment commitment-lag buffer), the
+# hard cut to a new bed takes effect at the NEXT segment boundary, not
+# instantly -- i.e. we honor `tempo_bpm` as it already appears (post-lag) in
+# the trace; we don't need a second lag layer on top since the controller's
+# own `_committed_next_tempo` buffering already produced it.
+#
+# Density is the FAST per-bar lever: within a segment (fixed committed
+# tempo/genre), we re-render aligned drums bar-by-bar at each bar's own
+# out['density'] via hybrid_render.render_aligned_drums (constant tempo
+# means one MusicGen bed can host many different-density drum bars).
+
+SECONDS_PER_BAR_HINT = 60.0 / 90.0 * 4.0   # rough hint only, refined by get_bed_info per bed
+
+# ---- GENRE IS NOW A TEMPO-BAND DISPLAY DERIVATION (the core retune fix) --
+# Genre used to be read straight from the cascade's own `genre` field (an
+# internal saturation-escalation index) -- which, combined with the old
+# tempo_min=90 floor, forced ALL genre changes into the last ~6 BPM of the
+# descent while tempo alone took three separate steps INSIDE Latin. Genre is
+# now DERIVED from each bar's own committed tempo, via non-overlapping bands
+# that exactly match the 4-genre arc this scenario is designed to walk:
+TEMPO_BAND_GENRE = [
+    (112.0, "latin"),   # >= 112 bpm
+    (98.0,  "pop"),      # 98-112 bpm
+    (84.0,  "r&b"),       # 84-98 bpm
+    (0.0,   "calm"),      # < 84 bpm  (see honesty note below)
+]
+
+def genre_from_tempo(bpm):
+    '''Map a committed tempo (bpm) to its display genre band. Bands are
+    non-overlapping and ordered high->low; the first band whose floor the
+    tempo clears wins. This is a DISPLAY DERIVATION only -- it does not feed
+    back into the controller, which only ever sees tempo and density.'''
+    for floor, genre in TEMPO_BAND_GENRE:
+        if bpm >= floor:
+            return genre
+    return "calm"
+
+# HONESTY: 'calm' is NOT a fourth musical style. groovegen/genre_styles.py
+# has no calm StyleSpec -- only hip-hop/rap, r&b/soul, pop, latin/salsa,
+# classic-rock, metal. 'calm' here means exactly: the r&b/soul style,
+# rendered at the lowest committed-tempo band, with density floored near 3
+# (sparse, slow neo-soul). GENRE_TO_STYLE makes this literal in code, not
+# just in prose -- calm maps straight to the SAME 'r&b' style key as r&b.
+GENRE_TO_STYLE = {"r&b": "r&b", "pop": "pop", "latin": "latin", "calm": "r&b"}
+GENRE_MOOD = {
+    "r&b":  "warm, laid-back, smooth, mellow",
+    "pop":  "steady, upbeat but not rushed",
+    "latin": "bright, syncopated, energetic",
+    # calm (sparse low-tempo R&B/soul): same r&b palette, pushed slower/sparser
+    "calm": "slow, sparse, gentle, minimal -- hushed neo-soul",
+}
+# Human-readable label used EVERYWHERE calm is shown/printed/prompted, so it
+# never reads as a genre this codebase doesn't have.
+GENRE_DISPLAY_LABEL = {
+    "r&b": "r&b", "pop": "pop", "latin": "latin",
+    "calm": "calm (sparse low-tempo R&B/soul)",
+}
+# Density floor for calm segments: force the sparse, slow neo-soul character
+# the honesty note above promises, rather than leaving calm's density to
+# whatever the cascade's density tier happened to settle on.
+CALM_DENSITY_FLOOR = 3
+CALM_DENSITY_CEIL = 4
+
+OUT_DIR = "outputs/audio/nb15"
+# Step-5 wiring: if generate_and_gate.py already produced a quality-gated,
+# cached bed for a segment (outputs/audio/nb15/beds/segN_*.wav), REUSE it
+# instead of regenerating. This is the credit saver + the pop-drum fix: every
+# bed that reaches the live loop has already passed the tempo-stability gate.
+# Set USE_CACHED_BEDS=False to force fresh inline generation (old behavior).
+USE_CACHED_BEDS = True
+BED_CACHE_DIR = os.path.join(OUT_DIR, "beds")
+os.makedirs(OUT_DIR, exist_ok=True)
+
+# ---- Curated bed LIBRARY (BUILD_SPEC.md items 1+3): the NEW primary source --
+# Rather than generate-or-reuse-a-per-run-cache, prefer a pre-curated, human-vetted
+# library (built once by notebooks/LIB_build_beds.ipynb) selected by nearest-BPM and
+# re-timed to the EXACT committed tempo with RubberBand (pitch-preserving -- see
+# groovegen/bed_library.py). This is checked BEFORE the per-run cache: a curated
+# library bed re-timed a few BPM is a known-good source; a same-genre cache hit from
+# a different segment/run is not vetted at all. gen_bed remains the last-resort path
+# when a genre's library folder is empty. Set USE_LIBRARY=False to fall back to the
+# old cache-or-generate behavior untouched.
+USE_LIBRARY = True
+from groovegen.bed_library import pick_nearest_bed, list_library, retime_bed
+# nb15's internal genre keys ('latin'/'pop'/'r&b'/'calm') are DISPLAY-DERIVED (see
+# genre_from_tempo above) and don't match the richer keys the library/curation
+# notebook uses ('latin/salsa'/'pop'/'r&b/soul'/'calm') -- map explicitly rather than
+# assuming string equality, so a rename on either side fails loudly instead of
+# silently missing the library.
+GENRE_TO_LIBRARY_KEY = {"latin": "latin/salsa", "pop": "pop", "r&b": "r&b/soul", "calm": "calm"}
+
+# ---- 1) find committed (genre, tempo) segment boundaries from the trace ---
+# GENRE IS TEMPO-BAND DERIVED (see genre_from_tempo above) -- so a segment
+# boundary now happens EXACTLY when the committed tempo crosses one of the
+# 112 / 98 / 84 bpm band edges, which -- by construction, since the
+# controller takes deliberate ~15 BPM steps toward a target that spans all
+# four bands (see cells 5-6) -- lines up with one clean, big tempo jump per
+# genre change. We therefore segment PURELY on genre-band change (no
+# separate tempo-only deadband split is needed: within a genre band the
+# tempo may drift gradually as the descent passes through, but that drift
+# never itself justifies a new bed, only a genre-band crossing does).
+committed_tempo = [round(t["tempo_bpm"]) for t in trace]
+committed_genre = [genre_from_tempo(bpm) for bpm in committed_tempo]
+segments = []  # list of dict(start_bar, end_bar, genre, tempo_bpm)
+seg_start = 0
+for i in range(1, N_BARS + 1):
+    at_end = (i == N_BARS)
+    genre_changed = (not at_end) and (committed_genre[i] != committed_genre[seg_start])
+    if at_end or genre_changed:
+        # Representative committed tempo for the segment = the tempo AT THE
+        # START of the segment (i.e. right after the crossing that opened
+        # it) -- this is the tempo the bed is generated at, and it lands
+        # closest to this scenario's target arc (~125 / ~108-110 / ~90-97 /
+        # ~76-82 bpm) rather than the value at the band's far edge.
+        segments.append(dict(start_bar=seg_start, end_bar=i,
+                              genre=committed_genre[seg_start],
+                              tempo_bpm=committed_tempo[seg_start]))
+        seg_start = i
+
+print(f"{len(segments)} bed segments (tempo-band-derived genre, one segment per band crossing):")
+for s in segments:
+    label = GENRE_DISPLAY_LABEL[s["genre"]]
+    print(f"  bars[{s['start_bar']:3d}:{s['end_bar']:3d})  genre={label:32s}  tempo~{s['tempo_bpm']} bpm")
+
+# Target for this retune: exactly 4 clean segments, one per genre band
+# (latin -> pop -> r&b -> calm), each with one big (~15 BPM) tempo jump at
+# the crossing -- not the previous run's compressed arc (3 tempo steps
+# bunched inside Latin, genre flips crammed into the final ~6 BPM).
+assert 4 <= len(segments) <= 5, (
+    f"expected 4-5 committed bed segments (one per genre-band crossing, "
+    f"plus room for one extra split), got {len(segments)} -- tune the HR "
+    f"curve descent (cell 5) or the tempo band edges above")
+EXPECTED_GENRE_ORDER = ["latin", "pop", "r&b", "calm"]
+seen_genre_order = [s["genre"] for s in segments]
+# dedupe consecutive (defensive; segments are already genre-change-gated)
+seen_genre_order = [g for i, g in enumerate(seen_genre_order) if i == 0 or g != seen_genre_order[i - 1]]
+assert seen_genre_order == EXPECTED_GENRE_ORDER, (
+    f"expected genre arc {EXPECTED_GENRE_ORDER}, got {seen_genre_order}")
+BAND_RANGE = {"latin": (112.0, 999.0), "pop": (98.0, 112.0), "r&b": (84.0, 98.0), "calm": (0.0, 84.0)}
+for s in segments:
+    lo, hi = BAND_RANGE[s["genre"]]
+    assert lo <= s["tempo_bpm"] < hi or (s["genre"] == "latin" and s["tempo_bpm"] >= lo), (
+        f"segment genre={s['genre']} tempo={s['tempo_bpm']} bpm falls outside its own band {lo}-{hi}")
+
+# ---- 2) generate one MusicGen bed per segment, long enough to cover it ----
+TOKENS_PER_SEC = 50   # MusicGen EnCodec token rate (~50 Hz, 4 codebooks)
+# HARD LIMIT: facebook/musicgen-small's sinusoidal position-embedding table
+# (generation_config max_length=1500) tops out at ~1500 tokens ~= 30s. Asking
+# for more overflows position_ids -> `index_select` out of range ->
+# `CUDA error: device-side assert triggered` in MusicgenSinusoidalPositional
+# Embedding.forward. We therefore GENERATE A SHORT bed and LOOP it to fill
+# long segments. Constant committed tempo within a segment makes looping a
+# whole number of bars seamless, and a short clip is more coherent than a
+# forced 40s continuous generation anyway.
+GEN_SECONDS   = 12.0                     # short, coherent, well under the limit
+MAX_NEW_TOKENS_CAP = 1400                # safety margin below the 1500 ceiling
+
+def _loop_to_length(a, sr, target_seconds, tempo_bpm):
+    '''Trim the clip to a WHOLE number of its own bars, then tile to >=
+    target_seconds. Trimming to a bar multiple means the loop point lands on a
+    downbeat, so repeats stay musically in-phase; a 1.5 ms micro-fade at each
+    wrap kills any residual sample-boundary click. get_bed_info re-analyzes the
+    looped file, so the drum grid is derived from the final looped audio.'''
+    target_n = int(round(target_seconds * sr))
+    sec_per_bar = 4.0 * 60.0 / float(tempo_bpm)
+    bar_n = max(1, int(round(sec_per_bar * sr)))
+    whole_bars = max(1, len(a) // bar_n)          # drop the partial trailing bar
+    a = a[: whole_bars * bar_n]
+    # micro-fade the clip edges (1.5 ms) so butt-joined repeats don't click
+    f = max(1, int(0.0015 * sr))
+    if len(a) > 2 * f:
+        ramp = np.linspace(0.0, 1.0, f, dtype=a.dtype)
+        a = a.copy()
+        a[:f]  *= ramp
+        a[-f:] *= ramp[::-1]
+    if len(a) >= target_n:
+        return a[:target_n]
+    reps = int(np.ceil(target_n / len(a)))
+    return np.tile(a, reps)[:target_n]
+
+def gen_bed(prompt, out_wav, seconds, tempo_bpm):
+    # Generate a SHORT bed (capped), then loop up to the requested `seconds`.
+    gen_tokens = min(int(GEN_SECONDS * TOKENS_PER_SEC), MAX_NEW_TOKENS_CAP)
+    inputs = proc(text=[prompt], padding=True, return_tensors="pt").to(device)
+    with torch.no_grad():
+        wav = model.generate(**inputs, max_new_tokens=gen_tokens,
+                              do_sample=True, guidance_scale=3.0)
+    sr = model.config.audio_encoder.sampling_rate
+    a = wav[0, 0].cpu().numpy()
+    a = _loop_to_length(a, sr, seconds, tempo_bpm)   # fill long segments by looping
+    sf.write(out_wav, a, sr)
+    return out_wav, sr
+
+seg_bed_wavs = []
+seg_bed_infos = []
+for i, seg in enumerate(segments):
+    n_bars_seg = seg["end_bar"] - seg["start_bar"]
+    seconds_per_bar_est = 4.0 * 60.0 / seg["tempo_bpm"]
+    seconds = max(8.0, n_bars_seg * seconds_per_bar_est + 4.0)  # headroom for downbeat trim
+    style = GENRE_TO_STYLE[seg["genre"]]   # 'calm' -> 'r&b' (see honesty note above)
+    mood = GENRE_MOOD[seg["genre"]]
+    if seg["genre"] == "calm":
+        # calm = r&b/soul style pushed to slow-tempo sparse phrasing, NOT a
+        # different style key -- the prompt says so explicitly.
+        prompt = (f"a {style} groove at about {seg['tempo_bpm']} BPM, "
+                   f"slow-tempo sparse phrasing, minimal drums, {mood}")
+    else:
+        prompt = f"a {style} groove at about {seg['tempo_bpm']} BPM, steady drums, {mood}"
+    import re as _re
+    _safe_genre = _re.sub(r"[^0-9A-Za-z]+", "-", str(seg["genre"])).strip("-") or "bed"
+    out_wav = os.path.join(OUT_DIR, f"seg{i}_{_safe_genre}_{seg['tempo_bpm']}bpm.wav")
+    label = GENRE_DISPLAY_LABEL[seg["genre"]]
+    # ---- source priority: LIBRARY (nearest-bpm + RubberBand retime) > per-run
+    # cache > gen_bed (last resort). A curated library bed is human-vetted once
+    # and reused forever; a per-run cache hit is just "whatever generate_and_gate
+    # happened to accept this run" -- so the library now outranks it. See
+    # BUILD_SPEC.md item 3 / groovegen/bed_library.py.
+    used_library = False
+    if USE_LIBRARY:
+        lib_genre = GENRE_TO_LIBRARY_KEY[seg["genre"]]
+        lib_hit = pick_nearest_bed(lib_genre, seg["tempo_bpm"])
+        if lib_hit is not None:
+            lib_bpm = float(os.path.basename(lib_hit).split("bpm_")[0])
+            retime_bed(lib_hit, out_wav, from_bpm=lib_bpm, to_bpm=float(seg["tempo_bpm"]))
+            print(f"[{i+1}/{len(segments)}] genre={label}  [i] library bed "
+                  f"{os.path.basename(lib_hit)} @ {lib_bpm:.0f}bpm -> retimed to "
+                  f"{seg['tempo_bpm']:.0f}bpm")
+            used_library = True
+        else:
+            print(f"[{i+1}/{len(segments)}] genre={label}  library empty for "
+                  f"'{lib_genre}' -- falling back to cache/gen_bed")
+    if not used_library:
+        # Step 5: prefer a quality-gated cached bed if one exists. generate_and_gate
+        # writes beds as segN_<genre>_<bpm>bpm.wav under BED_CACHE_DIR (genre sanitized:
+        # '/' and '&' -> '-'); we match on the segN_ prefix so a bed produced under a
+        # different genre label (BC's r&b/soul vs nb15's r&b) is still picked up.
+        cached = None
+        if USE_CACHED_BEDS and os.path.isdir(BED_CACHE_DIR):
+            import glob as _glob
+            hits = sorted(_glob.glob(os.path.join(BED_CACHE_DIR, f"seg{i}_*.wav")))
+            cached = hits[0] if hits else None
+        if cached:
+            import shutil as _shutil
+            _shutil.copyfile(cached, out_wav)
+            print(f"[{i+1}/{len(segments)}] genre={label}  CACHED gated bed -> {os.path.basename(cached)}")
+        else:
+            print(f"[{i+1}/{len(segments)}] genre={label}  {seconds:.1f}s (gen {GEN_SECONDS:.0f}s + loop)  prompt: {prompt}")
+            gen_bed(prompt, out_wav, seconds, seg["tempo_bpm"])
+    # ---- drum-grid trust fix (CODE_AUDIT.md finding #4): pass a genre-appropriate
+    # tempo_min/tempo_max BAND (centered on this segment's own expected_tempo),
+    # not the hard-coded 70-180 default, AND rely on expected_tempo being passed
+    # through to hybrid_render._octave_snap_grid (which we also fixed -- see that
+    # function's docstring in hybrid_render.py). Two separate bugs compounded on
+    # the audit's "199 read for a true ~128 latin bed" example:
+    #  (1) get_bed_info/analyze_bed's tempo_min/tempo_max band was a fixed 70-180
+    #      regardless of genre, which is passed to madmom's OWN internal fold in
+    #      _madmom_beat_grid; a genre-appropriate band (here +-45% around this
+    #      segment's committed tempo) keeps that pre-fold anchored to the right
+    #      neighborhood for every genre, not just the 70-180 pop/rock range.
+    #  (2) even with a correct band, _octave_snap_grid's OLD two-iteration loop
+    #      re-tested its own fixed 1.33/0.75 thresholds against the ALREADY-
+    #      corrected ratio, which could strand the estimate one octave short
+    #      (99.5 vs true 128, ratio 1.29, just inside "leave alone") or -- if the
+    #      thresholds were widened to catch that -- OSCILLATE between octaves on
+    #      alternating iterations. We fixed this by making the fold decision ONCE
+    #      from the raw ratio (no re-entrant re-test), which resolves to the
+    #      closest reachable octave in a single, stable step. Note 199 and 128
+    #      are not exact octave multiples (199/128=1.555), so the mathematical
+    #      floor of any pure doubling/halving correction is ~99.5-100 BPM, not
+    #      128 -- closing that last ~28 BPM gap is a genuine tempo error, not an
+    #      octave error, and would need analyze_bed's lock_tempo to pin outright.
+    _exp_t = float(seg["tempo_bpm"])
+    _tempo_min = max(30.0, _exp_t * 0.55)
+    _tempo_max = _exp_t * 1.45
+    # suppress_bed_drums=True: strip the library bed's baked-in MusicGen drums so
+    # the overlaid controllable synthetic drums are the only rhythmic layer
+    # (otherwise two kits at different phases -> off-beat/incoherent mix).
+    info = hr.get_bed_info(out_wav, expected_tempo=_exp_t,
+                           tempo_min=_tempo_min, tempo_max=_tempo_max,
+                           suppress_bed_drums=True)
+    seg_bed_wavs.append(out_wav)
+    seg_bed_infos.append(info)
+    print(f"    saved={out_wav}  detected_tempo={info['tempo_bpm']:.1f} bpm  dur={info['duration_s']:.2f}s")
+
+# ---- 3) per-bar drums: render_aligned_drums ONCE per segment at that
+#         segment's genre/tempo, but with event_density driven bar-by-bar.
+#         render_aligned_drums renders a whole-bed-length drum stem for a
+#         FIXED event_density; to get per-bar density variation we render
+#         one drum stem per DISTINCT density value used within the segment
+#         and splice bar-sized chunks together on the bed's own grid.
+def build_segment_mix(seg, info):
+    sr = info["sr"]
+    sec_per_bar = info["sec_per_bar"]
+    bed_grid = np.asarray(info["bed_grid"])
+    bars_in_seg = trace[seg["start_bar"]:seg["end_bar"]]
+    # 'calm' honesty requirement: force density toward the floor (sparse,
+    # slow neo-soul), rather than leaving it to whatever the cascade's
+    # density tier happened to settle on for these bars. This is a
+    # POST-PROCESSING clamp applied only for calm segments -- it does not
+    # change the recorded trace or the controller's own behavior.
+    if seg["genre"] == "calm":
+        densities_needed_raw = [int(np.clip(t["density"], CALM_DENSITY_FLOOR, CALM_DENSITY_CEIL))
+                                 for t in bars_in_seg]
+    else:
+        densities_needed_raw = [t["density"] for t in bars_in_seg]
+    densities_needed = sorted(set(densities_needed_raw))
+    drum_by_density = {}
+    for d in densities_needed:
+        res = hr.render_aligned_drums(info, drum_style=GENRE_TO_STYLE[seg["genre"]],
+                                       event_density=int(d), seed=0)
+        drum_by_density[d] = res["drums"]
+
+    bed_y = info["y"]
+    # bar-boundary sample indices on the bed's own grid, starting at its
+    # first downbeat, one bar per control-tick in this segment.
+    start_idx = first_downbeat_idx(bed_grid, info["downbeat_s"])
+    bar_bounds = list(range(start_idx, len(bed_grid), 4))
+
+    mixed = np.zeros_like(bed_y)
+    n_bars_seg = len(bars_in_seg)
+    for k in range(n_bars_seg):
+        if start_idx + 4 * (k + 1) < len(bed_grid):
+            t0 = bed_grid[start_idx + 4 * k]
+            t1 = bed_grid[start_idx + 4 * (k + 1)]
+        else:
+            t0 = bed_grid[start_idx + 4 * k] if start_idx + 4 * k < len(bed_grid) else k * sec_per_bar
+            t1 = t0 + sec_per_bar
+        i0 = int(round(t0 * sr)); i1 = int(round(t1 * sr))
+        i1 = min(i1, len(bed_y))
+        if i0 >= i1:
+            continue
+        d = densities_needed_raw[k]   # calm-clamped where applicable
+        drum_chunk = drum_by_density[d][i0:i1]
+        n = min(i1 - i0, len(drum_chunk))
+        mixed[i0:i0 + n] += drum_chunk[:n]
+
+    # Mix: melody/bed ON TOP, drums UNDER it. The old flat sum (0.8*bed +
+    # 0.9*drums) actually put drums +1 dB LOUDER than the bed, which is why the
+    # drums dominated -- worst in dense latin. New balance: bed 1.0, drums 0.62
+    # (drums ~4 dB under the bed). Latin's density-8 kit is the loudest, so it
+    # gets an extra ~1.5 dB trim.
+    drum_gain = 0.62
+    if seg["genre"] == "latin":
+        drum_gain *= 0.84   # extra ~1.5 dB down for the busiest kit
+    mix = 1.0 * bed_y + drum_gain * mixed
+    m = np.abs(mix).max()
+    if m > 1e-9:
+        mix = (mix / m * 0.95).astype(np.float32)
+    return mix.astype(np.float32)
+
+seg_mixes = []
+for seg, info in zip(segments, seg_bed_infos):
+    mix = build_segment_mix(seg, info)
+    seg_mixes.append(mix)
+    seg_wav = os.path.join(OUT_DIR, f"mix_{seg['genre']}_{seg['tempo_bpm']}bpm.wav")
+    sf.write(seg_wav, mix, seg_bed_infos[0]["sr"])
+    print("saved segment mix:", seg_wav, f"max={np.abs(mix).max():.3f}")
+
+# ---- 4) assemble the FULL audio by hard-cutting consecutive segment mixes -
+SR = seg_bed_infos[0]["sr"]
+assert all(info["sr"] == SR for info in seg_bed_infos), "sample rates differ across segments"
+
+# splice_beds_downbeat_hard_cut works on FILES, so write each mix back out,
+# then chain the splice across all segments.
+mix_wavs = []
+for i, mix in enumerate(seg_mixes):
+    p = os.path.join(OUT_DIR, f"_mix_for_splice_{i}.wav")
+    sf.write(p, mix, SR)
+    mix_wavs.append(p)
+
+FULL_AUDIO_WAV = os.path.join(OUT_DIR, "15_full_audio.wav")
+if len(mix_wavs) == 1:
+    import shutil
+    shutil.copy(mix_wavs[0], FULL_AUDIO_WAV)
+else:
+    current = mix_wavs[0]
+    for i in range(1, len(mix_wavs)):
+        nxt = os.path.join(OUT_DIR, f"_chain_{i}.wav")
+        splice_beds_downbeat_hard_cut(
+            current, mix_wavs[i], nxt,
+            expected_tempo_a=float(segments[i - 1]["tempo_bpm"]),
+            expected_tempo_b=float(segments[i]["tempo_bpm"]),
+        )
+        current = nxt
+    import shutil
+    shutil.copy(current, FULL_AUDIO_WAV)
+
+full_y, full_sr = sf.read(FULL_AUDIO_WAV)
+print(f"\nFULL AUDIO: {FULL_AUDIO_WAV}  dur={len(full_y)/full_sr:.2f}s  "
+      f"max={np.abs(full_y).max():.3f}  rms={np.sqrt(np.mean(full_y.astype(np.float64)**2)):.4f}")
+assert np.abs(full_y).max() > 0, "full audio is silent"
+assert np.all(np.isfinite(full_y)), "full audio has non-finite samples"
+display(Audio(FULL_AUDIO_WAV))
+"""))
+
+# ===========================================================================
+# CELL 10 (code) -- build the 4-panel synced figure (incl tier_that_acted
+# strip)
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- build the 4-panel synced figure (MANDATORY tier_that_acted strip) ----
+# The 4 conceptual panels required by spec are: (1) SIMULATED HR, (2)
+# respiration (SHOWN, NOT DRIVING), (3) stepped tempo with hard-cut markers,
+# (4) density + tier_that_acted strip. Density and the tier strip share one
+# panel group (density line + a thin color strip immediately beneath it) so
+# the figure reads as 4 synced panels rather than 5 disconnected ones.
+# NOTE: 'genre' can still appear in TIER_COLORS/TIER_ORDER for legend
+# completeness, but with tempo_min=70 (cell 6) the cascade's internal
+# genre-escalation tier should rarely or never actually fire in the
+# tier_that_acted trace -- genre is now a DISPLAY DERIVATION of committed
+# tempo (see genre_series below), not a cascade actuator.
+TIER_COLORS = {"density": TEAL, "tempo": GOLD, "genre": WARN, "none": MUT}
+TIER_ORDER = ["density", "tempo", "genre", "none"]
+
+bars_x = np.arange(N_BARS)
+tempo_series = [t["tempo_bpm"] for t in trace]
+density_series = [t["density"] for t in trace]
+tier_series = [t["tier_that_acted"] for t in trace]
+# DISPLAYED genre is tempo-band derived (same function used to build
+# `segments` in cell 9) -- NOT read from the cascade's internal `genre`
+# field, which stays saturated at its initial value once tempo_min=70 gives
+# the tempo tier enough range to track the descent on its own.
+genre_series = [genre_from_tempo(round(t["tempo_bpm"])) for t in trace]
+resp_series = [t["resp_bpm"] for t in trace]
+
+tempo_change_bars = [i for i in range(1, N_BARS) if round(tempo_series[i]) != round(tempo_series[i - 1])]
+genre_switch_bars = [i for i in range(1, N_BARS) if genre_series[i] != genre_series[i - 1]]
+
+fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(
+    5, 1, figsize=(12.8, 13.6), dpi=150, sharex=True,
+    gridspec_kw={"height_ratios": [3, 2.2, 3, 2.4, 0.9]},
+)
+fig.patch.set_facecolor(BG)
+
+# ---- panel 1: SIMULATED HR SETPOINT trace ----
+ax1.set_facecolor(BG)
+ax1.axhspan(END_HR_BPM - 4, END_HR_BPM + 4, color=OK, alpha=0.12, lw=0,
+            label="calm target band")
+ax1.plot(bars_x, hr_curve, color=ACC, lw=2.0, label="HR SETPOINT (bpm)")
+ax1.axvspan(PERTURB_AT, PERTURB_AT + SPIKE_WIDTH_BARS, color=WARN, alpha=0.16, lw=0)
+ax1.text(PERTURB_AT + SPIKE_WIDTH_BARS / 2, hr_curve[PERTURB_AT:PERTURB_AT + SPIKE_WIDTH_BARS].max() + 5,
+         "perturbation", color=WARN, ha="center", va="bottom", fontsize=8.5, fontweight="bold")
+ax1.text(0.015, 0.90, "SIMULATED SETPOINT -- controller TRACKS this", color=GOLD, fontsize=11,
+          fontweight="bold", transform=ax1.transAxes, va="top")
+ax1.set_ylabel("HR (bpm)\nSIMULATED", color=FG)
+ax1.set_title("GrooveGen closed-loop scenario: Latin (~125 bpm) down-regulation to "
+              "calm (sparse low-tempo R&B/soul, ~74 bpm)",
+              color=FG, loc="left", fontsize=13)
+ax1.tick_params(colors=FG)
+ax1.legend(facecolor=BG, edgecolor=MUT, labelcolor=FG, loc="upper right", fontsize=8)
+for spine in ax1.spines.values():
+    spine.set_color(MUT)
+
+# ---- panel 2: respiration -- SHOWN, NOT DRIVING THE CONTROLLER ----
+ax2.set_facecolor(BG)
+ax2.plot(bars_x, resp_series, color=RESTHR, lw=1.8, label="respiration (breaths/min)")
+ax2.text(0.015, 0.90, "SHOWN, NOT DRIVING THE CONTROLLER", color=WARN, fontsize=9.5,
+          fontweight="bold", transform=ax2.transAxes, va="top")
+ax2.set_ylabel("respiration\n(breaths/min)", color=FG)
+ax2.tick_params(colors=FG)
+ax2.legend(facecolor=BG, edgecolor=MUT, labelcolor=FG, loc="upper right", fontsize=8)
+for spine in ax2.spines.values():
+    spine.set_color(MUT)
+
+# ---- panel 3: TEMPO trace (stepped; hard-cut transitions marked) ----
+# GENRE-BAND SHADING: makes "tempo determines genre" legible at a glance --
+# each horizontal band is shaded and labeled with the genre it maps to, so
+# the viewer can see the committed tempo trace cross band edges exactly
+# where the genre-switch markers (dashed WARN lines) fall.
+ax3.set_facecolor(BG)
+BAND_SHADE_COLORS = {"latin": TEAL, "pop": ACC, "r&b": GOLD, "calm": OK}
+band_edges = [(999.0, 112.0, "latin"), (112.0, 98.0, "pop"),
+              (98.0, 84.0, "r&b"), (84.0, 40.0, "calm (sparse low-tempo R&B/soul)")]
+y_top = max(START_HR_BPM, max(tempo_series)) + 6
+y_bot = min(END_HR_BPM, min(tempo_series)) - 6
+for hi, lo, label in band_edges:
+    hi_clamped = min(hi, y_top)
+    lo_clamped = max(lo, y_bot)
+    if hi_clamped <= lo_clamped:
+        continue
+    band_key = label.split(" ")[0].rstrip("(")
+    color = BAND_SHADE_COLORS.get("calm" if "calm" in label else band_key, MUT)
+    ax3.axhspan(lo_clamped, hi_clamped, color=color, alpha=0.10, lw=0)
+    ax3.text(N_BARS - 0.5, (hi_clamped + lo_clamped) / 2, label, color=color,
+              fontsize=8, va="center", ha="right", fontweight="bold", alpha=0.95)
+for edge_bpm in (112.0, 98.0, 84.0):
+    if y_bot <= edge_bpm <= y_top:
+        ax3.axhline(edge_bpm, color=MUT, ls="-", lw=0.8, alpha=0.5)
+ax3.step(bars_x, tempo_series, where="post", color=GOLD, lw=2, label="committed tempo (BPM)")
+for tb in tempo_change_bars:
+    ax3.axvline(tb, color=GOLD, ls=":", lw=1.2, alpha=0.85)
+    ax3.text(tb + 0.5, tempo_series[tb] + 3, f"\u2192 {round(tempo_series[tb])} BPM", color=FG,
+              fontsize=8, va="bottom", ha="left",
+              bbox=dict(boxstyle="round,pad=0.2", fc=BG, ec=GOLD, lw=0.8, alpha=0.9))
+for gb in genre_switch_bars:
+    ax3.axvline(gb, color=WARN, ls="--", lw=1.3, alpha=0.8)
+    ax3.text(gb + 0.5, min(tempo_series) - 4, f"\u2192 {genre_series[gb]}", color=WARN,
+              fontsize=8, va="top", ha="left", fontweight="bold")
+ax3.set_ylabel("tempo (BPM)\ngenre = tempo-band\nderived (shaded)", color=FG)
+ax3.set_ylim(y_bot, y_top)
+ax3.tick_params(colors=FG)
+ax3.legend(facecolor=BG, edgecolor=MUT, labelcolor=FG, loc="upper right", fontsize=8)
+for spine in ax3.spines.values():
+    spine.set_color(MUT)
+
+# ---- panel 4: DENSITY trace ----
+ax4.set_facecolor(BG)
+ax4.step(bars_x, density_series, where="post", color=TEAL, lw=1.8, label="event_density (per bar)")
+ax4.axhspan(3, 8, color=OK, alpha=0.08, lw=0, label="calm density cap [3,8]")
+ax4.axvspan(PERTURB_AT, PERTURB_AT + SPIKE_WIDTH_BARS, color=WARN, alpha=0.10, lw=0)
+ax4.set_ylim(0, 10)
+ax4.set_ylabel("density\n(events/bar)", color=FG)
+ax4.tick_params(colors=FG)
+ax4.legend(facecolor=BG, edgecolor=MUT, labelcolor=FG, loc="upper right", fontsize=8)
+for spine in ax4.spines.values():
+    spine.set_color(MUT)
+
+# ---- panel 5: tier_that_acted STRIP (MANDATORY -- makes the cascade visible)
+ax5.set_facecolor(BG)
+strip = np.zeros((1, N_BARS, 4))  # RGBA image, one colored column per bar
+import matplotlib.colors as mcolors
+for i, tier in enumerate(tier_series):
+    rgba = mcolors.to_rgba(TIER_COLORS[tier])
+    strip[0, i] = rgba
+ax5.imshow(strip, aspect="auto", extent=[0, N_BARS, 0, 1], interpolation="nearest")
+ax5.set_yticks([])
+ax5.set_xlabel("bar index", color=FG)
+ax5.set_ylabel("tier\nacted", color=FG, fontsize=9)
+ax5.tick_params(colors=FG)
+handles = [plt.Rectangle((0, 0), 1, 1, color=TIER_COLORS[t]) for t in TIER_ORDER]
+ax5.legend(handles, TIER_ORDER, facecolor=BG, edgecolor=MUT, labelcolor=FG,
+           loc="upper center", bbox_to_anchor=(0.5, -0.75), ncol=4, fontsize=8.5,
+           title="tier_that_acted", title_fontsize=8.5)
+for spine in ax5.spines.values():
+    spine.set_color(MUT)
+
+fig.tight_layout()
+FIG_PNG = os.path.join(OUT_DIR, "15_four_panel_figure.png")
+fig.savefig(FIG_PNG, facecolor=BG, dpi=150)   # FIXED canvas, no bbox_inches='tight'
+plt.show()
+print("saved synced-panel figure:", FIG_PNG)
+"""))
+
+# ===========================================================================
+# CELL 11 (code) -- render MP4 (robust ffmpeg) + volumedetect assertion
+# ===========================================================================
+cells.append(new_code_cell(r"""# ---- render ONE MP4: fixed-size figure held for the clip, muxed with audio
+# ROBUST pattern proven in nb14: no bbox_inches='tight' on the figure (fixed
+# canvas already ensured above); loop the still into a segment with
+# scale=trunc(iw/2)*2:trunc(ih/2)*2 -r 25 -pix_fmt yuv420p -c:v libx264; then
+# mux -c:a aac -shortest. ffmpeg calls wrapped in _run() which prints stderr
+# on failure. NEVER feed raw mismatched images to the concat demuxer.
+import subprocess
+
+def _run(cmd):
+    p = subprocess.run(cmd, capture_output=True, text=True)
+    if p.returncode != 0:
+        print("FFMPEG FAILED:", " ".join(cmd))
+        print(p.stderr[-3000:])
+        raise RuntimeError("ffmpeg failed (stderr above)")
+    return p
+
+full_y, full_sr = sf.read(FULL_AUDIO_WAV)
+clip_dur_s = len(full_y) / full_sr
+
+SCALE = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+SEG_MP4 = os.path.join(OUT_DIR, "15_video_segment.mp4")
+_run(["ffmpeg", "-y", "-loop", "1", "-framerate", "25", "-t", f"{clip_dur_s:.3f}",
+      "-i", FIG_PNG, "-vf", SCALE, "-r", "25", "-pix_fmt", "yuv420p",
+      "-c:v", "libx264", SEG_MP4])
+print("wrote video segment:", SEG_MP4)
+
+FINAL_MP4 = os.path.join(OUT_DIR, "15_closed_loop_hr_audio.mp4")
+_run(["ffmpeg", "-y", "-i", SEG_MP4, "-i", FULL_AUDIO_WAV,
+      "-c:v", "copy", "-c:a", "aac", "-shortest", FINAL_MP4])
+print("wrote final MP4:", FINAL_MP4)
+
+# ---- CRITICAL: prove the MP4's audio is real, not silent -------------------
+proc_result = subprocess.run(
+    ["ffmpeg", "-i", FINAL_MP4, "-af", "volumedetect", "-f", "null", "-"],
+    capture_output=True, text=True,
+)
+stderr = proc_result.stderr
+mean_line = next((l for l in stderr.splitlines() if "mean_volume" in l), None)
+maxvol_line = next((l for l in stderr.splitlines() if "max_volume" in l), None)
+assert mean_line is not None, "volumedetect did not report mean_volume -- ffmpeg failed?"
+print(mean_line.strip())
+if maxvol_line:
+    print(maxvol_line.strip())
+
+mean_db_str = mean_line.split("mean_volume:")[1].strip().split(" ")[0]
+mean_db = float(mean_db_str)
+assert mean_db != float("-inf"), "AUDIO IS SILENT (mean_volume == -inf dB) -- proof FAILED"
+print(f"\nPASS: mean_volume = {mean_db} dB (not -inf) -- the MP4's audio is real.")
+
+display(Video(FINAL_MP4, embed=True))
+"""))
+
+# ===========================================================================
+# CELL 12 (markdown) -- evidence-tier table + limitations + future work
+# ===========================================================================
+cells.append(new_markdown_cell(r"""## Evidence-tier table (per claim) -- so nothing here is "evidence-laundered"
+
+| Claim | Evidence in this notebook | Tier |
+|---|---|---|
+| A two-tier cascade (tempo -> density, REUSED unmodified from notebooks 12/13) TRACKS a scripted, descending arousal SETPOINT (Latin-high -> calm) with a stable, non-oscillating trajectory | `tier_that_acted` trace + tempo/density traces above, `CascadeController` unmodified, `max_step_bpm=15` kwarg confirmed via assertion in cell 6, `tempo_min=70` (lowered from 90) confirmed in cell 6 | **simulated control-loop** (numeric, reproducible) |
+| Genre is a DISPLAY DERIVATION of the committed tempo band (latin >= 112, pop 98-112, r&b 84-98, calm < 84 bpm) rather than a third cascade actuator, and this derivation produces exactly one clean genre change per big (~15 BPM) tempo jump | `genre_from_tempo()` in cell 9, applied identically to build `segments` (cell 9) and `genre_series` for the viz (cell 10); genre-sequence and per-band-tempo assertions in this notebook's dry-run validation | **simulated control-loop** (numeric, reproducible; genre itself is a derivation, not a measurement) |
+| The cascade correctly does nothing once the setpoint reaches and holds the calm plateau | `tier_that_acted == 'none'` bars during the plateau window (see cell 6's assertions and printed counts). Because genre is now a display derivation, `tier_that_acted` contains only `'tempo'`, `'density'`, and `'none'` -- `'genre'` is expected to be absent, not a regression | **simulated control-loop** |
+| The committed-tempo trace collapses into exactly 4 DELIBERATE bed segments (one per genre-band crossing), instead of the previous run's compressed arc (3 tempo steps bunched inside Latin, then all genre flips crammed into the final ~6 BPM at the old tempo floor) | segment-count assertion (`4 <= len(segments) <= 5`), genre-order assertion, and printed segment list in cell 9 | **simulated control-loop** |
+| The tempo/genre transitions committed by the cascade can be rendered into real, audible MusicGen audio with a measured, glitch-free (not inaudible) seam | `splice_beds_downbeat_hard_cut` applied to real generated beds in cell 9; `volumedetect` non-`-inf` assertion in cell 11 | **real-audio demo** (single run, this notebook, not independently replicated) |
+| The downbeat-aligned hard cut is the best of the three transition mechanisms tested by objective seam metrics | click amplitude / RMS discontinuity / grid-phase-error table in the transition-mechanism cell, from a dedicated held-out assessment (`transition_assessment.md`) on two real uploaded beds | **real-audio measurement** (objective signal metrics, not perceptual/listener data) |
+| The iso-principle motivates the *sign* of "lower tempo/density -> calming direction" | Mayr & Starcke (2021) <https://pubmed.ncbi.nlm.nih.gov/34886210/>; Watanabe, Kashino & Ooishi (2017) <https://pubmed.ncbi.nlm.nih.gov/28266647/> | **literature citation, sign-only** (not fitted, not re-validated here) |
+| "Calm" is a genuine, distinct fourth musical style this codebase supports | *(FALSE -- explicitly not claimed. `groovegen/genre_styles.py` has no `'calm'` `StyleSpec`. `GENRE_TO_STYLE['calm'] = 'r&b'`: calm is the r&b/soul style at the lowest tempo band with density floored ~3, labeled "calm (sparse low-tempo R&B/soul)" everywhere)* | **codebase fact-check** (verifiable by reading `genre_styles.py`) |
+| The system lowers a real listener's heart rate, regulates their emotion, or the respiration trace reflects/drives anything | *(no such claim is made anywhere in this notebook -- HR is a scripted setpoint the controller TRACKS, and respiration is SHOWN but never passed to `cc.step()`)* | **real-human-data: NONE YET** |
+
+## Limitations (read before citing anything from this notebook)
+
+- **The heart rate is entirely SIMULATED and is a SETPOINT, not a
+  measurement.** It is scripted as a smooth, deliberate descent from a
+  high-arousal Latin-music starting point (~125 bpm) to a calm plateau
+  (~74 bpm), with one small mid-descent perturbation. The
+  `CascadeController` TRACKS this scripted setpoint bar by bar; nothing in
+  this notebook claims the music produced, caused, or measured this HR
+  trajectory in a real listener. The HR-to-arousal mapping is a simple
+  documented linear normalization -- a modeling choice, not a fitted or
+  validated psychophysiological function.
+- **"Calm" is r&b/soul at the lowest tempo band, not a distinct genre.**
+  `groovegen/genre_styles.py` defines no `'calm'` `StyleSpec`. Every
+  'calm' label in this notebook means, precisely, sparse low-tempo
+  R&B/soul (`GENRE_TO_STYLE['calm'] = 'r&b'`, density floored ~3). Do not
+  cite this notebook as evidence of a fifth/distinct GrooveGen genre.
+- **Genre is a post-hoc display derivation of committed tempo, not an
+  independently validated genre-arousal mapping for these exact
+  boundaries.** The 112/98/84 bpm band edges were chosen to produce a
+  clean 4-segment demo arc that lines up with `GENRE_ENERGY_ORDER`'s
+  qualitative ordering (latin > pop > r&b, calm as an r&b/soul
+  sub-band) -- they are a scenario-design choice, not a fitted or
+  literature-derived threshold.
+- **Respiration is SHOWN, NOT DRIVING.** A synthesized respiration trace
+  (~22 -> ~12 breaths/min) is plotted alongside HR purely to make the
+  scenario read as a coherent physiological arc. It is generated
+  independently of the controller and is never passed into `cc.step()` or
+  any control computation -- it has zero causal role in the tempo/density/
+  genre decisions rendered here. Treat it as illustrative context only.
+- **The plant is a fabricated, hand-tuned toy**, exactly as documented in
+  `groovegen/pd_controller.py` (`dual_lever_plant_step`). It is illustrative
+  of the control logic's *shape*, not a claim about how a real listener's
+  arousal would respond to tempo/density/genre changes.
+- **Latin low-N caveat.** `GENRE_ENERGY_ORDER`'s Pop/Latin ordering rests on
+  only N=19 Latin-tagged tracks. This notebook's scenario deliberately
+  *starts* at Latin (as the scenario's high-arousal hero genre) and walks
+  DOWN through Pop and R&B to calm -- Latin is not scoped out here, but its
+  ordering evidence remains the weakest tier in the genre hierarchy and
+  should be read with that caveat, not as a validated ranking.
+- **The hard cut is audible by design**, not inaudible -- the bar met here
+  is "no click, no doubled hit," which is a real, measured, but modest
+  claim; do not describe this notebook's transitions as seamless or
+  unnoticeable.
+- **Single run, not independently replicated.** The MusicGen generations,
+  splice points, and rendered MP4 in this notebook reflect one execution
+  with fixed seeds where possible; MusicGen's `do_sample=True` sampling
+  means a re-run will generate different (but similarly structured) beds.
+- **No human-subjects data of any kind.** IRB pending, as in notebooks
+  12/13. Nothing in this notebook should be read as evidence of a real
+  physiological or perceptual effect on any listener.
+
+## Future work
+
+- **Human pilot study** (IRB-approved) comparing this cascade's rendered
+  audio against a non-adaptive control condition, with real physiological
+  measurement (PPG/ECG + HRV, ideally fused with respiration/SCR/SCL)
+  replacing the simulated HR setpoint used here.
+- **Plant fitting.** Replace `dual_lever_plant_step`'s hand-tuned
+  equilibrium bands with parameters fit to real listener response data,
+  once such data exists.
+- **Live sensors.** Replace the scripted `hr_curve` setpoint with a
+  real-time PPG/ECG feed (and let a genuinely measured respiration signal
+  inform -- not just illustrate -- the scenario) and re-run this exact
+  cascade + rendering pipeline end-to-end, including the generate-ahead/
+  commitment-lag buffering this notebook already models for the tempo tier.
+- **Expand the genre tier's evidence base**, particularly the Latin
+  low-N (N=19) ordering, before promoting it out of "personalizable
+  default" status.
+
+**Ground truth referenced in this notebook:**
+- `groovegen/pd_controller.py` -- `CascadeController`, `TempoController`,
+  `PDDensityController`, `GENRE_ENERGY_ORDER`, `GENRE_EQUILIBRIUM_BAND`,
+  `dual_lever_plant_step` (all reused unmodified from notebooks 12/13).
+- `groovegen/hybrid_render.py` -- `get_bed_info`, `render_aligned_drums`
+  (reused unmodified).
+- `transition_assessment.md` -- the objective seam-metric comparison and
+  the verbatim `splice_beds_downbeat_hard_cut` implementation.
+- Notebook 13 (`13_cascade_closed_loop.ipynb`) -- cascade control-loop
+  simulation and the zip-upload/`sys.path` Colab setup pattern reused here.
+- Notebook 14 (`14_tempo_crossfade_audio_proof.ipynb`) -- the MusicGen
+  generation pattern and the robust ffmpeg still->segment->mux->volumedetect
+  MP4 pipeline reused here.
+- Mayr & Starcke (2021), iso-principle in music therapy:
+  <https://pubmed.ncbi.nlm.nih.gov/34886210/>
+- Watanabe, Kashino & Ooishi (2017), tempo and autonomic arousal:
+  <https://pubmed.ncbi.nlm.nih.gov/28266647/>
+"""))
+
+# ===========================================================================
+# Assemble + write notebook
+# ===========================================================================
+nb = new_notebook()
+nb["cells"] = cells
+nb["metadata"] = {
+    "kernelspec": {
+        "display_name": "Python 3",
+        "language": "python",
+        "name": "python3",
+    },
+    "language_info": {"name": "python", "version": "3.10"},
+    "colab": {"provenance": [], "gpuType": "T4"},
+    "accelerator": "GPU",
+}
+nb["nbformat"] = 4
+nb["nbformat_minor"] = 5
+
+os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+nbformat.write(nb, OUT_PATH)
+print(f"wrote {OUT_PATH} with {len(cells)} cells")

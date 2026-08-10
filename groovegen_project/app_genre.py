@@ -1,0 +1,432 @@
+"""
+GrooveGen — Genre UI (Gradio) wrapping the HYBRID stem engine
+==============================================================
+
+Pick your favorite genres (checkboxes for known presets, or type anything in
+free text), hit Generate, and get a HYBRID mix: a MusicGen (or uploaded
+fallback) audio BED, with genre-idiomatic SYMBOLIC DRUMS beat-warped onto that
+bed's own detected tempo/downbeat grid (`groovegen.hybrid_render.hybrid_render`).
+
+WHY HYBRID (NOT CONTINUOUS)
+----------------------------
+An A/B test between this project's two drum-rendering engines —
+`groovegen/continuous.py` (`render_continuous`, a per-bar event-density random
+walk over a symbolic bed) and `groovegen/hybrid_render.py` (`hybrid_render`, a
+real audio bed + genre-idiomatic symbolic drums aligned to the bed's own
+tempo/downbeat) — came back a DECISIVE win for the hybrid engine. This UI was
+previously wired to `render_continuous`; it is now rewired to drive
+`hybrid_render` instead. `groovegen/continuous.py` itself is untouched.
+
+This file is NEW and additive: it does not modify `app.py` (the single-genre
+engine demo), `groovegen/hybrid_render.py` (the hybrid engine), or
+`groovegen/genre_presets.py` (the preset table). It only imports from them.
+
+Runs two places:
+  • CPU sandbox (this environment) — no MusicGen/GPU. The bed bank falls back
+    to two uploaded reference beds (salsa + r&b), chosen loosely by genre.
+  • Google Colab (GPU) — `generate_musicgen_beds()` generates a fresh bed from
+    the genre's `bed_prompt` using `facebook/musicgen-small` via `transformers`
+    (the working code path copied from notebooks/09-hybrid-musicgen-bed.ipynb).
+    In the CPU sandbox this always raises `RuntimeError` so the sandbox always
+    takes the uploaded-fallback path; the call is wrapped in try/except so
+    nothing crashes either way.
+
+Requires: pip install gradio (already handled by requirements / the notebook).
+"""
+from __future__ import annotations
+
+import os
+import tempfile
+import traceback
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+import gradio as gr
+
+from groovegen.hybrid_render import hybrid_render
+from groovegen.genre_presets import get_preset
+from groovegen.genre_router import route_genres, KNOWN_PRESET_KEYS
+
+# ----------------------------------------------------------------------------- #
+# Setup
+# ----------------------------------------------------------------------------- #
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT_DIR = os.path.join(tempfile.gettempdir(), "groovegen_genre_ui")
+os.makedirs(OUT_DIR, exist_ok=True)
+
+# CPU-sandbox fallback bed bank: two uploaded reference beds. Chosen loosely
+# by genre below (latin -> salsa bed; everything else -> r&b bed).
+UPLOADED_SALSA_BED = "/Users/daniel/Desktop/PhD/groove_gen_project/uploaded_attachments/63787d33f08b41dba1d938272f63641a/download-3.wav"
+UPLOADED_RNB_BED = "/Users/daniel/Desktop/PhD/groove_gen_project/uploaded_attachments/c11d88d97a6f4aaf95cdfc94d6b36941/download.wav"
+
+try:
+    from groovegen.groovegen import default_sf2
+    SF2 = default_sf2()
+    SF2_OK = bool(SF2) and os.path.exists(SF2)
+except Exception:
+    SF2, SF2_OK = None, False
+
+
+def _gpu_available() -> bool:
+    """True only if torch + CUDA are both present (Colab T4, a CUDA box, etc.)."""
+    try:
+        import torch  # noqa: WPS433 (optional dep)
+        return bool(torch.cuda.is_available())
+    except Exception:
+        return False
+
+
+GPU = _gpu_available()
+
+
+# ----------------------------------------------------------------------------- #
+# MusicGen hook (Colab/GPU only) — clearly-marked, graceful fallback in sandbox
+# ----------------------------------------------------------------------------- #
+def generate_musicgen_beds(prompt: str, tempo: int, n: int = 1) -> list[str]:
+    """Generate `n` fresh MusicGen beds from a text prompt at ~`tempo` BPM.
+
+    COLAB/GPU HOOK. Mirrors the working generation code in
+    notebooks/09-hybrid-musicgen-bed.ipynb (`facebook/musicgen-small` via
+    `transformers`, ~12s clips at MusicGen's native sampling rate, saved as wav).
+
+    In the CPU sandbox this always raises RuntimeError so callers fall back
+    to the uploaded reference beds — this is intentional graceful degradation,
+    not a bug.
+    """
+    if not GPU:
+        raise RuntimeError(
+            "MusicGen unavailable: no CUDA GPU detected in this environment. "
+            "This hook is Colab/GPU-only; the sandbox uses uploaded fallback beds."
+        )
+    try:
+        import torch
+        from transformers import MusicgenForConditionalGeneration, AutoProcessor
+    except Exception as exc:  # pragma: no cover - GPU-only path
+        raise RuntimeError(f"MusicGen deps not installed: {exc}") from exc
+
+    # MusicGen generates at ~50 tokens/sec; one generate() call stays coherent
+    # up to ~30s (the training-chunk ceiling). ~12s clips are the practical
+    # sweet spot for this UI (see notebook 09, cell 11).
+    seconds = 12.0
+    tokens_per_sec = 50
+    max_new_tokens = int(seconds * tokens_per_sec)
+
+    device = "cuda"
+    model_id = "facebook/musicgen-small"
+    processor = AutoProcessor.from_pretrained(model_id)
+    model = MusicgenForConditionalGeneration.from_pretrained(model_id).to(device)
+    bed_sr = model.config.audio_encoder.sampling_rate
+
+    inputs = processor(text=[f"{prompt}, tempo around {tempo} BPM"] * n,
+                        padding=True, return_tensors="pt").to(device)
+    with torch.no_grad():
+        audio_values = model.generate(**inputs, do_sample=True, guidance_scale=3.0,
+                                      max_new_tokens=max_new_tokens)
+
+    import soundfile as sf
+    import librosa
+
+    paths = []
+    for i in range(n):
+        raw = audio_values[i, 0].cpu().numpy()
+        # Resample to 44.1k so the bed matches the rest of the pipeline's rate.
+        if bed_sr != 44100:
+            raw = librosa.resample(raw, orig_sr=bed_sr, target_sr=44100)
+        p = os.path.join(OUT_DIR, f"musicgen_bed_{i}.wav")
+        sf.write(p, raw, 44100)
+        paths.append(p)
+    return paths
+
+
+def _select_fallback_beds(preset_keys: list[str]) -> list[str]:
+    """Loosely pick ONE uploaded fallback bed by genre family.
+
+    latin/salsa -> salsa bed; everything else -> r&b bed. The hybrid engine
+    renders one bed+drums pairing at a time, so only the PRIMARY genre's
+    family picks the bed (unlike the old continuous engine's multi-bed
+    crossfade pool).
+    """
+    if preset_keys and preset_keys[0] == "latin/salsa":
+        return [UPLOADED_SALSA_BED]
+    return [UPLOADED_RNB_BED]
+
+
+# ----------------------------------------------------------------------------- #
+# Knob bar chart (mirrors the old dark-theme style) — REPLACES the per-bar
+# density random walk plot. The hybrid engine uses FIXED, genre-idiomatic
+# knobs (not a per-bar walk), so the honest visualization is a bar chart of
+# this genre's actual knob values, not a walk over bars that never happened.
+# ----------------------------------------------------------------------------- #
+DENSITY_ACCENT = "#4F98A3"
+BG = "#171614"
+
+
+def _plot_knob_bars(knobs: dict, out_png: str, genre_key: str) -> str:
+    """Small dark-theme bar chart of the fixed groove knobs used for this render."""
+    labels = ["event_density", "syncopation", "swing", "microtiming_ms"]
+    values = [
+        float(knobs.get("event_density", 0.0)),
+        float(knobs.get("syncopation_level", 0.0)),
+        float(knobs.get("swing_amount", 0.0)),
+        float(knobs.get("microtiming_variance_ms", 0.0)),
+    ]
+
+    fig, ax = plt.subplots(figsize=(9, 4.5), facecolor=BG)
+    ax.set_facecolor(BG)
+    bars = ax.bar(labels, values, color=DENSITY_ACCENT, width=0.55)
+    for rect, v in zip(bars, values):
+        ax.text(rect.get_x() + rect.get_width() / 2, rect.get_height(),
+                 f"{v:g}", color="white", ha="center", va="bottom", fontsize=10)
+    ax.set_ylabel("Knob value", color="white")
+    ax.set_title(f"Fixed groove knobs \u2014 {genre_key} (hybrid: idiomatic, not per-bar)",
+                 color="white", fontsize=12)
+    ax.tick_params(colors="white")
+    for spine in ax.spines.values():
+        spine.set_color("#555555")
+    ax.grid(True, axis="y", color="#333333", alpha=0.6)
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(os.path.abspath(out_png)), exist_ok=True)
+    fig.savefig(out_png, dpi=150, facecolor=BG)
+    plt.close(fig)
+    return out_png
+
+
+# ----------------------------------------------------------------------------- #
+# Generate callback
+# ----------------------------------------------------------------------------- #
+def generate(selected_genres, free_text, seconds, seed, bed_source):
+    """Route genres -> render ONE hybrid mix (bed+drums) -> return (wav, png, status).
+
+    Args:
+        selected_genres: list[str] from the CheckboxGroup (known preset keys).
+        free_text: comma-separated free-text genres, e.g. "lo-fi, afrobeat".
+        seconds: nominal target length in seconds. Informational only in the
+            hybrid path — the actual output length is the BED's own duration
+            (hybrid_render conforms drums to whatever bed it's given), unlike
+            the old continuous engine which built a stream to this length.
+        seed: RNG seed (int), forwarded to the symbolic drum renderer.
+        bed_source: one of "auto", "musicgen", "uploaded".
+
+    Returns:
+        (audio_filepath_or_None, knob_png_path_or_None, status_markdown)
+    """
+    routes = route_genres(selected_genres, free_text)
+    if not routes:
+        return None, None, (
+            "**Nothing to generate.** Pick at least one known genre checkbox "
+            "or type something in the free-text box (e.g. `lo-fi, afrobeat`)."
+        )
+
+    if not SF2_OK:
+        return None, None, (
+            "**No soundfont found.** Install one so the engine can render audio:\n\n"
+            "- Linux: `sudo apt-get install -y fluidsynth fluid-soundfont-gm`\n"
+            "- Expected here: `/usr/share/sounds/sf2/FluidR3_GM.sf2`"
+        )
+
+    try:
+        seed = int(seed)
+
+        # --- MVP: hybrid renders ONE bed+drums pairing at a time -----------
+        # The hybrid engine aligns symbolic drums to ONE bed's detected
+        # tempo/downbeat grid, so only the PRIMARY resolved genre is actually
+        # streamed. Every other selected/typed genre is reported explicitly
+        # in the status text below (never silently dropped) as not yet
+        # layered in this build.
+        primary_label, primary_key, primary_approx = routes[0]
+        other_keys = [r[1] for r in routes[1:]]
+        all_keys = [primary_key] + other_keys
+
+        preset = get_preset(primary_key)
+        knobs = preset["knobs"]
+        tempo_bpm = float(preset["tempo_hint"])
+
+        # --- get a bed --------------------------------------------------
+        bed_notes = []
+        bed_wavs: list[str] = []
+        used_musicgen = False
+        if bed_source in ("auto", "musicgen") and GPU:
+            try:
+                bed_wavs = generate_musicgen_beds(preset["bed_prompt"], int(tempo_bpm), n=1)
+                used_musicgen = True
+                bed_notes.append(
+                    f"MusicGen bed generated on GPU from prompt: \u201c{preset['bed_prompt'][:80]}\u2026\u201d"
+                )
+            except Exception as exc:
+                if bed_source == "musicgen":
+                    return None, None, (
+                        f"**MusicGen bed generation failed:** {type(exc).__name__}: {exc}\n\n"
+                        "Switch `bed_source` to `auto` or `uploaded` to use the fallback beds."
+                    )
+                bed_notes.append(
+                    f"MusicGen unavailable ({type(exc).__name__}: {exc}) \u2014 "
+                    "fell back to the uploaded reference beds."
+                )
+        elif bed_source == "musicgen" and not GPU:
+            return None, None, (
+                "**MusicGen requires a GPU.** No CUDA GPU detected in this environment.\n\n"
+                "Switch `bed_source` to `auto` or `uploaded` to use the fallback beds."
+            )
+
+        if not bed_wavs:
+            bed_wavs = _select_fallback_beds(all_keys)
+            bed_notes.append(
+                "Using uploaded fallback bed: " + os.path.basename(bed_wavs[0])
+            )
+
+        bed_wav = bed_wavs[0]
+
+        safe = primary_key.replace("/", "_")
+        out_wav = os.path.join(OUT_DIR, f"mix_{safe}_{seed}.wav")
+
+        result = hybrid_render(
+            bed_wav=bed_wav,
+            drum_style=preset["drum_style"],
+            out_wav=out_wav,
+            expected_tempo=tempo_bpm,
+            lock_tempo=preset.get("lock_tempo"),
+            mix_kwargs=preset.get("mix_kwargs"),
+            suppress_bed_drums=preset.get("suppress_bed_drums", False),
+            event_density=knobs["event_density"],
+            syncopation_level=knobs["syncopation_level"],
+            swing_amount=knobs["swing_amount"],
+            microtiming_variance_ms=knobs["microtiming_variance_ms"],
+            seed=seed,
+            sf2_path=SF2,
+        )
+
+        mixed_wav = result["out_wav"]
+
+        png_path = os.path.join(OUT_DIR, f"knobs_{safe}_{seed}.png")
+        _plot_knob_bars(knobs, png_path, primary_key)
+
+        # --- status markdown -------------------------------------------------
+        resolved_line = ", ".join(
+            f"`{label}`\u2192**{key}**{' (approx)' if approx else ''}"
+            for label, key, approx in routes
+        )
+        approx_notes = [f"'{label}' \u2192 {key}" for label, key, approx in routes if approx]
+
+        lines = [
+            f"**Resolved genres:** {resolved_line}",
+            f"**Streaming (primary):** {primary_key} \u2014 requested tempo "
+            f"{tempo_bpm:.0f} BPM, detected bed tempo {result['detected_tempo_bpm']:.1f} BPM, "
+            f"{result['n_bars']} bars ({result['duration_s']:.1f}s).",
+        ]
+        if other_keys:
+            lines.append(
+                f"**Not yet layered (one genre at a time in this build):** "
+                f"{', '.join(other_keys)}. The hybrid engine renders one bed+drums "
+                f"pairing per call; these genres were resolved but not rendered."
+            )
+        if approx_notes:
+            lines.append("**Approximate free-text mappings:** " + "; ".join(approx_notes) + ".")
+        lines.append(
+            ("**Bed source:** MusicGen (GPU)." if used_musicgen
+             else "**Bed source:** uploaded fallback bed (CPU sandbox, no GPU detected).")
+        )
+        lines.extend(bed_notes[1:] if used_musicgen else [])
+        lines.append(
+            f"**Knobs:** event_density={knobs['event_density']}, "
+            f"syncopation={knobs['syncopation_level']}, swing={knobs['swing_amount']}, "
+            f"microtiming={knobs['microtiming_variance_ms']}ms."
+        )
+        status = "\n\n".join(lines)
+
+        return mixed_wav, png_path, status
+
+    except Exception as exc:  # noqa: BLE001
+        return None, None, f"**Render failed:** {type(exc).__name__}: {exc}\n\n```\n{traceback.format_exc()}\n```"
+
+
+# ----------------------------------------------------------------------------- #
+# Reference content
+# ----------------------------------------------------------------------------- #
+ABOUT_DENSITY_MD = """
+### About this render (hybrid engine)
+
+- **Bed** = real audio (MusicGen on GPU, or an uploaded reference clip in this
+  CPU sandbox) carrying the harmony/instrumentation/feel for the genre.
+- **Drums** = genre-idiomatic SYMBOLIC drums rendered by GrooveGen's groove
+  engine, using **fixed knob values** for the resolved genre (event_density,
+  syncopation, swing, microtiming) \u2014 not a per-bar random walk. The bar
+  chart above shows exactly those fixed values.
+- The bed's tempo and first downbeat are **detected from the audio** (madmom
+  when available, librosa fallback), and the symbolic drums are re-rendered
+  at that detected tempo and **beat-warped** onto the bed's own grid so bar 1,
+  beat 1 lands on the bed's real downbeat \u2014 this is `hybrid_render()` in
+  `groovegen/hybrid_render.py`.
+- This UI previously drove the continuous per-bar-density-walk engine
+  (`groovegen/continuous.py`); an A/B test decisively preferred this hybrid
+  engine, so the UI was rewired to call `hybrid_render()` instead. The
+  continuous engine's per-bar density curve doesn't apply here \u2014 there is
+  no per-bar walk in the hybrid path, only one fixed knob setting per genre.
+- **One genre at a time.** The hybrid engine aligns one set of drums to one
+  bed's grid per call, so if you pick multiple genres only the PRIMARY
+  (first-resolved) genre is actually rendered; the others are named in the
+  status text as not yet layered, rather than silently dropped.
+"""
+
+HEADER_MD = """
+# GrooveGen — Genre Stream (Hybrid Engine)
+
+Pick your favorite genre(s) — checkboxes for known presets, or type anything else in free text
+(e.g. `lo-fi, afrobeat, jazz`) — hit **Generate**, and get a **MusicGen (or uploaded) bed with
+genre-idiomatic symbolic drums beat-warped onto its own tempo/downbeat grid**
+(`groovegen.hybrid_render.hybrid_render`), plus a chart of the fixed groove knobs used.
+"""
+
+
+# ----------------------------------------------------------------------------- #
+# UI layout
+# ----------------------------------------------------------------------------- #
+def build_ui() -> gr.Blocks:
+    with gr.Blocks(title="GrooveGen — Genre Stream", theme=gr.themes.Soft()) as demo:
+        gr.Markdown(HEADER_MD)
+
+        gpu_txt = "\u2705 GPU detected \u2014 MusicGen bed generation available." if GPU else \
+                  "\u2139\ufe0f No GPU \u2014 using uploaded reference beds (MusicGen hook falls back automatically)."
+        sf2_txt = f"Soundfont: `{os.path.basename(SF2)}`" if SF2_OK else \
+                  "\u26a0\ufe0f No soundfont found \u2014 install FluidSynth + a GM soundfont to render."
+        gr.Markdown(f"{gpu_txt}  \n{sf2_txt}")
+
+        with gr.Row():
+            with gr.Column(scale=1):
+                known = gr.CheckboxGroup(KNOWN_PRESET_KEYS, label="Known genres")
+                free_text = gr.Textbox(
+                    label="Other genres (comma-separated)",
+                    placeholder="e.g. lo-fi, afrobeat, jazz",
+                )
+                with gr.Accordion("Advanced", open=False):
+                    seconds = gr.Slider(10, 60, value=30, step=1, label="Length (seconds, informational \u2014 hybrid bed sets actual length)")
+                    seed = gr.Number(value=0, precision=0, label="Random seed")
+                    bed_source = gr.Radio(
+                        ["auto", "musicgen", "uploaded"], value="auto",
+                        label="Bed source",
+                        info="auto = try MusicGen, fall back to uploaded beds; "
+                             "musicgen = require GPU; uploaded = always use fallback beds.",
+                    )
+                go = gr.Button("Generate", variant="primary")
+
+            with gr.Column(scale=1):
+                audio = gr.Audio(type="filepath", label="Hybrid mix (bed + aligned drums)")
+                density_img = gr.Image(label="Fixed groove knobs for this genre")
+                status = gr.Markdown()
+
+        go.click(
+            generate,
+            inputs=[known, free_text, seconds, seed, bed_source],
+            outputs=[audio, density_img, status],
+        )
+
+        gr.Markdown(ABOUT_DENSITY_MD)
+
+    return demo
+
+
+demo = build_ui()
+
+if __name__ == "__main__":
+    demo.launch()

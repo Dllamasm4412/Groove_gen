@@ -1,0 +1,209 @@
+{
+  "n_unique_tracks": 704,
+  "family_stats": [
+    {
+      "family": "latin",
+      "n_tracks": 14,
+      "mean_dance": 72.0,
+      "mean_bpm": 112.07,
+      "prevalence_%": 2.0,
+      "score": 194.98
+    },
+    {
+      "family": "hip-hop/rap",
+      "n_tracks": 106,
+      "mean_dance": 67.49,
+      "mean_bpm": 117.48,
+      "prevalence_%": 15.1,
+      "score": 315.37
+    },
+    {
+      "family": "r&b/soul",
+      "n_tracks": 81,
+      "mean_dance": 65.51,
+      "mean_bpm": 118.28,
+      "prevalence_%": 11.5,
+      "score": 288.67
+    },
+    {
+      "family": "pop",
+      "n_tracks": 288,
+      "mean_dance": 61.17,
+      "mean_bpm": 120.8,
+      "prevalence_%": 40.9,
+      "score": 346.6
+    },
+    {
+      "family": "electronic/edm",
+      "n_tracks": 64,
+      "mean_dance": 59.05,
+      "mean_bpm": 130.27,
+      "prevalence_%": 9.1,
+      "score": 246.48
+    },
+    {
+      "family": "country/folk",
+      "n_tracks": 133,
+      "mean_dance": 57.28,
+      "mean_bpm": 114.97,
+      "prevalence_%": 18.9,
+      "score": 280.54
+    },
+    {
+      "family": "rock",
+      "n_tracks": 162,
+      "mean_dance": 56.52,
+      "mean_bpm": 125.7,
+      "prevalence_%": 23.0,
+      "score": 287.92
+    },
+    {
+      "family": "jazz",
+      "n_tracks": 16,
+      "mean_dance": 56.0,
+      "mean_bpm": 119.44,
+      "prevalence_%": 2.3,
+      "score": 158.66
+    },
+    {
+      "family": "metal/hardcore",
+      "n_tracks": 23,
+      "mean_dance": 43.04,
+      "mean_bpm": 129.22,
+      "prevalence_%": 3.3,
+      "score": 136.79
+    }
+  ],
+  "top_tokens": [
+    {
+      "genre": "latin",
+      "n": 8,
+      "mean_dance": 73.88,
+      "mean_bpm": 116.75
+    },
+    {
+      "genre": "alternative r&b",
+      "n": 8,
+      "mean_dance": 73.62,
+      "mean_bpm": 117.62
+    },
+    {
+      "genre": "disco",
+      "n": 5,
+      "mean_dance": 73.2,
+      "mean_bpm": 115.4
+    },
+    {
+      "genre": "pop rap",
+      "n": 8,
+      "mean_dance": 73.0,
+      "mean_bpm": 123.88
+    },
+    {
+      "genre": "k-pop",
+      "n": 7,
+      "mean_dance": 71.86,
+      "mean_bpm": 136.43
+    },
+    {
+      "genre": "reggaeton",
+      "n": 6,
+      "mean_dance": 71.83,
+      "mean_bpm": 115.33
+    },
+    {
+      "genre": "hip hop",
+      "n": 22,
+      "mean_dance": 71.5,
+      "mean_bpm": 118.09
+    },
+    {
+      "genre": "reggae",
+      "n": 7,
+      "mean_dance": 71.0,
+      "mean_bpm": 101.43
+    },
+    {
+      "genre": "dance",
+      "n": 10,
+      "mean_dance": 70.9,
+      "mean_bpm": 117.1
+    },
+    {
+      "genre": "jazz rap",
+      "n": 7,
+      "mean_dance": 70.29,
+      "mean_bpm": 113.57
+    },
+    {
+      "genre": "trap",
+      "n": 9,
+      "mean_dance": 70.22,
+      "mean_bpm": 111.33
+    },
+    {
+      "genre": "hiphop",
+      "n": 23,
+      "mean_dance": 69.35,
+      "mean_bpm": 114.96
+    },
+    {
+      "genre": "art pop",
+      "n": 10,
+      "mean_dance": 69.2,
+      "mean_bpm": 123.0
+    },
+    {
+      "genre": "soft rock",
+      "n": 10,
+      "mean_dance": 67.9,
+      "mean_bpm": 112.4
+    },
+    {
+      "genre": "dance pop",
+      "n": 11,
+      "mean_dance": 67.0,
+      "mean_bpm": 116.91
+    },
+    {
+      "genre": "west coast hip hop",
+      "n": 6,
+      "mean_dance": 67.0,
+      "mean_bpm": 109.5
+    },
+    {
+      "genre": "r&b",
+      "n": 26,
+      "mean_dance": 66.5,
+      "mean_bpm": 108.69
+    },
+    {
+      "genre": "soul",
+      "n": 19,
+      "mean_dance": 66.21,
+      "mean_bpm": 122.79
+    },
+    {
+      "genre": "synth pop",
+      "n": 19,
+      "mean_dance": 66.11,
+      "mean_bpm": 127.11
+    },
+    {
+      "genre": "alt hip hop",
+      "n": 6,
+      "mean_dance": 66.0,
+      "mean_bpm": 135.5
+    }
+  ],
+  "top3_by_danceability": [
+    "latin",
+    "hip-hop/rap",
+    "r&b/soul"
+  ],
+  "top3_by_dance_x_prevalence": [
+    "pop",
+    "hip-hop/rap",
+    "r&b/soul"
+  ]
+}
