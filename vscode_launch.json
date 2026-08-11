@@ -1,0 +1,89 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "verify_setup.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/verify_setup.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    },
+    {
+      "name": "Current file (debug)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    },
+    {
+      "name": "Regression: hr_trajectory.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/groovegen_pilot/hr_trajectory.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    },
+    {
+      "name": "Regression: test_faults_fixed.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/groovegen_pilot/test_faults_fixed.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    },
+    {
+      "name": "Regression: pd_controller.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/groovegen_project/groovegen/pd_controller.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    },
+    {
+      "name": "Regression: tier_mapping.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/groovegen_pilot/tier_mapping.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    },
+    {
+      "name": "Regression: scene.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/groovegen_pilot/scene.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/groovegen_pilot:${workspaceFolder}/groovegen_project"
+      }
+    }
+  ]
+}
