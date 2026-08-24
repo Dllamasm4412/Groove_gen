@@ -68,17 +68,18 @@ def build_salsa(bpm=128, bars=8):
 
 # ============================ POP ============================
 def build_pop(bpm=104, bars=8):
+    # PALETTE_PATCH_V2 applied
     """Bright pop: syncopated clav/synth comp, punchy finger bass. I-V-vi-IV in C."""
     spb=60.0/bpm; bar=spb*4
     m=pm.PrettyMIDI(initial_tempo=bpm)
-    comp=pm.Instrument(program=CLAV, name="clav comp")
+    comp=pm.Instrument(program=EPIANO_RHODES, name="rhodes comp")
     bass=pm.Instrument(program=FINGER_BASS, name="bass")
-    pad =pm.Instrument(program=SYN_PAD, name="pad")
+    pad =pm.Instrument(program=STRINGS, name="strings pad")
     prog=[([60,64,67],48),([55,59,62],43),([57,60,64],45),([53,57,60],41)]  # C G Am F
     comp_off=[0.5,1.0,1.5,2.5,3.0,3.5]  # syncopated 8th pushes
     for b in range(bars):
         t0=b*bar; voi,root=prog[b%4]
-        chord(pad, voi, t0, bar, vel=42)
+        chord(pad, voi, t0, bar, vel=48)  # strings need a touch more level than SYN_PAD
         for off in comp_off:
             chord(comp,[v+12 for v in voi], t0+off*spb, spb*0.35, vel=70)
         for beat in range(4):

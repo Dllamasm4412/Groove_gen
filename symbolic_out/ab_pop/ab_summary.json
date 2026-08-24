@@ -1,0 +1,96 @@
+{
+  "seed": 42,
+  "bpm": 104,
+  "bars": 8,
+  "sf2": "/Users/daniel/Desktop/PhD/groove_gen_project/soundfonts/Musyng_Kite.sf2",
+  "variants": {
+    "A_baseline": {
+      "mid": "symbolic_out/ab_pop/pop_A_baseline.mid",
+      "wav": "symbolic_out/ab_pop/pop_A_baseline.wav",
+      "notes": 208,
+      "instruments": [
+        "pad",
+        "clav comp",
+        "bass"
+      ]
+    },
+    "B_palette": {
+      "mid": "symbolic_out/ab_pop/pop_B_palette.mid",
+      "wav": "symbolic_out/ab_pop/pop_B_palette.wav",
+      "notes": 208,
+      "instruments": [
+        "strings pad",
+        "rhodes comp",
+        "bass"
+      ]
+    },
+    "C_full": {
+      "mid": "symbolic_out/ab_pop/pop_C_full.mid",
+      "wav": "symbolic_out/ab_pop/pop_C_full.wav",
+      "notes": 208,
+      "instruments": [
+        "strings pad",
+        "rhodes comp",
+        "bass"
+      ],
+      "humanize": {
+        "op": "humanize_v1",
+        "seed": 42,
+        "params_hash": "31fed1b01df2",
+        "params": {
+          "accent_beat_1_3": 10,
+          "accent_beat_2_4": 6,
+          "accent_offbeat_8": -6,
+          "accent_offbeat_16": -10,
+          "alt_strong_delta": 4,
+          "alt_weak_delta": -4,
+          "jitter_sigma_ms": 6.0,
+          "jitter_clip_ms": 14.0,
+          "swing_ms": 4.0,
+          "velocity_bands": {
+            "rhodes": [
+              48,
+              92
+            ],
+            "comp": [
+              48,
+              92
+            ],
+            "strings": [
+              30,
+              58
+            ],
+            "pad": [
+              30,
+              58
+            ],
+            "bass": [
+              72,
+              100
+            ]
+          }
+        },
+        "spb": 0.576923076923077,
+        "notes_total": 208,
+        "notes_touched": 208,
+        "per_track": [
+          {
+            "name": "strings pad",
+            "notes": 24,
+            "touched": 24
+          },
+          {
+            "name": "rhodes comp",
+            "notes": 144,
+            "touched": 144
+          },
+          {
+            "name": "bass",
+            "notes": 40,
+            "touched": 40
+          }
+        ]
+      }
+    }
+  }
+}

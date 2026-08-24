@@ -81,7 +81,7 @@ _PROG["latin-salsa"] = _PROG["latin"]
 
 # instrument programs by genre (GM); Colab supersaw path can override pop later
 _INST = {
-    "pop": dict(comp=S.CLAV, bass=S.FINGER_BASS, pad=S.SYN_PAD),
+    "pop": dict(comp=S.EPIANO_RHODES, bass=S.FINGER_BASS, pad=S.STRINGS),
     "r&b": dict(comp=4, bass=S.FINGER_BASS, pad=S.SYN_PAD),  # EP comp
     "latin": dict(comp=S.CLAV, bass=S.FINGER_BASS, pad=S.SYN_PAD),
     "calm": dict(comp=88, bass=S.FINGER_BASS, pad=S.SYN_PAD),  # new-age pad comp

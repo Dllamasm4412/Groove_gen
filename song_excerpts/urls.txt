@@ -1,0 +1,13 @@
+calm|danyvin__Hills|https://www.youtube.com/watch?v=fX5t6boRMnw
+calm|Elevation_Worship__O_Come_To_The_Altar|https://www.youtube.com/watch?v=YyJ8krOGr_A
+calm|Malik_Brookins__Still_Waters|https://www.youtube.com/watch?v=qNYHC9k1Oe8
+rnb|Bruno_Mars__I_Just_Might|https://www.youtube.com/watch?v=mrV8kK5t0V8
+rnb|Summer_Walker__Heart_Of_A_Woman|https://www.youtube.com/watch?v=1ipRd0WgB0c
+rnb|Kehlani__Shoulda_Never|https://www.youtube.com/watch?v=crWbG90dChw
+pop|The_Weeknd__Blinding_Lights|https://www.youtube.com/watch?v=fHI8X4OXluQ
+pop|Sabrina_Carpenter__Espresso|https://www.youtube.com/watch?v=eVli-tstM5E
+pop|Pharrell_Williams__Happy|https://www.youtube.com/watch?v=ZbZSe6N_BXs
+pop|Taylor_Swift__Shake_It_Off|https://www.youtube.com/watch?v=Z4A9ZZo_rAE
+latin|Ricky_Martin__Livin_la_Vida_Loca|https://www.youtube.com/watch?v=n8F55puGHIs
+latin|Marc_Anthony__Vivir_Mi_Vida|https://www.youtube.com/watch?v=YXnjy5YlDwk
+latin|Celia_Cruz__La_Vida_Es_Un_Carnaval|https://www.youtube.com/watch?v=0nBFWzpWXuM

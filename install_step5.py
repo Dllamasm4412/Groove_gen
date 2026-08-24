@@ -1,0 +1,191 @@
+"""
+Installer for M0.5 Step 5 files:
+  - hr_to_tier.py         (LinearBandPolicy, option A)
+  - run_session.py        (nested closed-loop runner)
+  - test_run_session.py   (smoke test w/ ReplaySource)
+"""
+import base64, gzip, hashlib, sys, shutil
+from pathlib import Path
+
+FILES = [
+    ('groovegen_pilot/hr_to_tier.py', 'c9fa53c9e5f4e1c7579bd19f4d32e966', 3770,
+     """
+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
+jZO6DgAA
+     """),
+    ('groovegen_pilot/run_session.py', 'ed3584d3827f9d9fd1ec25a2875dae63', 8469,
+     """
+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
+     """),
+    ('groovegen_pilot/test_run_session.py', '43e92d9bb91f543f24c0c46c4e083366', 8499,
+     """
+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
+     """),
+]
+
+def main() -> int:
+    if not Path("groovegen_pilot").is_dir():
+        print("ERROR: run from groove_gen_project/ repo root")
+        return 1
+    for dst, expected_md5, size, blob in FILES:
+        data = gzip.decompress(base64.b64decode(blob.strip()))
+        got = hashlib.md5(data).hexdigest()
+        if got != expected_md5:
+            print(f"ERROR: MD5 mismatch for {dst}")
+            return 1
+        p = Path(dst)
+        if p.exists():
+            bak = Path(str(p) + ".bak")
+            bak.write_bytes(p.read_bytes())
+            print(f"  backed up {p} -> {bak}")
+        p.write_bytes(data)
+        print(f"  installed {p} ({size} bytes)")
+    pyc = Path("groovegen_pilot/__pycache__")
+    if pyc.exists():
+        shutil.rmtree(pyc)
+        print(f"  cleared {pyc}")
+    print("")
+    print("Headless smoke test:")
+    print("  python groovegen_pilot/test_run_session.py --sf2 soundfonts/Musyng_Kite.sf2")
+    print("")
+    print("Audible (real-time, ~5 minutes for full schedule):")
+    print("  python groovegen_pilot/test_run_session.py --audible --segments 4 --sf2 soundfonts/Musyng_Kite.sf2")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

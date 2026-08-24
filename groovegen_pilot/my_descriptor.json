@@ -1,0 +1,32 @@
+{
+  "genre_weights": {
+    "calm": 0.08333333333333333,
+    "latin": 0.08333333333333333,
+    "lofi": 0.08333333333333333,
+    "pop": 0.75,
+    "rnb": 0.0
+  },
+  "provenance": {
+    "built_at_epoch_s": 1787260744.5108879,
+    "family_counts": {
+      "calm": 1,
+      "latin": 1,
+      "lofi": 1,
+      "pop": 9,
+      "rnb": 0
+    },
+    "feature_medians": {
+      "beat_consistency": 0.9678616144182441,
+      "low_band_energy": 0.5785337011292333,
+      "onset_density": 3.2416666666666667,
+      "percussive_ratio": 0.4712891491631739,
+      "spectral_flatness": 0.026879378594458103,
+      "syncopation": 0.5068880394967352,
+      "tempo_bpm": 105.5126953125
+    },
+    "n_songs": 12,
+    "n_songs_nominal": 12,
+    "n_songs_short_of_expected": 0
+  },
+  "target_arousal": 5.355044828506818
+}

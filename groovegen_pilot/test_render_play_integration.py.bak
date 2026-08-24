@@ -1,0 +1,223 @@
+"""
+Integration test: renderer -> bridge -> player (M0.5 Step 3).
+
+Run
+---
+    # Headless (default): pushes audio through NullPlayer, no speakers
+    python groovegen_pilot/test_render_play_integration.py
+
+    # Audible: pushes through SoundDevicePlayer for ~8 bars per genre.
+    # Requires functioning audio output. Total playtime ~1-2 minutes.
+    python groovegen_pilot/test_render_play_integration.py --audible
+
+What it checks (headless)
+-------------------------
+    1. Bridge accepts renderer output shape/dtype
+    2. NullPlayer receives correct sample counts
+    3. All four genres render+enqueue cleanly
+    4. Genre alias 'r&b' still works through the bridge
+    5. Chunk-frame slicing splits correctly (n_chunks matches expected)
+
+Audible mode (only with --audible)
+----------------------------------
+    6. SoundDevicePlayer plays all four genres back-to-back with zero underruns
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+from composer import GENRE_CFG
+from segment_renderer import SymbolicSegmentRenderer
+from player import NullPlayer, SoundDevicePlayer
+from renderer_to_player import enqueue_segment, render_and_play
+
+REPO_ROOT = HERE.parent
+DEFAULT_SF2 = REPO_ROOT / 'soundfonts' / 'Musyng_Kite.sf2'
+
+
+def _pass(msg: str) -> None:
+    print(f'  [PASS] {msg}')
+
+
+def _fail(msg: str) -> None:
+    print(f'  [FAIL] {msg}')
+
+
+def _check_audio_shape(audio: np.ndarray, tag: str) -> bool:
+    ok = (
+        isinstance(audio, np.ndarray)
+        and audio.ndim == 2
+        and audio.shape[1] == 2
+        and audio.dtype == np.float32
+    )
+    if not ok:
+        _fail(f'{tag}: bad shape/dtype {audio.shape} {audio.dtype}')
+    return ok
+
+
+def main() -> int:
+    p = argparse.ArgumentParser()
+    p.add_argument('--sf2', default=str(DEFAULT_SF2))
+    p.add_argument('--audible', action='store_true',
+                   help='Also play audio through SoundDevicePlayer.')
+    p.add_argument('--tier', type=int, default=3, help='Tier for renders (1-5)')
+    p.add_argument('--bars', type=int, default=8, help='Bars per segment')
+    args = p.parse_args()
+
+    sf2 = Path(args.sf2)
+    if not sf2.exists():
+        _fail(f'soundfont not found: {sf2}')
+        return 1
+
+    print('=' * 60)
+    print('Renderer -> Player integration (M0.5 Step 3)')
+    print('=' * 60)
+    print(f'  sf2:     {sf2}')
+    print(f'  tier:    {args.tier}')
+    print(f'  bars:    {args.bars}')
+    print(f'  audible: {args.audible}')
+
+    renderer = SymbolicSegmentRenderer(sf2_path=sf2, session_seed=42)
+    fails = 0
+
+    # ---- 1-3. Headless: render each genre, push to NullPlayer ----
+    print('\n1-3. Headless (NullPlayer) — all four genres')
+    null_player = NullPlayer(sample_rate=44100, channels=2)
+    null_player.start()
+
+    expected_total = 0
+    per_genre_expected = {}
+    for genre in ['calm', 'pop', 'rnb', 'latin']:
+        tempo = GENRE_CFG[genre]['tempo_default']
+        audio = renderer.render_segment(
+            genre, tempo_bpm=tempo, tier=args.tier, n_bars=args.bars,
+            segment_idx=hash(genre) & 0xFFFF)
+        if not _check_audio_shape(audio, genre):
+            fails += 1
+            continue
+        n_chunks = enqueue_segment(null_player, audio)
+        expected_chunks = (audio.shape[0] + 1023) // 1024  # default blocksize
+        per_genre_expected[genre] = audio.shape[0]
+        expected_total += audio.shape[0]
+        # NullPlayer doesn't have blocksize attr, so bridge falls back to 1024
+        if n_chunks == expected_chunks:
+            _pass(f'{genre:6}: {audio.shape[0]:>8} frames -> '
+                  f'{n_chunks} chunks (peak={np.max(np.abs(audio)):.3f})')
+        else:
+            _fail(f'{genre}: n_chunks={n_chunks}, expected {expected_chunks}')
+            fails += 1
+
+    null_player.stop()
+
+    # NullPlayer's total_samples_received should equal sum of all audio frames
+    if null_player.total_samples_received == expected_total:
+        _pass(f'NullPlayer received all {expected_total} frames '
+              f'across {null_player.total_chunks_received} chunks')
+    else:
+        _fail(f'NullPlayer got {null_player.total_samples_received}, '
+              f'expected {expected_total}')
+        fails += 1
+
+    # ---- 4. Genre alias through the bridge ----
+    print('\n4. Genre alias — "r&b" through render_and_play')
+    np2 = NullPlayer(sample_rate=44100, channels=2)
+    np2.start()
+    try:
+        audio_alias = render_and_play(
+            renderer, np2, genre='r&b', tempo_bpm=100,
+            tier=args.tier, n_bars=args.bars, segment_idx=1)
+        np2.stop()
+        expected = per_genre_expected.get('rnb')
+        if expected and np2.total_samples_received == audio_alias.shape[0]:
+            _pass(f'r&b -> rnb path OK: {audio_alias.shape[0]} frames')
+        else:
+            _fail(f'alias enqueue count off: got {np2.total_samples_received}')
+            fails += 1
+    except Exception as e:
+        _fail(f'alias raised: {type(e).__name__}: {e}')
+        fails += 1
+
+    # ---- 5. Chunk slicing arithmetic ----
+    print('\n5. Chunk slicing — non-blocksize-aligned lengths')
+    class _CountPlayer:
+        def __init__(self, blocksize):
+            self.blocksize = blocksize
+            self.chunks = []
+        def enqueue(self, a):
+            self.chunks.append(a.shape[0])
+
+    # Small synthetic buffer: 3000 frames stereo, blocksize=1024
+    fake = np.zeros((3000, 2), dtype=np.float32)
+    cp = _CountPlayer(blocksize=1024)
+    n = enqueue_segment(cp, fake)
+    if cp.chunks == [1024, 1024, 952] and n == 3:
+        _pass(f'3000-frame buffer -> {cp.chunks} (3 chunks, last is short)')
+    else:
+        _fail(f'unexpected chunks: {cp.chunks}, n={n}')
+        fails += 1
+
+    # ---- 6. Audible mode (optional) ----
+    if args.audible:
+        print('\n6. Audible — SoundDevicePlayer, 4 segments back-to-back')
+        try:
+            sd_player = SoundDevicePlayer(
+                sample_rate=44100, channels=2,
+                blocksize=1024, queue_maxsize=8)
+            sd_player.start()
+        except Exception as e:
+            _fail(f'SoundDevicePlayer.start raised: {type(e).__name__}: {e}')
+            print('     Skipping audible test. Check audio output device.')
+            fails += 1
+            return fails
+
+        try:
+            for genre in ['calm', 'pop', 'rnb', 'latin']:
+                tempo = GENRE_CFG[genre]['tempo_default']
+                print(f'    playing {genre}...')
+                audio = render_and_play(
+                    renderer, sd_player, genre=genre, tempo_bpm=tempo,
+                    tier=args.tier, n_bars=args.bars,
+                    segment_idx=hash(genre) & 0xFFFF)
+                # Sleep for actual segment duration so segments play back-to-back
+                # without piling up in the queue.
+                dur_s = audio.shape[0] / 44100
+                time.sleep(dur_s)
+
+            time.sleep(0.5)  # let queue drain
+            sd_player.stop(drain=True)
+        except KeyboardInterrupt:
+            print('    (interrupted)')
+            sd_player.stop(drain=False)
+            return fails
+
+        underruns = sd_player.underruns()
+        if underruns == 0:
+            _pass(f'played all 4 genres with 0 underruns')
+        else:
+            _fail(f'{underruns} underruns during playback')
+            fails += 1
+
+    print('\n' + '=' * 60)
+    if fails == 0:
+        print('ALL CHECKS PASSED')
+        if not args.audible:
+            print('\nRun with --audible to actually hear the pipeline:')
+            print('  python groovegen_pilot/test_render_play_integration.py '
+                  '--audible --sf2 soundfonts/Musyng_Kite.sf2')
+    else:
+        print(f'{fails} FAILURE(S)')
+    print('=' * 60)
+    return 1 if fails else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
