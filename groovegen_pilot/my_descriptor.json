@@ -7,7 +7,7 @@
     "rnb": 0.0
   },
   "provenance": {
-    "built_at_epoch_s": 1787260744.5108879,
+    "built_at_epoch_s": 1788061180.7847989,
     "family_counts": {
       "calm": 1,
       "latin": 1,
@@ -26,7 +26,141 @@
     },
     "n_songs": 12,
     "n_songs_nominal": 12,
-    "n_songs_short_of_expected": 0
+    "n_songs_short_of_expected": 0,
+    "per_song": [
+      {
+        "assigned_family": "calm",
+        "beat_consistency": 0.984617210357455,
+        "label": "calm_1",
+        "low_band_energy": 0.49964176979635455,
+        "onset_density": 0.6666666666666666,
+        "percussive_ratio": 0.14910628491234607,
+        "spectral_flatness": 0.0011707040248438716,
+        "syncopation": 0.175,
+        "tempo_bpm": 56.17357336956522
+      },
+      {
+        "assigned_family": "lofi",
+        "beat_consistency": 0.9859642801804747,
+        "label": "calm_2",
+        "low_band_energy": 0.793435972926183,
+        "onset_density": 1.2833333333333334,
+        "percussive_ratio": 0.44292426394171386,
+        "spectral_flatness": 0.0009911151137202978,
+        "syncopation": 0.6883116883116883,
+        "tempo_bpm": 46.98153409090909
+      },
+      {
+        "assigned_family": "latin",
+        "beat_consistency": 0.9292633662187894,
+        "label": "calm_3",
+        "low_band_energy": 0.1424997889887115,
+        "onset_density": 4.45,
+        "percussive_ratio": 0.09820422896628485,
+        "spectral_flatness": 0.000459519331343472,
+        "syncopation": 0.6629213483146067,
+        "tempo_bpm": 107.666015625
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9656971758571277,
+        "label": "rnb_1",
+        "low_band_energy": 0.584468253485116,
+        "onset_density": 4.233333333333333,
+        "percussive_ratio": 0.6034316595125877,
+        "spectral_flatness": 0.03474283218383789,
+        "syncopation": 0.6259842519685039,
+        "tempo_bpm": 103.359375
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9700260529793606,
+        "label": "rnb_2",
+        "low_band_energy": 0.7616399601774965,
+        "onset_density": 2.0833333333333335,
+        "percussive_ratio": 0.4860841395926665,
+        "spectral_flatness": 0.027228495106101036,
+        "syncopation": 0.352,
+        "tempo_bpm": 129.19921875
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9711211356582614,
+        "label": "rnb_3",
+        "low_band_energy": 0.6101737531485224,
+        "onset_density": 3.2,
+        "percussive_ratio": 0.49360185132602646,
+        "spectral_flatness": 0.02653026208281517,
+        "syncopation": 0.3958333333333333,
+        "tempo_bpm": 135.99917763157896
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9744225991726881,
+        "label": "pop_1",
+        "low_band_energy": 0.7028776773047409,
+        "onset_density": 3.033333333333333,
+        "percussive_ratio": 0.4834071202619199,
+        "spectral_flatness": 0.0217234268784523,
+        "syncopation": 0.4340659340659341,
+        "tempo_bpm": 103.359375
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9582564765106993,
+        "label": "pop_2",
+        "low_band_energy": 0.5433298612054341,
+        "onset_density": 3.283333333333333,
+        "percussive_ratio": 0.5667560532838184,
+        "spectral_flatness": 0.040672414004802704,
+        "syncopation": 0.3197969543147208,
+        "tempo_bpm": 161.4990234375
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9656509751729904,
+        "label": "pop_3",
+        "low_band_energy": 0.5962839874646484,
+        "onset_density": 3.966666666666667,
+        "percussive_ratio": 0.5769954095907548,
+        "spectral_flatness": 0.04299541562795639,
+        "syncopation": 0.3697478991596639,
+        "tempo_bpm": 161.4990234375
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9834971702877209,
+        "label": "latin_1",
+        "low_band_energy": 0.5725991487733506,
+        "onset_density": 5.083333333333333,
+        "percussive_ratio": 0.4591711780644279,
+        "spectral_flatness": 0.03728041425347328,
+        "syncopation": 0.7180327868852459,
+        "tempo_bpm": 89.10290948275862
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9456611925773621,
+        "label": "latin_2",
+        "low_band_energy": 0.45102699277971736,
+        "onset_density": 2.3,
+        "percussive_ratio": 0.4241087956544513,
+        "spectral_flatness": 0.022189050912857056,
+        "syncopation": 0.5797101449275363,
+        "tempo_bpm": 151.99908088235293
+      },
+      {
+        "assigned_family": "pop",
+        "beat_consistency": 0.9629232585434152,
+        "label": "latin_3",
+        "low_band_energy": 0.45864890237559075,
+        "onset_density": 4.8,
+        "percussive_ratio": 0.4345195624418047,
+        "spectral_flatness": 0.039685796946287155,
+        "syncopation": 0.6944444444444444,
+        "tempo_bpm": 103.359375
+      }
+    ]
   },
   "target_arousal": 5.355044828506818
 }

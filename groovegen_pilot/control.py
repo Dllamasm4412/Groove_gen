@@ -97,7 +97,7 @@ class ControllerConfig:
     # with user_descriptor=None per DEVIATIONS.md v2.3.
     # -------------------------------------------------------------------
     user_descriptor: Optional[object] = None  # UserDescriptor or None
-    tiebreak_epsilon: float = 0.15  # fraction of best_J that counts as a tie
+    tiebreak_epsilon: float = 0.05  # fraction of best_J that counts as a tie (tightened v2.5 — was 0.15, made too many candidates tie)
     tiebreak_epsilon_abs: float = 0.05  # absolute floor for near-zero best_J
 
 

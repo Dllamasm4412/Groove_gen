@@ -38,10 +38,10 @@ from typing import Optional
 import numpy as np
 
 
-def build_controller(ladder, descriptor):
+def build_controller(ladder, descriptor, arousal_mode='hr_primary'):
     from control import LadderMPC, ControllerConfig
     cfg = ControllerConfig(
-        arousal_mode='arousal_primary',
+        arousal_mode=arousal_mode,
         user_descriptor=descriptor,
     )
     return LadderMPC(ladder, cfg)
@@ -89,7 +89,7 @@ def run_one(label: str, descriptor, args, wav_out: Optional[Path]) -> list:
     from run_session_v2 import run_session_v2, SessionConfigV2, TraceRowV2
 
     L = build_ladder()
-    ctrl = build_controller(L, descriptor)
+    ctrl = build_controller(L, descriptor, arousal_mode=args.arousal_mode)
 
     sr = args.sample_rate
     renderer = SymbolicSegmentRenderer(sf2_path=args.sf2, sr=sr,
@@ -133,8 +133,8 @@ def run_one(label: str, descriptor, args, wav_out: Optional[Path]) -> list:
         ladder=L,
         controller=ctrl,
         config=cfg,
-        hr_target_bpm=args.arousal_target,   # arousal_primary: 1-9 target
-        hr_baseline_bpm=5.0,                  # arousal-primary neutral baseline
+        hr_target_bpm=args.hr_target if args.arousal_mode == 'hr_primary' else args.arousal_target,
+        hr_baseline_bpm=args.hr_baseline if args.arousal_mode == 'hr_primary' else 5.0,
         initial_rung=args.initial_rung,
         arousal_source=arousal_source,
     )
@@ -184,11 +184,17 @@ def main() -> int:
                     help='Soundfont path for SymbolicSegmentRenderer')
     ap.add_argument('--initial-rung', type=int, default=14,
                     help='seed rung; 14 sits in the pop/latin/rnb interleave')
+    ap.add_argument('--arousal-mode', type=str, default='hr_primary',
+                    choices=['hr_primary', 'arousal_primary'],
+                    help='hr_primary: MPC minimizes HR error, arousal is FF (validated by N=400 sim). '
+                         'arousal_primary: WIP, has unit-mixing bug in MPC predictor.')
+    ap.add_argument('--hr-target', type=float, default=80.0,
+                    help='HR target in BPM (hr_primary mode). Default 80.')
+    ap.add_argument('--hr-baseline', type=float, default=70.0,
+                    help='HR baseline in BPM (hr_primary mode). Default 70.')
     ap.add_argument('--arousal-target', type=float, default=6.0,
                     help='Russell 1-9 arousal target for arousal_primary mode. '
-                         'Passed to controller as hr_target; hr_baseline is set '
-                         'to the neutral midpoint (5.0). Use ~6-7 to sit the '
-                         'controller in the pop/latin/rnb interleave.')
+                         'Ignored in hr_primary mode.')
     ap.add_argument('--arousal-report', type=float, default=None,
                     help='If set, feed this constant arousal value into '
                          'run_session_v2 via a synthetic arousal_source. '

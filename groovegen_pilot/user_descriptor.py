@@ -31,7 +31,7 @@ import math
 import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Optional
 
 import numpy as np
 
@@ -133,13 +133,16 @@ def _median_target_arousal(features: Iterable[MIRFeatures]) -> float:
     return float(min(cfg.arousal_max, max(cfg.arousal_min, med)))
 
 
-def _genre_histogram(features: Iterable[MIRFeatures]) -> tuple[dict[str, float], dict[str, int]]:
+def _genre_histogram(features: Iterable[MIRFeatures]) -> tuple[dict[str, float], dict[str, int], list[str]]:
     counts = {fam: 0 for fam in FAMILIES}
+    assignments: list[str] = []
     for mir in features:
-        counts[classify_song(mir)] += 1
+        fam = classify_song(mir)
+        counts[fam] += 1
+        assignments.append(fam)
     total = sum(counts.values()) or 1
     weights = {fam: counts[fam] / total for fam in FAMILIES}
-    return weights, counts
+    return weights, counts, assignments
 
 
 def _feature_medians(features: list[MIRFeatures]) -> dict[str, float]:
@@ -154,6 +157,7 @@ def _feature_medians(features: list[MIRFeatures]) -> dict[str, float]:
 
 
 def build_descriptor(features: list[MIRFeatures],
+                     labels: Optional[list[str]] = None,
                      *,
                      expected: int = 12,
                      min_songs: int = 8) -> UserDescriptor:
@@ -185,7 +189,7 @@ def build_descriptor(features: list[MIRFeatures],
             f'(nominal={expected}), got {n}. Retry with more successful tracks.'
         )
     tgt = _median_target_arousal(features)
-    weights, counts = _genre_histogram(features)
+    weights, counts, assignments = _genre_histogram(features)
     prov = {
         'n_songs': n,
         'n_songs_nominal': expected,
@@ -194,6 +198,20 @@ def build_descriptor(features: list[MIRFeatures],
         'feature_medians': _feature_medians(features),
         'family_counts': counts,
     }
+    # Per-song rows for downstream personalization (composer tempo bias).
+    # Only included if caller provides labels (family prefix determines
+    # which family's tempo_default to bias). Also carries the family the
+    # MIR classifier assigned this song to, so you can see when seed labels
+    # (e.g. 'rnb_1') diverge from what the features say ('pop').
+    if labels is not None:
+        if len(labels) != n:
+            raise ValueError(
+                f'labels length {len(labels)} != features length {n}'
+            )
+        prov['per_song'] = [
+            {'label': lbl, 'assigned_family': assn, **f.as_dict()}
+            for lbl, assn, f in zip(labels, assignments, features)
+        ]
     return UserDescriptor(
         target_arousal=tgt,
         genre_weights=weights,
