@@ -11,10 +11,11 @@ from pathlib import Path
 import streamlit as st
 from scoring import compute_all
 
-FAMILIES = ["calm", "lofi", "latin", "rock", "hiphop"]
-RENDERS_DIR = Path(__file__).parent.parent / "renders" / "frozen"
+FAMILIES = ["calm", "lofi", "latin", "rock", "hiphop", "pop", "rnb"]
+RENDERS_DIR = Path(__file__).parent.parent / "renders" / "frozen_v2"
 PROFILES_DIR = Path(__file__).parent.parent / "profiles"
-GATE_VERSION = "1.0.0"
+CHECKPOINTS_DIR = Path(__file__).parent.parent / "profiles" / "checkpoints"
+GATE_VERSION = "2.0.0"
 
 
 def iso_now() -> str:
@@ -48,8 +49,65 @@ def fail_if_assets_missing(paths: dict[str, Path]) -> None:
     st.stop()
 
 
+def find_checkpoint(participant_id: str) -> Path | None:
+    """Return the most recent checkpoint file for this participant, or None."""
+    if not CHECKPOINTS_DIR.exists():
+        return None
+    candidates = sorted(CHECKPOINTS_DIR.glob(f"{participant_id}_*_checkpoint.json"))
+    return candidates[-1] if candidates else None
+
+
+def load_checkpoint(path: Path) -> dict:
+    """Load checkpoint JSON."""
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def restore_from_checkpoint(cp: dict) -> None:
+    """Restore session_state from a checkpoint dict."""
+    st.session_state.session_start = cp["session_start"]
+    st.session_state.vetoes = cp["vetoes"]
+    st.session_state.comparisons = cp["comparisons"]
+    st.session_state.pair_order = cp["pair_order"]
+    st.session_state.current_pair_idx = cp["current_pair_idx"]
+    st.session_state.stage = cp["stage"]
+
+
+def save_checkpoint() -> None:
+    """Persist current pairwise/veto/session state to disk for resume."""
+    if "participant_id" not in st.session_state:
+        return
+    participant_id = st.session_state.participant_id
+    session_start = st.session_state.session_start
+    ts_slug = (
+        session_start.replace(":", "").replace(".", "").replace("-", "").replace("+", "_")[:15]
+    )
+    CHECKPOINTS_DIR.mkdir(parents=True, exist_ok=True)
+    cp_path = CHECKPOINTS_DIR / f"{participant_id}_{ts_slug}_checkpoint.json"
+    cp = {
+        "participant_id": participant_id,
+        "session_start": session_start,
+        "gate_version": GATE_VERSION,
+        "stage": st.session_state.stage,
+        "vetoes": list(st.session_state.get("vetoes", [])),
+        "pair_order": list(st.session_state.get("pair_order", [])),
+        "current_pair_idx": st.session_state.get("current_pair_idx", 0),
+        "comparisons": list(st.session_state.get("comparisons", [])),
+    }
+    cp_path.write_text(json.dumps(cp, indent=2), encoding="utf-8")
+
+
+def delete_checkpoint() -> None:
+    """Remove checkpoint file for current participant (called on save/redo)."""
+    if "participant_id" not in st.session_state:
+        return
+    if not CHECKPOINTS_DIR.exists():
+        return
+    for cp in CHECKPOINTS_DIR.glob(f"{st.session_state.participant_id}_*_checkpoint.json"):
+        cp.unlink(missing_ok=True)
+
+
 def ensure_pairwise_initialized() -> None:
-    """Create reproducible pair ordering and A/B assignments for this participant."""
+    """Create reproducible pair ordering among non-vetoed families."""
     if "pair_order" in st.session_state:
         return
 
@@ -57,7 +115,9 @@ def ensure_pairwise_initialized() -> None:
     seed = int(hashlib.sha256(participant_id.encode()).hexdigest()[:8], 16)
     rng = random.Random(seed)
 
-    pairs = list(combinations(FAMILIES, 2))
+    vetoes = set(st.session_state.get("vetoes", []))
+    surviving = [f for f in FAMILIES if f not in vetoes]
+    pairs = list(combinations(surviving, 2))
     rng.shuffle(pairs)
 
     pair_order: list[dict] = []
@@ -66,13 +126,7 @@ def ensure_pairwise_initialized() -> None:
             fam_a, fam_b = left, right
         else:
             fam_a, fam_b = right, left
-        pair_order.append(
-            {
-                "index": idx,
-                "family_a": fam_a,
-                "family_b": fam_b,
-            }
-        )
+        pair_order.append({"index": idx, "family_a": fam_a, "family_b": fam_b})
 
     st.session_state.pair_order = pair_order
     st.session_state.comparisons = []
@@ -81,6 +135,7 @@ def ensure_pairwise_initialized() -> None:
 
 def reset_for_redo() -> None:
     """Reset pairwise/veto/result state while preserving participant/session header."""
+    delete_checkpoint()
     for key in [
         "pair_order",
         "comparisons",
@@ -89,6 +144,8 @@ def reset_for_redo() -> None:
         "latest_result",
         "profile_path",
         "profile_json",
+        "resume_checkpoint_path",
+        "resume_checkpoint_data",
     ]:
         if key in st.session_state:
             del st.session_state[key]
@@ -98,7 +155,7 @@ def reset_for_redo() -> None:
         if cb_key in st.session_state:
             del st.session_state[cb_key]
 
-    st.session_state.stage = "pairwise"
+    st.session_state.stage = "veto"
 
 
 def save_profile(result: dict) -> tuple[Path, dict]:
@@ -111,14 +168,18 @@ def save_profile(result: dict) -> tuple[Path, dict]:
     PROFILES_DIR.mkdir(parents=True, exist_ok=True)
     profile_path = PROFILES_DIR / f"{participant_id}_{timestamp}.json"
 
+    vetoes = list(st.session_state.get("vetoes", []))
+    comparisons = list(st.session_state.get("comparisons", []))
+    pair_order = list(st.session_state.get("pair_order", []))
+
     profile = {
         "participant_id": participant_id,
         "session_start": session_start,
         "session_end": session_end,
         "gate_version": GATE_VERSION,
         "families": list(FAMILIES),
-        "raw_comparisons": list(st.session_state.get("comparisons", [])),
-        "vetoes": list(st.session_state.get("vetoes", [])),
+        "raw_comparisons": comparisons,
+        "vetoes": vetoes,
         "bt_scores": result["bt_scores"],
         "rank_order": result["rank_order"],
         "admissible_families": result["admissible_families"],
@@ -126,9 +187,15 @@ def save_profile(result: dict) -> tuple[Path, dict]:
         "primary_family_block_b": result["primary_family_block_b"],
         "confidence": result["confidence"],
         "warning": result["warning"],
+        "n_families_available": len(FAMILIES),
+        "n_families_vetoed": len(vetoes),
+        "n_families_surviving": len(FAMILIES) - len(vetoes),
+        "n_pairs_compared": len(comparisons),
+        "pair_order": pair_order,
     }
 
     profile_path.write_text(json.dumps(profile, indent=2), encoding="utf-8")
+    delete_checkpoint()
     return profile_path, profile
 
 
@@ -165,6 +232,55 @@ def main() -> None:
             else:
                 st.session_state.participant_id = pid_value
                 st.session_state.session_start = iso_now()
+                st.session_state.stage = "resume_check"
+                st.rerun()
+        return
+
+    if stage == "resume_check":
+        participant_id = st.session_state.get("participant_id", "")
+        cp_path = find_checkpoint(participant_id)
+        if cp_path is None:
+            st.session_state.stage = "instructions"
+            st.rerun()
+
+        cp = load_checkpoint(cp_path)
+        st.session_state.resume_checkpoint_path = str(cp_path)
+        st.session_state.resume_checkpoint_data = cp
+
+        veto_count = len(cp.get("vetoes", []))
+        pair_order = cp.get("pair_order", [])
+        done_pairs = int(cp.get("current_pair_idx", 0))
+        total_pairs = len(pair_order)
+
+        st.title("Resume prior gate session")
+        st.write(f"Resume in-progress session from {cp.get('session_start', '(unknown)')}?")
+        st.write(f"{veto_count} vetoes recorded, {done_pairs} of {total_pairs} pairs completed.")
+
+        resume_col, restart_col = st.columns(2)
+        with resume_col:
+            if st.button("Resume"):
+                restore_from_checkpoint(cp)
+                st.rerun()
+        with restart_col:
+            if st.button("Start over"):
+                Path(cp_path).unlink(missing_ok=True)
+                for key in [
+                    "pair_order",
+                    "comparisons",
+                    "current_pair_idx",
+                    "vetoes",
+                    "latest_result",
+                    "profile_path",
+                    "profile_json",
+                    "resume_checkpoint_path",
+                    "resume_checkpoint_data",
+                ]:
+                    if key in st.session_state:
+                        del st.session_state[key]
+                for family in FAMILIES:
+                    cb_key = f"veto_{family}"
+                    if cb_key in st.session_state:
+                        del st.session_state[cb_key]
                 st.session_state.stage = "instructions"
                 st.rerun()
         return
@@ -172,12 +288,59 @@ def main() -> None:
     if stage == "instructions":
         st.title("GrooveGen — pre-session music preference")
         st.write(
-            "You will hear pairs of ~30-second music clips. For each pair, choose which one "
-            "you would prefer to listen to during a longer session. There are no right or "
-            "wrong answers — pick the one you'd rather hear. There are 10 pairs total, about 10 minutes."
+            "You will hear pairs of ~15-second music clips across 7 style families: "
+            "calm, lofi, latin, rock, hiphop, pop, rnb."
+        )
+        st.write(
+            "First, you'll preview each style and mark any you do NOT want to hear "
+            "during your session. Then you'll hear pairs from the remaining styles "
+            "and choose which you'd prefer."
+        )
+        st.write(
+            "Total time depends on how many styles you veto:\n"
+            "- Veto none: 21 pairs, ~15 min\n"
+            "- Veto 2: 10 pairs, ~8 min\n"
+            "- Veto 4: 3 pairs, ~2 min\n\n"
+            "Your progress is saved after every answer — you can quit and resume."
         )
         if st.button("I understand — begin listening"):
+            st.session_state.stage = "veto"
+            st.rerun()
+        return
+
+    if stage == "veto":
+        st.header("Any styles you do not want at all?")
+        st.write(
+            "Check any style you do NOT want played during your session. It's OK to check none."
+        )
+
+        for family in FAMILIES:
+            st.subheader(family)
+            st.audio(str(render_paths[family]), format="audio/wav", start_time=0, end_time=10)
+            st.checkbox(
+                "Do not play this style during my session",
+                key=f"veto_{family}",
+            )
+
+        n_surviving = len([f for f in FAMILIES if not st.session_state.get(f"veto_{f}", False)])
+        n_pairs = n_surviving * (n_surviving - 1) // 2
+        minutes_est = max(1, round(n_pairs * 0.75))
+        st.write(
+            f"With current vetoes: {n_surviving} families remain, {n_pairs} pairs, ~{minutes_est} min."
+        )
+
+        if n_surviving < 2:
+            st.error("You must leave at least 2 families un-vetoed to complete the gate.")
+
+        if st.button("Continue", disabled=n_surviving < 2):
+            st.session_state.vetoes = [
+                family for family in FAMILIES if st.session_state.get(f"veto_{family}", False)
+            ]
+            for key in ["pair_order", "comparisons", "current_pair_idx"]:
+                if key in st.session_state:
+                    del st.session_state[key]
             st.session_state.stage = "pairwise"
+            save_checkpoint()
             st.rerun()
         return
 
@@ -187,8 +350,13 @@ def main() -> None:
         pair_order = st.session_state.pair_order
         current_idx = st.session_state.current_pair_idx
 
-        if current_idx >= len(pair_order):
+        if len(pair_order) == 0:
+            st.error("At least two non-vetoed families are required. Returning to veto selection.")
             st.session_state.stage = "veto"
+            st.rerun()
+
+        if current_idx >= len(pair_order):
+            st.session_state.stage = "confirm"
             st.rerun()
 
         current = pair_order[current_idx]
@@ -224,39 +392,28 @@ def main() -> None:
             )
             st.session_state.current_pair_idx = current_idx + 1
             if st.session_state.current_pair_idx >= len(pair_order):
-                st.session_state.stage = "veto"
-            st.rerun()
-        return
-
-    if stage == "veto":
-        st.header("Any styles you do not want at all?")
-        st.write(
-            "Check any style you do NOT want played during your session. It's OK to check none."
-        )
-
-        for family in FAMILIES:
-            st.subheader(family)
-            st.audio(str(render_paths[family]), format="audio/wav")
-            st.checkbox(
-                "Do not play this style during my session",
-                key=f"veto_{family}",
-            )
-
-        if st.button("Continue"):
-            st.session_state.vetoes = [
-                family for family in FAMILIES if st.session_state.get(f"veto_{family}", False)
-            ]
-            st.session_state.stage = "confirm"
+                st.session_state.stage = "confirm"
+            save_checkpoint()
             st.rerun()
         return
 
     if stage == "confirm":
         comparisons = st.session_state.get("comparisons", [])
         vetoes = st.session_state.get("vetoes", [])
+        surviving = [fam for fam in FAMILIES if fam not in set(vetoes)]
+        if len(surviving) < 2:
+            st.error(
+                "You cannot continue with fewer than 2 non-vetoed families. Returning to veto selection."
+            )
+            st.session_state.stage = "veto"
+            st.rerun()
+
         result = compute_all(comparisons, FAMILIES, vetoes)
         st.session_state.latest_result = result
 
         st.header("Review preference profile")
+        st.write(f"Compared {len(comparisons)} pairs across {len(surviving)} families.")
+        st.write("Vetoed: " + (", ".join(vetoes) if vetoes else "none") + ".")
 
         ordered_rows = [
             {"family": fam, "bt_score": f"{result['bt_scores'][fam]:.4f}"}

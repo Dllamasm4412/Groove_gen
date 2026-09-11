@@ -9,7 +9,7 @@ from gate_widget.scoring import (
     compute_rank_order,
 )
 
-FAMILIES = ["calm", "lofi", "latin", "rock", "hiphop"]
+FAMILIES = ["calm", "lofi", "latin", "rock", "hiphop", "pop", "rnb"]
 
 
 def _cmp(family_a: str, family_b: str, chosen: str, idx: int) -> dict:
