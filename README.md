@@ -1,52 +1,117 @@
 # GrooveGen
 
-GrooveGen is a closed-loop system that generates a musical bed and steers it in real time from a listener's heart rate. A control loop reads the listener's HR, converts it to a normalized arousal value, compares it to a scripted reference trajectory, and adjusts the music to track that reference.
+GrooveGen is a real-time closed-loop physiological music control system.
 
-## Current milestone
+The system reads live heart-rate signals from PPG, estimates current physiological state, chooses a genre and tier on an energy ladder, renders symbolic music to audio, and plays continuous crossfaded segments while logging trace rows for later analysis.
 
-M1: closed loop running end-to-end on live PPG, with clean 15-minute runs in each direction (up-reg and down-reg), zero deadline misses, and within-segment plan invariance holding.
+This repository is focused on system and method validation for pilot studies, not efficacy claims.
 
-M1 build order:
-1. player.py — SoundDevicePlayer plus NullPlayer, dependency-injectable.
-2. renderer.render_segment plus crossfade — one MIDI render and one FluidSynth call with equal-power downbeat-aligned crossfades.
-3. Nested run_session — control once per segment while tracing once per bar.
+## What It Does
 
-## Handoff docs
+- Acquires heart-rate estimates from live serial PPG.
+- Maps control state to a ladder of genre and tier cells.
+- Renders symbolic segments through FluidSynth and a fixed SoundFont.
+- Crossfades adjacent segments with equal-power overlap.
+- Emits structured per-bar traces for reproducibility and post-hoc analysis.
+- Supports headless operation through NullPlayer for simulation and debugging.
 
-- [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) — project overview, system description, and the current pilot plan.
-- [AI_CONTINUATION_CONTEXT.md](AI_CONTINUATION_CONTEXT.md) — code interfaces, invariants, and development rules.
-- [PROJECT_HISTORY_AND_DECISIONS.md](PROJECT_HISTORY_AND_DECISIONS.md) — chronology of design decisions and reversals.
-- [VENUE_RECOMMENDATION.md](VENUE_RECOMMENDATION.md) — venue recommendation for the paper submission effort.
+## Repository Layout
 
-## Quickstart
+- [groovegen_pilot](groovegen_pilot): active pilot runtime, rendering pipeline, session runners, and control integration.
+- [groovegen_project](groovegen_project): broader project code and historical controller work.
+- [GrooveGen](GrooveGen): research notes, architecture briefs, and planning artifacts.
+- [song_excerpts](song_excerpts): reference materials.
+- [soundfonts](soundfonts): SoundFont assets.
 
-Activate the virtual environment:
+## Core Runtime Pipeline
 
-```bash
-source ~/GrooveGen/.venv/bin/activate
-```
+Within [groovegen_pilot](groovegen_pilot), the closed-loop stack is:
 
-Run the full regression gate set:
+1. Heart-rate source
+- [serial_ppg_source.py](groovegen_pilot/serial_ppg_source.py)
 
-```bash
+2. Ladder and controller
+- [ladder.py](groovegen_pilot/ladder.py)
+- [control.py](groovegen_pilot/control.py)
+
+3. Symbolic renderer
+- [segment_renderer.py](groovegen_pilot/segment_renderer.py)
+
+4. Crossfade and playback
+- [crossfade.py](groovegen_pilot/crossfade.py)
+- [player.py](groovegen_pilot/player.py)
+- [renderer_to_player.py](groovegen_pilot/renderer_to_player.py)
+
+5. Session orchestration and tracing
+- [run_session_v2.py](groovegen_pilot/run_session_v2.py)
+
+## Frozen Library Workflow
+
+The deterministic library freeze pipeline lives in:
+
+- [freeze_library.py](groovegen_pilot/freeze_library.py)
+- [composer/frozen_seeds.py](groovegen_pilot/composer/frozen_seeds.py)
+
+Current frozen family set includes calm, lofi, latin, rock, hiphop, pop, and rnb.
+
+Typical freeze command from [groovegen_pilot](groovegen_pilot):
+
+python freeze_library.py --out renders/frozen_v2
+
+## Gate Personalization Workflow
+
+The pre-session listening gate is implemented in:
+
+- [gate_widget/app.py](groovegen_pilot/gate_widget/app.py)
+- [gate_widget/scoring.py](groovegen_pilot/gate_widget/scoring.py)
+
+It collects pairwise preferences and vetoes, computes Bradley-Terry scores, and writes a profile JSON consumed by session tooling.
+
+## Setup
+
+From repository root:
+
+1. Activate the virtual environment.
+source .venv/bin/activate
+
+2. Confirm FluidSynth is installed and on path.
+fluidsynth --version
+
+3. Ensure a SoundFont exists and pass it explicitly to runtime scripts.
+
+## Pilot Entry Point
+
+Subject-zero minimum viable driver:
+
+- [run_pilot_zero.py](groovegen_pilot/run_pilot_zero.py)
+
+Example run from [groovegen_pilot](groovegen_pilot):
+
+python run_pilot_zero.py --sf2 Musyng_Kite.sf2 --port /dev/cu.usbmodem2023101
+
+## Regression Gates
+
+Run these after non-trivial changes:
+
 python groovegen_pilot/hr_trajectory.py
 python groovegen_pilot/test_faults_fixed.py
 python groovegen_project/groovegen/pd_controller.py
 python groovegen_pilot/tier_mapping.py
 python groovegen_pilot/scene.py
-```
 
-## Runtime targets
+## Key Constraints
 
-- Dev machine: MacBook Pro M5
-- Pilot machine: Mac Studio M4 Max
-- Sim/CI: either machine, using NullPlayer
+- System framing is method and infrastructure, not efficacy claims.
+- No vocals.
+- No neural-network generators in the live control path.
+- Live path remains symbolic MIDI plus FluidSynth rendering.
+- Toy plant components are for simulation and ablation only, not human claims.
+- Sensor truth source is PPG.
+- Trace schema evolves additively.
 
-## Locked constraints
+## Essential Project Docs
 
-- Contribution is system/method, not efficacy.
-- No vocals, ever.
-- No neural networks in the live control path; symbolic MIDI + FluidSynth only.
-- The toy plant is fabricated and is for offline use only.
-- The sensor is a PPG source, not Polar H10.
-- Reuse the validated CascadeController unchanged.
+- [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md)
+- [AI_CONTINUATION_CONTEXT.md](AI_CONTINUATION_CONTEXT.md)
+- [PROJECT_HISTORY_AND_DECISIONS.md](PROJECT_HISTORY_AND_DECISIONS.md)
+- [SENSOR_NOTES.md](SENSOR_NOTES.md)
