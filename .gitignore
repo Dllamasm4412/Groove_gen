@@ -46,6 +46,7 @@ groovegen_pilot/sessions/*.csv
 
 # PPG recording data
 **/rr_recordings/*.csv
+new_biofeedback/ppg_live_recordings/
 
 # OS/editor cruft
 *.swp
