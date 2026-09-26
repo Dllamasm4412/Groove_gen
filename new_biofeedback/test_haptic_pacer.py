@@ -300,6 +300,93 @@ def test_stop_off_only_when_pulsing():
     print("(stop) PASS: stop() sends one OFF only when pulsing; none from PAUSED or WARMUP")
 
 
+def test_set_goal_continuity_and_direction_flip():
+    pacer = hp.HapticPacer(goal_bpm=71.0)
+    base = follower(65.0)
+    def fn(t, p):
+        if abs(t - 120.0) < 1e-9:
+            assert p.set_goal(40.0, t)      # clipped to HR0 - 6 = 59
+        return base(t, p)
+    updates, commands = drive(pacer, fn, 300.0)
+    assert pacer.goal_bpm == 59.0 and pacer.goal_clipped, (pacer.goal_bpm, pacer.goal_clipped)
+    rows = pacing_rows(updates)
+    pace = np.array([r["pace_bpm"] for r in rows])
+    t = np.array([r["time_s"] for r in rows])
+    assert np.max(np.abs(np.diff(pace))) <= SLEW_PER_UPDATE + EPS, np.max(np.abs(np.diff(pace)))
+    peak = pace[t <= 120.0].max()
+    after = pace[t > 120.0]
+    assert np.all(np.diff(after) <= EPS), "pace rose after the goal moved down"
+    assert np.all(after >= 59.0 - EPS), "pace crossed the new goal"
+    origin = next(r["origin_bpm"] for r in updates if r["time_s"] > 120.0)
+    assert abs(origin - peak) <= SLEW_PER_UPDATE + EPS, (origin, peak)
+    ibi = np.diff(hb_times(commands))
+    assert np.all(ibi >= 60.0 / hp.PACE_MAX_BPM - SAMPLE_S), ibi.min()
+    print(f"(set_goal flip) PASS: goal 71 -> 40 (clipped 59) at 120 s; ramp restarts at {origin:.2f} "
+          f"(no jump, max step {np.max(np.abs(np.diff(pace))):.3f}), then only falls, never below 59")
+
+
+def test_set_goal_noop_cases():
+    warm = hp.HapticPacer(goal_bpm=71.0)
+    assert warm.set_goal(62.0, 0.0) is False and warm.goal_request_bpm == 62.0
+    drive(warm, constant(65.0), 15.0)
+    assert warm.goal_bpm == 62.0, warm.goal_bpm
+    live = hp.HapticPacer(goal_bpm=71.0)
+    drive(live, constant(65.0), 30.0)
+    traj = live.traj
+    assert live.set_goal(71.0, 30.0) is False and live.set_goal(90.0, 30.0) is False, "same clipped goal restarted ramp"
+    assert live.traj is traj
+    live.stop()
+    assert live.set_goal(60.0, 31.0) is False and live.goal_bpm == 71.0 and live.state == hp.DONE
+    for bad in (float("nan"), 0.0, -5.0):
+        try:
+            live.set_goal(bad, 32.0)
+        except ValueError:
+            continue
+        raise AssertionError(f"set_goal accepted {bad}")
+    print("(set_goal no-op) PASS: WARMUP replaces request (used at start); same clipped goal keeps ramp; ignored in DONE; bad goals raise")
+
+
+def test_set_goal_hold_has_no_direction():
+    # Goal moved up (71) then set back near the current reference: a hold.
+    # HR then rises 8 bpm; an up-directed goal would pause (hr_past_goal),
+    # a hold keeps pacing within the lead bound.
+    pacer = hp.HapticPacer(goal_bpm=71.0)
+    drive(pacer, constant(65.0), 40.0)
+    ref = pacer.ref_bpm
+    assert pacer.set_goal(ref + 0.2, 40.0)
+    assert pacer._direction() == 0
+    fn = constant(ref, jumps=[(40.0, ref + 8.0)])
+    updates, commands = drive(pacer, fn, 30.0)
+    rows = pacing_rows(updates)
+    assert pacer.state == hp.PACING, (pacer.state, pacer.reason)
+    for r in rows:
+        assert abs(r["pace_bpm"] - r["hr_bpm"]) <= hp.PACE_MAX_LEAD_BPM + EPS, r
+    print(f"(set_goal hold) PASS: goal within {hp.PACE_GOAL_HOLD_BAND_BPM} bpm of origin has no direction; "
+          f"HR +8 keeps pacing inside the {hp.PACE_MAX_LEAD_BPM:.0f} bpm lead (no hr_past_goal pause)")
+
+
+def test_invalid_window():
+    spans = [(40.0, 60.0), (140.0, 160.0)]   # 2 x 20 s invalid, 80 s apart
+    total = hp.HapticPacer(goal_bpm=71.0)
+    drive(total, constant(65.0, invalid_spans=spans), 200.0)
+    assert total.state == hp.DONE and total.reason == "signal_lost", (total.state, total.reason)
+    windowed = hp.HapticPacer(goal_bpm=71.0, invalid_window_s=60.0)
+    drive(windowed, constant(65.0, invalid_spans=spans), 200.0)
+    assert windowed.state == hp.PACING, (windowed.state, windowed.reason)
+    assert windowed.invalid_total_s > hp.PACE_MAX_INVALID_S
+    long_gap = hp.HapticPacer(goal_bpm=71.0, invalid_window_s=60.0)
+    drive(long_gap, constant(65.0, invalid_spans=[(40.0, 120.0)]), 120.0)
+    assert long_gap.state == hp.DONE and long_gap.reason == "signal_lost"
+    for bad in (0.0, -1.0, float("inf")):
+        try:
+            hp.HapticPacer(goal_bpm=71.0, invalid_window_s=bad)
+        except ValueError:
+            continue
+        raise AssertionError(f"accepted invalid_window_s={bad}")
+    print(f"(invalid window) PASS: 2 x 20 s dropouts end pacing by default (cumulative), not with a 60 s window "
+          f"(total {windowed.invalid_total_s:.0f} s); one 80 s dropout still ends it")
+
+
 # ---- Part 2: replay on logged PPG ----
 
 def check_replay(name, updates, commands):
@@ -317,13 +404,18 @@ def check_replay(name, updates, commands):
             assert abs(r["pace_bpm"] - r["hr_bpm"]) <= hp.PACE_MAX_LEAD_BPM + EPS, (name, "lead", r)
 
     # Slew: the ramp moves <= 0.1 bpm per 1 s update unless the lead clamp is
-    # dragging the pace along with measured HR (pace sits on the lead boundary).
+    # dragging the pace along with measured HR (pace sits on the lead boundary)
+    # or releases it (previous pace on the boundary, new pace back on the ramp
+    # reference, e.g. after a pause during which HR moved).
+    def on_boundary(r):
+        return abs(abs(r["pace_bpm"] - r["hr_bpm"]) - hp.PACE_MAX_LEAD_BPM) < 1e-6
+
     fast = 0
     for prev, cur in zip(rows, rows[1:]):
         step = abs(cur["pace_bpm"] - prev["pace_bpm"])
-        on_boundary = abs(abs(cur["pace_bpm"] - cur["hr_bpm"]) - hp.PACE_MAX_LEAD_BPM) < 1e-6
+        released = on_boundary(prev) and abs(cur["pace_bpm"] - cur["ref_bpm"]) < 1e-6
         if step > SLEW_PER_UPDATE + EPS:
-            assert on_boundary, (name, "slew", prev, cur)
+            assert on_boundary(cur) or released, (name, "slew", prev, cur)
             fast += 1
     stats["clamp_steps"] = fast
 
@@ -392,5 +484,9 @@ if __name__ == "__main__":
     test_bad_inputs()
     test_stall_single_pulse_and_capped_invalid_time()
     test_stop_off_only_when_pulsing()
+    test_set_goal_continuity_and_direction_flip()
+    test_set_goal_noop_cases()
+    test_set_goal_hold_has_no_direction()
+    test_invalid_window()
     test_replay_recordings()
     print("\nALL HAPTIC PACER TESTS PASSED")

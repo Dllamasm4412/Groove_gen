@@ -29,6 +29,14 @@ starts at the current HR and ramps toward the goal, clipped to HR0 +/- 6):
     python ppg_live_estimator_adaptive_haptics_stable_hr.py \
         --port /dev/cu.usbmodemXXXX --pace-goal-bpm 58 --pace-max-seconds 180
 
+GrooveGen link (groovegen_link.py; localhost UDP). --publish-udp sends each
+1 Hz HR/RR estimate to GrooveGen. --goal-udp lets GrooveGen arm and steer
+pacing: no pacer (and no echo pulses) until the first goal message, the goal
+then follows GrooveGen's phase schedule, and pacing stops on {"stop": 1} or
+if GrooveGen goes silent for 10 s:
+    python ppg_live_estimator_adaptive_haptics_stable_hr.py \
+        --port /dev/cu.usbmodemXXXX --publish-udp 127.0.0.1:5005 --goal-udp 5006
+
 Dependencies:
     python -m pip install numpy scipy pyserial
 """
@@ -83,6 +91,32 @@ HR_MIN_VALID_IBI = 4
 HR_EMA_ALPHA = 0.25
 HR_MIN_BPM = 40.0
 HR_MAX_BPM = 180.0
+# Beat-doubling gate: when the diastolic/reflected wave is counted as a beat,
+# the detected interval L is half the true period, so the cardiac-band PPG
+# repeats better at 2L than at L. Reject when autocorr(2L) - autocorr(L)
+# exceeds this. 12 recordings (2026-09-22/24), also time-compressed 1.5x and
+# 1.9x: clean windows p99 <= 0.05, max 0.31 (2 of 4106 above 0.2); all 83
+# windows at ~2x HR in the 22:21 run were 0.68..1.32.
+HR_MAX_DOUBLE_PERIOD_GAIN = 0.2
+# A doubled window is re-detected with peaks at least this fraction of the
+# true period (2L) apart, so only the larger peak of each pair is kept, and
+# accepted (reason ok_undoubled) only if it then passes both gates. Tried only
+# when autocorr(L) < HR_UNDOUBLE_MAX_AC_L: a true half-period lag is
+# anti-correlated (157 real doubled windows: <= -0.24); the one false
+# recovery found (1.9x replay, HR halved) had +0.04. The live run 2026-09-25
+# 11:28 (after cycling, HR ~80) was doubled in 76 of 101 updates.
+HR_UNDOUBLE_MIN_FRAC = 0.75
+HR_UNDOUBLE_MAX_AC_L = -0.1
+# Signal-quality floor. The peak screens are relative, so band-passed noise
+# with no pulse gave "valid" HR in ~60% of white-noise windows. Reject when
+# the cardiac-band PPG barely repeats at the detected beat interval, or its
+# SD is below HR_MIN_PULSE_SD counts. Offline (2026-09-25): 12 recordings,
+# 1821 valid windows, period_ac p1 0.42, pulse_sd min 44 (7 windows lost,
+# 0.4%; 12 of 1146 at 1.5-1.9x speed); noise passing: white 0.3%, pink
+# 0.7%, brown 2% of windows (was 62/37/17%). Not yet checked on a real
+# finger-off recording.
+HR_MIN_PERIOD_AC = 0.3
+HR_MIN_PULSE_SD = 20.0
 
 
 def bandpass(x, low, high, fs, order=3):
@@ -138,8 +172,10 @@ def resample_feature(t, x, grid):
     return interp1d(t, x, kind="linear")(grid)
 
 
-def extract_pulses(t, raw, min_required_peaks=8, min_required_ibi=6):
-    """Bandpass PPG and return robustly screened peaks and derived features."""
+def extract_pulses(t, raw, min_required_peaks=8, min_required_ibi=6, min_ibi_s=None):
+    """Bandpass PPG and return robustly screened peaks and derived features.
+
+    min_ibi_s overrides the minimum peak spacing (default 60 / MAX_BPM)."""
     x, t = np.asarray(raw, float), np.asarray(t, float)
     if len(x) < 40:
         return None
@@ -149,7 +185,7 @@ def extract_pulses(t, raw, min_required_peaks=8, min_required_ibi=6):
     except ValueError:
         return None
 
-    min_distance = int(FS * 60.0 / MAX_BPM)
+    min_distance = int(FS * (60.0 / MAX_BPM if min_ibi_s is None else min_ibi_s))
     prominence = max(0.45 * np.std(ppg), 1e-6)
     peaks, _ = find_peaks(ppg, distance=min_distance, prominence=prominence)
     if len(peaks) < min_required_peaks:
@@ -247,12 +283,40 @@ def has_long_clip_run(wx, wc):
     return bool(np.max(runs) > round(MAX_CLIP_RUN_S * FS))
 
 
-def estimate_stable_hr(t, raw, clipped, previous_hr=np.nan):
+def period_autocorr(raw, period_s):
+    """Normalized autocorrelation of the cardiac-band PPG at lag period_s."""
+    lag = int(round(period_s * FS))
+    x = np.asarray(raw, float)
+    if lag < 1 or lag >= len(x) // 2:
+        return np.nan
+    try:
+        ppg = bandpass(detrend(x), CARDIAC_BAND[0], CARDIAC_BAND[1], FS)
+    except ValueError:
+        return np.nan
+    z = ppg - np.mean(ppg)
+    var = np.mean(z * z)
+    if var <= 0:
+        return np.nan
+    return float(np.mean(z[:-lag] * z[lag:]) / var)
+
+
+def estimate_stable_hr(t, raw, clipped, previous_hr=np.nan, diag=None):
     """Estimate HR from the median valid IBI over the latest HR_WINDOW_S.
 
     Returns (smoothed_hr, window_hr, is_valid). The smoothed estimate uses an
-    EMA only after a valid raw/window estimate has been obtained.
+    EMA only after a valid raw/window estimate has been obtained. If diag is a
+    dict it is filled with the outcome for logging: reason (ok, short_history,
+    clip_run, weak_pulse, no_pulses, few_ibi, doubled_beats, aperiodic;
+    ok_undoubled = valid after re-detecting a doubled window),
+    n_valid_ibi, double_gain,
+    period_ac (autocorrelation at the detected beat interval) and pulse_sd
+    (cardiac-band SD, ADC counts). Band-passed noise can pass the relative
+    peak screens, so the last two are logged to judge signal quality.
     """
+    if diag is None:
+        diag = {}
+    diag.update(reason="short_history", n_valid_ibi=0, double_gain=np.nan,
+                period_ac=np.nan, pulse_sd=np.nan)
     n = int(HR_WINDOW_S * FS)
     if len(raw) < n:
         return previous_hr, np.nan, False
@@ -261,30 +325,66 @@ def estimate_stable_hr(t, raw, clipped, previous_hr=np.nan):
     wx = np.asarray(raw, float)[-n:]
     wc = np.asarray(clipped, int)[-n:]
 
+    try:
+        diag["pulse_sd"] = float(np.std(bandpass(detrend(wx), CARDIAC_BAND[0], CARDIAC_BAND[1], FS)))
+    except ValueError:
+        pass
     if has_long_clip_run(wx, wc):
+        diag["reason"] = "clip_run"
+        return previous_hr, np.nan, False
+    if not diag["pulse_sd"] >= HR_MIN_PULSE_SD:
+        diag["reason"] = "weak_pulse"
         return previous_hr, np.nan, False
 
-    data = extract_pulses(
-        wt,
-        wx,
-        min_required_peaks=5,
-        min_required_ibi=HR_MIN_VALID_IBI,
-    )
-    if data is None:
+    def detect(min_ibi_s=None):
+        data = extract_pulses(wt, wx, min_required_peaks=5,
+                              min_required_ibi=HR_MIN_VALID_IBI, min_ibi_s=min_ibi_s)
+        if data is None:
+            return None
+        ibi = np.diff(data[0])
+        return ibi[(ibi >= 60.0 / HR_MAX_BPM) & (ibi <= 60.0 / HR_MIN_BPM)]
+
+    ibi = detect()
+    if ibi is None:
+        diag["reason"] = "no_pulses"
+        return previous_hr, np.nan, False
+    diag["n_valid_ibi"] = len(ibi)
+    if len(ibi) < HR_MIN_VALID_IBI:
+        diag["reason"] = "few_ibi"
         return previous_hr, np.nan, False
 
-    peak_t = data[0]
-    ibi = np.diff(peak_t)
-    valid = (ibi >= 60.0 / HR_MAX_BPM) & (ibi <= 60.0 / HR_MIN_BPM)
-    if np.sum(valid) < HR_MIN_VALID_IBI:
+    # Windows whose detected beat interval is half the waveform's period
+    # (double-counted beats) are re-detected once at the doubled period;
+    # if that still fails the gates they are rejected (never clamped).
+    median_ibi = float(np.median(ibi))
+    ac_1x = period_autocorr(wx, median_ibi)
+    gain = period_autocorr(wx, 2.0 * median_ibi) - ac_1x
+    undoubled = False
+    if gain > HR_MAX_DOUBLE_PERIOD_GAIN and ac_1x < HR_UNDOUBLE_MAX_AC_L:
+        ibi2 = detect(HR_UNDOUBLE_MIN_FRAC * 2.0 * median_ibi)
+        if ibi2 is not None and len(ibi2) >= HR_MIN_VALID_IBI:
+            median2 = float(np.median(ibi2))
+            ac2 = period_autocorr(wx, median2)
+            gain2 = period_autocorr(wx, 2.0 * median2) - ac2
+            if gain2 <= HR_MAX_DOUBLE_PERIOD_GAIN:
+                ibi, median_ibi, ac_1x, gain, undoubled = ibi2, median2, ac2, gain2, True
+                diag["n_valid_ibi"] = len(ibi)
+    diag["period_ac"] = float(ac_1x)
+    diag["double_gain"] = float(gain)
+    if gain > HR_MAX_DOUBLE_PERIOD_GAIN:
+        diag["reason"] = "doubled_beats"
+        return previous_hr, np.nan, False
+    if not ac_1x >= HR_MIN_PERIOD_AC:
+        diag["reason"] = "aperiodic"
         return previous_hr, np.nan, False
 
-    window_hr = float(np.median(60.0 / ibi[valid]))
+    window_hr = float(np.median(60.0 / ibi))
     if not np.isfinite(previous_hr):
         smoothed_hr = window_hr
     else:
         smoothed_hr = HR_EMA_ALPHA * window_hr + (1.0 - HR_EMA_ALPHA) * previous_hr
 
+    diag["reason"] = "ok_undoubled" if undoubled else "ok"
     return float(smoothed_hr), window_hr, True
 
 
@@ -365,12 +465,31 @@ def main():
                         help="Pacing mode: ramp HB rate from current HR toward this goal instead of echoing peaks")
     parser.add_argument("--pace-max-seconds", type=float, default=300.0,
                         help="Pacing mode: stop pacing after this many seconds")
+    parser.add_argument("--pace-invalid-window-s", type=float, default=None,
+                        help="Pacing mode: count the 30 s invalid-HR limit over this trailing "
+                             "window instead of the whole run (default: whole run)")
+    parser.add_argument("--publish-udp", default=None, metavar="HOST:PORT",
+                        help="Publish each 1 Hz HR/RR estimate as JSON to GrooveGen")
+    parser.add_argument("--goal-udp", type=int, default=None, metavar="PORT",
+                        help="Pacing goals from GrooveGen on 127.0.0.1:PORT; disables peak echo")
     args = parser.parse_args()
+    if args.goal_udp is not None and args.pace_goal_bpm is not None:
+        parser.error("--goal-udp and --pace-goal-bpm are exclusive (GrooveGen sets the goal)")
 
+    from groovegen_link import GrooveGenLink, parse_host_port
+    link = GrooveGenLink(
+        publish_addr=None if args.publish_udp is None else parse_host_port(args.publish_udp),
+        goal_port=args.goal_udp,
+    )
+
+    pacing_enabled = args.pace_goal_bpm is not None or args.goal_udp is not None
     pacer = None
+    pacer_stopped = False   # a GrooveGen stop before arming: never create the pacer
+    if pacing_enabled:
+        from haptic_pacer import DONE, LOG_FIELDS, HapticPacer
     if args.pace_goal_bpm is not None:
-        from haptic_pacer import LOG_FIELDS, HapticPacer
-        pacer = HapticPacer(goal_bpm=args.pace_goal_bpm, max_seconds=args.pace_max_seconds)
+        pacer = HapticPacer(goal_bpm=args.pace_goal_bpm, max_seconds=args.pace_max_seconds,
+                            invalid_window_s=args.pace_invalid_window_s)
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -379,6 +498,7 @@ def main():
     estimate_path = out_dir / f"ppg_live_adaptive_{stamp}.csv"
     haptic_path = out_dir / f"ppg_haptic_events_{stamp}.csv"
     pacer_path = out_dir / f"ppg_pacer_{stamp}.csv"
+    hr_path = out_dir / f"ppg_hr_{stamp}.csv"
 
     history_n = int((STABLE_WINDOW_S + 5.0) * FS)
     stable_n = int(STABLE_WINDOW_S * FS)
@@ -402,6 +522,10 @@ def main():
     stable_hr = np.nan
     latest_window_hr = np.nan
     hr_is_valid = False
+    hr_diag = {}
+    n_hb_sent = 0                      # HB commands actually written to the XIAO
+    hb_sent_t = deque()                # their MCU times, for per-window motor counts
+    goal_source = "udp" if args.goal_udp is not None else "cli" if pacing_enabled else None
 
     print(f"Opening {args.port} at {args.baud} baud")
     print("Stable HR: 8 s window / 1 s update; haptics begin after valid HR warm-up.")
@@ -411,11 +535,13 @@ def main():
     with serial.Serial(args.port, args.baud, timeout=1) as ser, \
          raw_path.open("w", newline="") as raw_file, \
          estimate_path.open("w", newline="") as estimate_file, \
-         haptic_path.open("w", newline="") as haptic_file:
+         haptic_path.open("w", newline="") as haptic_file, \
+         hr_path.open("w", newline="") as hr_file:
 
         raw_writer = csv.writer(raw_file)
         est_writer = csv.writer(estimate_file)
         haptic_writer = csv.writer(haptic_file)
+        hr_writer = csv.writer(hr_file)
         raw_writer.writerow(["time_s", "raw_ppg", "clipped"])
         est_writer.writerow([
             "time_s", "stable_hr_bpm", "window_hr_bpm", "fast_candidate_rpm",
@@ -423,17 +549,35 @@ def main():
             "rate_change", "riiv_rpm", "riiv_quality", "riav_rpm", "riav_quality",
             "rifv_rpm", "rifv_quality",
         ])
+        # host_time_s is the MCU time of the triggering sample (historical name);
+        # wall_time_s is host time.time(); sent=0 means logged but not written
+        # to the XIAO (--no-haptics).
         haptic_writer.writerow([
             "host_time_s", "ppg_peak_time_s", "instantaneous_bpm", "stable_hr_bpm",
-            "window_hr_bpm", "command", "pace_bpm",
+            "window_hr_bpm", "command", "pace_bpm", "wall_time_s", "sent",
         ])
-        if pacer is not None:
+        # One row per 1 Hz HR update (the value published to GrooveGen). time_s
+        # (MCU) + wall_time_s pair the two clocks; serial_backlog_bytes is
+        # ser.in_waiting then, so backlogged rows can be dropped from a clock fit.
+        # n_hb_in_window counts HB commands sent in the HR window (motor artifact).
+        hr_writer.writerow([
+            "time_s", "wall_time_s", "serial_backlog_bytes", "stable_hr_bpm",
+            "window_hr_bpm", "valid", "reason", "n_valid_ibi", "double_gain",
+            "period_ac", "pulse_sd", "n_hb_in_window", "n_hb_sent",
+        ])
+        if pacing_enabled:
             pacer_file = pacer_path.open("w", newline="")
             pacer_writer = csv.DictWriter(pacer_file, fieldnames=LOG_FIELDS)
             pacer_writer.writeheader()
             last_pacer_state = None
-            print(f"Pacing mode: goal request {args.pace_goal_bpm:.1f} bpm, "
-                  f"max {args.pace_max_seconds:.0f} s. Warm-up needs 10 consecutive valid HR updates.")
+            if pacer is not None:
+                print(f"Pacing mode: goal request {args.pace_goal_bpm:.1f} bpm, "
+                      f"max {args.pace_max_seconds:.0f} s. Warm-up needs 10 consecutive valid HR updates.")
+            else:
+                print(f"Pacing mode: waiting for a GrooveGen goal on UDP {args.goal_udp} "
+                      f"(max {args.pace_max_seconds:.0f} s once armed). No pulses until then.")
+        if args.publish_udp is not None:
+            print(f"Publishing HR/RR to GrooveGen at {args.publish_udp}")
 
         # SAMD21 often resets upon USB serial open.
         time.sleep(2.0)
@@ -450,6 +594,29 @@ def main():
                     continue
 
                 t, raw, clip = item
+
+                # GrooveGen goals / stop / watchdog (drains all pending datagrams)
+                if args.goal_udp is not None:
+                    msg = link.poll()
+                    if msg == "stop":
+                        if pacer is not None and pacer.state != DONE:
+                            pacer.stop("session_end")
+                            print("PACER stop from GrooveGen (session_end)")
+                        pacer_stopped = True
+                    elif msg is not None and not pacer_stopped:
+                        if pacer is None:
+                            pacer = HapticPacer(goal_bpm=msg, max_seconds=args.pace_max_seconds,
+                                                invalid_window_s=args.pace_invalid_window_s)
+                            print(f"PACER armed by GrooveGen: goal request {msg:.1f} bpm; "
+                                  f"warm-up needs 10 consecutive valid HR updates.")
+                        elif pacer.set_goal(msg, t):
+                            print(f"PACER goal -> {pacer.goal_bpm:.1f} bpm (request {msg:.1f}, "
+                                  f"from ref {pacer.origin_bpm:.1f})")
+                    if pacer is not None and pacer.state != DONE and link.watchdog_expired():
+                        pacer.stop("controller_lost")
+                        print("PACER stop: no GrooveGen message for "
+                              f"{link.watchdog_s:.0f} s (controller_lost)")
+
                 times.append(t)
                 samples.append(raw)
                 clipped.append(clip)
@@ -462,8 +629,23 @@ def main():
                         samples,
                         clipped,
                         previous_hr=stable_hr,
+                        diag=hr_diag,
                     )
                     last_hr_update = t
+                    wall_now = time.time()
+                    while hb_sent_t and hb_sent_t[0] < t - HR_WINDOW_S:
+                        hb_sent_t.popleft()
+                    hr_writer.writerow([
+                        f"{t:.3f}", f"{wall_now:.3f}", ser.in_waiting,
+                        "" if not np.isfinite(stable_hr) else f"{stable_hr:.2f}",
+                        "" if not np.isfinite(latest_window_hr) else f"{latest_window_hr:.2f}",
+                        int(hr_is_valid), hr_diag["reason"], hr_diag["n_valid_ibi"],
+                        "" if not np.isfinite(hr_diag["double_gain"]) else f"{hr_diag['double_gain']:.3f}",
+                        "" if not np.isfinite(hr_diag["period_ac"]) else f"{hr_diag['period_ac']:.3f}",
+                        "" if not np.isfinite(hr_diag["pulse_sd"]) else f"{hr_diag['pulse_sd']:.2f}",
+                        len(hb_sent_t), n_hb_sent,
+                    ])
+                    hr_file.flush()
 
                     if hr_is_valid:
                         print(
@@ -480,6 +662,27 @@ def main():
                                   f"goal={row['goal_bpm']:.1f} pace={row['pace_bpm']:.1f}")
                             last_pacer_state = row["state"]
 
+                    if args.publish_udp is not None:
+                        mode = ("off" if args.no_haptics else "pacing" if pacing_enabled
+                                else "echo")
+                        link.publish({
+                            "t_wall": wall_now,
+                            "t_ppg": t,
+                            "hr_bpm": float(stable_hr) if hr_is_valid else None,
+                            "valid": bool(hr_is_valid),
+                            "window_hr": float(latest_window_hr),
+                            "rr_rpm": float(last_published_rr),
+                            "haptic_mode": mode,
+                            "pacer_state": None if pacer is None else pacer.state,
+                            "pace_bpm": None if pacer is None else float(pacer.pace_bpm),
+                            "goal_bpm": None if pacer is None else float(pacer.goal_bpm),
+                            "hr0": None if pacer is None else float(pacer.hr0),
+                            "hr_reason": hr_diag["reason"],
+                            "n_hb_sent": n_hb_sent,
+                            "goal_source": goal_source,
+                            "log_stamp": stamp,
+                        })
+
                 # Peak-synchronous feedback: one command for each new accepted PPG peak,
                 # but only after the stable-HR quality gate is valid.
                 if len(samples) >= beat_n and (t - last_beat_update) >= BEAT_UPDATE_S:
@@ -494,8 +697,10 @@ def main():
                     if peak_t is not None:
                         if pacer is not None:
                             pacer.on_peak(peak_t)
-                        elif hr_is_valid and not args.no_haptics:
+                        elif hr_is_valid and not args.no_haptics and args.goal_udp is None:
                             send_command(ser, "HB")
+                            n_hb_sent += 1
+                            hb_sent_t.append(t)
                             haptic_writer.writerow([
                                 f"{t:.3f}",
                                 f"{peak_t:.3f}",
@@ -504,6 +709,8 @@ def main():
                                 "" if not np.isfinite(latest_window_hr) else f"{latest_window_hr:.2f}",
                                 "HB",
                                 "",
+                                f"{time.time():.3f}",
+                                1,
                             ])
                             haptic_file.flush()
                             text_bpm = "--" if not np.isfinite(beat_bpm) else f"{beat_bpm:.1f}"
@@ -518,12 +725,17 @@ def main():
                     if command is not None:
                         if not args.no_haptics:
                             send_command(ser, command)
+                            if command == "HB":
+                                n_hb_sent += 1
+                                hb_sent_t.append(t)
                         haptic_writer.writerow([
                             f"{t:.3f}", "", "",
                             "" if not np.isfinite(stable_hr) else f"{stable_hr:.2f}",
                             "" if not np.isfinite(latest_window_hr) else f"{latest_window_hr:.2f}",
                             command,
                             "" if not np.isfinite(pacer.pace_bpm) else f"{pacer.pace_bpm:.2f}",
+                            f"{time.time():.3f}",
+                            int(not args.no_haptics),
                         ])
                         haptic_file.flush()
                         if command == "HB":
@@ -611,20 +823,23 @@ def main():
                 )
 
         except KeyboardInterrupt:
+            print("\nStopped.")
+        finally:
+            # Motors off on every exit path (Ctrl+C, serial error, crash).
             if not args.no_haptics:
                 try:
                     send_command(ser, "OFF")
-                except serial.SerialException:
+                except (serial.SerialException, OSError):
                     pass
-            print("\nStopped.")
-        finally:
-            if pacer is not None:
+            link.close()
+            if pacing_enabled:
                 pacer_file.close()
 
     print("Raw data saved to:", raw_path)
     print("Estimates saved to:", estimate_path)
     print("Haptic events saved to:", haptic_path)
-    if pacer is not None:
+    print("1 Hz HR log saved to:", hr_path)
+    if pacing_enabled:
         print("Pacer log saved to:", pacer_path)
 
 

@@ -26,11 +26,19 @@ HR and ramps toward a goal HR:
   continue at the frozen pace until PACE_HOLD_S after the last valid
   update, then stop (OFF). Pacing resumes after PACE_RESUME_VALID_UPDATES
   consecutive valid updates at which the bounds can hold. More than
-  PACE_MAX_INVALID_S of invalid updates in total ends pacing.
+  PACE_MAX_INVALID_S of invalid updates in total ends pacing (or, with
+  invalid_window_s set, within any trailing window of that length).
+- Goal updates (set_goal, e.g. from GrooveGen's phase schedule): the new
+  goal is clipped exactly like the first one (HR0 +/- PACE_MAX_GOAL_OFFSET_BPM,
+  absolute range) and a fresh ramp starts at the current reference, so the
+  pace does not jump. "Never past the goal" is then judged from that origin;
+  a goal within PACE_GOAL_HOLD_BAND_BPM of the origin (a hold) has no
+  direction. All other bounds are unchanged.
 
 Usage from the estimator loop:
     pacer = HapticPacer(goal_bpm=62.0)
     pacer.update_hr(t, stable_hr, hr_is_valid)   # every HR update (1 Hz)
+    pacer.set_goal(66.0, t)                      # optional, any time
     pacer.on_peak(peak_t)                        # every confirmed PPG peak
     command = pacer.poll(t)                      # every sample; "HB", "OFF" or None
 """
@@ -56,6 +64,7 @@ PACE_RESUME_VALID_UPDATES = 3
 PACE_MAX_INVALID_S = 30.0
 PACE_MAX_SECONDS = 300.0
 PACE_PEAK_ALIGN_TIMEOUT_S = 2.0
+PACE_GOAL_HOLD_BAND_BPM = 0.5
 PACE_MAX_UPDATE_DT_S = 2.0   # cap per-update invalid time so a host stall is not counted as signal loss
 
 # States
@@ -68,16 +77,24 @@ DONE = "done"          # finished (max duration, signal lost); no pulses
 LOG_FIELDS = [
     "time_s", "state", "hr_bpm", "hr_valid", "hr0_bpm", "goal_bpm",
     "goal_clipped", "ref_bpm", "pace_bpm", "lead_bound", "abs_bound",
-    "ramp_frozen", "invalid_total_s", "reason",
+    "ramp_frozen", "invalid_total_s", "reason", "origin_bpm",
 ]
 
 
 class HapticPacer:
-    def __init__(self, goal_bpm, max_seconds=PACE_MAX_SECONDS, max_lead_bpm=PACE_MAX_LEAD_BPM):
+    def __init__(self, goal_bpm, max_seconds=PACE_MAX_SECONDS, max_lead_bpm=PACE_MAX_LEAD_BPM,
+                 invalid_window_s=None):
         for name, value in (("goal_bpm", goal_bpm), ("max_seconds", max_seconds),
                             ("max_lead_bpm", max_lead_bpm)):
             if not (np.isfinite(value) and value > 0):
                 raise ValueError(f"{name} must be finite and > 0, got {value!r}")
+        if invalid_window_s is not None and not (np.isfinite(invalid_window_s)
+                                                 and invalid_window_s > 0):
+            raise ValueError(f"invalid_window_s must be finite and > 0, got {invalid_window_s!r}")
+        # None: PACE_MAX_INVALID_S counts over the whole run (default).
+        # Otherwise it counts over the trailing invalid_window_s seconds.
+        self.invalid_window_s = None if invalid_window_s is None else float(invalid_window_s)
+        self._invalid_log = []   # (t, dt) of invalid updates, windowed mode only
         self.goal_request_bpm = float(goal_bpm)
         self.max_seconds = float(max_seconds)
         self.max_lead_bpm = float(max_lead_bpm)
@@ -88,6 +105,8 @@ class HapticPacer:
         self.hr0 = np.nan
         self.goal_bpm = np.nan
         self.goal_clipped = False
+        self.origin_bpm = np.nan   # where the current ramp started (HR0 until set_goal)
+        self.goal_updated = False
         self.traj = None
         self.ref_bpm = np.nan
         self.pace_bpm = np.nan
@@ -132,6 +151,8 @@ class HapticPacer:
         elif self.state in (PACING, HOLDING, PAUSED):
             if not valid:
                 self.invalid_total_s += dt
+                if self.invalid_window_s is not None:
+                    self._invalid_log.append((t, dt))
                 self.resume_count = 0
                 if self.state == PACING:
                     self.state = HOLDING
@@ -160,26 +181,68 @@ class HapticPacer:
 
     def _start(self, t):
         self.hr0 = float(np.median(self.warmup_hr))
-        lo = self.hr0 - PACE_MAX_GOAL_OFFSET_BPM
-        hi = self.hr0 + PACE_MAX_GOAL_OFFSET_BPM
-        lo, hi = max(lo, PACE_MIN_BPM), min(hi, PACE_MAX_BPM)
-        self.goal_bpm = float(np.clip(self.goal_request_bpm, lo, hi))
+        self.goal_bpm = self._clip_goal(self.goal_request_bpm)
         self.goal_clipped = abs(self.goal_bpm - self.goal_request_bpm) > 1e-9
 
-        self.traj = HRTrajectory(
-            goal_bpm=self.goal_bpm,
-            segment_seconds=1.0,
-            ramp_bpm_per_min=PACE_RAMP_BPM_PER_MIN,
-            max_lead_bpm=self.max_lead_bpm,
-            terminal_tau_s=PACE_TERMINAL_TAU_S,
-        )
+        self.traj = self._new_trajectory()
         self.ref_bpm = self.traj.initialize(self.hr0)
+        self.origin_bpm = self.hr0
         self.pace_start_t = t
         self.align_since_t = t
         self.last_valid_t = t
         self.state = PACING
         self.reason = "started"
         self._bound(self.ref_bpm, self.hr0, t)
+
+    def _clip_goal(self, goal_bpm):
+        lo = self.hr0 - PACE_MAX_GOAL_OFFSET_BPM
+        hi = self.hr0 + PACE_MAX_GOAL_OFFSET_BPM
+        lo, hi = max(lo, PACE_MIN_BPM), min(hi, PACE_MAX_BPM)
+        return float(np.clip(goal_bpm, lo, hi))
+
+    def _new_trajectory(self):
+        return HRTrajectory(
+            goal_bpm=self.goal_bpm,
+            segment_seconds=1.0,
+            ramp_bpm_per_min=PACE_RAMP_BPM_PER_MIN,
+            max_lead_bpm=self.max_lead_bpm,
+            terminal_tau_s=PACE_TERMINAL_TAU_S,
+        )
+
+    def set_goal(self, goal_bpm, t):
+        """Change the goal. Returns True if the ramp was restarted.
+
+        WARMUP: replaces the request (clipped at start). DONE: ignored.
+        Otherwise the goal is clipped as at start; if it differs from the
+        current goal, a new ramp starts at the current reference (no pace
+        jump) and the pace is re-bounded at the next HR update.
+        """
+        if not (np.isfinite(goal_bpm) and goal_bpm > 0):
+            raise ValueError(f"goal_bpm must be finite and > 0, got {goal_bpm!r}")
+        if self.state == DONE:
+            return False
+        if self.state == WARMUP:
+            self.goal_request_bpm = float(goal_bpm)
+            return False
+        goal = self._clip_goal(goal_bpm)
+        if abs(goal - self.goal_bpm) < 1e-9:
+            return False
+        self.goal_request_bpm = float(goal_bpm)
+        self.goal_bpm = goal
+        self.goal_clipped = abs(goal - self.goal_request_bpm) > 1e-9
+        self.origin_bpm = float(self.ref_bpm)
+        self.goal_updated = True
+        self.traj = self._new_trajectory()
+        self.ref_bpm = self.traj.initialize(self.origin_bpm)
+        self.reason = "goal_changed"
+        return True
+
+    def _direction(self):
+        """+1 pacing up, -1 down, 0 holding (no 'past the goal' limit)."""
+        d = self.goal_bpm - self.origin_bpm
+        if self.goal_updated and abs(d) < PACE_GOAL_HOLD_BAND_BPM:
+            return 0
+        return 1 if d >= 0 else -1
 
     def _advance(self, t, hr_bpm):
         rec = self.traj.step(float(hr_bpm))
@@ -196,10 +259,11 @@ class HapticPacer:
         self.abs_bound = abs(clipped - pace) > 1e-9
         pace = clipped
 
-        # Never pace past the goal in the direction of travel from HR0.
-        if self.goal_bpm >= self.hr0:
+        # Never pace past the goal in the direction of travel from the origin.
+        direction = self._direction()
+        if direction > 0:
             pace = min(pace, self.goal_bpm)
-        else:
+        elif direction < 0:
             pace = max(pace, self.goal_bpm)
 
         reason = self._infeasible_reason(hr_bpm)
@@ -214,9 +278,10 @@ class HapticPacer:
         hi = min(hr_bpm + self.max_lead_bpm, PACE_MAX_BPM)
         if lo > hi + 1e-9:
             return "hr_out_of_range"
-        if self.goal_bpm >= self.hr0:
+        direction = self._direction()
+        if direction > 0:
             hi = min(hi, self.goal_bpm)
-        else:
+        elif direction < 0:
             lo = max(lo, self.goal_bpm)
         if lo > hi + 1e-9:
             return "hr_past_goal"
@@ -271,10 +336,17 @@ class HapticPacer:
     def _check_limits(self, t):
         if self.state in (WARMUP, DONE):
             return
-        if self.invalid_total_s > PACE_MAX_INVALID_S:
+        if self._invalid_s(t) > PACE_MAX_INVALID_S:
             self.stop("signal_lost")
         elif t - self.pace_start_t > self.max_seconds:
             self.stop("max_duration")
+
+    def _invalid_s(self, t):
+        if self.invalid_window_s is None:
+            return self.invalid_total_s
+        cutoff = t - self.invalid_window_s
+        self._invalid_log = [(ti, dt) for ti, dt in self._invalid_log if ti > cutoff]
+        return sum(dt for _, dt in self._invalid_log)
 
     def stop(self, reason="stopped"):
         if self.state in (PACING, HOLDING):
@@ -299,4 +371,5 @@ class HapticPacer:
             "ramp_frozen": int(self.ramp_frozen),
             "invalid_total_s": self.invalid_total_s,
             "reason": self.reason,
+            "origin_bpm": self.origin_bpm,
         }
