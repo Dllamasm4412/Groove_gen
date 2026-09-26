@@ -49,6 +49,8 @@ _GENRE_HASH = {
     'rnb':   2,
     'pop':   3,
     'latin': 4,
+    'hiphop': 6,
+    'rock':  7,
 }
 
 

@@ -34,9 +34,7 @@ from pathlib import Path
 
 import numpy as np
 import pretty_midi
-
-from composer import generate_segment, GENRE_CFG
-
+from composer import GENRE_CFG, generate_segment
 
 # =============================================================================
 # Constants
@@ -46,21 +44,24 @@ from composer import generate_segment, GENRE_CFG
 # calm can't out-energize rnb because calm gets clamped to tier 2 first.
 # Values from AI_CONTINUATION_CONTEXT.md §2 (RUNG_TIER_CAP).
 RUNG_TIER_CAP: dict[str, int] = {
-    'calm':  2,
-    'rnb':   4,
-    'pop':   5,
-    'latin': 5,
+    "calm": 2,
+    "lofi": 3,
+    "rnb": 4,
+    "pop": 5,
+    "latin": 5,
+    "hiphop": 5,
+    "rock": 5,
 }
 
 # Tier → density lookup. Linear-ish spread across the composer's tested range.
 # Density spread of ~68-78% across d=0.3/0.6/0.9 was measured on bank_v1;
 # extending to the extremes for finer control.
 TIER_TO_DENSITY: dict[int, float] = {
-    1: 0.15,   # very sparse (skeleton only)
-    2: 0.35,   # sparse
-    3: 0.55,   # medium (bank_v1 default)
-    4: 0.75,   # busy
-    5: 0.90,   # dense (max ornaments)
+    1: 0.15,  # very sparse (skeleton only)
+    2: 0.35,  # sparse
+    3: 0.55,  # medium (bank_v1 default)
+    4: 0.75,  # busy
+    5: 0.90,  # dense (max ornaments)
 }
 
 
@@ -69,17 +70,27 @@ TIER_TO_DENSITY: dict[int, float] = {
 # =============================================================================
 
 _GENRE_ALIASES: dict[str, str] = {
-    'r&b':   'rnb',
-    'R&B':   'rnb',
-    'rnb':   'rnb',
-    'RNB':   'rnb',
-    'calm':  'calm',
-    'CALM':  'calm',
-    'pop':   'pop',
-    'POP':   'pop',
-    'latin': 'latin',
-    'LATIN': 'latin',
-    'salsa': 'latin',  # legacy renderer used 'salsa' internally for latin
+    "r&b": "rnb",
+    "R&B": "rnb",
+    "rnb": "rnb",
+    "RNB": "rnb",
+    "calm": "calm",
+    "CALM": "calm",
+    "lofi": "lofi",
+    "LOFI": "lofi",
+    "lo-fi": "lofi",
+    "lo_fi": "lofi",
+    "pop": "pop",
+    "POP": "pop",
+    "latin": "latin",
+    "LATIN": "latin",
+    "salsa": "latin",  # legacy renderer used 'salsa' internally for latin
+    "hiphop": "hiphop",
+    "HIPHOP": "hiphop",
+    "hip-hop": "hiphop",
+    "hip_hop": "hiphop",
+    "rock": "rock",
+    "ROCK": "rock",
 }
 
 
@@ -91,14 +102,13 @@ def _norm_genre(g: str) -> str:
     key_lower = key.lower()
     if key_lower in _GENRE_ALIASES:
         return _GENRE_ALIASES[key_lower]
-    raise ValueError(
-        f'unknown genre {g!r}; known: {sorted(set(_GENRE_ALIASES.values()))}'
-    )
+    raise ValueError(f"unknown genre {g!r}; known: {sorted(set(_GENRE_ALIASES.values()))}")
 
 
 # =============================================================================
 # Renderer
 # =============================================================================
+
 
 class SymbolicSegmentRenderer:
     """
@@ -118,21 +128,21 @@ class SymbolicSegmentRenderer:
         segment_idx sequence => bit-identical audio.
     """
 
-    def __init__(self, sf2_path: str | Path, sr: int = 44100,
-                 gain: float = 0.8, session_seed: int = 42):
+    def __init__(
+        self, sf2_path: str | Path, sr: int = 44100, gain: float = 0.8, session_seed: int = 42
+    ):
         self.sf2_path = Path(sf2_path)
         if not self.sf2_path.exists():
-            raise FileNotFoundError(f'soundfont not found: {self.sf2_path}')
+            raise FileNotFoundError(f"soundfont not found: {self.sf2_path}")
         self.sr = sr
         self.gain = gain
         self.session_seed = session_seed
         # Check fluidsynth is on PATH
-        r = subprocess.run(['fluidsynth', '--version'],
-                           capture_output=True, text=True)
+        r = subprocess.run(["fluidsynth", "--version"], capture_output=True, text=True)
         if r.returncode != 0:
             raise RuntimeError(
-                'fluidsynth binary not found on PATH. '
-                'Install with `brew install fluid-synth` on macOS.'
+                "fluidsynth binary not found on PATH. "
+                "Install with `brew install fluid-synth` on macOS."
             )
 
     def _derive_seed(self, segment_idx: int) -> int:
@@ -183,22 +193,26 @@ class SymbolicSegmentRenderer:
     def _render_pm_to_audio(self, pm: pretty_midi.PrettyMIDI) -> np.ndarray:
         """MIDI -> stereo float32 audio buffer via fluidsynth."""
         with tempfile.TemporaryDirectory() as td:
-            midi_path = Path(td) / 'seg.mid'
-            wav_path = Path(td) / 'seg.wav'
+            midi_path = Path(td) / "seg.mid"
+            wav_path = Path(td) / "seg.wav"
             pm.write(str(midi_path))
 
             cmd = [
-                'fluidsynth', '-ni',
-                '-F', str(wav_path),
-                '-r', str(self.sr),
-                '-g', str(self.gain),  # fixed gain, no normalization
+                "fluidsynth",
+                "-ni",
+                "-F",
+                str(wav_path),
+                "-r",
+                str(self.sr),
+                "-g",
+                str(self.gain),  # fixed gain, no normalization
                 str(self.sf2_path),
                 str(midi_path),
             ]
             r = subprocess.run(cmd, capture_output=True, text=True)
             if r.returncode != 0 or not wav_path.exists() or wav_path.stat().st_size < 1000:
                 raise RuntimeError(
-                    f'fluidsynth render failed:\nstdout: {r.stdout}\nstderr: {r.stderr}'
+                    f"fluidsynth render failed:\nstdout: {r.stdout}\nstderr: {r.stderr}"
                 )
 
             # Read WAV as float32 stereo. fluidsynth default is 16-bit PCM stereo.
@@ -210,13 +224,15 @@ class SymbolicSegmentRenderer:
 # WAV I/O — minimal, avoids scipy/soundfile dependency
 # =============================================================================
 
+
 def _read_wav_float32(path: Path) -> np.ndarray:
     """
     Minimal WAV reader for fluidsynth output (16-bit PCM stereo).
     Returns (n_samples, 2) float32 in [-1, 1].
     """
     import wave
-    with wave.open(str(path), 'rb') as wf:
+
+    with wave.open(str(path), "rb") as wf:
         n_channels = wf.getnchannels()
         sampwidth = wf.getsampwidth()
         n_frames = wf.getnframes()
@@ -227,7 +243,7 @@ def _read_wav_float32(path: Path) -> np.ndarray:
     elif sampwidth == 4:
         pcm = np.frombuffer(raw, dtype=np.int32).astype(np.float32) / 2147483648.0
     else:
-        raise ValueError(f'unexpected sample width: {sampwidth} bytes')
+        raise ValueError(f"unexpected sample width: {sampwidth} bytes")
 
     if n_channels == 1:
         pcm = np.stack([pcm, pcm], axis=1)
@@ -239,9 +255,10 @@ def _read_wav_float32(path: Path) -> np.ndarray:
 def _write_wav(path: Path, audio: np.ndarray, sr: int) -> None:
     """Write stereo float32 audio as 16-bit PCM WAV (for smoke test listening)."""
     import wave
+
     pcm = np.clip(audio, -1.0, 1.0)
     pcm_i16 = (pcm * 32767).astype(np.int16)
-    with wave.open(str(path), 'wb') as wf:
+    with wave.open(str(path), "wb") as wf:
         wf.setnchannels(2)
         wf.setsampwidth(2)
         wf.setframerate(sr)
@@ -252,51 +269,56 @@ def _write_wav(path: Path, audio: np.ndarray, sr: int) -> None:
 # CLI smoke test
 # =============================================================================
 
-if __name__ == '__main__':
-    import argparse, sys
+if __name__ == "__main__":
+    import argparse
+    import sys
+
     p = argparse.ArgumentParser()
-    p.add_argument('--sf2', required=True, help='Path to Musyng_Kite.sf2')
-    p.add_argument('--out-dir', default='./renderer_smoke_out',
-                   help='Output directory for smoke-test WAVs')
+    p.add_argument("--sf2", required=True, help="Path to Musyng_Kite.sf2")
+    p.add_argument(
+        "--out-dir", default="./renderer_smoke_out", help="Output directory for smoke-test WAVs"
+    )
     args = p.parse_args()
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(exist_ok=True, parents=True)
 
     r = SymbolicSegmentRenderer(sf2_path=args.sf2, session_seed=42)
-    print('SymbolicSegmentRenderer ready')
-    print(f'  sf2:          {r.sf2_path}')
-    print(f'  sample rate:  {r.sr} Hz')
-    print(f'  session seed: {r.session_seed}\n')
+    print("SymbolicSegmentRenderer ready")
+    print(f"  sf2:          {r.sf2_path}")
+    print(f"  sample rate:  {r.sr} Hz")
+    print(f"  session seed: {r.session_seed}\n")
 
     # One segment per genre at tier 3, 8 bars
-    for genre in ['calm', 'pop', 'rnb', 'latin', 'r&b']:  # test alias too
+    for genre in ["calm", "pop", "rnb", "latin", "r&b"]:  # test alias too
         norm = _norm_genre(genre)
         cfg = GENRE_CFG[norm]
-        tempo = cfg['tempo_default']
-        audio = r.render_segment(genre, tempo_bpm=tempo, tier=3, n_bars=8,
-                                 segment_idx=hash(genre) & 0xFFFF)
-        print(f'{genre:6} (norm={norm:5}): '
-              f'{audio.shape}  {audio.dtype}  '
-              f'peak={np.max(np.abs(audio)):.3f}  '
-              f'rms={np.sqrt(np.mean(audio**2)):.3f}')
+        tempo = cfg["tempo_default"]
+        audio = r.render_segment(
+            genre, tempo_bpm=tempo, tier=3, n_bars=8, segment_idx=hash(genre) & 0xFFFF
+        )
+        print(
+            f"{genre:6} (norm={norm:5}): "
+            f"{audio.shape}  {audio.dtype}  "
+            f"peak={np.max(np.abs(audio)):.3f}  "
+            f"rms={np.sqrt(np.mean(audio**2)):.3f}"
+        )
 
         # Write for listening
-        out_path = out_dir / f'{norm}_tier3.wav'
+        out_path = out_dir / f"{norm}_tier3.wav"
         _write_wav(out_path, audio, r.sr)
-        print(f'   wrote {out_path}')
+        print(f"   wrote {out_path}")
 
     # Bit-identical determinism check: same seg_idx twice -> exact same bytes
-    a1 = r.render_segment('pop', tempo_bpm=118, tier=3, n_bars=8, segment_idx=999)
-    a2 = r.render_segment('pop', tempo_bpm=118, tier=3, n_bars=8, segment_idx=999)
+    a1 = r.render_segment("pop", tempo_bpm=118, tier=3, n_bars=8, segment_idx=999)
+    a2 = r.render_segment("pop", tempo_bpm=118, tier=3, n_bars=8, segment_idx=999)
     same = np.array_equal(a1, a2)
-    print(f'\ndeterminism check (same segment_idx): {"PASS" if same else "FAIL"}')
+    print(f"\ndeterminism check (same segment_idx): {'PASS' if same else 'FAIL'}")
 
     # Tier cap check: calm@5 should render same as calm@2 (both -> tier 2)
-    a_calm5 = r.render_segment('calm', tempo_bpm=65, tier=5, n_bars=8, segment_idx=1)
-    a_calm2 = r.render_segment('calm', tempo_bpm=65, tier=2, n_bars=8, segment_idx=1)
+    a_calm5 = r.render_segment("calm", tempo_bpm=65, tier=5, n_bars=8, segment_idx=1)
+    a_calm2 = r.render_segment("calm", tempo_bpm=65, tier=2, n_bars=8, segment_idx=1)
     tier_cap_ok = np.array_equal(a_calm5, a_calm2)
-    print(f'ladder cap check (calm@5 == calm@2): '
-          f'{"PASS" if tier_cap_ok else "FAIL"}')
+    print(f"ladder cap check (calm@5 == calm@2): {'PASS' if tier_cap_ok else 'FAIL'}")
 
     sys.exit(0 if same and tier_cap_ok else 1)
