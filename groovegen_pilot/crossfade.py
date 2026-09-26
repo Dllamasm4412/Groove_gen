@@ -45,7 +45,8 @@ Invariants
     - Inputs are stereo float32, shape (n, 2), values in [-1, 1]
     - fade_frames is clamped to min(len(prev), len(next)) to prevent
       overlaps that exceed either segment
-    - Output stays in [-1, 1] as long as inputs do (equal-power caps at 1.0)
+    - Equal-power does NOT bound the peak (sin + cos reaches 1.41 at the
+      midpoint); only fade_mode='tail_out' limits the mixed region's peak
     - If prev is None (first segment), push() returns next verbatim minus
       the held tail
     - If a segment is shorter than one bar, we fall back to the segment's
@@ -168,7 +169,8 @@ class CrossfadeMixer:
     """
 
     def __init__(self, sample_rate: int = 44100, beats_per_bar: int = 4,
-                 fade_bars: float = 0.5):
+                 fade_bars: float = 0.5, fade_mode: str = 'equal_power',
+                 tail_peak: float = 0.99):
         """
         Parameters
         ----------
@@ -179,7 +181,22 @@ class CrossfadeMixer:
             Length of the crossfade region, in bars. Default 0.5 (half bar)
             after user A/B feedback: 1-bar felt too long at slow tempos.
             Set to 1.0 for the original behavior.
+        fade_mode : str
+            'equal_power' (default): sin fade-in / cos fade-out.
+            'tail_out': the incoming segment plays at full level from its
+            first sample (its downbeat is not faded) and only the held
+            outgoing tail is cos-faded out on top of it. Meant for renders
+            trimmed to their bars (run_session_v2 trim_render_tail), where
+            the held tail is the release after the last bar.
+        tail_peak : float
+            tail_out only: if the summed region would exceed this peak, the
+            outgoing tail (never the incoming audio) is scaled down by one
+            fixed factor for that transition; counted in n_tail_scaled.
         """
+        if fade_mode not in ('equal_power', 'tail_out'):
+            raise ValueError(f"unknown fade_mode: {fade_mode!r}")
+        self.fade_mode = fade_mode
+        self.tail_peak = float(tail_peak)
         self.sample_rate = int(sample_rate)
         self.beats_per_bar = int(beats_per_bar)
         self.fade_bars = float(fade_bars)
@@ -192,6 +209,8 @@ class CrossfadeMixer:
         self.total_frames_in = 0
         self.total_frames_out = 0
         self.total_frames_faded = 0
+        self.n_tail_scaled = 0
+        self.min_tail_scale = 1.0
 
     def _fade_frames_for(self, tempo_bpm: float) -> int:
         one_bar = bar_duration_frames(
@@ -236,8 +255,21 @@ class CrossfadeMixer:
         # Clamp fade so it doesn't exceed either the held tail or new segment.
         fade = min(fade, self._held_tail.shape[0], audio.shape[0])
         gain_out, gain_in = _equal_power_gains(fade)
-        mixed = (self._held_tail[:fade] * gain_out[:, None]
-                 + audio[:fade] * gain_in[:, None])
+        if self.fade_mode == 'tail_out':
+            tail = self._held_tail[:fade] * gain_out[:, None]
+            head = audio[:fade]
+            scale = 1.0
+            tail_abs = np.abs(tail)
+            over = (np.abs(head + tail) > self.tail_peak) & (tail_abs > 0)
+            if np.any(over):
+                room = np.clip(self.tail_peak - np.abs(head[over]), 0.0, None)
+                scale = float(min(1.0, np.min(room / tail_abs[over])))
+                self.n_tail_scaled += 1
+                self.min_tail_scale = min(self.min_tail_scale, scale)
+            mixed = head + tail * scale
+        else:
+            mixed = (self._held_tail[:fade] * gain_out[:, None]
+                     + audio[:fade] * gain_in[:, None])
         # If the held tail was LONGER than fade (shouldn't happen in normal
         # use since we retain exactly one-bar tails), emit its leftover first.
         pre_mixed = self._held_tail[fade:] if self._held_tail.shape[0] > fade else self._held_tail[0:0]
