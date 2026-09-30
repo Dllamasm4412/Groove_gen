@@ -125,7 +125,7 @@ and nothing outside that set except the listed fill voices.
   differ in note count.
 - Motif transformations on the motif track: rhythmic displacement by an
   eighth, neighbor-tone ornament with a matched note count, contour
-  inversion snapped to chord tones. This is Phase 2b (section 4.5).
+  inversion snapped to chord tones. This is Phase 2c (section 4.5).
 - Phrase endings of pitched parts: hold vs. restate on bar 8 with the same
   note count.
 
@@ -176,7 +176,7 @@ H           = int.from_bytes(blake2b(repr(args).encode(), digest_size=4).digest(
 
 - **Motif memory = block reuse.** The L visits in a block share `base_seed`,
   so they share progression, bass pattern, voicing and motif. They differ in
-  `var_seed`: drum micro-variation, fills and (in Phase 2b) motif
+  `var_seed`: drum micro-variation, fills and (in Phase 2c) motif
   transformations. Consecutive visits sound like A, A', A'', then B. If the
   controller leaves the cell and comes back, the next visit continues the
   same block, which recalls earlier material rather than starting over.
@@ -258,7 +258,7 @@ shift, pop and hiphop fall back to snare-only fills.
 - **Phase 2a (no pitch changes):** block reuse (section 4.2) provides motif
   memory. R5 reuse comes from the shared base seed, and exact reuse is
   broken by the drum layer and fills. Pitched parts are unchanged from base.
-- **Phase 2b (optional, after 2a passes):** motif-track ops in
+- **Phase 2c (optional, after 2b certification):** motif-track ops in
   `variation.py`, only for `pos_in_block >= 1`:
   - `displace_eighth`: shift one bar of the motif by an eighth (count 0).
   - `neighbor_ornament`: replace one long note with a neighbor-tone pair and
@@ -514,6 +514,116 @@ same cell, in random order. Two questions: "same condition?" and "does it
 loop?". This is a sanity check with n = 1. It is not evidence and can't
 override A1-A6.
 
+### 6.7 Phase 2b certification (`certify_stimuli.py`, 2026-09-30)
+
+What it does: for each live cell, generates four sources and checks the
+v2 session generator against the v1 bank generator. It changes nothing in
+the live path and writes only to `renders/certification/<stamp>/`
+(`certification.csv`, `certification_summary.json`, `cell_summary.csv`;
+no audio or MIDI kept).
+
+| Source | What | Used for |
+|---|---|---|
+| `v1_live` | Bank rotation, `MelodyBank(4, 0)`, 12 visits | Repetition baseline; the old 4-seed voice set |
+| `v1_wide` | Same composer, bank variants 0-127 (MIDI), 0-31 rendered | Cell envelopes and the allowed drum-voice set |
+| `v2_base` | The base segment of each v2 block | Attributing a miss to the variation or to the base seed |
+| `v2_session` | `SessionComposer`, stim seeds 1 and 2, 12 visits | Under test |
+
+Certified at MIDI level (every run):
+- **Locked:** tempo, tempo-map length, bar count and GM programs equal the
+  `v1_wide` value.
+- **Drum voices,** classified three ways: in the 4-seed set; outside it but
+  in the wide same-cell set; outside both (truly unexpected).
+- **Envelope:** each section 3.2 MIDI feature inside `[min - 0.25 SD,
+  max + 0.25 SD]` of `v1_wide`. The pad is at least the guard tolerance,
+  because v1 does not vary `drum_onbeat_ratio` in calm, hiphop, rock and
+  latin (SD 0).
+- **Cell mean shift, split in two:**
+  - the variation part (v2 minus its own base), limited to max(0.5 SD,
+    half the guard tolerance);
+  - the base-seed part (the rest), flagged only beyond both that limit and
+    2 standard errors of the block count.
+- **Repetition:** R1, R2, R3 (full and drum layer), R4 and R6, v1 against
+  v2, with an improved / unchanged / worse status per metric.
+- **Key continuity:** hiphop and rock keys come from the frozen cell's own
+  `_resolve_spec`.
+- **Fallback rate.**
+- **A6:** Spearman rho of ladder u against v2 R4.
+
+Certified at rendered-audio level (`--audio`; the `measure_one` recipe:
+FluidSynth CLI, trim to 8 bars plus fade):
+- rendered duration (locked);
+- **A1:** LUFS, centroid, flux, low_ratio, pulse_clarity and per-segment E
+  inside the `v1_wide` envelope;
+- **A2:** mean shifts (LUFS 0.5 LU, E `tie_band_e`/2, others 0.5 SD), split
+  into variation and base-seed parts;
+- **A3:** E spread;
+- per-segment |LUFS - base|;
+- RMS dBFS and render time, reported only.
+- A fidelity check reproduces `energy_table_v1.json` from `v1_wide`
+  variants 0-7.
+
+**Run 2026-09-30** (`certify_stimuli.py --audio`, 27 cells, 4644 rows,
+1710 renders; MIDI 80 s, audio 676 s with 6 workers):
+- **Fidelity:** energy table reproduced exactly (max diff 0 for LUFS,
+  drum_rate, centroid and flux; tempo 1.3e-4). `v1_live` is a subset of
+  `v1_wide`.
+- **Repetition improved in 27 of 27 cells:**
+  - mean R1 1.19 to 4.46 distinct drum bars;
+  - R2 max 8 to 3;
+  - exact-repeat rate 0.73-0.91 to at most 0.046;
+  - bar 8 marked 0% to 100%.
+  - Targets were met in 24 cells. The misses:
+    - calm:1 had one drum-layer repeat 3 visits apart, across a block
+      boundary;
+    - hiphop:1 marked bar 4 in 46% (target 50%);
+    - hiphop:5 had one full repeat 8 visits apart: two different base
+      seeds gave the same segment.
+  - R4 drum similarity is 0.76-0.96, above the 0.6-0.9 band in most
+    cells.
+- **Locked features:** 100% of v2 segments pass, including rendered
+  duration. No fallbacks. Keys: 0 changes in v2 for both stim seeds,
+  against 46 (hiphop) and 47 (rock) in v1.
+- **Drum voices:** v2 uses no voice outside the wide reference (0 truly
+  unexpected). The earlier "outside reference" voices are all in the wide
+  same-cell set: lofi:3 +44, rnb:1 +44, rnb:3 +44/51, latin:3 +60,
+  pop:2/4 +38, pop:3/5 +46. The 4-seed reference was too narrow.
+- **MIDI envelope:** 0 misses caused by the variation, 9 caused by base
+  seeds.
+  - The variation mean shift is over its limit for `drum_onbeat_ratio` in
+    calm:1, calm:2 and hiphop:1 (-0.031 against 0.025, which is half the
+    guard tolerance; each segment stays within the guard). It is also over
+    for `note_rate` in rock:1 and rock:2 (about +0.098 against 0.092-0.096).
+- **Audio: loudness is preserved, but brightness and pulse clarity are
+  lowered.**
+  - LUFS vs own base: at most 0.07 LU.
+  - E variation shift: over `tie_band_e`/2 only in hiphop:3 (-0.030) and
+    hiphop:4 (-0.023).
+  - Centroid drops in every genre: hiphop mean -228 Hz (up to -440), rock
+    -133, latin -120, rnb -95, lofi -54, pop -50, calm -26.
+  - Pulse clarity drops by 0.005-0.03.
+  - The cause is the fills. Centroid falls by 11-34 Hz per hat re-voiced
+    as snare 38 or kick 36, or as conga in latin. hiphop averages 7.2
+    re-voiced notes per segment.
+  - A3 fails for latin:2 (1.26) and rock:5 (1.36).
+- **A6** rho = 0.10, pass.
+- **Verdict:** only pop:1-5 pass the variation-controlled check. So:
+  - v2 is **not ready for live integration**;
+  - the variation needs an audio-aware fill budget before the next
+    certification pass.
+
+Pending before live integration:
+1. **Fill timbre:**
+   - cap re-voiced notes per segment;
+   - drop kick 36 as a fill target;
+   - prefer snare / rim / clap;
+   - or add a centroid proxy to the move budget.
+   Then re-certify.
+2. Resolve the 3 repetition-target misses and decide the R4 band.
+3. Decide whether the per-cell limits hold where `v1_wide` has almost no
+   spread; hiphop and rock pulse-clarity SDs are near 0.
+4. Section 6.4 manifest, 6.5 Tier S and 6.6 Tier L.
+
 ---
 
 ## 7. First implementation task: `groovegen_pilot/stimulus_audit.py`
@@ -595,7 +705,8 @@ as `run_session_v2` does.
 |---|---|---|
 | 1 Audit | `stimulus_metrics.py`, `stimulus_audit.py`, bank envelopes, `test_composer_identity.py` | Section 7 done; targets in section 2 and bounds in section 3 re-set from the measured baseline |
 | 2a Drum variation + schedule | `composer/arrangement.py` (schedule, blocks, session key lock), `composer/variation.py` (form templates, micro-ops, fills, skeleton table), `composer/energy_guard.py` | Tier M passes; R1, R2, R3, R6, R7 targets met; fallback < 5% |
-| 2b Motif ops (optional) | Motif-track ops in `variation.py` | Tier M passes; R5 targets met; A2 still holds |
+| 2b Certification tooling | `certify_stimuli.py`: v1 bank vs v2 session per live cell, MIDI + Tier A, wide same-cell reference (section 6.7) | Tool and tests in place; findings recorded in section 6.7 |
+| 2c Motif ops (optional) | Motif-track ops in `variation.py` | Tier M passes; R5 targets met; A2 still holds |
 | 3 Certification | `certify_stimuli.py`, manifest; Tier A | A1-A6 pass for the manifest |
 | 4 Runner integration | `segment_renderer.py`: public `render_midi(pm)` wrapping `_render_pm_to_audio`. `run_session_v2.py`: `SessionConfigV2.generator` (`'bank'` default), per-cell visit counter, `SessionComposer` branch at steps 3-4, appended `TraceRowV2` fields. `run_pilot_zero.py`: `--generator`, `--stim-seed`, `--stim-manifest`, MIDI saved to `session_dir/midi/`, summary provenance. | Tier S passes; plan invariance holds |
 | 5 Replay | `replay_session.py`; yoked replay from (cell, `visit_idx`) | 100% sha match |
