@@ -20,7 +20,10 @@ Seed schedule
 The BLOCK_LEN visits of a block share base_seed (progression, bass, voicing,
 motif, groove family: motif memory) and differ in var_seed (drum variation
 and fills, composer/variation.py). Block k always gets a new base seed, so
-there is no 4-segment rotation. For hiphop and rock, j counts up from 0 until
+there is no 4-segment rotation. A variation whose drum layer repeats one of
+the REPEAT_WINDOW previous visits of the cell, or whose full content repeats
+any previous visit, is retried; visit k therefore depends on visits 0..k-1 of
+the same cell, which compose() derives itself (in order) when not cached. For hiphop and rock, j counts up from 0 until
 the frozen cell would pick the session key for that seed (session key lock,
 no transposition); for other genres j = 0.
 """
@@ -33,10 +36,13 @@ from typing import Optional
 
 import pretty_midi
 
-GEN_VERSION = 'v2a.1'
+GEN_VERSION = 'v2a.2'
 BLOCK_LEN = 3
 BARS = 8
-MAX_ATTEMPTS = 4           # variation attempts before falling back to the base segment
+MAX_ATTEMPTS = 12          # variation attempts before falling back to the base segment
+RELAX_EVERY = 4            # every RELAX_EVERY failed attempts, vary() gets relax + 1
+REPEAT_WINDOW = 4          # no drum-layer repeat within this many earlier visits
+MAX_IDENTICAL_RUN = 3      # identical consecutive drum bars (certification R2)
 KEY_LOCK_GENRES = ('hiphop', 'rock')
 MAX_KEY_DRAWS = 64         # 5 keys per cell -> expected 5 draws; P(64 misses) ~ 1e-6
 
@@ -125,25 +131,39 @@ class SessionComposer:
     def __init__(self, stim_seed: int):
         self.stim_seed = int(stim_seed)
         self.gen_version = GEN_VERSION
-        self._drum_sigs: dict[tuple, tuple] = {}     # (genre, tier, visit) -> drum notes
+        self._history: dict[tuple, tuple[str, str]] = {}   # (genre, tier, visit) -> (drum_sha, content_sha)
 
-    def _block_sigs(self, genre: str, tier: int, sched: SegmentSchedule) -> set:
-        """Drum content of the earlier visits in this block (recomputed if not
-        cached, so the result does not depend on which visits ran before)."""
-        out = set()
-        for v in range(sched.visit_idx - sched.pos_in_block, sched.visit_idx):
-            if (genre, int(tier), v) not in self._drum_sigs:
+    def _earlier(self, genre: str, tier: int, visit_idx: int) -> list[tuple[str, str]]:
+        """(drum_sha, content_sha) of visits 0..visit_idx-1 of the cell, composing
+        any that are not cached (so the result does not depend on call order)."""
+        for v in range(visit_idx):
+            if (genre, int(tier), v) not in self._history:
                 self.compose(genre, tier, v)
-            out.add(self._drum_sigs[(genre, int(tier), v)])
-        return out
+        return [self._history[(genre, int(tier), v)] for v in range(visit_idx)]
+
+    @staticmethod
+    def _structure_failures(pm: pretty_midi.PrettyMIDI, earlier: list[tuple[str, str]]) -> list[str]:
+        import stimulus_metrics as sm
+
+        drum = sm.bar_onset_sets(pm, BARS, 'drum')
+        drum_sha, content_sha = sm.content_sha(drum), sm.content_sha(sm.bar_onset_sets(pm, BARS))
+        fails = [f'bar{e + 1}_unmarked' for e in (3, 7) if not sm._phrase_end_marked(drum, e)]
+        if sm.max_identical_run(drum) > MAX_IDENTICAL_RUN:
+            fails.append('identical_run')
+        if drum_sha in {d for d, _ in earlier[-REPEAT_WINDOW:]}:
+            fails.append('drum_repeat')
+        if content_sha in {c for _, c in earlier}:
+            fails.append('full_repeat')
+        return fails
 
     def compose(self, genre: str, tier: int, visit_idx: int) -> tuple[pretty_midi.PrettyMIDI, dict]:
+        import stimulus_metrics as sm
         from composer import generate_segment
-        from composer.energy_guard import _drum_notes, check
+        from composer.energy_guard import check
         from composer.variation import vary
 
         sched = schedule(self.stim_seed, genre, tier, visit_idx, self.gen_version)
-        earlier = self._block_sigs(genre, tier, sched)
+        earlier = self._earlier(genre, tier, sched.visit_idx)
         tempo, density = cell_plan(genre, tier)
         base = generate_segment(genre, tempo_bpm=tempo, density=density,
                                 duration_bars=BARS, seed=sched.base_seed)
@@ -153,19 +173,19 @@ class SessionComposer:
             **asdict(sched), 'gen_attempts': 0, 'gen_fallback': True, 'form_template': None,
             'bar_roles': None, 'drum_ops': None, 'guard_failures': [], 'error': None,
         }
-        # A variation that fails the guard, or repeats an earlier visit of its
-        # block exactly, is retried with a derived sub-seed; if every attempt
-        # fails (or the variation code raises), the base segment is used: it
-        # is always valid, being a plain composer output.
+        # A variation that fails the guard, leaves a phrase end unmarked, or
+        # repeats an earlier visit is retried with a derived sub-seed (and,
+        # every RELAX_EVERY attempts, looser op caps); if every attempt fails
+        # (or the variation code raises), the base segment is used: it is
+        # always valid, being a plain composer output.
         out = base
         try:
             for attempt in range(MAX_ATTEMPTS):
                 seed = sched.var_seed if attempt == 0 else H('var_attempt', sched.var_seed, attempt)
-                varied, vinfo = vary(base, genre, seed)
+                varied, vinfo = vary(base, genre, seed, relax=attempt // RELAX_EVERY)
                 verdict = check(varied, base, genre)
-                if tuple(_drum_notes(varied)) in earlier:
-                    verdict.ok = False
-                    verdict.failures.append('repeat_in_block')
+                verdict.failures += self._structure_failures(varied, earlier)
+                verdict.ok = not verdict.failures
                 info['gen_attempts'] = attempt + 1
                 if verdict.ok:
                     info.update(vinfo, gen_fallback=False, guard_deltas=verdict.deltas)
@@ -174,5 +194,6 @@ class SessionComposer:
                 info['guard_failures'].append(verdict.failures)
         except Exception as exc:  # noqa: BLE001 - any variation bug falls back to base
             info['error'] = repr(exc)
-        self._drum_sigs[(genre, int(tier), int(visit_idx))] = tuple(_drum_notes(out))
+        self._history[(genre, int(tier), int(visit_idx))] = (
+            sm.content_sha(sm.bar_onset_sets(out, BARS, 'drum')), sm.content_sha(sm.bar_onset_sets(out, BARS)))
         return out, info

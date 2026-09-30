@@ -11,9 +11,10 @@ segment:
   5. the drum note count is unchanged (all ops are count-neutral);
   6. the bounded MIDI features stay within BOUNDS of the base.
 
-Per-role drum rates are reported in deltas but not gated: fills re-voice hats
-as snare / conga by design, and the energy table does not use role rates.
-Their timbre effect is checked on rendered audio (plan section 6.3).
+Per-role drum rates and drum_brightness (composer/variation.py) are reported
+in deltas but not gated: phrase-end ops may re-voice a few hats as snare /
+conga, and the energy table does not use role rates. Their timbre effect is
+checked on rendered audio (plan sections 6.3 and 6.8).
 The cell-envelope and audio checks belong to certification (Phase 3).
 """
 
@@ -24,7 +25,7 @@ from dataclasses import dataclass, field
 import pretty_midi
 
 import stimulus_metrics as sm
-from composer.variation import protected_notes
+from composer.variation import drum_brightness, protected_notes
 
 BARS = 8
 # Provisional, relative to the base segment (plan section 3.2): 'rel' is a
@@ -94,4 +95,5 @@ def check(varied: pretty_midi.PrettyMIDI, base: pretty_midi.PrettyMIDI, genre: s
     fails += [f'{f}:{deltas[f]:+g}' for f in BOUNDS if abs(deltas[f]) > BOUNDS[f][1] + 1e-9]
     for f in REPORTED:
         deltas[f] = round(fv[f] - fb[f], 4)
+    deltas['drum_brightness'] = round(drum_brightness(varied) - drum_brightness(base), 4)
     return GuardResult(ok=not fails, failures=fails, deltas=deltas)

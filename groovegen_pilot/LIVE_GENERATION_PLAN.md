@@ -624,6 +624,130 @@ Pending before live integration:
    spread; hiphop and rock pulse-clarity SDs are near 0.
 4. Section 6.4 manifest, 6.5 Tier S and 6.6 Tier L.
 
+### 6.8 Timbre-preserving variation (v2a.2, 2026-09-30)
+
+Item 1 of the 6.7 pending list. Changes `composer/variation.py` and
+`composer/arrangement.py` (`GEN_VERSION` `v2a.2`). `energy_guard.py` now
+also reports a `drum_brightness` delta, which is not gated. v1,
+`composer.py`, the frozen cells, the controller and `run_session_v2` are
+unchanged. v2 is still not wired into the live runner.
+
+**Evidence behind the design:**
+- **Voice brightness:** each voice was rendered alone through
+  Musyng_Kite. Centroids: hats 42/44/46 8.3-9.7 kHz, ride 51 6.2 kHz,
+  rim 37 2.8 kHz, clap 39 2.2 kHz, snare 38 0.5 kHz, congas 62-64
+  0.2-0.7 kHz, kick 36 0.1 kHz.
+- **v2a.1 re-voicing:** 5.1 notes per segment were re-voiced, 4.75 of them
+  across timbre families and 1.29 into kick 36. The worst genre was
+  hiphop, at 8.2.
+- **Single-edit probes** (effect of one edit on the rendered audio):
+  - A 16th move raises the centroid slightly but lowers pulse clarity by
+    0.001-0.03.
+  - An in-place hat-to-snare change keeps pulse clarity and lowers the
+    centroid by 10-30 Hz per note.
+
+**Algorithm:**
+- Every op keeps the note count and each note's velocity, and writes only
+  voices the base already plays.
+- Ops, cheapest first:
+  1. **exchange:** two nearby non-kick notes of different voices trade
+     slots, so the onset grid and voice mix are unchanged.
+  2. **family:** in-place swap within a timbre family (hats/ride;
+     snare/rim/clap; conga, bongo and timbale articulations).
+  3. **move:** a ±1 16th shift, at most 1 per segment, within 0.4 of the
+     guard bounds.
+  4. **cross:** an in-place re-voice to the brightest snare-family or hand
+     voice, never kick, clave or crash. At most 2 per segment, and
+     `drum_brightness` (velocity-weighted classes 1 / 0.6 / 0.3 / 0) may
+     fall at most 0.01.
+- **Phrase ends:** bars 4 and 8 always get one op. Only there may a
+  family or cross op exceed the cross cap and brightness budget; the
+  feature budget is never exceeded.
+- **Other bars:** the other A' bars and the second bar-8 op get an op only
+  within budget. A note changed once is not changed again.
+- **Templates:** T2 now varies bar 4. Crescendo and fill styles are
+  removed.
+- **Session:** a variation is retried, up to 12 attempts, if it:
+  - fails the guard;
+  - leaves bar 4 or 8 unmarked;
+  - has more than 3 identical bars in a row;
+  - repeats a drum layer from the previous 4 visits, or full content from
+    any earlier visit.
+
+  Every 4 failed attempts, `relax` raises the move and cross caps and the
+  brightness and move budgets.
+
+**Re-voicing, v2a.1 to v2a.2** (per segment; 27 cells, stim seeds 1-2, 12
+visits):
+
+| | v2a.1 | v2a.2 |
+|---|---|---|
+| Notes re-voiced | 5.11 | 1.98 |
+| Cross-family | 4.75 | 0.85 |
+| Into kick | 1.29 | 0 |
+| New onset slots | 1.30 | 0.53 |
+| `drum_brightness` change | -0.026 | -0.005 |
+
+Per genre, cross-family notes went from 2.4 to 2.5 in calm, 7.4 to 0.6 in
+hiphop, 4.5 to 0.8 in rock and 4.5 to 0.03 in latin.
+
+**Certification, MIDI only (run 20260930_122048):**
+- Repetition targets met in 27 of 27 cells (24 before). Fallback rate 0.
+- Variation-controlled at MIDI level in 26 cells. The exception is
+  hiphop:1: on-beat share shifts -0.027 against an allowance of 0.025.
+- All within-cell-range misses come from base seeds.
+
+**Certification with audio (run 20260930_122337):**
+
+| Measure | v2a.1 | v2a.2 |
+|---|---|---|
+| Repetition targets met | 24/27 | 27/27 |
+| Mean R1 (distinct drum bars) | 4.46 | 4.03 |
+| Max R2 (identical bars in a row) | 3 | 3 |
+| Exact-repeat rate, max | 0.045 | 0 |
+| Bar 4 marked, lowest cell | 46% | 100% |
+| Bar 8 marked, lowest cell | 100% | 100% |
+| Minimum drum-repeat distance (visits) | 3 | 5 |
+| R4 range | 0.76-0.96 | 0.77-0.98 |
+| Centroid variation shift, mean | -111 Hz | -13 Hz |
+| Centroid variation shift, range | -334 to -12 Hz | -54 to +16 Hz |
+| Pulse clarity variation shift, mean | -0.015 | -0.003 |
+| Pulse clarity variation shift, min | -0.030 | -0.017 |
+| LUFS variation shift, max |·| | 0.046 LU | 0.006 LU |
+| E variation shift, max |·| | 0.030 | 0.0085 |
+| Variation-controlled cells | 5 | 8 (lofi:1-3, latin:3, pop:1-3, pop:5) |
+
+The E limit is 0.023. The centroid is still slightly lower on average
+(22 of 27 cells below 0), but only 3 cells exceed their allowance.
+
+**Still failing variation-controlled (19 cells):**
+
+| Cells | What fails | Why | Kind |
+|---|---|---|---|
+| calm:1, calm:2 | Centroid -31 Hz (allowed 7.5) | The only free voice is the on-beat hat. A move breaks the on-beat limit (1/32 > 0.025) and pulse clarity (4x); a rim costs 2x the centroid allowance. No single edit fits. | Envelope |
+| hiphop:1 | On-beat share -0.027 (allowed 0.025); pulse -0.0064 (allowed 0.0057) | Same structure as calm: all hats are on the beat | Envelope |
+| rock:1-4, rnb:4 | Pulse shift | rock allows 0.001-0.002; one 16th move costs 0.0014-0.01. The other option, 2 hat-to-snare edits, costs about 50 Hz against a 25-45 Hz allowance. | Mostly envelope. rnb:4 (-0.017 vs 0.013) needs a look at its exchanges. |
+| hiphop:3-5 | Flux about -0.006 (allowed 0.004-0.005) | Family swaps are mostly 42>46; the open hat's sustain is the likely cause, not yet isolated | Generator |
+| rock:5 | Centroid -54 Hz, flux, pulse | Not yet isolated | Generator |
+| latin:2 | Pulse -0.007 (allowed 0.0025) | Also misses A3 | Mixed |
+| hiphop:2, latin:1, rnb:1-3, pop:4 | 1-6 segments outside the envelope; all cell shifts pass | | Borderline |
+
+**Envelope evidence:** in calm, hiphop, rock and latin:1-2, the v1 drum
+layer does not change with the seed. So the `v1_wide` SDs of centroid,
+pulse clarity and flux measure only pitched variation, and any drum change
+at all can exceed 0.5 SD. The limits were not changed. Whether they apply
+to a drum-only variation is a decision for the protocol.
+
+Pending (replaces 6.7 items 1-2):
+1. **Generator:**
+   - weight family swaps toward 46>42 (or neutral) and re-check flux in
+     hiphop:3-5;
+   - isolate rock:5's centroid and rnb:4's pulse effect.
+2. **Decision on the limits:**
+   - in drum-seed-invariant cells, either keep them and accept that calm,
+     hiphop:1 and rock:1-4 cannot vary their drums;
+   - or set them from a drum-perturbation reference.
+
 ---
 
 ## 7. First implementation task: `groovegen_pilot/stimulus_audit.py`
