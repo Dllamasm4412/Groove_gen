@@ -13,7 +13,10 @@ Generators
     bank   v1 live behaviour: MelodyBank(variants_per_cell=4, base_seed=0)
            rotation per cell, SymbolicSegmentRenderer(session_seed=42) seed
            derivation, tier_tempo / tempo_default, RUNG_TIER_CAP density.
-           A v2 generator registers in GENERATORS with the same interface.
+    session  v2 controlled variation (composer/arrangement.py SessionComposer,
+           --stim-seed): the k-th visit to a cell in a trajectory is visit_idx k.
+           Not the live path, so the trace-seed and render-path fidelity
+           checks (which replay run_session_v2) are skipped for it.
 
 Trajectories (each starts with a fresh generator, like a new session)
 ------------
@@ -29,6 +32,8 @@ Usage (writes only to a disposable directory; never touches renders/frozen_v2):
     python stimulus_audit.py --modes bank,dwell,sweep,trace \
         --trace-csv renders/pilot_zero/daniel_L2_20260928_122951/session_trace.csv
     python stimulus_audit.py --render --sf2 Musyng_Kite.sf2      # adds render_ms
+    python stimulus_audit.py --generator session --stim-seed 1 \
+        --reference-summary renders/smoke_audit/baseline_v1_20260929/audit_summary.json
 Outputs: <out>/audit.csv (one row per segment) and <out>/audit_summary.json.
 """
 
@@ -36,6 +41,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import functools
 import hashlib
 import json
 import math
@@ -72,6 +78,7 @@ class BankGenerator:
     """
 
     name = 'bank'
+    live_path = True
 
     def __init__(self, session_seed: int = 42, variants_per_cell: int = 4, base_seed: int = 0):
         from melody_bank import MelodyBank
@@ -104,7 +111,33 @@ class BankGenerator:
         return pm, p
 
 
-GENERATORS = {'bank': BankGenerator}
+class SessionGenerator:
+    """v2 generator (Phase 2a): SessionComposer with a per-cell visit counter."""
+
+    name = 'session'
+    live_path = False
+    INFO_KEYS = ('base_seed', 'var_seed', 'block_idx', 'session_key', 'form_template',
+                 'gen_attempts', 'gen_fallback', 'bar_roles', 'drum_ops')
+
+    def __init__(self, stim_seed: int = 1):
+        from composer.arrangement import GEN_VERSION, SessionComposer
+
+        self.composer = SessionComposer(stim_seed)
+        self.visits: dict[tuple, int] = {}
+        self.config = {'stim_seed': stim_seed, 'gen_version': GEN_VERSION}
+
+    def generate(self, genre: str, tier: int):
+        cell = (genre, int(tier))
+        visit = self.visits.get(cell, 0)
+        self.visits[cell] = visit + 1
+        pm, info = self.composer.compose(genre, tier, visit)
+        plan = {'planned_tempo_bpm': info['tempo_bpm'], 'density': info['density'],
+                'seed': None, 'composer_seed': info['base_seed']}
+        plan.update({k: info[k] for k in self.INFO_KEYS})
+        return pm, plan
+
+
+GENERATORS = {'bank': BankGenerator, 'session': SessionGenerator}
 
 
 # =============================================================================
@@ -186,6 +219,7 @@ ROW_FIELDS = (
     + ['repeat_dist_segments', 'repeat_dist_visits', 'drum_repeat_dist_visits',
        'pitched_repeat_dist_visits', 'near_repeat_drum', 'near_repeat_pitched',
        'near_repeat_all', 'motif_distance', 'prev_same_genre_key', 'key_changed']
+    + list(SessionGenerator.INFO_KEYS)       # empty for the bank generator
 )
 
 
@@ -219,7 +253,7 @@ def audit_trajectory(name: str, segments: list[dict], gen_cls, renderer=None,
             render_ms = (time.perf_counter() - t0) * 1e3
             # Live-path fidelity, once per cell: the renderer's own entry point
             # (as run_session_v2 calls it) must give the same audio
-            if fidelity is not None and cell not in fidelity['render_checked']:
+            if gen.live_path and fidelity is not None and cell not in fidelity['render_checked']:
                 live = renderer.render_segment(genre=genre, tempo_bpm=plan['planned_tempo_bpm'],
                                                tier=tier, n_bars=BARS, segment_idx=plan['seed'])
                 fidelity['render_checked'].add(cell)
@@ -261,7 +295,7 @@ def audit_trajectory(name: str, segments: list[dict], gen_cls, renderer=None,
         all_hist.append(m['content_sha'])
         prev_visits.append(m)
         genre_last[genre] = m
-        if fidelity is not None and seg.get('logged_seed') is not None:
+        if gen.live_path and fidelity is not None and seg.get('logged_seed') is not None:
             fidelity['trace_seed_checked'] += 1
             if seg['logged_seed'] != plan['seed']:
                 fidelity['trace_seed_mismatch'].append(f'{name}#{pos}')
@@ -361,6 +395,7 @@ def summarize(rows: list[dict], reference: Optional[dict] = None) -> dict:
             'bounded': {f: _stats(r[f] for r in uniq) for f in sm.BOUNDED_FEATURES},
             'repetition': repetition_block(cr),
             'gen_ms': _stats(r['gen_ms'] for r in cr),
+            'gen_fallback_rate': _rate(r.get('gen_fallback') for r in cr),
             'render_ms': _stats(r['render_ms'] for r in cr),
         }
     trajectories = {}
@@ -386,7 +421,8 @@ def code_provenance() -> dict:
             return None
     files = {}
     for f in ('composer.py', 'melody_bank.py', 'segment_renderer.py', 'stimulus_metrics.py',
-              'stimulus_audit.py', 'composer/hiphop_cell.py', 'composer/rock_cell.py'):
+              'stimulus_audit.py', 'composer/hiphop_cell.py', 'composer/rock_cell.py',
+              'composer/arrangement.py', 'composer/variation.py', 'composer/energy_guard.py'):
         p = HERE / f
         files[f] = hashlib.sha256(p.read_bytes()).hexdigest()[:16] if p.exists() else None
     status = git('status', '--porcelain', '--', '.')
@@ -410,6 +446,7 @@ def _csv_value(v):
 def parse_args(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n\n')[0])
     ap.add_argument('--generator', choices=sorted(GENERATORS), default='bank')
+    ap.add_argument('--stim-seed', type=int, default=1, help='session generator: stimulus seed')
     ap.add_argument('--modes', default='bank,dwell,sweep',
                     help='comma list of bank,dwell,sweep,trace (default bank,dwell,sweep)')
     ap.add_argument('--visits', type=int, default=8, help='bank mode: visits per cell')
@@ -451,7 +488,8 @@ def main(argv=None) -> int:
     fidelity = {'trace_seed_checked': 0, 'trace_seed_mismatch': [],
                 'render_checked': set(), 'render_mismatch': []}
 
-    gen_cls = GENERATORS[args.generator]
+    gen_kwargs = {'stim_seed': args.stim_seed} if args.generator == 'session' else {}
+    gen_cls = functools.partial(GENERATORS[args.generator], **gen_kwargs)
     t_start = time.perf_counter()
     rows: list[dict] = []
     for name, segs in trajectories:

@@ -311,6 +311,75 @@ For each candidate:
 The retries are deterministic, so they are reproducible and appear in the
 manifest.
 
+### 4.9 Phase 2a as implemented (2026-09-29): deviations from 4.3-4.8
+
+Implemented in `composer/arrangement.py`, `composer/variation.py` and
+`composer/energy_guard.py`; not wired into the runner. `composer.py` and
+the frozen cells are unchanged (`test_composer_identity.py` still passes).
+Where the code differs from sections 4.3-4.8:
+
+- **Protected notes come from the base segment, not the 4.3 table.** The
+  rule: every clave 75 and crash 49; kick and snare/clap/rim on quarter-note
+  beats; all of calm's 36/37; hiphop's slot-10 kick. The table was wrong
+  for pop (its snare is on beat 3, not beats 2 and 4).
+- **Micro-op catalog**:
+  - `hat_shift`, `kick_shift` and `ghost_shift` move one non-protected note
+    by one 16th;
+  - `hat_swap` (42/46) and `hand_swap` (63/64) run only if the base already
+    plays both voices;
+  - `revoice` is the last resort for bars where nothing else fits: it
+    re-voices one hat or hand note in place, before slot 8.
+  - `accent_rotate` and `hat_skip_add` are not implemented.
+  - Every op is count-neutral and velocity-multiset-neutral.
+- **Move budget.** A 16th move can merge or split onsets and change the
+  on-beat share. Each candidate move is therefore evaluated with the
+  guard's own feature code and kept only if every section 3.2 MIDI bound
+  stays within 80% of its tolerance.
+  - Without the budget, the first smoke run fell back on 8.6% of segments:
+    all of calm1-2, where one hat shift moves the on-beat share by 0.06.
+  - With it, fallback is 0%.
+  - The +-0.05 on-beat bound is kept. The bank's within-cell spread gives no
+    grounds to widen it: calm, hiphop, rock and latin have SD 0 across 24
+    seeds.
+- **Fills re-voice in place.** They keep the positions, count and velocity
+  multiset, with velocities re-ordered into a crescendo. A fill uses only
+  voices the base already plays.
+  - No toms in 2a (section 4.4 toms are deferred until the Tier A timbre
+    check).
+  - A fill counts only notes whose pitch actually changes. An empty fill
+    window gets micro-ops instead.
+- **Per-role drum rates are reported, not gated.** Fills re-voice hats as
+  snare or conga by design, and the energy table does not use role rates.
+  Their effect is judged on audio (Tier A).
+- **Guard.** It checks the following against the base segment:
+  - locked features identical;
+  - drum voices a subset of the base's voices;
+  - pitched tracks identical;
+  - protected notes present;
+  - drum note count equal;
+  - section 3.2 MIDI bounds.
+
+  It also rejects a variation that exactly repeats an earlier visit in its
+  block. Earlier visits are recomputed from the schedule, so the result
+  stays path-independent. The cell-envelope check is left to certification
+  (Phase 3).
+- **Reference sets.** Against the v1 bank audit's per-cell drum-voice sets,
+  7 cells show "outside reference" voices (for example pop:3 +46,
+  rnb:3 +44/51).
+  - The cause is the new base seeds, not the variation: pop3 over 40
+    arbitrary seeds uses 36, 38, 39, 42 and 46.
+  - The v1 reference covers only 4 seeds per cell. Certification should
+    build the voice envelope from many seeds.
+
+Evidence (stim_seed 1, `stimulus_audit.py --generator session`, 345
+segments):
+- 0 fallbacks;
+- locked features stable in every cell;
+- R1 >= 3 distinct drum bars in every segment;
+- R2 max run 3;
+- bar 8 marked in 100% of segments;
+- 0 exact repeats within a cell.
+
 ---
 
 ## 5. Keeping the study valid
