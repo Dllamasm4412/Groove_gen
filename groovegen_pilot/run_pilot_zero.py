@@ -11,7 +11,7 @@ import time
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import composer as _composer
 
@@ -19,6 +19,11 @@ GENRE_CFG = getattr(_composer, "GENRE_CFG", {})
 # Genres left off the live ladder (kept in GENRE_CFG and the offline ladder).
 # latin returned 2026-09-25 with its closed hi-hat layer (composer v1.5).
 LIVE_EXCLUDE_GENRES: tuple[str, ...] = ()
+# Live-only tier caps on top of segment_renderer.RUNG_TIER_CAP (cells above the
+# cap are dropped from the live ladder; kept cells keep their u). latin4/5
+# measured just below pop1 but the developer hears latin as rnb-level energy
+# (L2 run, 2026-09-28), so latin stops at tier 3 (within the rnb band).
+LIVE_TIER_CAP_OVERRIDES: dict[str, int] = {"latin": 3}
 # Measured per-cell energy features (music_features_measured.py).
 ENERGY_TABLE = Path(__file__).resolve().parent / "energy_table_v1.json"
 
@@ -267,6 +272,46 @@ def provenance_warnings(args: argparse.Namespace, audio: dict[str, Any],
     return warnings
 
 
+class PPGSignalMonitor:
+    """Tells the operator to adjust the PPG sensor while no valid HR arrives.
+
+    update(ok) is called on every HR read. After after_s without a valid
+    reading it logs ADJUST THE PPG SENSOR (repeated every repeat_s), and once
+    a valid reading returns it logs that the signal is back. Logging only;
+    the callers decide what to pause.
+    """
+
+    def __init__(self, logger: logging.Logger, context: str,
+                 after_s: float = 5.0, repeat_s: float = 10.0, time_fn=None):
+        self.logger = logger
+        self.context = context
+        self.after_s = after_s
+        self.repeat_s = repeat_s
+        self.time_fn = time_fn or time.time
+        self.bad_since: Optional[float] = None
+        self.last_alert: Optional[float] = None
+        self.n_episodes = 0
+
+    def update(self, ok: bool) -> None:
+        now = self.time_fn()
+        if ok:
+            if self.last_alert is not None:
+                self.logger.info("PPG signal back after %.0f s without valid HR; resuming",
+                                 now - self.bad_since)
+            self.bad_since = self.last_alert = None
+            return
+        if self.bad_since is None:
+            self.bad_since = now
+        if now - self.bad_since >= self.after_s and (
+            self.last_alert is None or now - self.last_alert >= self.repeat_s
+        ):
+            if self.last_alert is None:
+                self.n_episodes += 1
+            self.logger.warning("ADJUST THE PPG SENSOR: no valid HR for %.0f s (%s)",
+                                now - self.bad_since, self.context)
+            self.last_alert = now
+
+
 def collect_baseline(
     ppg_source,
     baseline_seconds: int,
@@ -278,12 +323,16 @@ def collect_baseline(
 
     samples: list[dict[str, Any]] = []
     stale_streak = 0
+    monitor = PPGSignalMonitor(logger, "baseline paused until HR returns")
 
-    for t_s in range(1, baseline_seconds + 1):
+    # More than 5 consecutive stale reads pause the baseline (no samples are
+    # recorded) instead of aborting; it resumes on the next fresh read.
+    while len(samples) < baseline_seconds:
         reading = ppg_source.read()
         is_fresh = bool(getattr(reading, "is_fresh", False))
         bpm_val = float(getattr(reading, "bpm", float("nan")))
         t_wall = float(getattr(reading, "t_wall", time.time()))
+        monitor.update(is_fresh)
 
         if is_fresh:
             stale_streak = 0
@@ -291,13 +340,12 @@ def collect_baseline(
             stale_streak += 1
 
         if stale_streak > 5:
-            raise RuntimeError(
-                "ERROR: HR stream not fresh for >5 consecutive seconds during baseline"
-            )
+            time.sleep(1.0)
+            continue
 
         row = {"t_wall": t_wall, "bpm": bpm_val, "is_fresh": is_fresh}
         samples.append(row)
-        logger.info("baseline t=%ss  hr=%.1f bpm  (n_samples=%d)", t_s, bpm_val, len(samples))
+        logger.info("baseline t=%ss  hr=%.1f bpm  (n_samples=%d)", len(samples), bpm_val, len(samples))
         time.sleep(1.0)
 
     baseline_csv_path.parent.mkdir(parents=True, exist_ok=True)
@@ -534,16 +582,17 @@ def main() -> int:
         # Measured ladder: cell energy from rendered loudness, drum onset
         # rate, played tempo, centroid and flux (energy_table_v1.json).
         energy_table_sha = None
+        live_tier_caps = {**RUNG_TIER_CAP, **LIVE_TIER_CAP_OVERRIDES}
         if args.ladder == "measured":
             from ladder import load_energy_table
             features, weights, tie_band, energy_table_sha = load_energy_table(args.energy_table)
             ladder = build_ladder(
-                tier_caps=RUNG_TIER_CAP, exclude_genres=LIVE_EXCLUDE_GENRES,
+                tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES,
                 features=features, weights=weights, tie_band=tie_band,
             )
             logger.info("ladder: measured (%s, sha256 %s)", args.energy_table, energy_table_sha[:16])
         else:
-            ladder = build_ladder(tier_caps=RUNG_TIER_CAP, exclude_genres=LIVE_EXCLUDE_GENRES)
+            ladder = build_ladder(tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES)
             logger.info("ladder: prior")
         if args.initial_rung is not None:
             initial_rung = args.initial_rung
@@ -617,9 +666,31 @@ def main() -> int:
         hr_poll_writer = csv.DictWriter(hr_poll_file, fieldnames=list(HR_POLL_LOG_FIELDS))
         hr_poll_writer.writeheader()
 
+        # Stale HR never ends the session: the controller holds its cell
+        # (stale_hr_policy='hold') and the operator is told to adjust the sensor.
+        session_ppg_monitor = PPGSignalMonitor(logger, "music holds its current cell until HR returns")
+
         def log_hr_poll(row: dict[str, Any]) -> None:
             hr_poll_writer.writerow(row)
             hr_poll_file.flush()
+            session_ppg_monitor.update(bool(row["accepted"]))
+
+        # The first goal goes out with segment 0 and the estimator arms its
+        # pacer on receipt, so from segment 1 on a missing pacer means the
+        # estimator is not pacing (warn now, not only in the summary).
+        pacer_warned = False
+
+        def on_segment(seg_idx: int, row: Any) -> None:
+            nonlocal pacer_warned
+            log_segment(logger, seg_idx, row)
+            status_fn = getattr(ppg_source, "haptic_status", None)
+            if args.haptic_pacing and seg_idx >= 1 and not pacer_warned and callable(status_fn):
+                if (status_fn() or {}).get("pacer_state") is None:
+                    logger.warning(
+                        "HAPTICS NOT RUNNING: --haptic-pacing is set but the estimator reports "
+                        "no pacer. Stop both programs, restart the estimator, then the runner."
+                    )
+                    pacer_warned = True
 
         def write_summary(interrupted: bool) -> Path:
             summary = compute_summary(
@@ -675,7 +746,7 @@ def main() -> int:
                 initial_rung=initial_rung,
                 target_schedule=target_schedule,
                 trace_writer=partial_trace_rows.append,
-                on_segment=lambda i, r: log_segment(logger, i, r),
+                on_segment=on_segment,
                 hr_poll_log=log_hr_poll,
             )
             # Keep one canonical reference after successful completion.

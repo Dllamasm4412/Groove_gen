@@ -484,7 +484,10 @@ def main():
 
     pacing_enabled = args.pace_goal_bpm is not None or args.goal_udp is not None
     pacer = None
-    pacer_stopped = False   # a GrooveGen stop before arming: never create the pacer
+    # A GrooveGen stop ends that runner session. The next goal (a new runner
+    # session against this same estimator) arms a fresh pacer; goals within a
+    # session never revive a pacer that ended on its own (time limit, invalid HR).
+    session_ended = False
     if pacing_enabled:
         from haptic_pacer import DONE, LOG_FIELDS, HapticPacer
     if args.pace_goal_bpm is not None:
@@ -602,11 +605,12 @@ def main():
                         if pacer is not None and pacer.state != DONE:
                             pacer.stop("session_end")
                             print("PACER stop from GrooveGen (session_end)")
-                        pacer_stopped = True
-                    elif msg is not None and not pacer_stopped:
-                        if pacer is None:
+                        session_ended = True
+                    elif msg is not None:
+                        if pacer is None or session_ended:
                             pacer = HapticPacer(goal_bpm=msg, max_seconds=args.pace_max_seconds,
                                                 invalid_window_s=args.pace_invalid_window_s)
+                            session_ended = False
                             print(f"PACER armed by GrooveGen: goal request {msg:.1f} bpm; "
                                   f"warm-up needs 10 consecutive valid HR updates.")
                         elif pacer.set_goal(msg, t):
@@ -614,6 +618,7 @@ def main():
                                   f"from ref {pacer.origin_bpm:.1f})")
                     if pacer is not None and pacer.state != DONE and link.watchdog_expired():
                         pacer.stop("controller_lost")
+                        session_ended = True   # that runner is gone; a new one re-arms
                         print("PACER stop: no GrooveGen message for "
                               f"{link.watchdog_s:.0f} s (controller_lost)")
 

@@ -111,7 +111,8 @@ class ControllerConfig:
     # does not move toward it: at a ladder end, mid-ladder when g_hat has
     # collapsed, or when the governor has shrunk the target to current HR.
     # Counted per segment (rotation segments keep counting while the error
-    # keeps its sign); stuck_release_segments dead-zone segments clear it.
+    # keeps its sign, unless the MPC asks for a cell beyond the rotation
+    # band); stuck_release_segments dead-zone segments clear it.
     #   saturation_rotation: after rotation_after_segments stuck, rotate
     #     through genres with cells within rotation_band_u of the stall
     #     cell's energy (least-recently-played genre, its cell furthest in
@@ -499,6 +500,17 @@ class LadderMPC:
         rotating = (
             cfg.saturation_rotation and self._stuck_count >= cfg.rotation_after_segments
         )
+        # Rotation ends once the MPC asks for a cell beyond the rotation band
+        # in the push direction (mid-ladder, g_hat has recovered). Without
+        # this, rotation overrode such climbs for as long as the error kept
+        # its sign (L2 run 2026-09-28: 21 segments cycling hiphop2/latin1/rock1
+        # while the MPC asked for rnb1). At a ladder end nothing lies beyond
+        # the band, so rotation there is unchanged.
+        if rotating and push == self._stuck_dir:
+            anchor_u = self.ladder.by_rung[self._anchor_rung].u
+            if push * (self.ladder.by_rung[mpc_rung].u - anchor_u) > cfg.rotation_band_u:
+                self._reset_stuck()
+                return mpc_rung, "mpc"
         if push != 0 and (stalled or (rotating and push == self._stuck_dir)):
             if push != self._stuck_dir or self._stuck_count == 0:
                 self._stuck_dir, self._stuck_count = push, 0

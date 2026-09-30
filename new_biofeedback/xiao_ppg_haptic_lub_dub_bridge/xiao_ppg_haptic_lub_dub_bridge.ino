@@ -22,6 +22,9 @@
 //   OFF      stop motors and cancel pending pattern events
 //   TEST     D9, then D7, then both (hardware wiring test)
 //
+// The built-in LED is lit whenever D9 or D7 is HIGH, so a received command is
+// visible on the board even if no motor moves.
+//
 // The HB pattern is perceptual: D9 gives the primary "bum", then D7 provides
 // a shorter secondary "bum" after a brief delay. It is not a measurement of
 // cardiac S1/S2 heart sounds.
@@ -40,9 +43,13 @@ const int CLIP_MARGIN = 4;
 
 // ---- Heartbeat-inspired D9 -> D7 haptic pattern ----
 // Adjust these three values to tune the subjective "bum-bum" feel.
-const uint32_t HEARTBEAT_PRIMARY_MS = 40;     // D9 duration; first/stronger bump
+// 2026-09-28: 40/25 ms were barely felt (ERM motors need ~50-100 ms to spin
+// up); raised to 80/60 ms, then 70/50 ms after the developer asked for a
+// little less intensity. The pattern ends by 200 ms, inside the 600 ms beat
+// period at the 100 bpm pacing ceiling.
+const uint32_t HEARTBEAT_PRIMARY_MS = 70;     // D9 duration; first/stronger bump
 const uint32_t HEARTBEAT_GAP_MS = 150;        // D9-start to D7-start delay
-const uint32_t HEARTBEAT_SECONDARY_MS = 25;   // D7 duration; second/lighter bump
+const uint32_t HEARTBEAT_SECONDARY_MS = 50;   // D7 duration; second/lighter bump
 
 // Hardware-test pulse duration used by LEFT, RIGHT, and BOTH commands.
 const uint32_t TEST_PULSE_MS = 120;
@@ -112,6 +119,9 @@ void updateHaptics(uint32_t nowMs) {
     digitalWrite(HAPTIC_RIGHT_PIN, LOW);
     rightActive = false;
   }
+
+  // Mirror the motor pins on the built-in LED (active LOW on XIAO SAMD21).
+  digitalWrite(LED_BUILTIN, (leftActive || rightActive) ? LOW : HIGH);
 }
 
 void runTestSequence() {
@@ -185,6 +195,7 @@ void setup() {
 
   pinMode(HAPTIC_LEFT_PIN, OUTPUT);
   pinMode(HAPTIC_RIGHT_PIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   stopAll();
 
   nextSampleUs = micros();

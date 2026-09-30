@@ -5,6 +5,8 @@ then CLAUDE.md (project rules), then the memory index. Everything below was
 true at the end of the 2026-09-25 session; re-check anything you rely on
 (`git status`, `grep`) before acting on it.
 
+> **Status 2026-09-28:** L2 ran (12:29, 30 segments, pacing felt only after the firmware was re-flashed and HB lengthened to 70/50 ms). Later runs exposed three bugs, fixed offline and not yet run live: rotation locking the ladder mid-range (control.py), a runner stop disabling the estimator pacer for good, and the baseline aborting on PPG loss (now "ADJUST THE PPG SENSOR" and a pause). latin is capped at tier 3 live (27 cells). Next: an L2b rerun (flash lub_dub firmware, estimator, runner `--subject-id daniel_L2b`). Sections below are the 2026-09-25/26 plan; see CLAUDE.md and SENSOR_NOTES.md for current state.
+
 ## 0. Standing rules from the user (verbatim, still in force)
 
 - "Do not actuate haptics or start a live PPG session on me without a separate
