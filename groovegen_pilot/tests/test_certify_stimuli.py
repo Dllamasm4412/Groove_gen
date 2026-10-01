@@ -120,6 +120,57 @@ def test_repetition_stats_and_compare():
     assert c['targets']['r1'] and not c['targets']['r2'] and not c['targets_met']
 
 
+def test_drum_bar_novelty():
+    a, b, c, d = (frozenset({('kick', 36, i)}) for i in range(4))
+    prev = [a, b, a, b]
+    # same patterns shifted: nothing new, every bar changed
+    assert cs.drum_bar_novelty(prev, [b, a, b, a]) == {
+        'new_drum_bar_frac': 0.0, 'new_drum_patterns': 0, 'changed_drum_bar_frac': 1.0}
+    # one new pattern used in two bars: counted per bar, and once as a pattern
+    assert cs.drum_bar_novelty(prev, [a, c, a, c]) == {
+        'new_drum_bar_frac': 0.5, 'new_drum_patterns': 1, 'changed_drum_bar_frac': 0.5}
+    assert cs.drum_bar_novelty(prev, [c, d, a, b])['new_drum_patterns'] == 2
+
+
+def test_novelty_stats_splits_within_and_new_block():
+    rows = [{'visit_idx': 0},
+            {'same_base_as_prev': True, 'new_drum_bar_frac': 0.25, 'new_drum_patterns': 2, 'changed_drum_bar_frac': 0.5},
+            {'same_base_as_prev': True, 'new_drum_bar_frac': 0.125, 'new_drum_patterns': 1, 'changed_drum_bar_frac': 0.25},
+            {'same_base_as_prev': False, 'new_drum_bar_frac': 1.0, 'new_drum_patterns': 4, 'changed_drum_bar_frac': 1.0}]
+    s = cs.novelty_stats(rows)
+    assert (s['n_within_block'], s['n_new_block']) == (2, 1)
+    assert s['within_block_new_drum_bar_frac'] == pytest.approx(0.1875)
+    assert s['new_block_new_drum_bar_frac'] == 1.0
+    assert cs.novelty_stats([{'visit_idx': 0}])['within_block_new_drum_bar_frac'] is None
+
+
+def _balance_cells(f):
+    """9 cells, 3 genres x 3 tiers, u rising with tier; 4 visits per cell from f(u)."""
+    out = {}
+    for gi, g in enumerate(('a', 'b', 'c')):
+        for t in (1, 2, 3):
+            u = (t - 1) / 2 * 0.8 + gi * 0.1
+            out[f'{g}:{t}'] = {'u': u, 'genre': g, 'tier': t, 'values': [f(u) + d for d in (-0.02, 0, 0, 0.02)]}
+    return out
+
+
+def test_novelty_balance_flags_energy_allocated_novelty():
+    flat = cs.novelty_balance(_balance_cells(lambda u: 0.3))
+    assert flat['ok'] is True and flat['rel_change_per_u'] == pytest.approx(0.0, abs=1e-9)
+    assert flat['criterion'] == 'A6 novelty balance' and 'not perceptually validated' in flat['threshold_status']
+    # novelty rising with u (as v2a.2 did, +0.69 of the mean per unit u) fails
+    rising = cs.novelty_balance(_balance_cells(lambda u: 0.2 + 0.15 * u))
+    assert rising['ok'] is False and rising['rel_change_per_u'] > cs.NOVELTY_MAX_REL_CHANGE
+    assert rising['diagnostic']['within_genre_tier_rho'] == pytest.approx(1.0)   # reported, not gated
+    # flat but too little novelty to judge balance
+    assert cs.novelty_balance(_balance_cells(lambda u: 0.05))['ok'] is False
+    # deterministic, including the bootstrap
+    assert cs.novelty_balance(_balance_cells(lambda u: 0.3 - 0.05 * u)) == \
+        cs.novelty_balance(_balance_cells(lambda u: 0.3 - 0.05 * u))
+    few = {k: v for k, v in list(_balance_cells(lambda u: 0.3).items())[:2]}
+    assert cs.novelty_balance(few)['ok'] is None
+
+
 def test_check_segment_attribution():
     ref = {
         'locked': [json.dumps({'played_tempo_bpm': 100.0, 'n_tempo_changes': 1, 'n_bars': 8,
@@ -178,6 +229,10 @@ def test_end_to_end_midi_only(tmp_path):
     v2 = [r for r in rows if r['source'] == 'v2_session']
     assert all(r['base_midi_sha256'] and r['segment_ok'] in ('True', 'False') for r in v2)
     assert {r['key_root'] for r in v2 if r['genre'] == 'hiphop'} != {''}
+    # bar novelty: v2 blocks are 3 visits on one base; v1 bank variants all differ
+    assert [r['same_base_as_prev'] for r in v2 if r['cell'] == 'pop:3'] == ['', 'True', 'True', 'False']
+    assert {r['same_base_as_prev'] for r in rows if r['source'] == 'v1_live' and r['visit_idx'] != '0'} == {'False'}
+    assert all(r['new_drum_bar_frac'] == '' for r in rows if r['source'] in ('v1_wide', 'v2_base'))
 
     s = json.loads((out / 'certification_summary.json').read_text())
     assert s['fidelity']['v1_live_subset_of_v1_wide'] is True
@@ -186,6 +241,10 @@ def test_end_to_end_midi_only(tmp_path):
         assert set(c['verdict']) == {'repetition_improved', 'repetition_targets_met',
                                      'variation_controlled', 'within_cell_range', 'attention'}
     assert s['key_continuity']['hiphop']['v2_key_locked'] is True
+    assert 'ok' not in s['r4_energy_rho_diagnostic']                       # old A6: no pass/fail
+    assert s['a6_novelty_balance']['ok'] is None and s['overall']['a6_novelty_balance'] is None   # 2 cells
+    assert 'a6_novelty_independent' not in s['overall']
+    assert s['cells']['pop:3']['novelty']['v2_session']['n_within_block'] == 2
     assert (out / 'cell_summary.csv').exists()
     assert not [p for p in out.rglob('*') if p.suffix in ('.mid', '.midi', '.wav')]
 

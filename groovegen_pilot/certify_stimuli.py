@@ -41,8 +41,19 @@ Checks (thresholds provisional; constants below)
                 visits; improvement and section 2 targets.
     key         hiphop / rock key root from the frozen cell's own choice
                 (composer.arrangement.cell_key); other genres have fixed keys.
-    novelty     A6: Spearman |rho| between ladder u and mean R4 drum
-                similarity of v2 < 0.3.
+    novelty     A6 novelty balance (plan 6.11): C1 = within a v2 block (visit
+                shares the previous visit's base seed), the fraction of the 8
+                drum bars whose onset set occurs nowhere in the previous visit.
+                Passes if the mean C1 >= 1/8 (one new bar per visit) and the
+                OLS slope of the cell means on ladder u (the measured energy
+                position), divided by the mean, is within +-0.25. The 0.25 is
+                a provisional engineering threshold, not perceptually
+                validated. Spearman rho, the within-genre tier trend and the
+                bootstrap interval are diagnostics, not gates.
+                r4_energy_rho_diagnostic: the old A6 (Spearman u vs mean R4,
+                old limit 0.3), diagnostic only. R4 is note-level, so it rises
+                with drum density, and over all visits it mostly measures v1
+                base-seed change at block boundaries.
 
 Usage (writes only under renders/, never frozen_v2; no audio or MIDI is saved):
     python certify_stimuli.py                                  # MIDI only
@@ -98,7 +109,10 @@ R1_MIN_DEFAULT = 3
 R2_MAX = 3
 DRUM_REPEAT_MIN_VISITS = 5     # no drum-layer repeat within 4 visits of a cell
 BAR4_MIN_RATE = 0.5
-A6_MAX_RHO = 0.3
+OLD_A6_R4_MAX_RHO = 0.3        # old R4 A6 limit, reported with the diagnostic only
+NOVELTY_MAX_REL_CHANGE = 0.25  # A6: |OLS slope of C1 on u| / mean C1; provisional, not perceptually validated
+NOVELTY_MIN_MEAN = 1 / BARS    # A6: mean C1 floor (one new drum bar per visit)
+NOVELTY_BOOT = 2000
 
 CERT_FIELDS = list(dict.fromkeys(
     ['source', 'stim_seed', 'key_root'] + ROW_FIELDS
@@ -107,7 +121,8 @@ CERT_FIELDS = list(dict.fromkeys(
     + list(AUDIO_FIELDS)
     + ['audio_env_miss', 'audio_env_miss_variation', 'audio_env_miss_base',
        'd_lufs_vs_base', 'd_centroid_hz_vs_base', 'd_flux_vs_base', 'd_energy_e_vs_base',
-       'segment_ok']))
+       'segment_ok']
+    + ['same_base_as_prev', 'new_drum_bar_frac', 'new_drum_patterns', 'changed_drum_bar_frac']))
 
 
 # =============================================================================
@@ -243,6 +258,80 @@ def repetition_stats(rows: list[dict]) -> dict:
     }
 
 
+def drum_bar_novelty(prev: list[frozenset], cur: list[frozenset]) -> dict:
+    """Bar-level drum novelty of a visit against the previous visit to its cell.
+    A bar is its drum onset set (track key, pitch, grid pos). new = occurs nowhere
+    in prev (shift-tolerant); changed = differs from the same bar of prev."""
+    seen = set(prev)
+    return {'new_drum_bar_frac': round(sum(b not in seen for b in cur) / len(cur), 4),
+            'new_drum_patterns': len(set(cur) - seen),
+            'changed_drum_bar_frac': round(sum(a != b for a, b in zip(prev, cur)) / len(cur), 4)}
+
+
+def novelty_stats(rows: list[dict]) -> dict:
+    """Cell means of the bar-level novelty, split by whether the visit shares the
+    previous visit's base (within a v2 block) or not (new block; every v1 visit)."""
+    later = [r for r in rows if r.get('new_drum_bar_frac') is not None]
+    out: dict[str, Any] = {}
+    for tag, sel in (('within_block', [r for r in later if r['same_base_as_prev']]),
+                     ('new_block', [r for r in later if not r['same_base_as_prev']])):
+        out[f'n_{tag}'] = len(sel)
+        for k in ('new_drum_bar_frac', 'new_drum_patterns', 'changed_drum_bar_frac'):
+            out[f'{tag}_{k}'] = round(float(np.mean([r[k] for r in sel])), 4) if sel else None
+    return out
+
+
+def novelty_balance(per_cell: dict[str, dict]) -> dict:
+    """A6 novelty balance (plan 6.11): does within-block drum novelty vary with
+    ladder u? per_cell: name -> {'u', 'genre', 'tier', 'values'} (the within-block
+    new_drum_bar_frac of each visit). Gated: mean and the OLS change per unit u
+    relative to the mean. 'diagnostic' (not gated): Spearman rho, the within-genre
+    tier trend (the global slope still reflects genre placement on the ladder),
+    u-third means and a bootstrap over visits within cells (fixed seed)."""
+    from scipy.stats import spearmanr
+
+    cells = sorted(c for c, d in per_cell.items() if d['values'])
+    out: dict[str, Any] = {'criterion': 'A6 novelty balance', 'metric': 'within_block_new_drum_bar_frac',
+                           'energy_axis': 'ladder u', 'n_cells': len(cells),
+                           'min_mean': NOVELTY_MIN_MEAN, 'max_abs_rel_change': NOVELTY_MAX_REL_CHANGE,
+                           'threshold_status': 'provisional engineering threshold, not perceptually validated'}
+    if len(cells) < 3:
+        return {**out, 'ok': None}
+    u = np.array([per_cell[c]['u'] for c in cells])
+    vals = [np.asarray(per_cell[c]['values'], float) for c in cells]
+    m = np.array([v.mean() for v in vals])
+
+    def rel_change(means):
+        return float(np.polyfit(u, means, 1)[0] / means.mean()) if means.mean() > 0 else float('nan')
+
+    rng = np.random.default_rng(0)
+    boot = [rel_change(np.array([rng.choice(v, len(v)).mean() for v in vals])) for _ in range(NOVELTY_BOOT)]
+    rho = spearmanr(u, m).statistic if len(set(m)) > 1 else float('nan')
+    tier_rho, weights = [], []
+    for g in sorted({per_cell[c]['genre'] for c in cells}):
+        cs_g = [c for c in cells if per_cell[c]['genre'] == g]
+        gm = [m[cells.index(c)] for c in cs_g]
+        if len(cs_g) >= 3 and len(set(gm)) > 1:
+            tier_rho.append(spearmanr([per_cell[c]['tier'] for c in cs_g], gm).statistic)
+            weights.append(len(cs_g) - 1)
+    rc = rel_change(m)
+    lo, hi = u <= np.quantile(u, 1 / 3), u >= np.quantile(u, 2 / 3)
+    r = lambda x: None if x is None or math.isnan(x) else round(float(x), 4)
+    out.update({
+        'mean': r(m.mean()), 'min': r(m.min()), 'max': r(m.max()),
+        'min_cell': cells[int(m.argmin())], 'max_cell': cells[int(m.argmax())],
+        'rel_change_per_u': r(rc),
+        'ok': bool(m.mean() >= NOVELTY_MIN_MEAN and abs(rc) <= NOVELTY_MAX_REL_CHANGE),
+        'diagnostic': {
+            'rel_change_boot95': [r(np.nanpercentile(boot, 2.5)), r(np.nanpercentile(boot, 97.5))],
+            'rho_u': r(rho),
+            'within_genre_tier_rho': r(np.average(tier_rho, weights=weights)) if weights else None,
+            'low_u_third_mean': r(m[lo].mean()), 'high_u_third_mean': r(m[hi].mean()),
+        },
+    })
+    return out
+
+
 def repetition_compare(v1: dict, v2: dict, genre: str) -> dict:
     """Per metric: 'improved' / 'unchanged' / 'worse' (v2 vs v1), and v2 targets.
     A metric that is worse but still meets its target is not a regression (for
@@ -330,6 +419,16 @@ def _run(name: str, source: str, n: int, genre: str, tier: int, gen_cls, stim_se
         r['source'] = source
         r['stim_seed'] = stim_seed
         r['key_root'] = cell_key(genre, tier, r['composer_seed'])
+    if source in ('v1_live', 'v2_session'):
+        # bar-level novelty vs the previous visit; a v1 bank variant is its own base
+        prev = None
+        for r, pm in zip(rows, store):
+            sets = sm.bar_onset_sets(pm, BARS, 'drum')
+            base = r['base_seed'] if r.get('base_seed') is not None else r['composer_seed']
+            if prev is not None:
+                r['same_base_as_prev'] = base == prev[1]
+                r.update(drum_bar_novelty(prev[0], sets))
+            prev = (sets, base)
     return rows, store
 
 
@@ -529,6 +628,7 @@ def summarize_cell(cell: str, rows: list[dict], ref: dict, audio: bool, tie_band
                               for f, e in ref['midi_env'].items() if e},
         },
         'repetition': {'v1_live': rep_v1, 'v2_session': rep_v2, **rep},
+        'novelty': {'v1_live': novelty_stats(live), 'v2_session': novelty_stats(v2)},
         'midi': {
             'locked_ok_rate': round(sum(bool(r['locked_ok']) for r in v2) / len(v2), 4) if v2 else None,
             'voices_v2': sorted({v for r in v2 for v in r['drum_voices']}),
@@ -643,19 +743,22 @@ def key_continuity(rows: list[dict]) -> dict:
     return out
 
 
-def novelty_independence(cells: list, summaries: dict) -> dict:
-    """A6: Spearman rho between ladder u and v2 mean R4 drum similarity."""
+def r4_energy_diagnostic(cells: list, summaries: dict) -> dict:
+    """The old A6, diagnostic only: Spearman rho between ladder u and v2 mean R4
+    drum similarity. Density- and base-change-confounded (plan 6.11), so it carries
+    no pass/fail; A6 is novelty_balance."""
     from scipy.stats import spearmanr
 
     pairs = [(c.u, summaries[f'{c.genre}:{c.tier}']['repetition']['v2_session']['r4_near_repeat_drum_mean'])
              for c in cells if f'{c.genre}:{c.tier}' in summaries]
     pairs = [(u, r) for u, r in pairs if r is not None]
     if len(pairs) < 3:
-        return {'n_cells': len(pairs), 'rho': None, 'ok': None}
+        return {'n_cells': len(pairs), 'rho': None, 'old_limit_abs_rho': OLD_A6_R4_MAX_RHO,
+                'role': 'diagnostic only, not an acceptance criterion'}
     rho = spearmanr([p[0] for p in pairs], [p[1] for p in pairs]).statistic
     rho = None if rho is None or math.isnan(rho) else round(float(rho), 4)
-    return {'n_cells': len(pairs), 'rho': rho, 'max_abs_rho': A6_MAX_RHO,
-            'ok': rho is not None and abs(rho) < A6_MAX_RHO}
+    return {'n_cells': len(pairs), 'rho': rho, 'old_limit_abs_rho': OLD_A6_R4_MAX_RHO,
+            'role': 'diagnostic only, not an acceptance criterion'}
 
 
 def energy_table_reproduction(rows: list[dict], table: dict, n_variants: int = 8) -> dict:
@@ -776,7 +879,9 @@ def main(argv=None) -> int:
     cell_cols = ['cell', 'u', 'repetition_improved', 'repetition_targets_met', 'variation_controlled',
                  'within_cell_range', 'segment_ok_rate', 'fallback_rate', 'r1_v1', 'r1_v2', 'r2_v1', 'r2_v2',
                  'r3_exact_repeat_rate_v1', 'r3_exact_repeat_rate_v2', 'bar8_rate_v1', 'bar8_rate_v2',
-                 'voices_outside_live4', 'voices_outside_wide', 'n_attention']
+                 'voices_outside_live4', 'voices_outside_wide', 'n_attention',
+                 'within_block_new_drum_bar_frac', 'new_block_new_drum_bar_frac_v2',
+                 'new_block_new_drum_bar_frac_v1']
     with (out / 'cell_summary.csv').open('w', newline='', encoding='utf-8') as f:
         wr = csv.DictWriter(f, fieldnames=cell_cols)
         wr.writeheader()
@@ -796,11 +901,21 @@ def main(argv=None) -> int:
                 'bar8_rate_v1': v1['r6_bar8_rate'], 'bar8_rate_v2': v2['r6_bar8_rate'],
                 'voices_outside_live4': s['midi']['voices_outside_live4'],
                 'voices_outside_wide': s['midi']['voices_outside_wide'],
-                'n_attention': len(vd['attention'])}.items()})
+                'n_attention': len(vd['attention']),
+                'within_block_new_drum_bar_frac': s['novelty']['v2_session']['within_block_new_drum_bar_frac'],
+                'new_block_new_drum_bar_frac_v2': s['novelty']['v2_session']['new_block_new_drum_bar_frac'],
+                'new_block_new_drum_bar_frac_v1': s['novelty']['v1_live']['new_block_new_drum_bar_frac'],
+                }.items()})
 
     verdicts = {k: s['verdict'] for k, s in cell_summaries.items()}
     keys = key_continuity(rows)
-    a6 = novelty_independence(cells, cell_summaries)
+    r4_diag = r4_energy_diagnostic(cells, cell_summaries)
+    a6 = novelty_balance({
+        f'{c.genre}:{c.tier}': {'u': c.u, 'genre': c.genre, 'tier': c.tier,
+                                'values': [r['new_drum_bar_frac'] for r in rows
+                                           if r['cell'] == f'{c.genre}:{c.tier}' and r['source'] == 'v2_session'
+                                           and r.get('same_base_as_prev')]}
+        for c in cells})
     wide_live_subset = all(
         {r['midi_sha256'] for r in rows if r['cell'] == k and r['source'] == 'v1_live'}
         <= {r['midi_sha256'] for r in rows if r['cell'] == k and r['source'] == 'v1_wide'}
@@ -815,7 +930,8 @@ def main(argv=None) -> int:
         'variation_controlled': all(v['variation_controlled'] for v in verdicts.values()),
         'within_cell_range': all(v['within_cell_range'] for v in verdicts.values()),
         'key_locked': all(e['v2_key_locked'] for e in keys.values()),
-        'a6_novelty_independent': a6['ok'],
+        'a6_novelty_balance': a6['ok'],
+        'r4_energy_rho_diagnostic': r4_diag['rho'],    # old A6 statistic, no pass/fail
         'v2_segment_ok_rate': round(float(np.mean([bool(r['segment_ok']) for r in rows
                                                    if r['source'] == 'v2_session'])), 4),
         'v2_fallback_rate': round(float(np.mean([bool(r['gen_fallback']) for r in rows
@@ -846,7 +962,13 @@ def main(argv=None) -> int:
                 'e_spread_ratio': E_SPREAD_RATIO, 'seg_lufs_lu': SEG_LUFS_LU,
                 'max_fallback_rate': MAX_FALLBACK_RATE, 'r1_min': {'default': R1_MIN_DEFAULT, **R1_MIN},
                 'r2_max': R2_MAX, 'drum_repeat_min_visits': DRUM_REPEAT_MIN_VISITS,
-                'bar4_min_rate': BAR4_MIN_RATE, 'a6_max_rho': A6_MAX_RHO,
+                'bar4_min_rate': BAR4_MIN_RATE,
+                'a6_novelty_balance': {'min_mean': NOVELTY_MIN_MEAN,
+                                       'max_abs_rel_change': NOVELTY_MAX_REL_CHANGE,
+                                       'threshold_status': 'provisional engineering threshold, '
+                                                           'not perceptually validated',
+                                       'bootstrap': NOVELTY_BOOT},
+                'r4_energy_diagnostic_old_limit_abs_rho': OLD_A6_R4_MAX_RHO,
             },
         },
         'fidelity': {
@@ -855,7 +977,8 @@ def main(argv=None) -> int:
         },
         'overall': overall,
         'key_continuity': keys,
-        'a6_novelty_independence': a6,
+        'a6_novelty_balance': a6,
+        'r4_energy_rho_diagnostic': r4_diag,
         'cells': cell_summaries,
     }
     (out / 'certification_summary.json').write_text(json.dumps(summary, indent=2, default=str), encoding='utf-8')

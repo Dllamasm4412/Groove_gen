@@ -467,7 +467,7 @@ Render through the unchanged CLI path using `music_features_measured`'s
 | A3 per cell spread | Within-cell SD of E <= 1.25 x bank SD (`energy_sd`) |
 | A4 boundary loudness | Short-term loudness (3 s windows) across consecutive same-cell segment joins within 1.5 LU (compared against the bank baseline) |
 | A5 ladder | `build_ladder` on the variation table gives the same rung order as `energy_table_v1.json`, allowing swaps only inside existing tie groups |
-| A6 novelty/energy independence | Spearman |rho|(u, mean R4) < 0.3 |
+| A6 novelty balance (6.11) | Within-block new drum-bar share C1: mean >= 1/8 and \|OLS slope on u\| / mean <= 0.25 (provisional). The old Spearman(u, mean R4) is reported as a diagnostic only |
 
 ### 6.4 Pre-certification manifest (the "prove it first" step)
 
@@ -548,7 +548,8 @@ Certified at MIDI level (every run):
 - **Key continuity:** hiphop and rock keys come from the frozen cell's own
   `_resolve_spec`.
 - **Fallback rate.**
-- **A6:** Spearman rho of ladder u against v2 R4.
+- **A6:** novelty balance (6.11). The old Spearman rho of ladder u against v2
+  R4 is reported as `r4_energy_rho_diagnostic`, with no pass/fail.
 
 Certified at rendered-audio level (`--audio`; the `measure_one` recipe:
 FluidSynth CLI, trim to 8 bars plus fade):
@@ -933,12 +934,135 @@ of the cell's certification allowance.
 - **Certification / reference envelope:**
   - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; the v1 drums are
     seed-invariant, pulse allowance 0.001-0.006);
-  - a6;
+  - a6 (reviewed in 6.11);
   - single-segment envelope misses in rnb:3, rnb:4, pop:3, hiphop:2, hiphop:3
     and hiphop:5, where every shift is inside its allowance.
 - **Generator defect:** none identified. latin:1-2 E / flux / low_ratio
   envelope misses (3-5 each) come with all shifts inside the allowance. They
   are listed for the envelope review, not fixed here.
+
+### 6.11 A6 review: novelty balance (2026-09-30)
+
+Question: does the amount of new musical material vary systematically with
+cell energy? Evaluated on regenerated v2a.3 MIDI (identical to the saved
+certification rows; no audio). v2a.2 (079d2ba) serves as the positive control:
+it spent more ops in dense, high-energy cells.
+
+#### Why the old a6 is confounded
+
+- R4 is a note-level Jaccard. One op changes a smaller share of a 24-onset
+  bar than of a 7-onset bar, so R4 rises with density (hits/bar vs u: +0.68).
+  v2a.3 spends about the same number of ops per visit in every cell (ops/visit
+  vs u -0.01; ops/hit vs u -0.67). R4 reads that as less novelty at high energy.
+- Over all visits, R4 is dominated by block boundaries, where the base changes.
+  How much the drums change with the seed is a v1 composer property:
+  - lofi, rnb and pop drums change with the seed;
+  - calm, hiphop, rock and latin drums do not.
+  R4 (all visits) vs v1 base change: rho -0.85.
+- The old a6 is wrong in both directions. v2a.2 passed (+0.08) while its
+  within-block new material rose with u (+0.57, +69% of the mean per unit u).
+  v2a.3 fails (+0.43) while its new material is flat (-7%).
+- Same-base R4 for v2a.3 has rho +0.70, but its cell means span only
+  0.920-0.986 (+4% of the mean per unit u). Spearman ranks near-constant values
+  and magnifies a small density effect.
+- With 27 cells, the permutation null puts the 95th percentile of |rho| at
+  0.38, so the 0.3 limit lies inside noise.
+
+#### Candidates
+
+Each candidate is computed per visit against the previous visit of the cell,
+then meaned per cell. "Within block" means the visit has the same base as the
+previous one. The columns are Spearman rho over 27 cells for v2a.3, and the
+v2a.2 rho vs u.
+
+| Metric (v2a.3, within block) | mean [min, max] | u | tier | hits/bar | base chg | v2a.2 u |
+|---|---|---|---|---|---|---|
+| A old a6: R4, all visits | 0.900 [0.764, 0.983] | +0.43 | +0.19 | +0.18 | -0.85 | +0.08 |
+| B R4 | 0.954 [0.920, 0.986] | +0.70 | +0.46 | +0.50 | -0.29 | +0.00 |
+| C1 new drum-bar fraction | 0.274 [0.148, 0.422] | -0.33 | -0.31 | +0.09 | +0.22 | +0.57 |
+| C2 distinct new drum patterns | 2.06 [1.12, 3.31] | +0.10 | -0.14 | +0.42 | +0.23 | +0.59 |
+| D changed drum-bar fraction (aligned) | 0.370 [0.242, 0.492] | -0.16 | +0.01 | +0.27 | +0.16 | +0.42 |
+| E onset change (sym. diff. / onsets) | 0.049 [0.025, 0.094] | -0.82 | -0.42 | -0.75 | +0.19 | -0.29 |
+| F1 new bar fraction, all layers | 0.347 [0.188, 0.477] | -0.36 | -0.13 | +0.10 | +0.36 | +0.42 |
+| F2 new drum bars vs last 4 visits | 0.166 [0.062, 0.359] | +0.09 | -0.04 | +0.32 | +0.51 | +0.52 |
+
+- **Effect size**, as the OLS slope of the cell mean on u divided by the mean,
+  with a 95% bootstrap interval over visits:
+
+  | Metric | v2a.3 | v2a.2 |
+  |---|---|---|
+  | C1 | -0.07 [-0.18, +0.04] | +0.69 [+0.57, +0.81] |
+  | C2 | +0.16 [+0.07, +0.24] | +0.69 |
+  | D | -0.20 [-0.34, -0.06] | +0.36 |
+
+- **New-block novelty** (v1 base change) is a genre property:
+  - C1 at block boundaries vs v1 base change: +0.76;
+  - C1 at block boundaries vs u: -0.20.
+  It is reported per cell and not attributed to the generator.
+- **Ops normalized by opportunity** (E in the brief) is diagnostic only. It
+  rewards more edits and does not measure what is heard.
+- **Genre and tier:**
+  - The C1 rho of -0.33 comes from genre composition. calm, lofi and latin sit
+    at low u with 0.28-0.37; rock and hiphop sit at high u with 0.25.
+  - Within genres the tier trend is flat (weighted within-genre tier rho
+    -0.12; rock 0.24-0.27 across five tiers).
+  - Low-u third 0.273, high-u third 0.257.
+  - Lowest cell: hiphop:3 (0.148, the constraint in 6.10). Highest: latin:3
+    (0.422).
+
+#### Choice
+
+C1 is the **within-block new drum-bar fraction**: the share of the 8 drum bars
+whose onset set (track, pitch, grid position) occurs nowhere in the previous
+visit, over visits that share the previous visit's base seed.
+- It measures new material directly and is shift-tolerant. A bar that reappears
+  elsewhere does not count, whereas D counts it.
+- It counts per bar, so a new pattern heard twice counts twice: it is the share
+  of listening time that is new. C2 counts it once, and C2 is more
+  density-tied (+0.42 vs +0.09).
+- It is the least density-tied bar-level measure, it excludes the base-seed
+  change, it is deterministic from MIDI, and it detects v2a.2's
+  energy-allocated novelty.
+
+#### A6 criterion: novelty balance (adopted 2026-09-30)
+
+| Part | Rule | Evidence |
+|---|---|---|
+| Evaluable | Mean C1 >= 1/8 (one new bar per visit) | Below this, a ratio to the mean is meaningless. v2a.3 has a mean of 0.274 |
+| Balance | \|OLS slope of C1 on u (the measured energy position)\| / mean C1 <= 0.25 | v2a.2 +0.69 fails; v2a.3 -0.07 passes. The bootstrap half-width is about 0.11, and 0.25 is about half a bar per visit across the full u range at the v2a.3 mean |
+
+- Reported beside the criterion, not gated:
+  - Spearman rho vs u;
+  - the within-genre tier rho;
+  - the low- and high-u third means;
+  - the bootstrap interval;
+  - new-block C1 for v1 and v2.
+- The criterion is two-sided and does not reward more edits.
+- **Limitations:**
+  - **The 0.25 limit is a provisional engineering threshold, not a perceptually
+    validated value.** It is set from one positive control (v2a.2) and one
+    candidate (v2a.3), not from listener data. It is neither tightened nor
+    loosened at this stage.
+  - C1 covers drums only; non-drum novelty (6.10 future work) is not measured.
+  - u is the ladder position, so genre composition along u still enters the
+    slope. The within-genre tier rho is reported to show this.
+- **v2a.3 result:**
+  - full MIDI run, `certify_stimuli.py`, 20260930_192025 (values identical to 190950, before
+    the key renames);
+  - mean 0.274; rel_change_per_u -0.074 [-0.179, +0.039]; rho_u -0.33;
+    within-genre tier rho -0.12;
+  - **A6 passes** (`overall.a6_novelty_balance = true`);
+  - the old R4 statistic is unchanged at 0.4262.
+- **Status: adopted by the user on 2026-09-30 as the A6 criterion.**
+  - Output keys: `a6_novelty_balance` (the gated parts are `mean` and
+    `rel_change_per_u`; `diagnostic` holds rho, the within-genre tier trend, the
+    u-third means and the bootstrap) and `overall.a6_novelty_balance`.
+  - The old A6 is `r4_energy_rho_diagnostic`: a rho with the old 0.3 limit for
+    reference and no `ok` field. It is not a novelty pass/fail.
+  - The within-genre tier trend stays a diagnostic. It is not a gate, because
+    the global slope still reflects genre placement on the ladder.
+- No generator change is needed. The v2a.3 novelty generator is not modified
+  further.
 
 ---
 
@@ -1052,7 +1176,7 @@ CascadeController.
 | Variation shifts cell energy | Fills add hits; toms add new voices; op velocities not zero-mean | Replacement fills, count-neutral ops, bounded checks per segment, audio certification, snare-only fallback vocabulary |
 | Cell identity erodes ("doesn't sound like rnb3 anymore") | Too many ops per bar; protected notes incomplete | Section 4.3 skeleton table; R4 lower bound (drums >= 0.6); Tier L "same condition?" check |
 | Repetition still audible | Variation lands only on bars 4 and 8; the ostinato genres stay loops | R1 and R2 targets; block form A, A', A''; R4 upper bound; Tier L "does it loop?" |
-| Novelty confounds energy | Some genres have richer op catalogs | Same `L` and templates for every cell; A6 correlation check |
+| Novelty confounds energy | Some genres have richer op catalogs | Same `L` and templates for every cell; novelty balance check (6.11) |
 | Path dependence misread as personalization | `visit_idx` depends on the controller path | Documented in section 5; path-invariance test; content is fixed per (cell, visit) |
 | Frozen-cell drift breaks key lock | A future edit to `_resolve_spec` | `cell_key` pinned by a test against generated output |
 | Stale certification | Composer, cell or soundfont change after certifying | Manifest stores code, soundfont and envelope shas; the runner refuses on mismatch; sha checked every segment at runtime |

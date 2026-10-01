@@ -2,12 +2,13 @@
 
 Short source of truth for the v2 (controlled live generation) work. The design,
 history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4.4,
-6.7-6.10); this file only records the current state and the next step.
+6.7-6.11); this file only records the current state and the next step.
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: `079d2ba` v2a.2
-  (brightness-preserving variation), `d0cf24c` certification, `4e88a0a` v2a.
+- Branch `v2-controlled-live-generation`. Latest commits: `7e47c3b` v2a.3
+  (op cost, deterministic novelty selection), `079d2ba` v2a.2, `d0cf24c`
+  certification, `4e88a0a` v2a.
 - Fresh-session start: read `CLAUDE.md`, this file, then `git branch --show-current`,
   `git status --short`, `git log --oneline -8`; read only the plan sections and code
   ranges you need.
@@ -24,6 +25,9 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   (optional). Ops are chosen by cost level (`COST`, `op_cost`); hand-drum
   articulation swaps cost the same as an exchange.
 - `certify_stimuli.py`: MIDI plus rendered-audio certification against the v1 envelopes.
+  Per v1_live / v2_session row: `same_base_as_prev`, `new_drum_bar_frac`,
+  `new_drum_patterns`, `changed_drum_bar_frac`; summary `a6_novelty_balance` (A6) and
+  `r4_energy_rho_diagnostic` (old A6, no pass/fail).
 - `op_attribution.py` (debug only, not in the live path): renders each logged op
   alone on its base and reports per-op centroid, flux, pulse, LUFS and E deltas in
   units of the cell's certification allowance.
@@ -63,7 +67,7 @@ E max 0.0085, centroid shift mean -13 Hz.
   fewer than the 5 needed for the repeat window. Classified as an unavoidable
   conflict; its threshold is not loosened.
 
-## v2a.3 rules (implemented, not committed)
+## v2a.3 rules (committed in 7e47c3b)
 
 1. Open-hat ring preserved: the set of (46 onset, next 42/44/46 onset) pairs is
    unchanged by every op. Waived only by a last-resort pass on a required phrase
@@ -107,7 +111,7 @@ failures.
   Rock's pulse allowance is 0.001; v1 drums are seed-invariant, so the envelope
   reflects only pitched variation.
 
-## Decisions 1 and 2 (implemented, not committed; plan 6.10)
+## Decisions 1 and 2 (committed in 7e47c3b; plan 6.10)
 
 - Op cost replaces the tier order: exchange 1, move 2, family 3, grid_move 4,
   cross 5; an articulation swap costs 1.
@@ -134,13 +138,32 @@ failures.
   novelty is future work.
 - The v2a.3 generator rules are frozen while the metric is reviewed.
 
+## A6: novelty balance (adopted 2026-09-30; plan 6.11)
+
+- C1 is the within-block new drum-bar share: the share of drum bars whose onset set
+  occurs nowhere in the previous visit, over same-base visits only.
+- A6 passes if mean C1 >= 1/8 and |OLS slope of C1 on u| / mean <= 0.25.
+  - **0.25 is a provisional engineering threshold, not perceptually validated.**
+    It is not tightened or loosened at this stage.
+  - Spearman, the within-genre tier trend, the bootstrap and new-block values are
+    diagnostics, not gates.
+- The old R4 A6 is `r4_energy_rho_diagnostic` (a rho only, no pass/fail). It is
+  density- and base-change-confounded, and it passed v2a.2 (+0.08) although
+  v2a.2's new material rose with u (+0.69).
+- v2a.3 (MIDI `20260930_192025`):
+  - C1 mean 0.274 (hiphop:3 0.148 .. latin:3 0.422);
+  - rel change -0.074 [-0.179, +0.039];
+  - rho_u -0.33; within-genre tier rho -0.12;
+  - **A6 passes**; old R4 rho 0.4262.
+- The novelty generator is not modified further.
+
 ## Next task
 
-1. Checkpoint commit of v2a.3 via safe-commit.
-2. Separate change: an a6 metric review in certification only (no generator
-   change). Formalize "new drum-bar patterns per visit" and report it on v1,
-   v2a.2 and v2a.3 from saved runs; no rerender unless the metric needs audio.
-   Propose the acceptance criterion with evidence; do not switch it silently.
+Envelope review, separate from A6 and the generator:
+- calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
+  seed-invariant);
+- then the single-segment misses.
+Non-drum novelty for hiphop:3 is future work.
 
 ## Reproduce
 
