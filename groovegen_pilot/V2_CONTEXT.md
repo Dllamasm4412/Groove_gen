@@ -6,9 +6,9 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: `7e47c3b` v2a.3
-  (op cost, deterministic novelty selection), `079d2ba` v2a.2, `d0cf24c`
-  certification, `4e88a0a` v2a.
+- Branch `v2-controlled-live-generation`. Latest commits: `62f7944` A6 novelty
+  balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
+  v2a.2, `d0cf24c` certification, `4e88a0a` v2a.
 - Fresh-session start: read `CLAUDE.md`, this file, then `git branch --show-current`,
   `git status --short`, `git log --oneline -8`; read only the plan sections and code
   ranges you need.
@@ -28,6 +28,9 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   Per v1_live / v2_session row: `same_base_as_prev`, `new_drum_bar_frac`,
   `new_drum_patterns`, `changed_drum_bar_frac`; summary `a6_novelty_balance` (A6) and
   `r4_energy_rho_diagnostic` (old A6, no pass/fail).
+- `audition_v2.py` (developer listening only, not in the live path): renders dwell,
+  sequence or preset auditions through the unchanged generators, FluidSynth and the
+  live join (run_session_v2 trim + `CrossfadeMixer(fade_bars=0.25, 'tail_out')`).
 - `op_attribution.py` (debug only, not in the live path): renders each logged op
   alone on its base and reports per-op centroid, flux, pulse, LUFS and E deltas in
   units of the cell's certification allowance.
@@ -157,13 +160,36 @@ failures.
   - **A6 passes**; old R4 rho 0.4262.
 - The novelty generator is not modified further.
 
+## Audition harness (2026-09-30)
+
+- Each WAV is a fresh generator session; v2 content depends only on
+  (stim_seed, genre, tier, visit_idx, GEN_VERSION), so the same arguments give the
+  same MIDI (and, with the same soundfont, a byte-identical WAV).
+- Output `renders/audition_v2/<stamp>/` (gitignored): one WAV per audition,
+  `manifest.csv` (one row per segment: start time, cell, visit, seeds, candidate,
+  novelty, MIDI sha), `manifest.json` (args, join config, soundfont sha, per-audition
+  peak / clipping / fallbacks), `LISTENING_NOTES.md` (segment start times and the
+  checklist). `--segment-wavs` adds per-segment WAVs; `--generator both` adds a v1
+  bank A/B over the same cells.
+- Differences from live: no HR, controller or player; no live gaps (render lead,
+  underruns); cells are fixed, not chosen by the MPC; v2 is not wired live.
+- Initial set `renders/audition_v2/20260930_194351` (stim_seed 1, 2 workers, 32 s):
+  hiphop:3 x8 2:51, rock:3 x8 2:09, calm:2 x8 3:57, rnb:4 x6 1:56, latin:2 x6 1:51,
+  ladder sequence 2:26. Peak <= 0.82, no clipping, no tail scaling, gen fallback 0;
+  hiphop:3 novelty fallback 5/8 (known, 1/8 new bars within block). calm:2 drums
+  cycle with period 5 across blocks (visits 5-7 replay the drums of 0-2): calm's
+  base drums are seed-invariant and novelty only looks at the previous visit.
+
 ## Next task
 
-Envelope review, separate from A6 and the generator:
-- calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
-  seed-invariant);
-- then the single-segment misses.
-Non-drum novelty for hiphop:3 is future work.
+1. Developer listens to the initial set, fills in `LISTENING_NOTES.md`, and
+   reports per-file findings (long dwell, timbre, coherence, energy).
+2. Then the envelope review, separate from A6 and the generator:
+   - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
+     seed-invariant);
+   - then the single-segment misses.
+   Use `--preset problem` to audition these cells.
+Non-drum novelty for hiphop:3 and the calm:2 cross-block drum cycle are future work.
 
 ## Reproduce
 
@@ -173,4 +199,8 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 certify_stimuli.py --cells hiphop:1,hiphop:3,rock:5 [--audio] --workers 6
 ../.venv/bin/python3.12 certify_stimuli.py --audio --workers 6        # full, ~11 min
 ../.venv/bin/python3.12 op_attribution.py --cells hiphop:3,rock:5 --probes 2
+../.venv/bin/python3.12 audition_v2.py --preset initial --stim-seed 1 --workers 2
+../.venv/bin/python3.12 audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
+../.venv/bin/python3.12 audition_v2.py --mode sequence --cells calm:2,lofi:2,rnb:2 --visits-per-cell 1
+../.venv/bin/python3.12 audition_v2.py --preset problem --generator both     # v1 vs v2 A/B
 ```
