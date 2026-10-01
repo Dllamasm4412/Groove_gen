@@ -7,26 +7,36 @@ the frozen cells are not touched and the pitched tracks are never modified
 velocity), and no voice outside the base segment's own drum voices is ever
 written, so the cell's drum voice set (a bounded-set feature) cannot grow.
 
-Ops, cheapest first (v2a.2; rendered-audio evidence in plan section 6.8):
-  1. exchange: two nearby non-kick notes of different voices trade slots, a
-     rearrangement that keeps the onset grid and the voice mix;
-     family: a note becomes another voice of its own timbre family that the
-     base plays (closed / pedal / open hat and ride, snare / rim / clap,
-     conga / bongo / timbale articulations);
-  2. move: one note shifts by a 16th. Kept only if the segment's bounded
-     features stay within BUDGET_FRAC of the energy guard's bounds; at most
-     MAX_MOVES per segment, since a 16th move costs pulse clarity on audio;
-  3. cross: a hat / hand note is re-voiced in place as the brightest
-     snare-family (else hand) voice the base plays, never a kick. At most
-     MAX_CROSS per segment, and only while drum_brightness stays within
-     BRIGHT_DROP of the base.
+Ops, cheapest first (v2a.3; per-op rendered-audio attribution in plan
+sections 6.8-6.9):
+  1. exchange: two nearby non-kick notes of different voices in one timbre
+     family (closed / pedal / open hat and ride, snare / rim / clap, conga /
+     bongo / timbale articulations) trade slots, keeping the onset grid and
+     the voice mix. Cross-family exchanges moved the snare accent (rnb 4);
+  2. move: a note off any regular line of its lane shifts by a 16th, within
+     BUDGET_FRAC of the energy guard's bounds;
+  3. family: a note becomes another voice of its own timbre family that the
+     base plays (a hand-drum articulation swap ranks with exchange, COST);
+  4. grid_move: as move, for a note in an evenly spaced run of its lane (a
+     straight hat line, a conga pulse). Costs pulse clarity on audio, so at
+     most MAX_MOVES per segment;
+  5. cross: a hat / hand note is re-voiced in place as the brightest
+     snare-family (else hand) voice the base plays, never a kick. Phrase
+     ends only unless relax >= 1 (the caller retries when a variation
+     repeats an earlier visit), at most MAX_CROSS per segment, and only while
+     drum_brightness stays within BRIGHT_DROP of the base.
+No op may change the open-hat rings (open_hat_rings): a closed / pedal hat
+chokes a ringing open hat, so creating, removing or moving a 46, or changing
+the hat that cuts it, changed centroid and flux by up to 2 allowances per op
+(hiphop 3-5, rock 5).
 
 Bars 4 and 8 (the phrase ends) always get an op, so no run of identical bars
 exceeds 3 and both phrase ends are marked; if nothing within budget fits
 there, a family / cross op may exceed the cross cap and brightness budget
-(the feature budget is never exceeded). The other varied bars (A', and the
-second op of the bar-8 fill) only get ops within budget. Each bar tries its
-fill window first, then the whole bar. `relax`, raised by the caller on
+(the feature budget is never exceeded), and as a last resort (PASSES) an
+exchange / family op may change the open-hat rings. The other varied bars
+(A', and the second op of the bar-8 fill) only get ops within budget. Each
+tier tries the bar's fill window first, then the whole bar. `relax`, raised by the caller on
 retries, loosens the move / cross caps, the brightness budget and the move
 feature budget (up to the full guard bounds) for cells with few options
 (calm, hiphop 1: every free note is an on-beat hat).
@@ -88,6 +98,8 @@ BUDGET_FRAC = 0.4                  # moves use at most this share of each guard 
 MAX_MOVES = 1                      # 16th moves per segment
 MAX_CROSS = 2                      # cross-family re-voices per segment (phrase ends may exceed)
 BRIGHT_DROP = 0.01                 # drum_brightness may fall this far below the base
+CHOKE = (42, 44, 46)               # GM hat exclusive class: a closed / pedal hat cuts a ringing open hat
+LANE_SPACING = 4                   # a note in a 3-note evenly spaced run (step <= this) of its lane is on a grid
 
 
 class _Hit:
@@ -142,6 +154,29 @@ def drum_brightness(pm: pretty_midi.PrettyMIDI) -> float:
     return num / den if den else float('nan')
 
 
+def open_hat_rings(pm: pretty_midi.PrettyMIDI, step_s: float) -> tuple:
+    """(open hat slot, slot of the next hat that chokes it or None) for every
+    open hat 46. An open hat rings until the next closed / pedal / open hat, so
+    an op that changes this tuple changes the drums' sustained high end."""
+    lane = sorted((int(round(n.start / step_s)), n.pitch) for inst in pm.instruments if inst.is_drum
+                  for n in inst.notes if n.pitch in CHOKE)
+    return tuple((s, next((t for t, _ in lane[k + 1:] if t > s), None))
+                 for k, (s, p) in enumerate(lane) if p == 46)
+
+
+def _lane(pitch: int):
+    return FAMILY.get(pitch, 'kick' if pitch in KICK else pitch)
+
+
+def _on_grid(h: _Hit, bar: list[_Hit]) -> bool:
+    """True if h is part of an evenly spaced run of 3 in its lane (timbre family),
+    e.g. a hat on a straight 8th line: moving it breaks the pulse."""
+    lane = {o.pos for o in bar if _lane(o.note.pitch) == _lane(h.note.pitch)}
+    p = h.pos
+    return any({p - s, p + s} <= lane or {p + s, p + 2 * s} <= lane or {p - s, p - 2 * s} <= lane
+               for s in range(1, LANE_SPACING + 1))
+
+
 def _sorted(hits: list[_Hit]) -> list[_Hit]:
     return sorted(hits, key=lambda h: (h.pos, h.note.pitch, h.note.velocity))
 
@@ -160,12 +195,14 @@ class _Ctx:
         self.pm, self.step, self.voices, self.bars = pm, step, voices, BARS
         self.base_feats = sm.bounded_features(pm, BARS)
         self.base_bright = drum_brightness(pm)
+        self.base_rings = self.rings = open_hat_rings(pm, step)   # rings: after accepted ring breaks
         self.budget_frac = min(1.0, BUDGET_FRAC * (1 + relax))
         self.max_moves = MAX_MOVES + relax
         self.max_cross = MAX_CROSS + relax
         self.bright_drop = BRIGHT_DROP * (1 + relax)
         self.n: Counter = Counter()
         self.touched: set[int] = set()     # id() of hits an op already moved or re-voiced
+        self.cost = 0                      # sum of op_cost of the applied ops (+ RING_BREAK_COST each)
 
     def within_budget(self) -> bool:
         from composer.energy_guard import within_bounds
@@ -174,11 +211,16 @@ class _Ctx:
     def bright_ok(self) -> bool:
         return drum_brightness(self.pm) >= self.base_bright - self.bright_drop - 1e-9
 
-    def accept(self, kind: str, strict: bool) -> bool:
+    def accept(self, kind: str, strict: bool, keep_rings: bool = True) -> bool:
         """Budget check after an op is applied. strict=False (phrase ends only)
-        waives the cross cap and brightness budget, never the feature budget."""
+        waives the cross cap and brightness budget, never the feature budget;
+        keep_rings=False (phrase ends, last resort) also waives the open-hat rings."""
+        if keep_rings and open_hat_rings(self.pm, self.step) != self.rings:
+            return False
         if kind == 'move':
-            return self.n['move'] < self.max_moves and self.within_budget()
+            return self.within_budget()
+        if kind == 'grid_move':
+            return self.n['grid_move'] < self.max_moves and self.within_budget()
         if kind == 'cross':
             return not strict or (self.n['cross'] < self.max_cross and self.bright_ok())
         if kind == 'family':
@@ -220,16 +262,18 @@ def _candidates(tier: str, bar: list[_Hit], window: range, ctx: _Ctx) -> list[Ca
     free = [h for h in _sorted(bar) if not h.protected and h.pos in window and id(h) not in ctx.touched]
     sounding = {(o.pos, o.note.pitch) for o in bar}
     out: list[Cand] = []
-    if tier == 'cheap':
+    if tier == 'exchange':
         for i, a in enumerate(free):
             for b in free[i + 1:]:
                 pa, pb = a.note.pitch, b.note.pitch
                 if (pa in KICK or pb in KICK or pa == pb or a.pos == b.pos
+                        or FAMILY.get(pa) is None or FAMILY.get(pa) != FAMILY.get(pb)
                         or abs(a.pos - b.pos) > EXCHANGE_SPAN
                         or (b.pos, pa) in sounding or (a.pos, pb) in sounding):
                     continue
                 d = b.pos - a.pos
                 out.append(('exchange', f'{pa}@{a.pos}<>{pb}@{b.pos}', *_shift((a, b), (d, -d), ctx.step), (a, b)))
+    elif tier == 'family':
         for h in free:
             fam = FAMILY.get(h.note.pitch)
             if fam is None:
@@ -237,15 +281,15 @@ def _candidates(tier: str, bar: list[_Hit], window: range, ctx: _Ctx) -> list[Ca
             for v in FAMILIES[fam]:
                 if v != h.note.pitch and v in ctx.voices and (h.pos, v) not in sounding:
                     out.append(('family', f'{h.note.pitch}>{v}@{h.pos}', *_repitch(h, v), (h,)))
-    elif tier == 'move':
+    elif tier in ('move', 'grid_move'):
         for pitches, blockers in _MOVES:
             for h in free:
-                if h.note.pitch not in pitches:
+                if h.note.pitch not in pitches or _on_grid(h, bar) != (tier == 'grid_move'):
                     continue
                 for d in (-1, 1):
                     p = h.pos + d
                     if 0 <= p < STEPS and not any(o.pos == p and o.note.pitch in blockers for o in bar):
-                        out.append(('move', f'{h.note.pitch}@{h.pos}{"+" if d > 0 else "-"}1',
+                        out.append((tier, f'{h.note.pitch}@{h.pos}{"+" if d > 0 else "-"}1',
                                     *_shift((h,), (d,), ctx.step), (h,)))
     elif tier == 'cross':
         for h in free:
@@ -266,26 +310,98 @@ def _distinct_ok(bars: list[list[_Hit]], b: int, settled: set) -> bool:
                if b in (x, y) and ({x, y} - {b}) <= settled)
 
 
-def _one_op(bars: list[list[_Hit]], b: int, window: range, rng: random.Random,
-            ctx: _Ctx, strict: bool, settled: set) -> Optional[str]:
-    """Apply the cheapest acceptable op to bar b; None if nothing fits."""
-    tiers = ('cheap', 'move', 'cross') if strict else ('cheap', 'cross')
-    for tier in tiers:
-        cands = _candidates(tier, bars[b], window, ctx)
-        rng.shuffle(cands)
-        for kind, desc, do, undo, changed in cands:
-            do()
-            if ctx.accept(kind, strict) and _distinct_ok(bars, b, settled):
-                ctx.n[kind] += 1
-                ctx.touched.update(id(h) for h in changed)
-                return f'{kind}:{desc}'
-            undo()
+TIERS = ('exchange', 'move', 'family', 'grid_move', 'cross')   # cheapest first
+# Required phrase-end passes: (strict, keep_rings, tiers). The later passes
+# only re-try the ops whose budget they waive. The last one serves bases whose
+# every hat is an open hat or the hat that chokes one (some lofi / rnb bases
+# with an open hat on every off-beat): there only hat ops give enough
+# distinct bars for the repeat window. Each use is counted as 'ring_break'.
+PASSES = ((True, True, TIERS), (False, True, ('family', 'cross')), (False, False, ('exchange', 'family')))
+OPTIONAL_TIERS = TIERS[:-1]        # optional ops re-voice across families only on retries (relax >= 1)
+
+
+# Op cost (lower first; ops of equal cost are tried in one shuffled pool).
+# Timing displacement, timbre-family change, brightness and pulse / accent
+# disruption, from the per-op attribution (plan 6.9): an exchange keeps the
+# voice mix, an off-grid 16th move shifts one onset, a family swap changes a
+# timbre inside one family, a grid move breaks a regular line (pulse), a
+# cross changes the family (brightness). A family swap between articulations
+# of one hand drum (conga open / mute, bongo high / low, timbale high / low)
+# is about centroid-neutral (latin 63>64: 0.00x) while repeated exchanges
+# drift it (+0.14x each), so it costs the same as an exchange.
+COST = {'exchange': 1, 'move': 2, 'family': 3, 'grid_move': 4, 'cross': 5}
+ARTICULATION_FAMILIES = frozenset(FAMILY[p] for p in (60, 62, 65))
+RING_BREAK_COST = 5
+
+
+def op_cost(kind: str, changed: tuple) -> int:
+    if kind == 'family' and FAMILY.get(changed[0].note.pitch) in ARTICULATION_FAMILIES:
+        return COST['exchange']
+    return COST[kind]
+
+
+def _sig(bar: list[_Hit]) -> frozenset:
+    return frozenset((h.note.pitch, h.pos) for h in bar)
+
+
+def bar_signatures(pm: pretty_midi.PrettyMIDI, genre: str) -> frozenset:
+    """The drum patterns of pm's bars, as `vary(avoid=...)` compares them."""
+    step = _step_s(pm)
+    hits = [_Hit(n, step, genre) for inst in pm.instruments if inst.is_drum for n in inst.notes]
+    return frozenset(_sig([h for h in hits if h.bar == b]) for b in {h.bar for h in hits})
+
+
+def _one_op(bars: list[list[_Hit]], b: int, windows: tuple, rng: random.Random,
+            ctx: _Ctx, strict: bool, settled: set, keep_rings: bool = True,
+            tiers: tuple = TIERS, avoid: frozenset = frozenset(), fresh: bool = False) -> Optional[str]:
+    """Apply the cheapest acceptable op to bar b; None if nothing fits. Each
+    cost level tries the fill window before the whole bar, so a cheaper op
+    anywhere in the bar wins over a costlier one in the window. Within a
+    cost level, an op whose bar is not in `avoid` (the previous visit's bars)
+    goes first; with `fresh`, every cost level below cross is searched for
+    such an op before any other is taken. Novelty never buys a cross: in
+    hiphop:3-5 (whose ring-safe cheap ops give few bar variants) it doubled
+    their crosses and moved the centroid -17 -> -40 Hz (allowed 36)."""
+    levels = sorted({COST[t] for t in tiers} | ({COST['exchange']} if 'family' in tiers else set()))
+    for fresh_only in ((True, False) if fresh and avoid else (False,)):
+        for level in levels:
+            if fresh_only and level >= COST['cross']:
+                continue
+            for w in windows:
+                cands = [c for t in tiers for c in _candidates(t, bars[b], w, ctx) if op_cost(c[0], c[4]) == level]
+                rng.shuffle(cands)
+                for want_new in ((True,) if fresh_only else (True, False) if avoid else (False,)):
+                    desc = _try(cands, bars, b, ctx, strict, settled, keep_rings, level,
+                                avoid if want_new else None)
+                    if desc is not None:
+                        return desc
     return None
 
 
-def vary(base: pretty_midi.PrettyMIDI, genre: str, var_seed: int,
-         relax: int = 0) -> tuple[pretty_midi.PrettyMIDI, dict]:
-    """Varied copy of `base` (base itself is not modified) and a log of what changed."""
+def _try(cands: list, bars: list[list[_Hit]], b: int, ctx: _Ctx, strict: bool, settled: set,
+         keep_rings: bool, level: int, avoid: Optional[frozenset]) -> Optional[str]:
+    for kind, desc, do, undo, changed in cands:
+        do()
+        if (ctx.accept(kind, strict, keep_rings) and _distinct_ok(bars, b, settled)
+                and (avoid is None or _sig(bars[b]) not in avoid)):
+            rings = open_hat_rings(ctx.pm, ctx.step)
+            if rings != ctx.rings:
+                ctx.n['ring_break'] += 1
+                ctx.cost += RING_BREAK_COST
+                ctx.rings = rings
+            ctx.n[kind] += 1
+            ctx.cost += level
+            ctx.touched.update(id(h) for h in changed)
+            return f'{kind}:{desc}'
+        undo()
+    return None
+
+
+def vary(base: pretty_midi.PrettyMIDI, genre: str, var_seed: int, relax: int = 0,
+         avoid: frozenset = frozenset(), fresh: bool = False) -> tuple[pretty_midi.PrettyMIDI, dict]:
+    """Varied copy of `base` (base itself is not modified) and a log of what
+    changed. `avoid` holds bar patterns (`bar_signatures`) to steer away from,
+    `fresh` makes that a priority over op cost (see _one_op)."""
     rng = random.Random(var_seed)
     pm = copy.deepcopy(base)
     step = _step_s(pm)
@@ -309,9 +425,10 @@ def vary(base: pretty_midi.PrettyMIDI, genre: str, var_seed: int,
         window = FILL_WINDOW.get(roles[b], range(STEPS))
         windows = (window, range(STEPS)) if len(window) < STEPS else (window,)
         desc = None
-        for strict in ((True, False) if required else (True,)):
-            for w in windows:
-                desc = desc or _one_op(bars, b, w, rng, ctx, strict, settled)
+        opt_tiers = OPTIONAL_TIERS if relax == 0 else TIERS
+        for strict, keep_rings, tiers in (PASSES if required else ((True, True, opt_tiers),)):
+            desc = desc or _one_op(bars, b, windows, rng, ctx, strict, settled, keep_rings, tiers,
+                                   avoid, fresh)
         if desc is not None:
             ops[b].append(desc)
         settled.add(b)
@@ -319,5 +436,6 @@ def vary(base: pretty_midi.PrettyMIDI, genre: str, var_seed: int,
         if inst.is_drum:
             inst.notes.sort(key=lambda n: (n.start, n.pitch))
     return pm, {'form_template': template, 'bar_roles': roles, 'drum_ops': ops,
-                'op_counts': dict(sorted(ctx.n.items())), 'relax': relax,
+                'op_counts': dict(sorted(ctx.n.items())), 'op_cost': ctx.cost, 'relax': relax,
+                'fresh_bars': sum(r != 'A' and _sig(bars[b]) not in avoid for b, r in enumerate(roles)) if avoid else None,
                 'drum_brightness_delta': round(drum_brightness(pm) - ctx.base_bright, 4)}

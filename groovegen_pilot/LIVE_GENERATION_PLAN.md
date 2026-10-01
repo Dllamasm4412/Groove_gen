@@ -748,6 +748,198 @@ Pending (replaces 6.7 items 1-2):
      hiphop:1 and rock:1-4 cannot vary their drums;
    - or set them from a drum-perturbation reference.
 
+### 6.9 Per-op attribution and ring-preserving variation (v2a.3, 2026-09-30)
+
+#### Method
+
+`op_attribution.py` (debug only) renders each op a segment logged, applied alone
+to that segment's base. It also renders probe ops drawn from the base's own
+candidates. It reports each op's centroid, flux, pulse, LUFS and E delta in units
+of the cell's certification allowance.
+
+#### Causes, per op, in allowance units (x)
+
+- **Open-hat choke (hiphop:3-5, rock:5).**
+  - GM plays 42/44/46 in one exclusive class, so a closed or pedal hat cuts a
+    ringing open hat.
+  - Ops that create, remove or move a 46, or change the hat that cuts it:
+    - family 42>46: flux -0.4 to -0.7;
+    - family 46>42: centroid -0.9 to -2.1;
+    - exchange 42<>46: centroid -0.3 to -1.1.
+  - These gave all of the hiphop:3-5 flux drop and all of rock:5's drift.
+  - The 46>42 direction trades flux for centroid, so it is not a fix.
+- **Cross-family exchange (rnb:4).** 38<>42, 38<>51 and 38<>46 move the snare
+  accent: pulse -0.5 to -0.9 per op.
+- **Regular-lane moves (latin:2, rock).** A 16th move of a note on a straight
+  8th-note hat line costs pulse -3 to -11 per op. latin:2 made these moves because
+  vary() searched every tier inside the fill window before any cheap op in the
+  rest of the bar (a loop-order defect).
+- **hiphop:1 and rock:1-4 have no low-cost op.** Every available op costs about
+  1x of some allowance: cross 42>38 costs centroid -0.8 to -1.1, a grid move costs
+  pulse -1.4 (hiphop:1) or -4.9 (rock:3).
+
+#### Rules (composer/variation.py)
+
+1. Every op keeps `open_hat_rings` (open-hat onset, next choking hat) unchanged.
+   A last-resort pass on required phrase ends may waive this for exchange and
+   family ops; it is counted as `ring_break`. It exists for lofi and rnb bases with
+   a 46 on every off-beat, where only kick moves are ring-safe and there were 1-3
+   fallbacks per 24 segments.
+2. Exchanges are allowed only within one timbre family.
+3. A move of a note in an evenly spaced run of 3 of its lane is a `grid_move`
+   (capped at MAX_MOVES). Other moves are limited by the feature budget only.
+4. Tier order is exchange, move, family, grid_move, cross, with tiers as the outer
+   loop and windows as the inner loop.
+5. Cross is allowed only on phrase ends at relax 0. Without optional cross on
+   retries, hiphop:3 fell back in 18 of 24 segments.
+
+#### Results (full audio run `20260930_133905`)
+
+| Measure | v2a.2 (`20260930_122337`) | v2a.3 |
+|---|---|---|
+| Repetition targets | 27/27 | 27/27 |
+| Fallback | 0 | 0 |
+| Variation-controlled cells | 8 | 12 |
+| within_cell_range cells | 6 | 8 |
+| Segment ok rate | 0.73 | 0.81 |
+| Flux: shift-fail cells / variation envelope misses | 4 / 38 | 0 / 14 |
+| Pulse: shift-fail cells / variation envelope misses | 9 / 70 | 4 / 42 |
+| Centroid: mean shift / max \|shift\| / shift-fail cells | -13 Hz / 54 Hz / 3 | -6 Hz / 31 Hz / 2 |
+| Centroid variation envelope misses | 26 | 29 (latin:1, latin:2) |
+| LUFS max \|shift\| (allowance 0.5) | 0.006 LU | 0.022 LU |
+| E max \|shift\| (allowance 0.023) | 0.0085 | 0.0114 |
+| a6 novelty rho (limit 0.3) | 0.08 | 0.40 (fails) |
+
+- Newly variation-controlled: hiphop:4, rnb:1, rnb:2, rnb:4 and pop:4.
+- latin:3 is no longer variation-controlled (2 flux envelope misses).
+
+#### Open issues
+
+- **a6.** The ring rule leaves hiphop:3-5 with ops only on the one rim note per
+  bar, so consecutive visits reuse bar patterns: R4 rose 0.96 -> 0.99.
+  - Restoring their v2a.2 R4 alone gives rho 0.29.
+  - Optional cross at relax 0 did not help (rho 0.398), because the rim ops win
+    the tier order.
+  - Novelty there needs hat-lane changes (ring breaks cost flux; crosses cost
+    about -0.5x centroid each) or a novelty criterion in SessionComposer.
+    Decision pending.
+- **latin:1-3.** Every op is a same-family conga exchange 63<>64 (4.7 per
+  segment, +0.14x centroid each), so the centroid shift accumulates. The family
+  op 63>64 costs 0.00x. Putting exchange first follows the stated priority; the
+  evidence favours mixing exchange and family ops for congas.
+- **Envelope classification.** rock:1-4, hiphop:1 and calm's pulse and centroid
+  allowances come from v1 drums that do not vary with the seed, so they reflect
+  pitched variation only (rock pulse allowance 0.001-0.002). These failures are
+  unavoidable under those limits, not generator defects. They are the same limits
+  question as 6.8 item 2.
+
+### 6.10 Op cost and bounded novelty (v2a.3, 2026-09-30)
+
+#### Op cost (composer/variation.py)
+
+- Ops are chosen by cost level, not tier: `COST` = exchange 1, move 2,
+  family 3, grid_move 4, cross 5 (plus 5 per ring break). Ops of equal cost
+  share one shuffled pool, and each level tries the fill window before the
+  whole bar.
+- A family swap between articulations of one hand drum (conga, bongo,
+  timbale) costs 1, the same as an exchange. Evidence: latin 63>64 costs 0.00x
+  centroid, while repeated 63<>64 exchanges cost +0.14x each. This is a
+  drum-family rule, not a genre rule. latin:1-2 now make about 3 articulation
+  swaps and 1.2 exchanges per segment (before: 4.7 exchanges).
+
+#### Novelty (composer/arrangement.py)
+
+- `SessionComposer` draws up to 12 candidates in 3 rounds of 4. Round r uses
+  relax r. Candidates are sub-seeds of var_seed, so the draw is deterministic
+  from (stim seed, genre, tier, visit, gen version). The previous visit of the
+  cell is recomputed from the schedule.
+- A candidate is valid if:
+  - both phrase ends are marked;
+  - it has no identical run and no drum or full repeat;
+  - it passes the energy guard.
+- The novelty range is drum R4 against the previous visit of the same cell
+  <= `R4_PREV_MAX` = 0.97, the same for every cell. Evidence: the v2a.2
+  within-block R4 (same base, previous visit) had median 0.962 and p75 0.969.
+  There is no floor: one op moves R4 by an amount that depends on the bar's
+  onset count (about 0.78 for 8 onsets per bar, 0.91 for 22), so a floor would
+  bind only the sparse cells. The number of varied bars and the energy guard
+  already bound how much a visit changes.
+- The chosen candidate is the in-range one with the lowest op cost, ties broken
+  by index. If no round has an in-range candidate, the valid candidate nearest
+  the range is used (`novelty_fallback`). If none is valid, the base is used.
+- `vary(avoid=, fresh=)`: at equal cost, a candidate prefers bar patterns the
+  previous visit did not play. From round 1 (`fresh`), it prefers them over
+  cheaper ops, except that novelty never buys a cross: allowing that doubled
+  hiphop:3-5's crosses and moved centroid -17 -> -40 Hz (allowed 36).
+- Logged fields: gen_candidates, gen_candidate_idx, gen_sub_seed,
+  novelty_rejections, novelty_fallback, novelty_r4_prev, novelty_r4_base,
+  op_cost, fresh_bars.
+
+#### Results (full audio `20260930_143933`, full MIDI `20260930_143529`)
+
+| Measure | v2a.3 before novelty (`20260930_133905`) | v2a.3 with novelty |
+|---|---|---|
+| Repetition targets / fallback | 27/27 / 0 | 27/27 / 0 |
+| Variation-controlled cells (audio) | 12 | 11 |
+| Variation-controlled cells (MIDI) | 26 | 26 |
+| Segment ok rate | 0.81 | 0.82 |
+| Within-block R4 q50 / q95 / exact 1.0 | 0.971 / 1.0 / 10% | 0.962 / 0.971 / 0% |
+| Centroid: mean shift / shift-fail cells / envelope misses | -6 Hz / 2 / 29 | -8 Hz / 3 / 11 |
+| Flux: shift-fail cells / envelope misses | 0 / 14 | 0 / 8 |
+| Pulse: shift-fail cells / envelope misses | 4 / 42 | 6 / 41 |
+| LUFS max \|shift\| / E max \|shift\| | 0.022 LU / 0.011 | 0.022 LU / 0.012 |
+| a6 rho (limit 0.3) | 0.40 | 0.43 (fails) |
+
+- Cells that changed:
+  - latin:3 is now variation-controlled.
+  - latin:2 centroid envelope misses fell 14 -> 2.
+  - rnb:4 (1 E miss) and pop:3 (1 pulse miss) are no longer variation-controlled.
+  - hiphop:1 and rock:1 pulse shifts now fail. Their op mix is unchanged (one
+    cross and one grid move per segment); different grid moves were picked.
+  - latin:1-2 gained low_ratio envelope misses (8); their shifts are inside the
+    allowance.
+- hiphop:3-5 R4 against the previous visit:
+  - hiphop:4-5: 0.99 -> 0.971.
+  - hiphop:3: still 0.989, with novelty_fallback in 16/24 segments. Its only
+    ring-safe, non-cross ops touch the one rim note per bar.
+
+#### Why a6 still fails
+
+- a6 correlates u with mean R4, where the mean includes the first visit of each
+  block (new base). Two properties of v1 cells drive that correlation, not the
+  variation:
+  1. **Cross-block R4 is set by the base.** lofi, rnb and pop drums change with
+     the seed (cross-block R4 0.28-0.78). calm, hiphop, rock and latin drums do
+     not (0.93-0.98), and they hold most of the high-u cells.
+  2. **R4 per op depends on density.** Onsets per bar vs u: rho +0.63. One op in
+     a 24-onset hiphop bar changes R4 less than one op in a 7-onset calm bar.
+- A count-based novelty measure is independent of energy: new bar patterns per
+  visit (within block) vs u has rho +0.10 (1.1-3.3 per visit; hiphop:3 is the
+  lowest at 1.1).
+- Classification: a certification-metric issue (a6 measures base seed-invariance
+  and density, not novelty), plus the hiphop:3 constraint below. **The old a6
+  still fails (0.43 vs 0.3) at this checkpoint.** Decision (2026-09-30): the
+  generator is not changed to pass it; a6 stays as a diagnostic, and a revised
+  novelty-balance metric is reviewed as a separate change. The a6 limit is
+  unchanged.
+
+#### Remaining failures, classified
+
+- **hiphop:3 novelty: meaningful drum variation constrained by the available
+  audio-safe degrees of freedom** (not a generator defect; decided 2026-09-30).
+  Open-hat changes cost flux and cross-family swaps cost centroid, so no further
+  crosses are spent on it. Future novelty for this cell may come from non-drum
+  dimensions (motif, bass, voicing, melody, phrase development), not in v2a.3.
+- **Certification / reference envelope:**
+  - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; the v1 drums are
+    seed-invariant, pulse allowance 0.001-0.006);
+  - a6;
+  - single-segment envelope misses in rnb:3, rnb:4, pop:3, hiphop:2, hiphop:3
+    and hiphop:5, where every shift is inside its allowance.
+- **Generator defect:** none identified. latin:1-2 E / flux / low_ratio
+  envelope misses (3-5 each) come with all shifts inside the allowance. They
+  are listed for the envelope review, not fixed here.
+
 ---
 
 ## 7. First implementation task: `groovegen_pilot/stimulus_audit.py`
