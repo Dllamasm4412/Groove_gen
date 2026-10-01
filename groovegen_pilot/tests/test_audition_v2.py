@@ -167,7 +167,7 @@ def test_v2b_ab_keeps_drums_and_records_motif(tmp_path):
         rows = list(csv.DictReader(f))
     v2, v2b = [r for r in rows if r['generator'] == 'v2'], [r for r in rows if r['generator'] == 'v2b']
     assert [r['drum_sha'] for r in v2] == [r['drum_sha'] for r in v2b]
-    assert all(r['gen_version'].endswith('+v2b.0') and r['motif_role'] and r['motif_id'] for r in v2b)
+    assert all(r['gen_version'].endswith('+v2b.1') and r['motif_role'] and r['motif_id'] for r in v2b)
     assert not any(r['motif_role'] for r in v2) and v2b[0]['motif_role'] == 'base'
     meta = json.loads((out / 'manifest.json').read_text())['meta']
-    assert meta['generators'] == ['v2', 'v2b'] and meta['dev_version'] == 'v2b.0'
+    assert meta['generators'] == ['v2', 'v2b'] and meta['dev_version'] == 'v2b.1'

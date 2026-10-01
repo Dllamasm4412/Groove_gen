@@ -183,7 +183,7 @@ def generate(audition: Audition, generator: str, stim_seed: int) -> list[tuple[A
             })
             if 'dev_version' in info or 'motif_error' in info:
                 row.update({k: info.get(k) for k in ('motif_role', 'motif_id', 'motif_theme_id',
-                                                     'motif_fallback', 'motif_candidates', 'motif_error')})
+                                                     'motif_fallback', 'motif_selection', 'motif_candidates', 'motif_error')})
                 row['motif_ops'] = '+'.join(info.get('motif_ops') or [])
             base_id = info['base_seed']
         else:
@@ -279,7 +279,7 @@ MANIFEST_FIELDS = (
     'same_base_as_prev', 'near_repeat_drum', 'novelty_r4_prev', 'novelty_r4_base',
     'new_drum_bar_frac', 'new_drum_patterns', 'changed_drum_bar_frac',
     'midi_sha256', 'drum_sha',
-    'motif_role', 'motif_ops', 'motif_id', 'motif_theme_id', 'motif_fallback', 'motif_candidates', 'motif_error')
+    'motif_role', 'motif_ops', 'motif_id', 'motif_theme_id', 'motif_fallback', 'motif_selection', 'motif_candidates', 'motif_error')
 
 
 def _mmss(s: float) -> str:

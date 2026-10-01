@@ -1074,14 +1074,15 @@ visit, over visits that share the previous visit's base seed.
   - latin:1, latin:2 and rock:3 repeat one exact cross-block pitched content;
   - calm, pop, rnb and lofi get new pitched material per block.
 - **Design** (`composer/motif.py`, opt-in `SessionComposer(stim_seed, develop=True)`,
-  hiphop only, `DEV_VERSION` v2b.0):
+  hiphop only, `DEV_VERSION` v2b.0, v2b.1 since 6.12a):
   - Development runs after drum selection. The drum history and all v2a.3 seeds are
     unchanged, so drums are byte-identical to v2a.3.
   - `read_hook` reads the ostinato back from the MIDI as (16th slot, diatonic step)
     pairs. `realize` writes a 4-phrase plan [M, M, R, E] onto the same notes, and the
     lead keeps the cell's own fold rule. Note count, velocities, durations, tracks,
     LH, bass and drums are unchanged by construction.
-  - The motif seed is H('motif', stim_seed, genre, tier, visit_idx, DEV_VERSION).
+  - The motif seed is H('motif', stim_seed, genre, tier, visit_idx, SEED_VERSION),
+    where SEED_VERSION stays 'v2b.0' for v2b.1.
     State is the cell's previous motif records, so there are no physiological inputs
     (generator boundary test extended).
 - **Rules** (every motif):
@@ -1154,7 +1155,81 @@ visit, over visits that share the previous visit's base seed.
   v2a.3; the architecture is kept (listening is recorded, not used as certification).
   - Census: 360 visits (6 stim seeds x tiers 1-5 x 12): 0 errors, 11 fallbacks (3.1%).
   - Derive options per (key, tier): 1-4.
-  - Bass and other genres are not started.
+  - Other genres are not started; bass development was prototyped and rejected (6.12b).
+
+#### 6.12a Step A: the five v2b.0 misses (symbolic level check, 2026-09-30)
+
+- **Cause (durable).** The hook's piano (Musyng_Kite, program 0) is built from sample
+  zones whose levels step by up to ~7 dB between adjacent semitones (77-79 and 92-97
+  are quiet). A pitch-only change therefore moves segment LUFS and low_ratio at fixed
+  note count, velocity and duration. A measured per-(pitch, velocity) table
+  (`composer/hook_levels.py`, `measure_hook_levels.py`, sha-pinned to the soundfont)
+  predicts the shifts from MIDI: r 0.92-0.97 for LUFS and r -0.99 for low_ratio.
+  - Per miss:
+    - hiphop:1 s1 v3 LUFS: notes moved into loud zones;
+    - hiphop:3 s2 v6 and hiphop:5 s2 v6 low_ratio: hook level fell into the quiet
+      77-79 zone;
+    - hiphop:5 s1 v2 and s2 v7 pulse: development on bases already within 0.0005
+      of the lower edge.
+- **Rule (v2b.1).** The predicted hook level stays
+  within +-0.2 dB, in total and on- and off-beat separately. Summed melodic motion
+  into off-beat notes and into on-beat notes is capped at +4 semitones each versus
+  the cell hook. Capping off-beat motion alone moved motion onto the beat, and
+  on-beat motion raises flux at hiphop:3.
+- **Selection order:**
+  1. rules;
+  2. history;
+  3. level and motion check;
+  4. lowest cost;
+  5. guard.
+
+  If nothing passes, it tries a two-move balance repair, then the gentle pass, then
+  the previous motif, then the motif unchanged. Fallbacks are logged in
+  `motif_selection`.
+- **Result** (hiphop:1/3/5, seeds 1-2, 8 visits):
+  - LUFS and low_ratio misses: 0 (were 3).
+  - Max |Δ| vs v2a.3: LUFS 0.09 dB (was 0.24) and low_ratio 0.009 (was 0.024).
+  - segment_ok: 0.896 (v2a.3 0.958, v2b.0 0.854).
+  - Census (360 visits): fallback 1.1%.
+  - Novelty kept: window repeats 0, phrase variety 0.47-0.53, ending variety
+    0.63-1.0.
+- **Residuals, justified** (thresholds unchanged; kept for the envelope-policy review):
+  - The hiphop:1 pulse_clarity variation-shift failure (-0.00936 vs 0.00567) is
+    inherited from v2a.3 (-0.00984). It is not a v2b regression.
+  - Pulse misses at hiphop:3 (1 new, beside 2 inherited) and hiphop:5 (2) sit on
+    bases within 0.0009 of the edge. hiphop:3/5 v2a.3 already sits at that edge
+    because of the v2a.3 drum variation.
+  - The hiphop:3 flux variation shift is 0.00397 against 0.00359 allowed (v2a.3
+    alone 0.0026). Across pooled runs, Δflux ≈ -0.0091 x Δhook-level dB + 0.0011
+    (R² 0.66). The intercept is the cost of introducing real pitched development, and
+    centring the level removes the +0.04 dB that had masked it. Melodic development
+    is not reduced to remove it.
+- **Version.** These rules are v2b.1 (`DEV_VERSION`). Motif seeds keep the v2b.0
+  salt (`SEED_VERSION`), so v2b.1 MIDI equals the certified and auditioned Step A
+  output (48/48 certification segments, 8/8 audition segments).
+
+#### 6.12b Bass development: prototyped and rejected (design decision, 2026-10-01)
+
+- **Prototype** (hiphop tiers 3-5, experimental `vb.0`, removed, not active). It was
+  pitch-only development of bars 4 and 8 within the frozen cell's bass grammar:
+  - the grammar: tonic on 16ths 0 and 8; at tiers 3+, a ghost tonic on 16th 6 and a
+    b7 approach on 16th 15; the same bar on every visit;
+  - kept: roots, rhythm, velocities and register;
+  - a measured bass level check;
+  - coupling to the motif's return / derive roles.
+
+  It reduced exact bass repetition of the previous visit from 7 to 0-1 per 8-visit
+  session, with no LUFS / low_ratio misses.
+- **Decision.** In the developer A/B listening (hiphop:3 x8, stim_seed 1: v2a.3 /
+  melody / melody + bass), the bass variation did not add enough perceptual benefit
+  to justify the extra variation and complexity. It is rejected. In v2b.1 the bass
+  stays the cell's original, stable line and acts as the compositional anchor under
+  the developing melody.
+- **Durable soundfont facts**, for any later bass work:
+  - the Musyng_Kite bass (program 33) switches velocity layer between 100 and 101
+    (up to -8 dB);
+  - it has no sample below MIDI 26 at velocity <= 100;
+  - moving the hiphop ghost note to 16th 10 cost pulse_clarity -0.018 at hiphop:3.
 
 ---
 

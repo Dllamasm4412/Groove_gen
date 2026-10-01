@@ -167,3 +167,78 @@ def test_pitched_metrics_sanity():
     assert s['pitched_window_repeats'] == 0 and s['melody_exact_prev'] == 0 and s['bass_r4'] == 1.0
     f = pmx.segment_features(b0)
     assert f['melody_rate'] > 0 and f['bass_root_share'] is not None
+
+
+def _realized_level(pm, hook):
+    on = off = 0.0
+    notes = [n for n in pm.instruments[hook.piano].notes if n.pitch >= mo.RH_SPLIT]
+    if hook.lead is not None:
+        notes += pm.instruments[hook.lead].notes
+    for n in notes:
+        e = mo.note_level(n.pitch, n.velocity)
+        if int(round(n.start / hook.sixteenth)) % 4 == 0:
+            on += e
+        else:
+            off += e
+    return on, off
+
+
+@pytest.mark.parametrize('tier', [1, 3, 5])
+def test_plan_level_matches_the_realized_midi(tier):
+    comp = SessionComposer(1, develop=True)
+    for v in range(6):
+        pm, _ = comp.compose('hiphop', tier, v)
+        b, bi = SessionComposer(1).compose('hiphop', tier, v)
+        hook = mo.read_hook(b, session_key(1, 'hiphop'), bi['tempo_bpm'])
+        plan = comp._motifs[('hiphop', tier, v)].plan
+        assert mo.plan_level(plan, mo.hook_voices(b, hook), hook) == pytest.approx(_realized_level(pm, hook), rel=1e-9)
+
+
+def test_hook_level_table_matches_the_soundfont():
+    import hashlib
+
+    from composer import hook_levels
+    sf2 = PILOT / hook_levels.SOUNDFONT
+    if not sf2.exists():
+        pytest.skip('soundfont not present')
+    assert hashlib.sha256(sf2.read_bytes()).hexdigest() == hook_levels.SOUNDFONT_SHA256
+    assert set(hook_levels.LEVEL_DB) >= set(range(mo.RH_RANGE[0], mo.RH_RANGE[1] + 1))
+    assert mo.note_level(76, 90) > mo.note_level(79, 90) * 2          # the quiet 77-79 zone the guard exists for
+
+
+@pytest.mark.parametrize('stim_seed', [1, 2])
+def test_selection_respects_the_energy_check_and_logs_it(stim_seed):
+    kinds = {'candidate', 'gentle', 'previous', 'unchanged'}
+    for tier in (1, 3, 5):
+        comp = SessionComposer(stim_seed, develop=True)
+        for v in range(9):
+            _, info = comp.compose('hiphop', tier, v)
+            assert info['motif_selection'] in kinds
+            assert info['motif_fallback'] == (info['motif_selection'] in ('previous', 'unchanged'))
+            assert mo.energy_cost(info['motif_energy']) <= 1, (tier, v, info['motif_energy'])
+
+
+@pytest.mark.parametrize('cell, stim_seed, visit', [(1, 1, 3), (5, 1, 2), (3, 2, 6), (5, 2, 6), (5, 2, 7)])
+def test_v2b0_audio_miss_segments_now_predict_in_tolerance(cell, stim_seed, visit):
+    """The five v2b.0 segments that left the audio envelope (plan 6.12) at the default reference."""
+    comp = SessionComposer(stim_seed, develop=True)
+    _, info = comp.compose('hiphop', cell, visit)
+    assert mo.energy_cost(info['motif_energy']) <= 1
+
+
+def test_balance_repairs_a_level_shift_with_a_valid_motif():
+    pm, hook = _hook(1, 3)
+    voices = mo.hook_voices(pm, hook)
+    tried = repaired = 0
+    for k in range(60):
+        m, _ = mo.OPS['chord'](hook.motif, random.Random(k))
+        rec = mo.MotifRecord(m, m, (m,) * 4, 'develop', ('chord',))
+        if not mo.valid(m, hook) or mo.energy_cost(mo.energy_shift(rec.plan, voices, hook)) <= 1:
+            continue
+        tried += 1
+        fixed = mo._balance(rec, hook, voices, lambda r: None if all(mo.valid(p, hook) for p in r.plan) else 'rules')
+        if fixed is not None:
+            repaired += 1
+            assert mo.energy_cost(mo.energy_shift(fixed.plan, voices, hook)) <= 1
+            assert all(mo.valid(p, hook) for p in fixed.plan) and fixed.ops[-1].startswith('balance')
+    assert tried and repaired >= tried // 2

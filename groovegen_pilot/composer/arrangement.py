@@ -49,7 +49,8 @@ After drum selection, composer/motif.py develops the pitched hook of the
 DEVELOP_GENRES cells across visits (motif memory carried across blocks).
 Seeds still hash GEN_VERSION and the drum history holds the pre-development
 segment, so the drum layer is identical to develop=False; info gen_version
-is GEN_VERSION + '+' + motif.DEV_VERSION. develop=False is unchanged v2a.3.
+is GEN_VERSION + '+' + motif.DEV_VERSION; motif seeds hash motif.SEED_VERSION.
+develop=False is unchanged v2a.3.
 """
 
 from __future__ import annotations
@@ -207,7 +208,7 @@ class SessionComposer:
     def _develop(self, genre: str, tier: int, sched: SegmentSchedule, tempo: float,
                  src: pretty_midi.PrettyMIDI, info: dict) -> pretty_midi.PrettyMIDI:
         """v2b motif development of src (visits 0..visit_idx-1 of the cell are already composed)."""
-        from composer.motif import DEV_VERSION, MotifRecord, develop, read_hook
+        from composer.motif import DEV_VERSION, SEED_VERSION, MotifRecord, develop, read_hook
 
         info['gen_version'] = f'{self.gen_version}+{DEV_VERSION}'
         hook = read_hook(src, sched.session_key, tempo)
@@ -218,7 +219,7 @@ class SessionComposer:
         records = [self._motifs[cell + (v,)] for v in range(sched.visit_idx) if cell + (v,) in self._motifs]
         try:
             out, rec, minfo = develop(src, hook, records, sched.visit_idx,
-                                      H('motif', self.stim_seed, genre, int(tier), sched.visit_idx, DEV_VERSION))
+                                      H('motif', self.stim_seed, genre, int(tier), sched.visit_idx, SEED_VERSION))
         except Exception as exc:  # noqa: BLE001 - any development bug keeps the drum-varied segment
             prev = records[-1] if records else MotifRecord(hook.motif, hook.motif, (hook.motif,) * 4, 'base', ())
             out, rec, minfo = src, MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ()), {

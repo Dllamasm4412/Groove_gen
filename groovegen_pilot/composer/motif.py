@@ -33,7 +33,19 @@ Rules (every motif played)
 - onsets are the base hook's: development is pitch-only. v2b.0 drafts also
   moved off-beat 16ths (displacement, anticipated endings); at hiphop:5 every
   visit carrying a displaced onset left the pulse_clarity envelope and every
-  pitch-only visit stayed inside it (audio certification, stim seeds 1-2).
+  pitch-only visit stayed inside it (audio certification, stim seeds 1-2);
+- the predicted hook level (RH + lead, from the soundfont's per-pitch table in
+  composer/hook_levels.py) stays within LEVEL_TOL_DB of the base hook, in
+  total and on / off the beat, and leap motion into off-beat (on-beat) notes
+  grows by at most MAX_OFFBEAT_MOTION (MAX_ONBEAT_MOTION) semitones over the
+  plan (energy_shift()). The piano's sample zones step by up to ~7 dB
+  between adjacent semitones, so a pitch-only change can move LUFS and
+  low_ratio; the predicted level tracks them (r = -0.99 low_ratio, 0.92-0.97
+  LUFS), register does not. v2b.0 drafts without it: 3 of 48 certified
+  segments left the LUFS / low_ratio envelope. Added off-beat motion lowers
+  pulse_clarity (hiphop:5, where v2a.3 segments sit at the envelope edge);
+  capping it alone moved motion onto the beat, and added on-beat motion
+  raises flux at hiphop:3 (pooled v2b runs: 1.2e-4 per semitone, R^2 0.4).
 
 Development (per cell, visit v, block b = v // BLOCK_LEN, pos = v % BLOCK_LEN)
 ------------------------------------------------------------------------------
@@ -48,26 +60,35 @@ bar under M's answer bar at pos 1 of blocks >= 1 (else R = M); E is M with a
 varied phrase ending (turnaround, under the bar-8 drum fill).
 A motif or a whole plan equal to one of the last HISTORY_WINDOW visits of
 the cell is rejected, so the hook cannot cycle within that window; recall is
-partial (one bar), so recognition does not need exact repeats. Of
-N_CANDIDATES deterministic candidates the first that passes the rules, the
-history check and guard() is used; if none does, the previous motif is kept
-(motif_fallback) and the segment still gets its ending variation if valid.
+partial (one bar), so recognition does not need exact repeats. A return is
+a transformed recall (two ops on the old theme, one in the gentle pass), never
+the old theme verbatim. Of N_CANDIDATES deterministic candidates, those that
+pass the rules and the history check go to the energy check; one failing only
+that gets up to two balancing scale-step moves (_balance). The passing
+candidates are ranked unrepaired first, then by energy cost, then candidate
+order; the first that passes guard() is used. If none does, gentle
+candidates (less aggressive), then the previous motif with a new ending, then
+the unchanged segment are used (motif_fallback; motif_selection says which).
 """
 
 from __future__ import annotations
 
 import copy
+import math
 import random
 from collections import Counter
 from dataclasses import dataclass
+from functools import cache
 from typing import Optional
 
 import pretty_midi
 
 import stimulus_metrics as sm
 from composer.energy_guard import BOUNDS, GuardResult, bounded_deltas
+from composer.hook_levels import LEVEL_DB, VELOCITIES
 
-DEV_VERSION = 'v2b.0'
+DEV_VERSION = 'v2b.1'                # v2b.1: level / motion check in selection (plan 6.12a)
+SEED_VERSION = 'v2b.0'               # motif seeds keep the v2b.0 salt: v2b.1 changes selection, not the draws
 DEVELOP_GENRES = ('hiphop',)
 BLOCK_LEN = 3
 BARS = 8
@@ -82,6 +103,9 @@ FOLD = LEAD_MAX - 12                # RH <= 84: octave-up lead double; above: un
 HISTORY_WINDOW = 6
 N_CANDIDATES = 12
 MAX_PITCH_SHIFT = 2.0               # semitones: pitched median / p05 / p95 vs the source segment
+LEVEL_TOL_DB = 0.2                  # predicted hook level vs the source segment: total, on-beat, off-beat
+MAX_OFFBEAT_MOTION = 4              # semitones: added leap motion into off-beat hook notes, whole plan
+MAX_ONBEAT_MOTION = 4               # semitones: the same into on-beat hook notes
 
 Motif = tuple[tuple[int, int], ...]
 PITCH_OPS = ('neighbor', 'chord', 'sequence')
@@ -346,6 +370,78 @@ def guard(developed: pretty_midi.PrettyMIDI, src: pretty_midi.PrettyMIDI, hook: 
     return GuardResult(ok=not fails, failures=fails, deltas=deltas)
 
 
+@cache
+def note_level(pitch: int, velocity: int) -> float:
+    """Rendered energy of one hook note (linear), from the soundfont table:
+    dB interpolated between the measured velocities, pitch clamped to the table."""
+    row = LEVEL_DB[min(max(pitch, min(LEVEL_DB)), max(LEVEL_DB))]
+    v = min(max(velocity, VELOCITIES[0]), VELOCITIES[-1])
+    i = min(sum(v >= x for x in VELOCITIES) - 1, len(VELOCITIES) - 2)
+    f = (v - VELOCITIES[i]) / (VELOCITIES[i + 1] - VELOCITIES[i])
+    return 10 ** ((row[i] + f * (row[i + 1] - row[i])) / 10)
+
+
+def hook_voices(src: pretty_midi.PrettyMIDI, hook: Hook) -> dict[tuple[int, int], tuple[int, Optional[int]]]:
+    """(RH velocity, lead velocity or None) of every hook note, keyed by (phrase, slot)."""
+    six, lead = hook.sixteenth, {}
+    if hook.lead is not None:
+        lead = {(int(round(n.start / six)), n.pitch): n.velocity for n in src.instruments[hook.lead].notes}
+    voices = {}
+    for n in _rh_notes(src, hook.piano):
+        slot = int(round(n.start / six))
+        voices[divmod(slot, PHRASE)] = (n.velocity, lead.get((slot, lead_pitch(n.pitch))))
+    return voices
+
+
+def plan_level(plan: tuple[Motif, ...], voices: dict, hook: Hook) -> tuple[float, float]:
+    """(on-beat, off-beat) energy of the hook, RH + lead, playing plan (pitch-only,
+    so every note keeps its source velocity and onset)."""
+    on = off = 0.0
+    for k, m in enumerate(plan):
+        for slot, st in m:
+            v, lv = voices[(k, slot)]
+            p = pitch_of(st, hook.tonic)
+            e = note_level(p, v) + (note_level(lead_pitch(p), lv) if lv is not None else 0.0)
+            if slot % 4 == 0:
+                on += e
+            else:
+                off += e
+    return on, off
+
+
+def offbeat_motion(plan: tuple[Motif, ...], hook: Hook, onbeat: bool = False) -> int:
+    """Summed |interval| (semitones) into the off-beat (onbeat: on-beat) hook notes of the plan."""
+    seq = [(slot, pitch_of(st, hook.tonic)) for m in plan for slot, st in m]
+    return sum(abs(b - a) for (_, a), (slot, b) in zip(seq, seq[1:]) if bool(slot % 4) != onbeat)
+
+
+def energy_shift(plan: tuple[Motif, ...], voices: dict, hook: Hook) -> dict:
+    """Predicted audio-energy change of plan vs the base hook (pitch-only plans).
+
+    level_*: hook level change in dB, total / on-beat / off-beat. The piano's
+    sample zones step by up to ~7 dB between adjacent semitones, so this, not
+    the register, predicts the segment's LUFS and low_ratio shift
+    (certification hiphop:1/3/5: r = 0.92-0.97 and -0.99).
+    offbeat_motion: added leap motion into off-beat notes. More spectral
+    novelty off the beat lowers pulse_clarity (hiphop:5 sessions r = -0.99;
+    single-note ablations: moves that reduce it raise pulse_clarity).
+    onbeat_motion: the same into on-beat notes; it tracks flux at hiphop:3."""
+    (on, off), (on0, off0) = plan_level(plan, voices, hook), plan_level((hook.motif,) * 4, voices, hook)
+    db = lambda a, b: round(10 * math.log10(a / b), 4) if a > 0 and b > 0 else 0.0
+    return {'level_db': db(on + off, on0 + off0), 'level_on_db': db(on, on0), 'level_off_db': db(off, off0),
+            'offbeat_motion': offbeat_motion(plan, hook) - offbeat_motion((hook.motif,) * 4, hook),
+            'onbeat_motion': offbeat_motion(plan, hook, True) - offbeat_motion((hook.motif,) * 4, hook, True)}
+
+
+def energy_cost(shift: dict) -> float:
+    """<= 1 passes: the largest level change over LEVEL_TOL_DB, or added
+    off- / on-beat motion over MAX_OFFBEAT_MOTION / MAX_ONBEAT_MOTION (less
+    motion is free)."""
+    level = max(abs(shift[k]) for k in ('level_db', 'level_on_db', 'level_off_db'))
+    return round(max(level / LEVEL_TOL_DB, max(shift['offbeat_motion'], 0) / MAX_OFFBEAT_MOTION,
+                     max(shift.get('onbeat_motion', 0), 0) / MAX_ONBEAT_MOTION), 6)
+
+
 # =============================================================================
 # Development
 # =============================================================================
@@ -367,7 +463,10 @@ def _recall(theme: Motif, m: Motif, hook: Hook) -> Optional[Motif]:
     return r if r != m and valid(r, hook) else None
 
 
-def _candidate(hook: Hook, records: list[MotifRecord], visit: int, rng: random.Random) -> MotifRecord:
+def _candidate(hook: Hook, records: list[MotifRecord], visit: int, rng: random.Random,
+               gentle: bool = False) -> MotifRecord:
+    """gentle: the less aggressive variant tried when no regular candidate passes
+    (a return applies one op instead of two; no separate turnaround)."""
     block, pos = divmod(visit, BLOCK_LEN)
     ops: list[str] = []
     if visit == 0:
@@ -378,7 +477,7 @@ def _candidate(hook: Hook, records: list[MotifRecord], visit: int, rng: random.R
         ops.append(d)
     elif pos == 0:
         role, m = 'return', records[(block - 2) * BLOCK_LEN].theme
-        for kind in rng.sample(PITCH_OPS, 2):
+        for kind in rng.sample(PITCH_OPS, 1 if gentle else 2):
             m, d = OPS[kind](m, rng)
             ops.append(d)
     else:
@@ -387,46 +486,101 @@ def _candidate(hook: Hook, records: list[MotifRecord], visit: int, rng: random.R
         ops.append(d)
     theme = m if pos == 0 else records[visit - 1].theme
     recall = _recall(records[(block - 1) * BLOCK_LEN].theme, m, hook) if pos == 1 and block >= 1 else None
-    end, d = _with_ending(m, rng, hook)
-    ops.append(d)
+    end = m
+    if not gentle:
+        end, d = _with_ending(m, rng, hook)
+        ops.append(d)
     return MotifRecord(motif=m, theme=theme, plan=(m, m, recall or m, end), role=role, ops=tuple(ops))
+
+
+def _balance(rec: MotifRecord, hook: Hook, voices: dict, why_not, moves: int = 2) -> Optional[MotifRecord]:
+    """Repair for a candidate that fails only the energy check: up to `moves`
+    greedy scale-step moves (+-1, +-2) of one non-anchor motif note each,
+    applied in every phrase that plays that note, bringing energy_cost to <= 1.
+    Each move takes the lowest energy cost, ties to the smaller move and earlier
+    note; why_not(rec) re-checks the rules and the history window."""
+    m, best = rec.motif, None
+    for i in range(1, len(m)):
+        slot, st = m[i]
+        for d in (1, -1, 2, -2):
+            note = (slot, st + d)
+            plan = tuple(p[:i] + (note,) + p[i + 1:] if p[i] == m[i] else p for p in rec.plan)
+            new = MotifRecord(motif=plan[0], theme=plan[0] if rec.theme == m else rec.theme, plan=plan,
+                              role=rec.role, ops=rec.ops + (f'balance@{slot}:{d:+d}',))
+            cost = energy_cost(energy_shift(plan, voices, hook))
+            if (best is None or cost < best[0]) and why_not(new) is None:
+                best = (cost, new)
+    if best is None:
+        return None
+    if best[0] <= 1:
+        return best[1]
+    return _balance(best[1], hook, voices, why_not, moves - 1) if moves > 1 else None
 
 
 def develop(src: pretty_midi.PrettyMIDI, hook: Hook, records: list[MotifRecord], visit: int,
             seed: int) -> tuple[pretty_midi.PrettyMIDI, MotifRecord, dict]:
-    """Visit `visit` of the cell, given records of visits 0..visit-1 (in order)."""
+    """Visit `visit` of the cell, given records of visits 0..visit-1 (in order).
+
+    Selection: rules -> not in the history window -> energy check
+    (energy_cost <= 1: predicted hook level and off-beat motion vs the base; a
+    candidate failing only this gets a _balance() repair) -> guard() -> lowest
+    cost: unrepaired before repaired, then energy cost, then candidate order. If
+    no regular candidate passes, the gentle candidates are tried, then the
+    previous motif with a new ending, then the unchanged v2a.3 segment;
+    motif_selection logs which one was used."""
     recent_m = {r.motif for r in records[-HISTORY_WINDOW:]}
     recent_plan = {r.plan for r in records[-HISTORY_WINDOW:]}
+    voices = hook_voices(src, hook)
     info = {'dev_version': DEV_VERSION, 'motif_candidates': 0, 'motif_rejections': {}}
-    for k in range(N_CANDIDATES):
-        rec = _candidate(hook, records, visit, random.Random((seed << 8) | k))
-        info['motif_candidates'] = k + 1
-        why = None
+
+    def reject(why: str) -> None:
+        info['motif_rejections'][why] = info['motif_rejections'].get(why, 0) + 1
+
+    def why_not(rec: MotifRecord) -> Optional[str]:
         if not all(valid(p, hook) for p in rec.plan):
-            why = 'rules'
-        elif visit and (rec.motif in recent_m or rec.plan in recent_plan):
-            why = 'history'
-        else:
+            return 'rules'
+        if visit and (rec.motif in recent_m or rec.plan in recent_plan):
+            return 'history'
+        return None
+
+    for gentle in (False, True):
+        ranked = []
+        for k in range(N_CANDIDATES):
+            rec = _candidate(hook, records, visit, random.Random((seed << 8) | (k + gentle * N_CANDIDATES)), gentle)
+            info['motif_candidates'] += 1
+            why = why_not(rec)
+            if why is None and energy_cost(energy_shift(rec.plan, voices, hook)) > 1:
+                rec = _balance(rec, hook, voices, why_not)
+                why = 'energy' if rec is None else None
+            if why:
+                reject(why)
+                continue
+            shift = energy_shift(rec.plan, voices, hook)
+            ranked.append(((bool(rec.ops) and rec.ops[-1].startswith('balance'), energy_cost(shift), k), rec, shift))
+        for (_, _, k), rec, shift in sorted(ranked, key=lambda x: x[0]):
             out = realize(src, hook, rec.plan)
             verdict = guard(out, src, hook)
             if verdict.ok:
-                info.update(motif_candidate_idx=k, motif_fallback=False, motif_guard_deltas=verdict.deltas)
+                info.update(motif_candidate_idx=k, motif_fallback=False,
+                            motif_selection='gentle' if gentle else 'candidate',
+                            motif_guard_deltas=verdict.deltas, motif_energy=shift)
                 return out, rec, _describe(info, rec)
-            why = 'guard'
-        info['motif_rejections'][why] = info['motif_rejections'].get(why, 0) + 1
-    if not records:
-        rec = MotifRecord(hook.motif, hook.motif, (hook.motif,) * 4, 'fallback', ())
-        info.update(motif_candidate_idx=None, motif_fallback=True)
-        return src, rec, _describe(info, rec)
-    prev = records[-1]
-    end, d = _with_ending(prev.motif, random.Random(seed), hook)
-    rec = MotifRecord(motif=prev.motif, theme=prev.theme, plan=(prev.motif,) * 3 + (end,),
-                      role='fallback', ops=(d,))
-    out = realize(src, hook, rec.plan)
-    if not guard(out, src, hook).ok:
-        out, rec = src, MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ())
+            reject('guard')
     info.update(motif_candidate_idx=None, motif_fallback=True)
-    return out, rec, _describe(info, rec)
+    if records:
+        prev = records[-1]
+        end, d = _with_ending(prev.motif, random.Random(seed), hook)
+        rec = MotifRecord(motif=prev.motif, theme=prev.theme, plan=(prev.motif,) * 3 + (end,),
+                          role='fallback', ops=(d,))
+        shift = energy_shift(rec.plan, voices, hook)
+        out = realize(src, hook, rec.plan)
+        if rec.plan not in recent_plan and energy_cost(shift) <= 1 and guard(out, src, hook).ok:
+            info.update(motif_selection='previous', motif_energy=shift)
+            return out, rec, _describe(info, rec)
+    prev = records[-1] if records else MotifRecord(hook.motif, hook.motif, (), '', ())
+    rec = MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ())
+    info.update(motif_selection='unchanged', motif_energy=energy_shift(rec.plan, voices, hook))
+    return src, rec, _describe(info, rec)
 
 
 def motif_id(m: Motif) -> str:

@@ -5,7 +5,8 @@ the live path.
 
 The question is "does the complete musical material repeat?", not only the
 drums. Per segment (melody = skyline of the top-line track, the motif carrier;
-bass = the pitched track with the lowest median pitch):
+bass = the pitched track with the most notes below BASS_BELOW, lowest median
+on a tie; not the tier-4+ sub-bass, which only mirrors beats 1 and 3):
   melody_rate, melody_median / p05 / p95, melody_max_leap, bass_rate,
   bass_root_share (bass notes on beats 1 and 3 on the most common such pitch
   class), melody_phrases (distinct 2-bar melody phrases in the segment).
@@ -46,6 +47,7 @@ import stimulus_metrics as sm
 BARS = 8
 SLOTS_PER_BAR = 16
 WINDOW = 6
+BASS_BELOW = 48
 
 
 def _slot(t: float, tempo: float) -> int:
@@ -66,12 +68,12 @@ def _line(pm: pretty_midi.PrettyMIDI, track: Optional[int], top: bool) -> list[t
 
 
 def bass_track(pm: pretty_midi.PrettyMIDI) -> Optional[int]:
-    best, best_med = None, 1e9
+    best, best_key = None, None
     for i, inst in enumerate(pm.instruments):
         if not inst.is_drum and inst.notes:
-            med = float(np.median([n.pitch for n in inst.notes]))
-            if med < best_med:
-                best, best_med = i, med
+            key = (-sum(n.pitch < BASS_BELOW for n in inst.notes), float(np.median([n.pitch for n in inst.notes])))
+            if best_key is None or key < best_key:
+                best, best_key = i, key
     return best
 
 

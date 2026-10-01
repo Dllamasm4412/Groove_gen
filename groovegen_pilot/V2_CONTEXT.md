@@ -6,7 +6,8 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: `03ff71c` audition
+- Branch `v2-controlled-live-generation`. Latest commits: `7e4b5b9` v2b.0 motif
+  prototype, `03ff71c` audition
   harness, `62f7944` A6 novelty balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
   v2a.2, `d0cf24c` certification, `4e88a0a` v2a.
 - Fresh-session start: read `CLAUDE.md`, this file, then `git branch --show-current`,
@@ -31,12 +32,18 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
 - `audition_v2.py` (developer listening only, not in the live path): renders dwell,
   sequence or preset auditions through the unchanged generators, FluidSynth and the
   live join (run_session_v2 trim + `CrossfadeMixer(fade_bars=0.25, 'tail_out')`).
-- `composer/motif.py` (v2b, opt-in `SessionComposer(stim_seed, develop=True)`,
-  hiphop only, experimental first slice, not ready for live integration): pitch-only motif development of the hiphop RH hook
-  after drum selection. Plumbing: `SessionGenerator(develop=)`,
-  `certify_stimuli.py --develop`, `audition_v2.py --generator v2b|v2-v2b`.
+- `composer/motif.py` (v2b.1, opt-in `SessionComposer(stim_seed, develop=True)`,
+  hiphop only, not wired live): pitch-only motif development of the hiphop RH hook
+  after drum selection, with the measured level / motion check (plan 6.12a).
+  `DEV_VERSION` 'v2b.1' is the provenance label; motif seeds hash `SEED_VERSION`
+  'v2b.0', so v2b.1 replays the certified and auditioned Step A MIDI. Plumbing:
+  `SessionGenerator(develop=)`, `certify_stimuli.py --develop`,
+  `audition_v2.py --generator v2b|v2-v2b`.
+- `composer/hook_levels.py`: measured per-(pitch, velocity) piano levels, generated
+  by `measure_hook_levels.py`, sha-pinned to the sf2.
 - `pitched_metrics.py` (diagnostic): melody/bass/whole-segment repetition metrics
-  and a v2a.3 vs v2b comparison CLI.
+  and a v2a.3 vs v2b comparison CLI. The bass track is the one with most notes
+  below 48 (the old rule picked the tier 4+ sub-bass).
 - `op_attribution.py` (debug only, not in the live path): renders each logged op
   alone on its base and reports per-op centroid, flux, pulse, LUFS and E deltas in
   units of the cell's certification allowance.
@@ -189,7 +196,7 @@ failures.
   cycle with period 5 across blocks (visits 5-7 replay the drums of 0-2): calm's
   base drums are seed-invariant and novelty only looks at the previous visit.
 
-## v2b motif development (2026-09-30, experimental first slice; plan 6.12)
+## v2b.0 motif development (2026-09-30, first slice, superseded by v2b.1; plan 6.12)
 
 - Opt-in only; default v2a.3 output unchanged; v1 byte-identical; live runner and
   controller untouched. Not audio-certified (5/48 tested segments newly outside the
@@ -215,12 +222,36 @@ failures.
   - latin sounds higher-energy than its ladder placement; the ladder is not changed;
   - calm repeats after about 4 min (drum period 5, see the audition harness section).
 
+## v2b.1 melody-only (2026-10-01, plan 6.12a / 6.12b)
+
+Architecture of hiphop v2b.1:
+- drums: v2a.3 controlled variation;
+- hook: v2b.1 stateful development;
+- bass, harmony, key and hook rhythm: the cell's original, unchanged.
+
+- Step A (motif.py, v2b.1): hook level table + level / motion check in selection.
+  Certification runs `v2b_energy2` and `v2b1_melody` (MIDI-identical):
+  - LUFS / low_ratio misses 3 -> 0;
+  - segment_ok 0.896;
+  - census fallback 1.1%;
+  - novelty kept.
+
+  Residuals (thresholds unchanged, for the envelope-policy review):
+  - hiphop:1 pulse shift, inherited from v2a.3;
+  - pulse misses on edge bases (hiphop:3 1 new, hiphop:5 2);
+  - the hiphop:3 flux shift 0.00397 vs 0.00359, the cost of real pitched
+    development. Do not reduce development to remove it.
+- Bass development (experimental vb.0, Step B) was prototyped and rejected after
+  developer A/B listening; its code was removed and it is not active (plan 6.12b).
+  The bass is the stable anchor.
+- Audition: `renders/audition_v2/v2b1_hiphop3_s1` (v2b.1, hiphop:3 x8, stim_seed 1).
+  The listening comparison was `stepB_hiphop3_s1`; its 03 file is the rejected bass
+  prototype.
+
 ## Next task
 
-1. Developer listens to the initial set and the v2b A/B and fills in
-   `LISTENING_NOTES.md`. Listening is recorded separately, not certification. Then
-   decide whether to commit v2b, and whether the residual low_ratio edge misses need
-   a MIDI guard before bass or other genres.
+1. Commit the v2b.1 melody-only checkpoint once approved. Do not add bass variation.
+   Do not expand melody development to other genres without a new decision.
 2. Then the envelope review, separate from A6 and the generator:
    - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
      seed-invariant);
@@ -244,4 +275,5 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 pitched_metrics.py --cells hiphop:1,hiphop:3,hiphop:5 --visits 8 --stim-seeds 1,2
 ../.venv/bin/python3.12 certify_stimuli.py --cells hiphop:1,hiphop:3,hiphop:5 --visits 8 --audio --workers 3 --develop
 ../.venv/bin/python3.12 audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1 --generator v2-v2b
+../.venv/bin/python3.12 measure_hook_levels.py                              # after a soundfont change
 ```
