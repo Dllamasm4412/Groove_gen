@@ -18,12 +18,14 @@ Modes
     sequence  --cells A,B,... --visits-per-cell K: each cell K visits in order
     preset    --preset NAME: a fixed list of auditions (PRESETS)
 
---generator v2 (default) | v1 | both (A/B: the same trajectory through each).
+--generator v2 (default) | v1 | v2b | both (A/B v1 vs v2: the same trajectory
+through each) | v2-v2b (A/B v2 vs v2b motif development, composer/motif.py).
 
 Usage (writes only under renders/, which is gitignored):
     python audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
     python audition_v2.py --mode sequence --cells calm:2,lofi:2,rnb:2,pop:3 --visits-per-cell 1
     python audition_v2.py --preset problem --generator both
+    python audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --generator v2-v2b
     python audition_v2.py --preset initial
 Outputs in <out> (default renders/audition_v2/<stamp>/):
     <name>.wav            one joined WAV per audition and generator
@@ -136,8 +138,12 @@ def plan_preset(name: str, valid: Optional[set] = None) -> list[Audition]:
     return [plan_audition(mode, [parse_cell(c, valid) for c in cells], n) for mode, cells, n in PRESETS[name]]
 
 
+V2_GENERATORS = ('v2', 'v2b')                       # SessionComposer; v2b adds motif development
+GENERATOR_SETS = {'both': ['v1', 'v2'], 'v2-v2b': ['v2', 'v2b']}
+
+
 def wav_name(audition: Audition, idx: int, generator: str, stim_seed: int) -> str:
-    seed = f'_s{stim_seed}' if generator == 'v2' else ''
+    seed = f'_s{stim_seed}' if generator in V2_GENERATORS else ''
     return f'{idx:02d}_{audition.label()}_{generator}{seed}.wav'
 
 
@@ -151,7 +157,7 @@ def generate(audition: Audition, generator: str, stim_seed: int) -> list[tuple[A
     from composer.arrangement import SessionComposer, cell_plan
     from stimulus_audit import BankGenerator
 
-    comp = SessionComposer(stim_seed) if generator == 'v2' else None
+    comp = SessionComposer(stim_seed, develop=generator == 'v2b') if generator in V2_GENERATORS else None
     bank = BankGenerator() if generator == 'v1' else None
     visits: dict[tuple, int] = {}
     prev_drum: dict[tuple, tuple] = {}
@@ -161,7 +167,7 @@ def generate(audition: Audition, generator: str, stim_seed: int) -> list[tuple[A
         visits[(g, t)] = v + 1
         row: dict[str, Any] = {'seg_idx': i, 'genre': g, 'tier': t, 'cell': f'{g}:{t}', 'visit_idx': v,
                                'generator': generator}
-        if generator == 'v2':
+        if generator in V2_GENERATORS:
             pm, info = comp.compose(g, t, v)
             ops = info.get('drum_ops') or []
             row.update({
@@ -175,6 +181,10 @@ def generate(audition: Audition, generator: str, stim_seed: int) -> list[tuple[A
                 'n_drum_ops': sum(len(x) for x in ops), 'form_template': info.get('form_template'),
                 'novelty_r4_prev': info['novelty_r4_prev'], 'novelty_r4_base': info['novelty_r4_base'],
             })
+            if 'dev_version' in info or 'motif_error' in info:
+                row.update({k: info.get(k) for k in ('motif_role', 'motif_id', 'motif_theme_id',
+                                                     'motif_fallback', 'motif_candidates', 'motif_error')})
+                row['motif_ops'] = '+'.join(info.get('motif_ops') or [])
             base_id = info['base_seed']
         else:
             pm, plan = bank.generate(g, t)
@@ -268,7 +278,8 @@ MANIFEST_FIELDS = (
     'gen_fallback', 'op_cost', 'n_drum_ops', 'form_template',
     'same_base_as_prev', 'near_repeat_drum', 'novelty_r4_prev', 'novelty_r4_base',
     'new_drum_bar_frac', 'new_drum_patterns', 'changed_drum_bar_frac',
-    'midi_sha256', 'drum_sha')
+    'midi_sha256', 'drum_sha',
+    'motif_role', 'motif_ops', 'motif_id', 'motif_theme_id', 'motif_fallback', 'motif_candidates', 'motif_error')
 
 
 def _mmss(s: float) -> str:
@@ -326,14 +337,17 @@ def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> st
                      f"| {_mmss(s['duration_s'])} |")
     lines += ['', '## Segment start times', '',
               'v = visit index in the cell; "same base" = variation of the previous visit\'s base '
-              '(else a new block); new bars = C1, drum bars not heard in the previous visit.', '']
+              '(else a new block); new bars = C1, drum bars not heard in the previous visit; '
+              'notes = v2b motif role and ops (composer/motif.py).', '']
     for s in summary:
         lines += [f"`{s['wav']}`", '', '| seg | start | cell | v | same base | new bars | notes |',
                   '|---|---|---|---|---|---|---|']
         for r in (r for r in rows if r['wav'] == s['wav']):
             sb = {True: 'yes', False: 'no'}.get(r.get('same_base_as_prev'), '-')
             nb = '-' if r.get('new_drum_bar_frac') is None else f"{round(r['new_drum_bar_frac'] * BARS)}/{BARS}"
-            lines.append(f"| {r['seg_idx']} | {r['start_mmss']} | {r['cell']} | {r['visit_idx']} | {sb} | {nb} | |")
+            motif = ' '.join(x for x in (r.get('motif_role'), r.get('motif_ops')) if x)
+            lines.append(f"| {r['seg_idx']} | {r['start_mmss']} | {r['cell']} | {r['visit_idx']} | {sb} | {nb} "
+                         f"| {motif} |")
         lines.append('')
     lines += [
         '## Checklist', '',
@@ -343,6 +357,10 @@ def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> st
         '- Are the phrase-end changes noticeable but not distracting?',
         '- Does the groove identity remain stable?',
         '- Does any variation sound mechanically inserted?', '',
+        '### Melody (v2b)',
+        '- Is the hook recognisable across visits without sounding looped?',
+        '- Do the varied phrase endings sound intentional?',
+        '- Does any melodic change sound wrong (off-key, awkward leap, clash with the bass)?', '',
         '### Timbre',
         '- Do fills suddenly become darker or brighter?',
         '- Are cymbal / open-hat changes noticeable?',
@@ -390,7 +408,7 @@ def parse_args(argv=None):
     ap.add_argument('--visits', type=int, default=8, help='dwell: visits to the cell')
     ap.add_argument('--visits-per-cell', type=int, default=1, help='sequence: consecutive visits per cell')
     ap.add_argument('--stim-seed', type=int, default=1)
-    ap.add_argument('--generator', choices=('v2', 'v1', 'both'), default='v2')
+    ap.add_argument('--generator', choices=('v2', 'v1', 'v2b', 'both', 'v2-v2b'), default='v2')
     ap.add_argument('--sf2', default=str(HERE / 'Musyng_Kite.sf2'))
     ap.add_argument('--workers', type=int, default=2)
     ap.add_argument('--segment-wavs', action='store_true', help='also save each trimmed segment')
@@ -424,7 +442,7 @@ def main(argv=None, render: Optional[Callable] = None) -> int:
     args = parse_args(argv)
     ladder, ladder_info = live_ladder('measured')
     auditions = build_auditions(args, {(c.genre, c.tier) for c in ladder.cells})
-    generators = ['v1', 'v2'] if args.generator == 'both' else [args.generator]
+    generators = GENERATOR_SETS.get(args.generator, [args.generator])
     stamp = datetime.now().astimezone().strftime('%Y%m%d_%H%M%S')
     out = Path(args.out) if args.out else HERE / 'renders' / 'audition_v2' / stamp
     if render is None:
@@ -434,9 +452,11 @@ def main(argv=None, render: Optional[Callable] = None) -> int:
     t0 = time.perf_counter()
     res = run_auditions(auditions, generators, args.stim_seed, out, render, args.segment_wavs)
     from composer.arrangement import GEN_VERSION
+    from composer.motif import DEV_VERSION
     meta = {
         'tool': 'audition_v2.py', 'timestamp': stamp, 'argv': sys.argv[1:] if argv is None else argv,
         'stim_seed': args.stim_seed, 'generators': generators, 'gen_version': GEN_VERSION,
+        'dev_version': DEV_VERSION if 'v2b' in generators else None,
         'join': {'bars_per_segment': BARS, 'fade_bars': FADE_BARS, 'fade_mode': LIVE_FADE_MODE,
                  'trim': 'run_session_v2 trim_render_tail', 'sample_rate': SAMPLE_RATE},
         'soundfont': args.sf2, 'soundfont_sha256': _file_sha256(Path(args.sf2)),

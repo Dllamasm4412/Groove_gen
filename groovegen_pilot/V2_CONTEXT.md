@@ -2,12 +2,12 @@
 
 Short source of truth for the v2 (controlled live generation) work. The design,
 history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4.4,
-6.7-6.11); this file only records the current state and the next step.
+6.7-6.12); this file only records the current state and the next step.
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: `62f7944` A6 novelty
-  balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
+- Branch `v2-controlled-live-generation`. Latest commits: `03ff71c` audition
+  harness, `62f7944` A6 novelty balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
   v2a.2, `d0cf24c` certification, `4e88a0a` v2a.
 - Fresh-session start: read `CLAUDE.md`, this file, then `git branch --show-current`,
   `git status --short`, `git log --oneline -8`; read only the plan sections and code
@@ -31,6 +31,12 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
 - `audition_v2.py` (developer listening only, not in the live path): renders dwell,
   sequence or preset auditions through the unchanged generators, FluidSynth and the
   live join (run_session_v2 trim + `CrossfadeMixer(fade_bars=0.25, 'tail_out')`).
+- `composer/motif.py` (v2b, opt-in `SessionComposer(stim_seed, develop=True)`,
+  hiphop only, experimental first slice, not ready for live integration): pitch-only motif development of the hiphop RH hook
+  after drum selection. Plumbing: `SessionGenerator(develop=)`,
+  `certify_stimuli.py --develop`, `audition_v2.py --generator v2b|v2-v2b`.
+- `pitched_metrics.py` (diagnostic): melody/bass/whole-segment repetition metrics
+  and a v2a.3 vs v2b comparison CLI.
 - `op_attribution.py` (debug only, not in the live path): renders each logged op
   alone on its base and reports per-op centroid, flux, pulse, LUFS and E deltas in
   units of the cell's certification allowance.
@@ -45,6 +51,9 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   snare, calm kick and rim, hiphop slot-10 kick).
 - Certification thresholds do not change in v2a.3; no envelope loosening without
   evidence reported first.
+- v2b: drums byte-identical to v2a.3; non-hiphop cells byte-identical; onsets,
+  note counts, velocities, LH and bass unchanged; the generator reads no physiology
+  (`tests/test_generator_boundary.py`, `tests/test_motif.py`).
 
 ## Previous certification (v2a.2, audio run `renders/certification/20260930_122337`)
 
@@ -180,16 +189,44 @@ failures.
   cycle with period 5 across blocks (visits 5-7 replay the drums of 0-2): calm's
   base drums are seed-invariant and novelty only looks at the previous visit.
 
+## v2b motif development (2026-09-30, experimental first slice; plan 6.12)
+
+- Opt-in only; default v2a.3 output unchanged; v1 byte-identical; live runner and
+  controller untouched. Not audio-certified (5/48 tested segments newly outside the
+  reference envelopes) and not ready for live integration.
+- Developer listening (hiphop:3 x8, stim_seed 1, v2a.3 vs v2b): v2b sounds
+  meaningfully less repetitive; keep the architecture. Listening is not certification.
+
+- Rules, schedule and results are in plan 6.12. Hiphop pitched window repeats go
+  from 7 to 0 and melody phrase variety from 0.03 to about 0.5. Bass and drums are
+  unchanged.
+- Audio at the default reference (`renders/certification/v2b_hiphop_full/`, runs
+  `v2a3`, `v2b` [displacement draft], `v2b_fold`, `v2b_pitch` [final]):
+  - segment_ok 0.958 -> 0.854;
+  - 5/48 new edge misses: LUFS 1, pulse 2, low_ratio 2. Not certified.
+- Durable findings:
+  - lead fold: notes <= 84 are octave-doubled, so the octave-doubled count is kept
+    per phrase;
+  - onset displacement moved pulse_clarity, so development is pitch-only.
+- Audition `renders/audition_v2/20260930_205851`:
+  - `01_dwell_hiphop3_x8_v2_s1.wav` (v2a.3) vs `02_dwell_hiphop3_x8_v2b_s1.wav` (v2b);
+  - drums identical; no clipping; no fallbacks.
+- Recorded for later:
+  - latin sounds higher-energy than its ladder placement; the ladder is not changed;
+  - calm repeats after about 4 min (drum period 5, see the audition harness section).
+
 ## Next task
 
-1. Developer listens to the initial set, fills in `LISTENING_NOTES.md`, and
-   reports per-file findings (long dwell, timbre, coherence, energy).
+1. Developer listens to the initial set and the v2b A/B and fills in
+   `LISTENING_NOTES.md`. Listening is recorded separately, not certification. Then
+   decide whether to commit v2b, and whether the residual low_ratio edge misses need
+   a MIDI guard before bass or other genres.
 2. Then the envelope review, separate from A6 and the generator:
    - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
      seed-invariant);
    - then the single-segment misses.
    Use `--preset problem` to audition these cells.
-Non-drum novelty for hiphop:3 and the calm:2 cross-block drum cycle are future work.
+Non-drum novelty beyond the v2b hiphop slice, and the calm:2 cross-block drum cycle, are future work.
 
 ## Reproduce
 
@@ -203,4 +240,8 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
 ../.venv/bin/python3.12 audition_v2.py --mode sequence --cells calm:2,lofi:2,rnb:2 --visits-per-cell 1
 ../.venv/bin/python3.12 audition_v2.py --preset problem --generator both     # v1 vs v2 A/B
+../.venv/bin/python3.12 -m pytest tests/test_motif.py -q                     # v2b
+../.venv/bin/python3.12 pitched_metrics.py --cells hiphop:1,hiphop:3,hiphop:5 --visits 8 --stim-seeds 1,2
+../.venv/bin/python3.12 certify_stimuli.py --cells hiphop:1,hiphop:3,hiphop:5 --visits 8 --audio --workers 3 --develop
+../.venv/bin/python3.12 audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1 --generator v2-v2b
 ```

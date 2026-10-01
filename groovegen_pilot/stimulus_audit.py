@@ -119,12 +119,15 @@ class SessionGenerator:
     INFO_KEYS = ('base_seed', 'var_seed', 'block_idx', 'session_key', 'form_template',
                  'gen_attempts', 'gen_fallback', 'bar_roles', 'drum_ops')
 
-    def __init__(self, stim_seed: int = 1):
+    def __init__(self, stim_seed: int = 1, develop: bool = False):
         from composer.arrangement import GEN_VERSION, SessionComposer
 
-        self.composer = SessionComposer(stim_seed)
+        self.composer = SessionComposer(stim_seed, develop=develop)
         self.visits: dict[tuple, int] = {}
         self.config = {'stim_seed': stim_seed, 'gen_version': GEN_VERSION}
+        if develop:   # v2b motif development (composer/motif.py); absent = v2a.3
+            from composer.motif import DEV_VERSION
+            self.config.update(develop=True, dev_version=DEV_VERSION)
 
     def generate(self, genre: str, tier: int):
         cell = (genre, int(tier))

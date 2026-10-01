@@ -153,3 +153,21 @@ def test_main_rejects_invalid_cells_and_frozen_out(tmp_path):
         av.parse_args(['--mode', 'dwell', '--cell', 'calm:2', '--workers', '6'])
     with pytest.raises(SystemExit):
         av.parse_args(['--preset', 'initial', '--mode', 'dwell'])
+
+
+def test_v2b_ab_keeps_drums_and_records_motif(tmp_path):
+    d = av.plan_audition('dwell', [('hiphop', 3)], 3)
+    assert av.wav_name(d, 2, 'v2b', 1) == '02_dwell_hiphop3_x3_v2b_s1.wav'
+    out = tmp_path / 'ab'
+    assert av.main(['--mode', 'dwell', '--cell', 'hiphop:3', '--visits', '3', '--generator', 'v2-v2b',
+                    '--out', str(out)], render=_fake_render) == 0
+    assert sorted(p.name for p in out.glob('*.wav')) == ['01_dwell_hiphop3_x3_v2_s1.wav',
+                                                         '02_dwell_hiphop3_x3_v2b_s1.wav']
+    with (out / 'manifest.csv').open() as f:
+        rows = list(csv.DictReader(f))
+    v2, v2b = [r for r in rows if r['generator'] == 'v2'], [r for r in rows if r['generator'] == 'v2b']
+    assert [r['drum_sha'] for r in v2] == [r['drum_sha'] for r in v2b]
+    assert all(r['gen_version'].endswith('+v2b.0') and r['motif_role'] and r['motif_id'] for r in v2b)
+    assert not any(r['motif_role'] for r in v2) and v2b[0]['motif_role'] == 'base'
+    meta = json.loads((out / 'manifest.json').read_text())['meta']
+    assert meta['generators'] == ['v2', 'v2b'] and meta['dev_version'] == 'v2b.0'

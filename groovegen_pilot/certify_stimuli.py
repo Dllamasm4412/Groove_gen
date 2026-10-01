@@ -433,7 +433,7 @@ def _run(name: str, source: str, n: int, genre: str, tier: int, gen_cls, stim_se
 
 
 def generate_cell(genre: str, tier: int, visits: int, wide_variants: int,
-                  stim_seeds: list[int]) -> tuple[list[dict], dict]:
+                  stim_seeds: list[int], develop: bool = False) -> tuple[list[dict], dict]:
     """All four sources for one cell: rows, and midi_sha256 -> PrettyMIDI."""
     rows: list[dict] = []
     pms: dict = {}
@@ -449,7 +449,7 @@ def generate_cell(genre: str, tier: int, visits: int, wide_variants: int,
              functools.partial(BankGenerator, variants_per_cell=wide_variants)))
     for s in stim_seeds:
         v2, v2_pms = _run(f'v2_s{s}:{genre}{tier}', 'v2_session', visits, genre, tier,
-                          functools.partial(SessionGenerator, stim_seed=s), stim_seed=s)
+                          functools.partial(SessionGenerator, stim_seed=s, develop=develop), stim_seed=s)
         add((v2, v2_pms))
         bases = list(dict.fromkeys(r['base_seed'] for r in v2))
         add(_run(f'v2_base_s{s}:{genre}{tier}', 'v2_base', len(bases), genre, tier,
@@ -795,6 +795,7 @@ def parse_args(argv=None):
     ap.add_argument('--audio-variants', type=int, default=32, help='v1_wide variants rendered per cell')
     ap.add_argument('--sf2', default=str(HERE / 'Musyng_Kite.sf2'))
     ap.add_argument('--workers', type=int, default=6)
+    ap.add_argument('--develop', action='store_true', help='v2_session with v2b motif development (opt-in)')
     ap.add_argument('--ladder', choices=('measured', 'prior'), default='measured')
     ap.add_argument('--out', default=None, help='output dir (default renders/certification/<stamp>)')
     args = ap.parse_args(argv)
@@ -830,7 +831,7 @@ def main(argv=None) -> int:
     rows: list[dict] = []
     pms: dict = {}
     for c in cells:
-        r, p = generate_cell(c.genre, c.tier, args.visits, args.wide_variants, args.stim_seeds)
+        r, p = generate_cell(c.genre, c.tier, args.visits, args.wide_variants, args.stim_seeds, args.develop)
         rows += r
         if args.audio:
             need = {x['midi_sha256'] for x in r
@@ -946,7 +947,8 @@ def main(argv=None) -> int:
             'audio_variants': args.audio_variants if args.audio else None,
             'generator_config': {'v1_live': BankGenerator().config,
                                  'v1_wide': BankGenerator(variants_per_cell=args.wide_variants).config,
-                                 'v2_session': [SessionGenerator(s).config for s in args.stim_seeds]},
+                                 'v2_session': [SessionGenerator(s, develop=args.develop).config
+                                                for s in args.stim_seeds]},
             'bars_per_segment': BARS, 'ladder': ladder_info, 'cells': [f'{c.genre}:{c.tier}' for c in cells],
             'n_rows': len(rows), 'n_rows_by_source': {s: sum(r['source'] == s for r in rows) for s in SOURCES},
             'n_rendered': len(pms) if args.audio else 0,

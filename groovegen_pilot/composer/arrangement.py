@@ -42,6 +42,14 @@ the A bars left as base, one op per varied bar and the energy guard bound how
 far a variation moves. Of those, the lowest op cost (variation.COST) that
 passes the energy guard is used. If no round has one, the valid candidate
 nearest the range is used (novelty_fallback); if none is valid, the base.
+
+Motif development (v2b, opt-in: SessionComposer(stim_seed, develop=True))
+-------------------------------------------------------------------------
+After drum selection, composer/motif.py develops the pitched hook of the
+DEVELOP_GENRES cells across visits (motif memory carried across blocks).
+Seeds still hash GEN_VERSION and the drum history holds the pre-development
+segment, so the drum layer is identical to develop=False; info gen_version
+is GEN_VERSION + '+' + motif.DEV_VERSION. develop=False is unchanged v2a.3.
 """
 
 from __future__ import annotations
@@ -153,10 +161,12 @@ class SessionComposer:
     MIDI for every participant and every controller path.
     """
 
-    def __init__(self, stim_seed: int):
+    def __init__(self, stim_seed: int, develop: bool = False):
         self.stim_seed = int(stim_seed)
         self.gen_version = GEN_VERSION
+        self.develop = bool(develop)
         self._history: dict[tuple, tuple] = {}   # (genre, tier, visit) -> (drum_sha, content_sha, drum bar sets, bar signatures)
+        self._motifs: dict[tuple, object] = {}   # (genre, tier, visit) -> motif.MotifRecord (develop only)
 
     def _earlier(self, genre: str, tier: int, visit_idx: int) -> list[tuple]:
         """(drum_sha, content_sha, drum bar sets, bar signatures) of visits 0..visit_idx-1 of the cell, composing
@@ -193,6 +203,29 @@ class SessionComposer:
             if c['verdict'].ok:
                 return c
         return None
+
+    def _develop(self, genre: str, tier: int, sched: SegmentSchedule, tempo: float,
+                 src: pretty_midi.PrettyMIDI, info: dict) -> pretty_midi.PrettyMIDI:
+        """v2b motif development of src (visits 0..visit_idx-1 of the cell are already composed)."""
+        from composer.motif import DEV_VERSION, MotifRecord, develop, read_hook
+
+        info['gen_version'] = f'{self.gen_version}+{DEV_VERSION}'
+        hook = read_hook(src, sched.session_key, tempo)
+        if hook is None:
+            info['motif_error'] = 'no_hook'
+            return src
+        cell = (genre, int(tier))
+        records = [self._motifs[cell + (v,)] for v in range(sched.visit_idx) if cell + (v,) in self._motifs]
+        try:
+            out, rec, minfo = develop(src, hook, records, sched.visit_idx,
+                                      H('motif', self.stim_seed, genre, int(tier), sched.visit_idx, DEV_VERSION))
+        except Exception as exc:  # noqa: BLE001 - any development bug keeps the drum-varied segment
+            prev = records[-1] if records else MotifRecord(hook.motif, hook.motif, (hook.motif,) * 4, 'base', ())
+            out, rec, minfo = src, MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ()), {
+                'motif_error': repr(exc), 'motif_fallback': True}
+        self._motifs[cell + (sched.visit_idx,)] = rec
+        info.update(minfo)
+        return out
 
     def compose(self, genre: str, tier: int, visit_idx: int) -> tuple[pretty_midi.PrettyMIDI, dict]:
         import stimulus_metrics as sm
@@ -258,4 +291,9 @@ class SessionComposer:
         drum = sm.bar_onset_sets(out, BARS, 'drum')
         self._history[(genre, int(tier), int(visit_idx))] = (
             sm.content_sha(drum), sm.content_sha(sm.bar_onset_sets(out, BARS)), drum, bar_signatures(out, genre))
+        if self.develop:
+            from composer.motif import DEVELOP_GENRES
+
+            if genre in DEVELOP_GENRES:
+                out = self._develop(genre, tier, sched, tempo, out, info)
         return out, info

@@ -1064,6 +1064,98 @@ visit, over visits that share the previous visit's base seed.
 - No generator change is needed. The v2a.3 novelty generator is not modified
   further.
 
+### 6.12 Stateful melodic development (v2b, first slice, 2026-09-30)
+
+- **Problem.** v2a.3 varies drums only. Its pitched material (stim_seed 1, 8 visits, 27 cells):
+  - pitched R4 = 1.0 within every block in every cell;
+  - hiphop:1-5 play one pitched content over all 8 visits: the frozen cell's 2-bar RH
+    ostinato x4, and the session key lock removes the key draw, the only pitched
+    seed dependence;
+  - latin:1, latin:2 and rock:3 repeat one exact cross-block pitched content;
+  - calm, pop, rnb and lofi get new pitched material per block.
+- **Design** (`composer/motif.py`, opt-in `SessionComposer(stim_seed, develop=True)`,
+  hiphop only, `DEV_VERSION` v2b.0):
+  - Development runs after drum selection. The drum history and all v2a.3 seeds are
+    unchanged, so drums are byte-identical to v2a.3.
+  - `read_hook` reads the ostinato back from the MIDI as (16th slot, diatonic step)
+    pairs. `realize` writes a 4-phrase plan [M, M, R, E] onto the same notes, and the
+    lead keeps the cell's own fold rule. Note count, velocities, durations, tracks,
+    LH, bass and drums are unchanged by construction.
+  - The motif seed is H('motif', stim_seed, genre, tier, visit_idx, DEV_VERSION).
+    State is the cell's previous motif records, so there are no physiological inputs
+    (generator boundary test extended).
+- **Rules** (every motif):
+  - anchor unchanged;
+  - beats 1/3 on i7 chord tones;
+  - steps within the base hook's step range +-1 and RH 72..96;
+  - leaps within the base hook's largest leap;
+  - onsets equal the base hook's (pitch-only);
+  - with a lead, each phrase keeps the base number of notes <= 84 (octave-doubled).
+- **Schedule** (block = 3 visits):
+  - visit 0: the base hook with a varied ending;
+  - pos 1: one pitch op (neighbor, chord, sequence), with a one-bar recall of the
+    previous theme in phrase 3;
+  - pos 2: an ending or neighbor op;
+  - new block, odd: derive (call bar kept, answer bar rebuilt as a sequence or
+    inversion on a chord tone);
+  - new block, even: return to the theme of two blocks back with two pitch ops.
+- **Selection.** A motif or plan seen in the last 6 visits of the cell is rejected.
+  Of 12 deterministic candidates, the first that passes the rules, the history check
+  and the motif guard is used. The guard checks locked signature, per-track shape,
+  LH/bass/drums unchanged, diatonic hook, energy-guard bounds, and pitched
+  median/p05/p95 within +-2 semitones. Otherwise the previous motif is kept, with an
+  ending.
+- **Two audio findings (durable).** Both come from certification at the default
+  reference: hiphop:1/3/5, 8 visits, stim seeds 1-2.
+  1. **Lead fold.** The lead doubles RH notes <= 84 an octave up and higher ones in
+     unison. Moving notes across 84 changes the spectrum: Δlow_ratio vs Δ(octave-doubled
+     count) r = -0.82 at hiphop:3 and -0.69 at hiphop:5, with drafts losing about 3
+     octave-doubled notes per segment. The per-phrase count rule fixes it.
+  2. **Onset displacement.** Moving off-beat 16ths, or anticipating the last note,
+     moves pulse_clarity: at hiphop:5 every visit with a displaced onset missed the
+     envelope and every pitch-only visit passed. The first slice is therefore
+     pitch-only.
+
+     | version | segment_ok | variation-controlled cells |
+     |---|---|---|
+     | v2a.3 | 0.958 | 1/3 |
+     | draft with displacement | 0.688 | 0/3 |
+     | draft + fold rule | 0.667 | 0/3 (hiphop:5 0.31) |
+     | pitch-only (final) | 0.854 | 0/3 |
+
+- **Result, pitch-only** (MIDI, hiphop:1/3/5, stim seeds 1-2, 8 visits, v2a.3 -> v2b):
+
+  | Metric | v2a.3 | v2b |
+  |---|---|---|
+  | pitched window repeats | 7 | 0 |
+  | melody exact vs previous visit | 7 | 0 |
+  | melody phrase variety | 0.03 | 0.47-0.53 |
+  | ending variety | 0.125 | 0.75-1.0 |
+  | pitched new bar frac | 0 | 0.54-0.71 |
+  | pitched R4 | 1.0 | 0.83-0.91 |
+  | melody contour similarity | 1.0 | 0.84-0.96 |
+
+  Unchanged: melody rate, bass (bass R4 1.0), drums, max leap. Melody median moves
+  within -1.5..+3.5 semitones.
+- **Audio** (same runs), mean per cell:
+  - |ΔLUFS| <= 0.05 dB, centroid +-15 Hz, flux <= 0.0012, pulse_clarity <= 0.001;
+  - low_ratio -0.003..+0.006, the largest shift (hiphop:5).
+  - 5/48 segments newly miss the envelope:
+    - one LUFS miss (+0.24 dB);
+    - two pulse_clarity misses (each <= 0.003);
+    - two low_ratio misses (+0.014, +0.023, on 'return' visits).
+
+    All five sit at envelope edges that v2a.3 already approaches. RH register only
+    partly predicts low_ratio (r 0.37-0.54), so there is no MIDI guard for it yet.
+- **Status: experimental first slice.** Not audio-certified (5/48 tested segments
+  newly outside the current reference envelopes) and not ready for live integration.
+  v2b remains opt-in (`develop=True`), hiphop-only, and is not wired live. Developer
+  listening (hiphop:3 x8, stim_seed 1) found v2b meaningfully less repetitive than
+  v2a.3; the architecture is kept (listening is recorded, not used as certification).
+  - Census: 360 visits (6 stim seeds x tiers 1-5 x 12): 0 errors, 11 fallbacks (3.1%).
+  - Derive options per (key, tier): 1-4.
+  - Bass and other genres are not started.
+
 ---
 
 ## 7. First implementation task: `groovegen_pilot/stimulus_audit.py`

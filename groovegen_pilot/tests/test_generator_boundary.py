@@ -14,6 +14,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 PILOT = Path(__file__).resolve().parent.parent
 if str(PILOT) not in sys.path:
     sys.path.insert(0, str(PILOT))
@@ -32,7 +34,9 @@ def _params(fn) -> list[inspect.Parameter]:
 def test_signatures_are_closed():
     init = _params(SessionComposer.__init__)
     compose = _params(SessionComposer.compose)
-    assert [p.name for p in init] == ['self', 'stim_seed']
+    assert [p.name for p in init] == ['self', 'stim_seed', 'develop']
+    # develop selects the generator version (v2b motif development), off by default
+    assert init[2].default is False and init[2].annotation in (bool, 'bool')
     assert [p.name for p in compose] == ['self', 'genre', 'tier', 'visit_idx']
     for p in init + compose:
         assert p.kind not in (p.VAR_POSITIONAL, p.VAR_KEYWORD), p
@@ -43,22 +47,23 @@ def test_no_physiology_or_controller_imports():
         'import json, sys\n'
         f'sys.path.insert(0, {str(PILOT)!r})\n'
         'from composer.arrangement import SessionComposer\n'
-        'sc = SessionComposer(1)\n'
-        "for g, t in (('pop', 3), ('latin', 2), ('hiphop', 1), ('rock', 2), ('calm', 1)):\n"
-        '    sc.compose(g, t, 0)\n'
+        "for sc in (SessionComposer(1), SessionComposer(1, develop=True)):\n"
+        "    for g, t in (('pop', 3), ('latin', 2), ('hiphop', 1), ('rock', 2), ('calm', 1)):\n"
+        '        sc.compose(g, t, 1)\n'
         f'print(json.dumps(sorted(m for m in {FORBIDDEN!r} if m in sys.modules)))\n'
     )
     out = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, check=True)
     assert json.loads(out.stdout.strip().splitlines()[-1]) == []
 
 
-def test_path_invariance():
+@pytest.mark.parametrize('develop', [False, True])
+def test_path_invariance(develop):
     """Two controller paths over the same cells: per (cell, visit), same MIDI."""
     cells = [('pop', 3), ('rnb', 2), ('hiphop', 1), ('latin', 3)]
     visits = 5
 
     def run(order):
-        sc, seen, out = SessionComposer(3), {}, {}
+        sc, seen, out = SessionComposer(3, develop=develop), {}, {}
         for cell in order:
             v = seen.get(cell, 0)
             seen[cell] = v + 1
@@ -71,10 +76,11 @@ def test_path_invariance():
     assert run(path_a) == run(path_b)
 
 
-def test_later_visit_without_earlier_ones():
+@pytest.mark.parametrize('cell, develop', [(('rnb', 2), False), (('hiphop', 3), True)])
+def test_later_visit_without_earlier_ones(cell, develop):
     """Jumping straight to visit 5 gives the same MIDI as reaching it in order."""
-    direct = SessionComposer(1).compose('rnb', 2, 5)[0]
-    sc = SessionComposer(1)
+    direct = SessionComposer(1, develop=develop).compose(*cell, 5)[0]
+    sc = SessionComposer(1, develop=develop)
     for v in range(5):
-        sc.compose('rnb', 2, v)
-    assert sm.midi_sha256(direct) == sm.midi_sha256(sc.compose('rnb', 2, 5)[0])
+        sc.compose(*cell, v)
+    assert sm.midi_sha256(direct) == sm.midi_sha256(sc.compose(*cell, 5)[0])
