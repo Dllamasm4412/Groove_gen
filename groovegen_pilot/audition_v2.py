@@ -19,7 +19,10 @@ Modes
     preset    --preset NAME: a fixed list of auditions (PRESETS)
 
 --generator v2 (default) | v1 | v2b | both (A/B v1 vs v2: the same trajectory
-through each) | v2-v2b (A/B v2 vs v2b motif development, composer/motif.py).
+through each) | v2-v2b (A/B v2 vs pitched development). 'v2b' means
+SessionComposer(develop=True): the genre's policy in composer/develop_engine.py
+(hiphop v2b.1, calm v2c.calm.0, lofi v2c.lofi.0; other genres unchanged); each
+row's dev_version names the policy.
 
 Usage (writes only under renders/, which is gitignored):
     python audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
@@ -138,7 +141,7 @@ def plan_preset(name: str, valid: Optional[set] = None) -> list[Audition]:
     return [plan_audition(mode, [parse_cell(c, valid) for c in cells], n) for mode, cells, n in PRESETS[name]]
 
 
-V2_GENERATORS = ('v2', 'v2b')                       # SessionComposer; v2b adds motif development
+V2_GENERATORS = ('v2', 'v2b')                       # SessionComposer; v2b = develop=True (develop_engine)
 GENERATOR_SETS = {'both': ['v1', 'v2'], 'v2-v2b': ['v2', 'v2b']}
 
 
@@ -182,7 +185,7 @@ def generate(audition: Audition, generator: str, stim_seed: int) -> list[tuple[A
                 'novelty_r4_prev': info['novelty_r4_prev'], 'novelty_r4_base': info['novelty_r4_base'],
             })
             if 'dev_version' in info or 'motif_error' in info:
-                row.update({k: info.get(k) for k in ('motif_role', 'motif_id', 'motif_theme_id',
+                row.update({k: info.get(k) for k in ('dev_version', 'motif_role', 'motif_id', 'motif_theme_id',
                                                      'motif_fallback', 'motif_selection', 'motif_candidates', 'motif_error')})
                 row['motif_ops'] = '+'.join(info.get('motif_ops') or [])
             base_id = info['base_seed']
@@ -279,7 +282,8 @@ MANIFEST_FIELDS = (
     'same_base_as_prev', 'near_repeat_drum', 'novelty_r4_prev', 'novelty_r4_base',
     'new_drum_bar_frac', 'new_drum_patterns', 'changed_drum_bar_frac',
     'midi_sha256', 'drum_sha',
-    'motif_role', 'motif_ops', 'motif_id', 'motif_theme_id', 'motif_fallback', 'motif_selection', 'motif_candidates', 'motif_error')
+    'motif_role', 'motif_ops', 'motif_id', 'motif_theme_id', 'motif_fallback', 'motif_selection', 'motif_candidates', 'motif_error',
+    'dev_version')
 
 
 def _mmss(s: float) -> str:
@@ -338,7 +342,7 @@ def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> st
     lines += ['', '## Segment start times', '',
               'v = visit index in the cell; "same base" = variation of the previous visit\'s base '
               '(else a new block); new bars = C1, drum bars not heard in the previous visit; '
-              'notes = v2b motif role and ops (composer/motif.py).', '']
+              'notes = development role and ops (develop mode; policy per genre in composer/develop_engine.py).', '']
     for s in summary:
         lines += [f"`{s['wav']}`", '', '| seg | start | cell | v | same base | new bars | notes |',
                   '|---|---|---|---|---|---|---|']
@@ -357,8 +361,8 @@ def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> st
         '- Are the phrase-end changes noticeable but not distracting?',
         '- Does the groove identity remain stable?',
         '- Does any variation sound mechanically inserted?', '',
-        '### Melody (v2b)',
-        '- Is the hook recognisable across visits without sounding looped?',
+        '### Pitched development (v2b = develop mode)',
+        '- Is the hook / line / voicing recognisable across visits without sounding looped?',
         '- Do the varied phrase endings sound intentional?',
         '- Does any melodic change sound wrong (off-key, awkward leap, clash with the bass)?', '',
         '### Timbre',
@@ -452,11 +456,12 @@ def main(argv=None, render: Optional[Callable] = None) -> int:
     t0 = time.perf_counter()
     res = run_auditions(auditions, generators, args.stim_seed, out, render, args.segment_wavs)
     from composer.arrangement import GEN_VERSION
-    from composer.motif import DEV_VERSION
+    from composer.develop_engine import POLICIES, policy_module
     meta = {
         'tool': 'audition_v2.py', 'timestamp': stamp, 'argv': sys.argv[1:] if argv is None else argv,
         'stim_seed': args.stim_seed, 'generators': generators, 'gen_version': GEN_VERSION,
-        'dev_version': DEV_VERSION if 'v2b' in generators else None,
+        'dev_version': ({g: policy_module(g).DEV_VERSION for g in POLICIES
+                         if any(c[0] == g for a in auditions for c in a.cells)} if 'v2b' in generators else None),
         'join': {'bars_per_segment': BARS, 'fade_bars': FADE_BARS, 'fade_mode': LIVE_FADE_MODE,
                  'trim': 'run_session_v2 trim_render_tail', 'sample_rate': SAMPLE_RATE},
         'soundfont': args.sf2, 'soundfont_sha256': _file_sha256(Path(args.sf2)),

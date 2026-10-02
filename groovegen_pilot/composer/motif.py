@@ -1,9 +1,12 @@
 """
-Motif development for the v2b generator (LIVE_GENERATION_PLAN.md section 6.12).
+Motif development for the v2b generator (LIVE_GENERATION_PLAN.md section 6.12):
+the hiphop policy of the shared development engine (composer/develop_engine.py).
 
-Opt-in only (SessionComposer(develop=True)); hiphop only in this first slice.
-Not used by the live runner, and v1 and the v2a.3 drum layer are unchanged:
-development runs after drum selection and touches only the hook notes.
+Opt-in only (SessionComposer(develop=True)). Not used by the live runner, and
+v1 and the v2a.3 drum layer are unchanged: development runs after drum
+selection and touches only the hook notes. The candidate loop, ranking,
+history window and fallback chain are develop_engine.select(); this module
+supplies the hook rules, ops, level check and guard specifics.
 
 Hook
 ----
@@ -74,22 +77,21 @@ the unchanged segment are used (motif_fallback; motif_selection says which).
 from __future__ import annotations
 
 import copy
-import math
 import random
-from collections import Counter
 from dataclasses import dataclass
 from functools import cache
 from typing import Optional
 
 import pretty_midi
 
-import stimulus_metrics as sm
-from composer.energy_guard import BOUNDS, GuardResult, bounded_deltas
+from composer import develop_engine as de
+from composer.develop_engine import DevRecord as MotifRecord  # noqa: F401 - the motif record (motif = M)
+from composer.energy_guard import GuardResult
 from composer.hook_levels import LEVEL_DB, VELOCITIES
 
 DEV_VERSION = 'v2b.1'                # v2b.1: level / motion check in selection (plan 6.12a)
 SEED_VERSION = 'v2b.0'               # motif seeds keep the v2b.0 salt: v2b.1 changes selection, not the draws
-DEVELOP_GENRES = ('hiphop',)
+NO_CONTEXT = 'no_hook'               # motif_error when the segment is not a 4x loop of one phrase
 BLOCK_LEN = 3
 BARS = 8
 NATURAL_MINOR = (0, 2, 3, 5, 7, 8, 10)
@@ -102,7 +104,7 @@ LEAD_MAX = 96
 FOLD = LEAD_MAX - 12                # RH <= 84: octave-up lead double; above: unison double
 HISTORY_WINDOW = 6
 N_CANDIDATES = 12
-MAX_PITCH_SHIFT = 2.0               # semitones: pitched median / p05 / p95 vs the source segment
+MAX_PITCH_SHIFT = de.MAX_PITCH_SHIFT  # semitones: pitched median / p05 / p95 vs the source segment
 LEVEL_TOL_DB = 0.2                  # predicted hook level vs the source segment: total, on-beat, off-beat
 MAX_OFFBEAT_MOTION = 4              # semitones: added leap motion into off-beat hook notes, whole plan
 MAX_ONBEAT_MOTION = 4               # semitones: the same into on-beat hook notes
@@ -122,15 +124,6 @@ class Hook:
     lo: int                     # step range
     hi: int
     max_leap: int               # steps
-
-
-@dataclass(frozen=True)
-class MotifRecord:
-    motif: Motif                # M, this visit's motif
-    theme: Motif                # the block's theme
-    plan: tuple[Motif, ...]     # the phrases as played
-    role: str                   # base | develop | derive | return | fallback
-    ops: tuple[str, ...]
 
 
 def step_of(pitch: int, tonic: int) -> Optional[int]:
@@ -329,56 +322,33 @@ def realize(pm: pretty_midi.PrettyMIDI, hook: Hook, plan: tuple[Motif, ...]) -> 
     return out
 
 
-def _track_shape(inst) -> tuple:
-    return (len(inst.notes), tuple(sorted(Counter(n.velocity for n in inst.notes).items())),
-            tuple(sorted(Counter(round(n.end - n.start, 6) for n in inst.notes).items())))
-
-
-def _notes(inst) -> list[tuple]:
-    return sorted((n.pitch, round(n.start, 6), round(n.end, 6), n.velocity) for n in inst.notes)
+_track_shape, _notes = de.track_shape, de.track_notes
 
 
 def guard(developed: pretty_midi.PrettyMIDI, src: pretty_midi.PrettyMIDI, hook: Hook) -> GuardResult:
     """Development may move only hook notes (RH + lead), within key and register,
     keeping every track's note count, velocities and durations."""
-    fails: list[str] = []
-    if sm.locked_signature(developed) != sm.locked_signature(src):
-        fails.append('locked')
-    if len(developed.instruments) != len(src.instruments):
-        return GuardResult(ok=False, failures=fails + ['tracks'])
-    for i, (a, b) in enumerate(zip(developed.instruments, src.instruments)):
-        if _track_shape(a) != _track_shape(b):
-            fails.append(f'shape[{i}]')
-        if i == hook.piano:
-            if [x for x in _notes(a) if x[0] < RH_SPLIT] != [x for x in _notes(b) if x[0] < RH_SPLIT]:
-                fails.append('lh_changed')
-        elif i != hook.lead and _notes(a) != _notes(b):
-            fails.append(f'track[{i}]_changed')
-    hook_p = [n.pitch for i in (hook.piano, hook.lead) if i is not None
-              for n in developed.instruments[i].notes if n.pitch >= RH_SPLIT]
-    if any(step_of(p, hook.tonic) is None for p in hook_p):
-        fails.append('off_key')
-    if hook_p and not (RH_RANGE[0] <= min(hook_p) and max(hook_p) <= RH_RANGE[1]):
-        fails.append('register')
-    fv, fb = sm.bounded_features(developed, BARS), sm.bounded_features(src, BARS)
-    deltas = bounded_deltas(fv, fb)
-    fails += [f'{f}:{deltas[f]:+g}' for f in BOUNDS if abs(deltas[f]) > BOUNDS[f][1] + 1e-9]
-    for f in ('pitched_pitch_median', 'pitched_pitch_p05', 'pitched_pitch_p95'):
-        deltas[f] = round(fv[f] - fb[f], 4)
-        if abs(deltas[f]) > MAX_PITCH_SHIFT + 1e-9:
-            fails.append(f'{f}:{deltas[f]:+g}')
-    return GuardResult(ok=not fails, failures=fails, deltas=deltas)
+    def check(pm: pretty_midi.PrettyMIDI) -> list[str]:
+        fails = []
+        hook_p = [n.pitch for i in (hook.piano, hook.lead) if i is not None
+                  for n in pm.instruments[i].notes if n.pitch >= RH_SPLIT]
+        if any(step_of(p, hook.tonic) is None for p in hook_p):
+            fails.append('off_key')
+        if hook_p and not (RH_RANGE[0] <= min(hook_p) and max(hook_p) <= RH_RANGE[1]):
+            fails.append('register')
+        return fails
+
+    mutable = {hook.piano: (lambda p: p < RH_SPLIT, 'lh_changed')}
+    if hook.lead is not None:
+        mutable[hook.lead] = None
+    return de.guard(developed, src, mutable, check, MAX_PITCH_SHIFT, BARS)
 
 
 @cache
 def note_level(pitch: int, velocity: int) -> float:
     """Rendered energy of one hook note (linear), from the soundfont table:
     dB interpolated between the measured velocities, pitch clamped to the table."""
-    row = LEVEL_DB[min(max(pitch, min(LEVEL_DB)), max(LEVEL_DB))]
-    v = min(max(velocity, VELOCITIES[0]), VELOCITIES[-1])
-    i = min(sum(v >= x for x in VELOCITIES) - 1, len(VELOCITIES) - 2)
-    f = (v - VELOCITIES[i]) / (VELOCITIES[i + 1] - VELOCITIES[i])
-    return 10 ** ((row[i] + f * (row[i + 1] - row[i])) / 10)
+    return de.table_level(LEVEL_DB, VELOCITIES, pitch, velocity)
 
 
 def hook_voices(src: pretty_midi.PrettyMIDI, hook: Hook) -> dict[tuple[int, int], tuple[int, Optional[int]]]:
@@ -427,7 +397,7 @@ def energy_shift(plan: tuple[Motif, ...], voices: dict, hook: Hook) -> dict:
     single-note ablations: moves that reduce it raise pulse_clarity).
     onbeat_motion: the same into on-beat notes; it tracks flux at hiphop:3."""
     (on, off), (on0, off0) = plan_level(plan, voices, hook), plan_level((hook.motif,) * 4, voices, hook)
-    db = lambda a, b: round(10 * math.log10(a / b), 4) if a > 0 and b > 0 else 0.0
+    db = de.db
     return {'level_db': db(on + off, on0 + off0), 'level_on_db': db(on, on0), 'level_off_db': db(off, off0),
             'offbeat_motion': offbeat_motion(plan, hook) - offbeat_motion((hook.motif,) * 4, hook),
             'onbeat_motion': offbeat_motion(plan, hook, True) - offbeat_motion((hook.motif,) * 4, hook, True)}
@@ -517,77 +487,47 @@ def _balance(rec: MotifRecord, hook: Hook, voices: dict, why_not, moves: int = 2
     return _balance(best[1], hook, voices, why_not, moves - 1) if moves > 1 else None
 
 
+def _previous(prev: MotifRecord, rng: random.Random, hook: Hook) -> MotifRecord:
+    """Fallback: the previous motif with a new ending."""
+    end, d = _with_ending(prev.motif, rng, hook)
+    return MotifRecord(motif=prev.motif, theme=prev.theme, plan=(prev.motif,) * 3 + (end,),
+                       role='fallback', ops=(d,))
+
+
+def unchanged_record(hook: Hook, records: list[MotifRecord]) -> MotifRecord:
+    """Record of a visit that plays the unchanged hook (fallback or error): the
+    motif memory carries on from the previous visit."""
+    prev = records[-1] if records else MotifRecord(hook.motif, hook.motif, (), '', ())
+    return MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ())
+
+
+POLICY = de.Policy(
+    dev_version=DEV_VERSION, history_window=HISTORY_WINDOW, n_candidates=N_CANDIDATES,
+    candidate=lambda hook, records, visit, k, rng, gentle: _candidate(hook, records, visit, rng, gentle),
+    valid=lambda rec, hook: all(valid(p, hook) for p in rec.plan),
+    energy=lambda plan, voices, hook: energy_shift(plan, voices, hook),
+    cost=energy_cost, realize=lambda src, hook, plan: realize(src, hook, plan), guard=guard,
+    previous=_previous, unchanged=unchanged_record, prepare=hook_voices,
+    repair=lambda rec, hook, voices, why_not: _balance(rec, hook, voices, why_not), repair_op='balance')
+
+
+def read_context(src: pretty_midi.PrettyMIDI, sched, tempo: float) -> Optional[Hook]:
+    """Policy entry point: the hook of src (None if it is not a 4x loop)."""
+    return read_hook(src, sched.session_key, tempo)
+
+
 def develop(src: pretty_midi.PrettyMIDI, hook: Hook, records: list[MotifRecord], visit: int,
             seed: int) -> tuple[pretty_midi.PrettyMIDI, MotifRecord, dict]:
     """Visit `visit` of the cell, given records of visits 0..visit-1 (in order).
 
-    Selection: rules -> not in the history window -> energy check
-    (energy_cost <= 1: predicted hook level and off-beat motion vs the base; a
-    candidate failing only this gets a _balance() repair) -> guard() -> lowest
-    cost: unrepaired before repaired, then energy cost, then candidate order. If
-    no regular candidate passes, the gentle candidates are tried, then the
-    previous motif with a new ending, then the unchanged v2a.3 segment;
-    motif_selection logs which one was used."""
-    recent_m = {r.motif for r in records[-HISTORY_WINDOW:]}
-    recent_plan = {r.plan for r in records[-HISTORY_WINDOW:]}
-    voices = hook_voices(src, hook)
-    info = {'dev_version': DEV_VERSION, 'motif_candidates': 0, 'motif_rejections': {}}
-
-    def reject(why: str) -> None:
-        info['motif_rejections'][why] = info['motif_rejections'].get(why, 0) + 1
-
-    def why_not(rec: MotifRecord) -> Optional[str]:
-        if not all(valid(p, hook) for p in rec.plan):
-            return 'rules'
-        if visit and (rec.motif in recent_m or rec.plan in recent_plan):
-            return 'history'
-        return None
-
-    for gentle in (False, True):
-        ranked = []
-        for k in range(N_CANDIDATES):
-            rec = _candidate(hook, records, visit, random.Random((seed << 8) | (k + gentle * N_CANDIDATES)), gentle)
-            info['motif_candidates'] += 1
-            why = why_not(rec)
-            if why is None and energy_cost(energy_shift(rec.plan, voices, hook)) > 1:
-                rec = _balance(rec, hook, voices, why_not)
-                why = 'energy' if rec is None else None
-            if why:
-                reject(why)
-                continue
-            shift = energy_shift(rec.plan, voices, hook)
-            ranked.append(((bool(rec.ops) and rec.ops[-1].startswith('balance'), energy_cost(shift), k), rec, shift))
-        for (_, _, k), rec, shift in sorted(ranked, key=lambda x: x[0]):
-            out = realize(src, hook, rec.plan)
-            verdict = guard(out, src, hook)
-            if verdict.ok:
-                info.update(motif_candidate_idx=k, motif_fallback=False,
-                            motif_selection='gentle' if gentle else 'candidate',
-                            motif_guard_deltas=verdict.deltas, motif_energy=shift)
-                return out, rec, _describe(info, rec)
-            reject('guard')
-    info.update(motif_candidate_idx=None, motif_fallback=True)
-    if records:
-        prev = records[-1]
-        end, d = _with_ending(prev.motif, random.Random(seed), hook)
-        rec = MotifRecord(motif=prev.motif, theme=prev.theme, plan=(prev.motif,) * 3 + (end,),
-                          role='fallback', ops=(d,))
-        shift = energy_shift(rec.plan, voices, hook)
-        out = realize(src, hook, rec.plan)
-        if rec.plan not in recent_plan and energy_cost(shift) <= 1 and guard(out, src, hook).ok:
-            info.update(motif_selection='previous', motif_energy=shift)
-            return out, rec, _describe(info, rec)
-    prev = records[-1] if records else MotifRecord(hook.motif, hook.motif, (), '', ())
-    rec = MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ())
-    info.update(motif_selection='unchanged', motif_energy=energy_shift(rec.plan, voices, hook))
-    return src, rec, _describe(info, rec)
+    Selection (develop_engine.select): rules -> not in the history window ->
+    energy check (energy_cost <= 1: predicted hook level and off-beat motion vs
+    the base; a candidate failing only this gets a _balance() repair) ->
+    guard() -> lowest cost: unrepaired before repaired, then energy cost, then
+    candidate order. If no regular candidate passes, the gentle candidates are
+    tried, then the previous motif with a new ending, then the unchanged v2a.3
+    segment; motif_selection logs which one was used."""
+    return de.select(POLICY, src, hook, records, visit, seed)
 
 
-def motif_id(m: Motif) -> str:
-    return sm.content_sha([frozenset(m)])[:8]
-
-
-def _describe(info: dict, rec: MotifRecord) -> dict:
-    info.update(motif_role=rec.role, motif_ops=list(rec.ops), motif_id=motif_id(rec.motif),
-                motif_theme_id=motif_id(rec.theme), motif_plan=[motif_id(p) for p in rec.plan])
-    return info
+motif_id = de.material_id

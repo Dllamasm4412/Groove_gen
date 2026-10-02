@@ -170,4 +170,4 @@ def test_v2b_ab_keeps_drums_and_records_motif(tmp_path):
     assert all(r['gen_version'].endswith('+v2b.1') and r['motif_role'] and r['motif_id'] for r in v2b)
     assert not any(r['motif_role'] for r in v2) and v2b[0]['motif_role'] == 'base'
     meta = json.loads((out / 'manifest.json').read_text())['meta']
-    assert meta['generators'] == ['v2', 'v2b'] and meta['dev_version'] == 'v2b.1'
+    assert meta['generators'] == ['v2', 'v2b'] and meta['dev_version'] == {'hiphop': 'v2b.1'}

@@ -1,0 +1,6987 @@
+{
+ "calm": {
+  "s19:calm:1:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e6863890",
+   "motif_ops": [],
+   "motif_plan": [
+    "e6863890"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e6863890",
+   "sha256": "471fc0915a6f4abff9a4f3329880c57fdc84a4215b31c1630317f4179f742974"
+  },
+  "s19:calm:1:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "78ac4df0",
+   "motif_ops": [
+    "tone@2:+2"
+   ],
+   "motif_plan": [
+    "78ac4df0"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e6863890",
+   "sha256": "d4ae80ebc9af0892b76dbd83bf0d4520874af1d0f8afd005aeb1a29ec773e0dc"
+  },
+  "s19:calm:1:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0c2baab5",
+   "motif_ops": [
+    "recall_pitch@3-4"
+   ],
+   "motif_plan": [
+    "0c2baab5"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1a64f448",
+   "sha256": "2845b8065f314b0ce861043b038e65bd9daf61bd5f3ad92754baca287f75f71a"
+  },
+  "s19:calm:1:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "41ab0deb",
+   "motif_ops": [
+    "ending@8:+2"
+   ],
+   "motif_plan": [
+    "41ab0deb"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1a64f448",
+   "sha256": "6b2886b49499f80155870f25b8d405b8685bdd515d6dc8836c67c4b6c0c21792"
+  },
+  "s19:calm:1:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5e4034a8",
+   "motif_ops": [
+    "ending@8:-2"
+   ],
+   "motif_plan": [
+    "5e4034a8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e6863890",
+   "sha256": "0e390e18f392bdd166e572b1ace2dcd8b1876742d41ee4a3f6589d1e9fad594b"
+  },
+  "s19:calm:1:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "3ae31db1",
+   "motif_ops": [],
+   "motif_plan": [
+    "3ae31db1"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "3ae31db1",
+   "sha256": "1ff4e98bedc6ce9ad29c242d7ea16a75c3363b136638c1b833f06bc3b6b7c7f6"
+  },
+  "s19:calm:1:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "21c929f6",
+   "motif_ops": [
+    "tone@6:+3"
+   ],
+   "motif_plan": [
+    "21c929f6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "3ae31db1",
+   "sha256": "fab9062477c9a262476d5c9adef6f54f235685c4a6c82e3713f916285ee33c88"
+  },
+  "s19:calm:1:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "3ae31db1",
+   "motif_ops": [
+    "tone@3:-3"
+   ],
+   "motif_plan": [
+    "3ae31db1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "3ae31db1",
+   "sha256": "20e2de5e280d92d5ae390a1bc7c4d55f264a028b43ad112135ddc2ecaf8b148a"
+  },
+  "s19:calm:1:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c0f4307c",
+   "motif_ops": [],
+   "motif_plan": [
+    "c0f4307c"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c0f4307c",
+   "sha256": "9a7eae0fb9b2fb56d585195aa7c77ddd08c74b7b639300c93bb588cd1861157e"
+  },
+  "s19:calm:1:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c0f4307c",
+   "motif_ops": [
+    "tone@3:+2"
+   ],
+   "motif_plan": [
+    "c0f4307c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c0f4307c",
+   "sha256": "82651dd9dcd97cc65a538c7d8a38e84b18984d0a35cbb818c78d5a4dea40fa75"
+  },
+  "s19:calm:1:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "25c4028c",
+   "motif_ops": [
+    "ending@8:-3"
+   ],
+   "motif_plan": [
+    "25c4028c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c0f4307c",
+   "sha256": "b1bb42d0228a5a219063b6d7a10a431e7705d4a65eba1f86ce19f428821ddc9b"
+  },
+  "s19:calm:1:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1a64f448",
+   "motif_ops": [],
+   "motif_plan": [
+    "1a64f448"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1a64f448",
+   "sha256": "65f9a3bc5af444af2a61cfb2ff70ff1cc7028d39131b7e77ca39c7c15930bae6"
+  },
+  "s19:calm:2:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c54d786d",
+   "motif_ops": [],
+   "motif_plan": [
+    "c54d786d"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c54d786d",
+   "sha256": "28b62c6c46225ae207d88e54b6cfc7bcc6fcc09363997ea2577c3ef721837ab9"
+  },
+  "s19:calm:2:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7b805951",
+   "motif_ops": [
+    "tone@1:-2"
+   ],
+   "motif_plan": [
+    "7b805951"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c54d786d",
+   "sha256": "bcfed503fddde4d5d93bba2275b45d6dfab46e5e57594c6d3b28b8b107d7d69e"
+  },
+  "s19:calm:2:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ce71af2c",
+   "motif_ops": [
+    "tone@5:+2"
+   ],
+   "motif_plan": [
+    "ce71af2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d5d0fbda",
+   "sha256": "5a2f1b7a8398d65543512f9acc812617e65bc51ed95c4c46b5813d5fb970bb08"
+  },
+  "s19:calm:2:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a76269ee",
+   "motif_ops": [
+    "ending@8:-2"
+   ],
+   "motif_plan": [
+    "a76269ee"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d5d0fbda",
+   "sha256": "0548248ed3584783eebf871f50502fc81369540bd52c6f229a883a380f220a97"
+  },
+  "s19:calm:2:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c8efc24e",
+   "motif_ops": [
+    "ending@8:-5"
+   ],
+   "motif_plan": [
+    "c8efc24e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c54d786d",
+   "sha256": "f6ef57f4ab23030983e4de2edfcba89141736fc6eb58ff41e759f487e2e555b4"
+  },
+  "s19:calm:2:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2ed23286",
+   "motif_ops": [],
+   "motif_plan": [
+    "2ed23286"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2ed23286",
+   "sha256": "55fafa107c61a7cee6080ac71e733e8a8cdcd4473c4d0ba3ca16b3cd53adae5e"
+  },
+  "s19:calm:2:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0b6a2aa6",
+   "motif_ops": [
+    "tone@4:-2"
+   ],
+   "motif_plan": [
+    "0b6a2aa6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2ed23286",
+   "sha256": "f885aec141899b421372a92a43063a3bdf25785a201a63bb27294ac2b0afecb6"
+  },
+  "s19:calm:2:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ae1c1a7b",
+   "motif_ops": [
+    "ending@8:+5"
+   ],
+   "motif_plan": [
+    "ae1c1a7b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2ed23286",
+   "sha256": "8f686e527f09ce9bb6edbec67de169166b8440fdf3e3de1fffd37f729f5ae7f2"
+  },
+  "s19:calm:2:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a4b72657",
+   "motif_ops": [],
+   "motif_plan": [
+    "a4b72657"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a4b72657",
+   "sha256": "f1de290ab0938dc09cd8a472da28808405cf2bfd2135eba7d019aa6297cd6290"
+  },
+  "s19:calm:2:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a8d9c62f",
+   "motif_ops": [
+    "tone@1:-2"
+   ],
+   "motif_plan": [
+    "a8d9c62f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a4b72657",
+   "sha256": "37e0a9946d6a6c53f2e282d4dc2f31998d9219a56045b62dee34a9d5e576a383"
+  },
+  "s19:calm:2:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0c4d8010",
+   "motif_ops": [
+    "tone@5:+4"
+   ],
+   "motif_plan": [
+    "0c4d8010"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "a4b72657",
+   "sha256": "85ac50153a017593a1f6be5a105bc3f9ff9e38041023b39693f35af8a09ebe49"
+  },
+  "s19:calm:2:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d5d0fbda",
+   "motif_ops": [],
+   "motif_plan": [
+    "d5d0fbda"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d5d0fbda",
+   "sha256": "8a5d3a2e2e25ebe913bd8e3024653755c387a53e5b6e01bae5ac5d1fe4728a6e"
+  },
+  "s19:calm:3:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "541af7dd",
+   "motif_ops": [],
+   "motif_plan": [
+    "541af7dd"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "541af7dd",
+   "sha256": "3bda7434b6544b9598a24f398929fef9d8cd502f77ffab239163201cb0af3c1e"
+  },
+  "s19:calm:3:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "642cbc28",
+   "motif_ops": [
+    "tone@7:+2"
+   ],
+   "motif_plan": [
+    "642cbc28"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "541af7dd",
+   "sha256": "028fb44f18b36242ad70a83b7b2843595a0a460d727083daac021625aad1e88a"
+  },
+  "s19:calm:3:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f261e872",
+   "motif_ops": [
+    "recall_contour@7-8"
+   ],
+   "motif_plan": [
+    "f261e872"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a7214549",
+   "sha256": "f44ac921a55f76911c2c15718737c223791b68380fcaf7f230787d3f55235abc"
+  },
+  "s19:calm:3:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "12135bc4",
+   "motif_ops": [
+    "tone@5:-2"
+   ],
+   "motif_plan": [
+    "12135bc4"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "a7214549",
+   "sha256": "298063cc96f6369b06538ee431eb859ec14abdf883e0149ae7be0e96e0a6357f"
+  },
+  "s19:calm:3:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "975ecb15",
+   "motif_ops": [
+    "tone@4:-3"
+   ],
+   "motif_plan": [
+    "975ecb15"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "541af7dd",
+   "sha256": "5b7a0ff37aee7cd0557bab4cbe47b2ef7fac8a3cd69e67268db220e692c2dc4c"
+  },
+  "s19:calm:3:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4c7b212a",
+   "motif_ops": [],
+   "motif_plan": [
+    "4c7b212a"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7b212a",
+   "sha256": "8444ba82f719ce7529ce160c343b48c725fbf13d3a985bf7713fcdf0e99612cc"
+  },
+  "s19:calm:3:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "78429738",
+   "motif_ops": [
+    "tone@8:-3"
+   ],
+   "motif_plan": [
+    "78429738"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "4c7b212a",
+   "sha256": "30c57d5da915da2c47c54ba2bbab3a7ff2ce9793122b81bfed1d65cf36a93e83"
+  },
+  "s19:calm:3:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f24ea24c",
+   "motif_ops": [
+    "tone@1:-5"
+   ],
+   "motif_plan": [
+    "f24ea24c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "4c7b212a",
+   "sha256": "bacf7b36059454453c1e77985f0464fbc5e436e2ca6f8bfe0418cd653e20ac23"
+  },
+  "s19:calm:3:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cb369e70",
+   "motif_ops": [],
+   "motif_plan": [
+    "cb369e70"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cb369e70",
+   "sha256": "bea88e1106943c43ab71ef1ddd8701bf585681c4d58ec22e093c1154b5efb2bd"
+  },
+  "s19:calm:3:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6265c302",
+   "motif_ops": [
+    "tone@3:+2"
+   ],
+   "motif_plan": [
+    "6265c302"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cb369e70",
+   "sha256": "b276a770c7f299991ce55fd5907fc7a247f1699e8cf6bd5c4a6cd2083b27abb0"
+  },
+  "s19:calm:3:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "cb369e70",
+   "motif_ops": [],
+   "motif_plan": [
+    "cb369e70"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cb369e70",
+   "sha256": "1b58ac27a5e025575a709e6eaa5f549a0eccbeb189a4594e0163c267d566b6db"
+  },
+  "s19:calm:3:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a7214549",
+   "motif_ops": [],
+   "motif_plan": [
+    "a7214549"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a7214549",
+   "sha256": "fa27741cdf40dea01260889b182d6d57bcd7e44f6d99b8c62225223775d9ceec"
+  },
+  "s19:calm:4:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "768aa33a",
+   "motif_ops": [],
+   "motif_plan": [
+    "768aa33a"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "768aa33a",
+   "sha256": "f5e3f2a730a4bbb8d9250e4e8901ff4903977ebb4232ec1cb9569f958c4a8015"
+  },
+  "s19:calm:4:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6dcb841d",
+   "motif_ops": [
+    "tone@1:-2"
+   ],
+   "motif_plan": [
+    "6dcb841d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "768aa33a",
+   "sha256": "0c3bf62d9ec491d0f862b832ba7db616bd885909471e431c9a763f7cc1a8717e"
+  },
+  "s19:calm:4:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a9064c16",
+   "motif_ops": [
+    "tone@3:-2"
+   ],
+   "motif_plan": [
+    "a9064c16"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "536f33ff",
+   "sha256": "4417139d75b05932d4e51135dc40a019f3f9481177084722138438d0da2050b2"
+  },
+  "s19:calm:4:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "536f33ff",
+   "motif_ops": [
+    "tone@6:+2"
+   ],
+   "motif_plan": [
+    "536f33ff"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "536f33ff",
+   "sha256": "612834ae81a62412de20e9d89fcbcfb545f27691c5f48ea7830f591a68286cdb"
+  },
+  "s19:calm:4:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6dcb841d",
+   "motif_ops": [
+    "ending@8:+5"
+   ],
+   "motif_plan": [
+    "6dcb841d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "768aa33a",
+   "sha256": "bde2e2848855a0afb88eca44d570f0249fa03bc97cb529b4e65ce88e763c16ef"
+  },
+  "s19:calm:4:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a5ac3d44",
+   "motif_ops": [],
+   "motif_plan": [
+    "a5ac3d44"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a5ac3d44",
+   "sha256": "533b6fbaf7d3371a03acf8dd47a46182b549e2fd09e2451c5587d93d2bc62de0"
+  },
+  "s19:calm:4:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a5ac3d44",
+   "motif_ops": [
+    "tone@4:-2"
+   ],
+   "motif_plan": [
+    "a5ac3d44"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a5ac3d44",
+   "sha256": "1f393025608a7c46a1930921c9f0d680da67de346139af5d6b4f750e7d3013e1"
+  },
+  "s19:calm:4:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "a5ac3d44",
+   "motif_ops": [],
+   "motif_plan": [
+    "a5ac3d44"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "a5ac3d44",
+   "sha256": "fa7095e2b3ba2c815812e440344e59c2e3efca69b034454543f70b666e759355"
+  },
+  "s19:calm:4:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6ca54dc8",
+   "motif_ops": [],
+   "motif_plan": [
+    "6ca54dc8"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "6ca54dc8",
+   "sha256": "58d68d18fada8ed8f3121a4d62397d5ed199aabca8b2272f68515bbe1e3e5528"
+  },
+  "s19:calm:4:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6ca54dc8",
+   "motif_ops": [
+    "tone@7:-2"
+   ],
+   "motif_plan": [
+    "6ca54dc8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "6ca54dc8",
+   "sha256": "640a3766d6338a2d5223ae05eb10fcc7ac6026d7eed3b62b38baaa298afcddf8"
+  },
+  "s19:calm:4:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "6ca54dc8",
+   "motif_ops": [],
+   "motif_plan": [
+    "6ca54dc8"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "6ca54dc8",
+   "sha256": "76252e3985fa7fe614bad108fafa1e55bf305ad09d56a657241e7a3087d929aa"
+  },
+  "s19:calm:4:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "536f33ff",
+   "motif_ops": [],
+   "motif_plan": [
+    "536f33ff"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "536f33ff",
+   "sha256": "9a42b380c2716a4329f581ac98a113add40bd7a367449943ea779a776bfc8db2"
+  },
+  "s19:calm:5:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b5f625c9",
+   "motif_ops": [],
+   "motif_plan": [
+    "b5f625c9"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b5f625c9",
+   "sha256": "e710375a1e2baf61e41aaa7fad7599cdd0c80f9d9041dc45b33a6a3550cd77fa"
+  },
+  "s19:calm:5:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "caa49771",
+   "motif_ops": [
+    "tone@7:-2"
+   ],
+   "motif_plan": [
+    "caa49771"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b5f625c9",
+   "sha256": "1ca3369c982207d0e5151a95958d76c525cc7178ab47ea675d06aab9345da14f"
+  },
+  "s19:calm:5:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "d58a4378",
+   "motif_ops": [],
+   "motif_plan": [
+    "d58a4378"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "d58a4378",
+   "sha256": "9d6b0a63f51cd0c1f3073a8dd5e7e86f79c1db589519356bb66ec99b50762738"
+  },
+  "s19:calm:5:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "d58a4378",
+   "motif_ops": [],
+   "motif_plan": [
+    "d58a4378"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "d58a4378",
+   "sha256": "6f6cab67293e43d821912e54635c3a8a15670d74a36f5d4b40615e3e480ae565"
+  },
+  "s19:calm:5:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7dd11dfc",
+   "motif_ops": [
+    "ending@8:-2"
+   ],
+   "motif_plan": [
+    "7dd11dfc"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b5f625c9",
+   "sha256": "5e23379696073fe8c1119e1dd33445db4274acca7da4ade02a215c8510536590"
+  },
+  "s19:calm:5:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "8699753c",
+   "motif_ops": [],
+   "motif_plan": [
+    "8699753c"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "8699753c",
+   "sha256": "963705431d0730fec748406812873e27e59c613964f71222fcff472b2608da9f"
+  },
+  "s19:calm:5:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "8699753c",
+   "motif_ops": [
+    "recall_pitch@3-4"
+   ],
+   "motif_plan": [
+    "8699753c"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "8699753c",
+   "sha256": "ca97697b9e5b9948bebc4ad1398c0e7917b576c1515896b00fcf1292d9b4e4af"
+  },
+  "s19:calm:5:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "13c3088f",
+   "motif_ops": [
+    "tone@1:-5"
+   ],
+   "motif_plan": [
+    "13c3088f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "8699753c",
+   "sha256": "895d2c80f66bc182b8e07f28cf04ca513a5ced0919bd37c467a297d4c0cfafc3"
+  },
+  "s19:calm:5:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a6364617",
+   "motif_ops": [],
+   "motif_plan": [
+    "a6364617"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a6364617",
+   "sha256": "d402fa71316f6049a40743ec12c3a0ac83696a0df663096bd4888ab492d84248"
+  },
+  "s19:calm:5:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "25c4028c",
+   "motif_ops": [
+    "tone@5:+3"
+   ],
+   "motif_plan": [
+    "25c4028c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "a6364617",
+   "sha256": "d1e667beade44629bafd64deeded272c695eb2018ba578979e8a7f60aa4b3204"
+  },
+  "s19:calm:5:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "358193fa",
+   "motif_ops": [
+    "ending@8:-3"
+   ],
+   "motif_plan": [
+    "358193fa"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a6364617",
+   "sha256": "644276abfc5cc5a0ac17851f3bc2da74be05ac51af4411ba4d71ab427f852024"
+  },
+  "s19:calm:5:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d58a4378",
+   "motif_ops": [],
+   "motif_plan": [
+    "d58a4378"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d58a4378",
+   "sha256": "d64dc0f3f36b3da59d942a6d6f150a3c0e6d2fe81f3afb989abd20352c38dde3"
+  },
+  "s1:calm:1:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7e3e7502",
+   "motif_ops": [],
+   "motif_plan": [
+    "7e3e7502"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7e3e7502",
+   "sha256": "49eb568191affbda27ebc3cc83d0af4a021c36975139da972beb24f640c67388"
+  },
+  "s1:calm:1:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "bcfad1af",
+   "motif_ops": [
+    "tone@2:-5"
+   ],
+   "motif_plan": [
+    "bcfad1af"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7e3e7502",
+   "sha256": "21877cc8a44b4bafaca34c0a00c7ffc95f9438e1312a3239f8d98e80f3e9a404"
+  },
+  "s1:calm:1:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5abc1c9f",
+   "motif_ops": [
+    "tone@7:+2"
+   ],
+   "motif_plan": [
+    "5abc1c9f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b5e352a2",
+   "sha256": "352c7e0729bf35359cb2500fe0ba80e4e10bbda7ae20c07c8c85d534e7f63e80"
+  },
+  "s1:calm:1:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6dddf90d",
+   "motif_ops": [
+    "ending@8:-3"
+   ],
+   "motif_plan": [
+    "6dddf90d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b5e352a2",
+   "sha256": "5bf00c218f8facddcfe6e0ce155c9d2aa2ba98d9d32086fe32eb1e53a9fc060c"
+  },
+  "s1:calm:1:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "452fc355",
+   "motif_ops": [
+    "tone@6:-2"
+   ],
+   "motif_plan": [
+    "452fc355"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7e3e7502",
+   "sha256": "89c0218d2ff013be75d3b0f68309cf3d229b26d44c288182a6eeb82c0771c989"
+  },
+  "s1:calm:1:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ced8b5e5",
+   "motif_ops": [],
+   "motif_plan": [
+    "ced8b5e5"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ced8b5e5",
+   "sha256": "eb9174cbef99cf556102be239aa6b1c4dc7f4ad57a96bcd4ca84dd749721fe7b"
+  },
+  "s1:calm:1:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "789cb19e",
+   "motif_ops": [
+    "recall_pitch@1-2"
+   ],
+   "motif_plan": [
+    "789cb19e"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ced8b5e5",
+   "sha256": "0338195a4a9d9eacbfe4427d61c48779636a56173983570eb81356f460925e23"
+  },
+  "s1:calm:1:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cdeb4c31",
+   "motif_ops": [
+    "ending@8:-5"
+   ],
+   "motif_plan": [
+    "cdeb4c31"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ced8b5e5",
+   "sha256": "22f0cb75e95ee7fe9f576b88cb074a920cd64632d7bd0f504dc127f13685e8cc"
+  },
+  "s1:calm:1:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "250aaaa7",
+   "motif_ops": [],
+   "motif_plan": [
+    "250aaaa7"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "250aaaa7",
+   "sha256": "2984b0530d42c0b809f15f879ed9d05f160be593648d3c203cf84456fdd73812"
+  },
+  "s1:calm:1:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2c47f528",
+   "motif_ops": [
+    "tone@7:-2"
+   ],
+   "motif_plan": [
+    "2c47f528"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "250aaaa7",
+   "sha256": "c78766e962c41dc040d883c06a5a4c71220b2435468a0674fd697193ddc3a195"
+  },
+  "s1:calm:1:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "706506f8",
+   "motif_ops": [
+    "ending@8:-2"
+   ],
+   "motif_plan": [
+    "706506f8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "250aaaa7",
+   "sha256": "9cf2193213fac2f7d06794ee977e07c351e16fd88cb2deed9007ad2d5375be70"
+  },
+  "s1:calm:1:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b5e352a2",
+   "motif_ops": [],
+   "motif_plan": [
+    "b5e352a2"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b5e352a2",
+   "sha256": "7870601722705c3a309184138f6e3d08464dbda149736a07a5dfd8e29bf1915b"
+  },
+  "s1:calm:2:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "474ff6ee",
+   "motif_ops": [],
+   "motif_plan": [
+    "474ff6ee"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "474ff6ee",
+   "sha256": "cd08456a275aacc31b0a68c242c75749b764dece195eff4e8122623945869ab8"
+  },
+  "s1:calm:2:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5d8c170c",
+   "motif_ops": [
+    "tone@6:+2"
+   ],
+   "motif_plan": [
+    "5d8c170c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "474ff6ee",
+   "sha256": "6ebebf9ee175fa391dd23b6d9b5d815aaebc30a2aa7de8961a2fe54c8fb6601a"
+  },
+  "s1:calm:2:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "fffcb916",
+   "motif_ops": [],
+   "motif_plan": [
+    "fffcb916"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "fffcb916",
+   "sha256": "95d9c73f2ca1d9fbc45045c23386882d48a893e527e4fa0531581ea95329d8b2"
+  },
+  "s1:calm:2:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "e5406e24",
+   "motif_ops": [
+    "ending@8:-2"
+   ],
+   "motif_plan": [
+    "e5406e24"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "previous",
+   "motif_theme_id": "fffcb916",
+   "sha256": "2f223ebbb17794e60dbc3a62ed20e18b38f63c3aceae503daa13b172d990ff73"
+  },
+  "s1:calm:2:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5046cb3d",
+   "motif_ops": [
+    "tone@2:-3"
+   ],
+   "motif_plan": [
+    "5046cb3d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "474ff6ee",
+   "sha256": "510c894d6a7fbeafb5fab846cfc57a5405fea8a1f21901f6260d4c46528e2849"
+  },
+  "s1:calm:2:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "128e9d39",
+   "motif_ops": [],
+   "motif_plan": [
+    "128e9d39"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "128e9d39",
+   "sha256": "22fb7d87ba6e1aeef6211acd46964e4b7d6821818c8142ca1b7434b98ba86eda"
+  },
+  "s1:calm:2:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "505a5349",
+   "motif_ops": [
+    "recall_contour@7-8"
+   ],
+   "motif_plan": [
+    "505a5349"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "128e9d39",
+   "sha256": "29345f122187851a40bb57fbb0715edea5db1e47073954b028d9190a6278fd26"
+  },
+  "s1:calm:2:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "09d6838e",
+   "motif_ops": [
+    "tone@3:-3"
+   ],
+   "motif_plan": [
+    "09d6838e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "128e9d39",
+   "sha256": "141eb8b7f212efe38e56249459561ad896db214ab2285de4ed5e11a9b117c23b"
+  },
+  "s1:calm:2:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "21f1ca25",
+   "motif_ops": [],
+   "motif_plan": [
+    "21f1ca25"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "21f1ca25",
+   "sha256": "25b031871f25507c2cb94ebcde60d69f4015690f964a76fcac2b31df2a310aa8"
+  },
+  "s1:calm:2:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "432d0833",
+   "motif_ops": [
+    "tone@3:+2"
+   ],
+   "motif_plan": [
+    "432d0833"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "21f1ca25",
+   "sha256": "9f5b41a0d879e9cd38e67ec9a31e0688eabd6bc159e4a85eda0e8f833e2cf742"
+  },
+  "s1:calm:2:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b503adce",
+   "motif_ops": [
+    "ending@8:-5"
+   ],
+   "motif_plan": [
+    "b503adce"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "21f1ca25",
+   "sha256": "899913e02928f4a17e52c65918ad9add4f87a2e41731e05ff6030d91ce438bcb"
+  },
+  "s1:calm:2:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fffcb916",
+   "motif_ops": [],
+   "motif_plan": [
+    "fffcb916"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "fffcb916",
+   "sha256": "f316adf0335ba0500e9097170a73ac8274ad3d154c91a10486364b55027e5d77"
+  },
+  "s1:calm:3:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f9c0075f",
+   "motif_ops": [],
+   "motif_plan": [
+    "f9c0075f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f9c0075f",
+   "sha256": "a059368fa4989bf9e9ab4c149c711cfd3b61883f58559f31d9f3a96b6527be9a"
+  },
+  "s1:calm:3:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f9c0075f",
+   "motif_ops": [
+    "tone@7:+4"
+   ],
+   "motif_plan": [
+    "f9c0075f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "f9c0075f",
+   "sha256": "78c9dfc3d8165e90e792e07fb833a7f58fdd58cea33b65c5fc366e46c1d22865"
+  },
+  "s1:calm:3:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1101e3af",
+   "motif_ops": [
+    "tone@2:-5"
+   ],
+   "motif_plan": [
+    "1101e3af"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "313fb1a6",
+   "sha256": "7e789540c7e6118da985ff9b60323d5b903b44691e070fdb51a74ecd2e2c5f19"
+  },
+  "s1:calm:3:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "313fb1a6",
+   "motif_ops": [],
+   "motif_plan": [
+    "313fb1a6"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "313fb1a6",
+   "sha256": "8c13436c83e4b8f0ef3bf1e4fa194719cbb384e4166e63d9ab8af96466d5acbe"
+  },
+  "s1:calm:3:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "f9c0075f",
+   "motif_ops": [],
+   "motif_plan": [
+    "f9c0075f"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "f9c0075f",
+   "sha256": "5c128994c5a8a295e4d1f1a337ac03549aaaf40127b6412baff1a7188446e837"
+  },
+  "s1:calm:3:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b8319c7c",
+   "motif_ops": [],
+   "motif_plan": [
+    "b8319c7c"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b8319c7c",
+   "sha256": "4551dfb946dcb8592faaaa326ca17cd54c59d1146b1eace82d84599642bba048"
+  },
+  "s1:calm:3:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d429548a",
+   "motif_ops": [
+    "tone@1:+2"
+   ],
+   "motif_plan": [
+    "d429548a"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "b8319c7c",
+   "sha256": "a8569d8b8cf8e8bb90e46299712d8a69bd039bef779a1c308b809a25f2ee201c"
+  },
+  "s1:calm:3:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "747bef36",
+   "motif_ops": [
+    "ending@8:-2"
+   ],
+   "motif_plan": [
+    "747bef36"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b8319c7c",
+   "sha256": "db6fdd54a2568751df2c7b3ad64ddece4b9a440edf1addb4890c6dccaba508b9"
+  },
+  "s1:calm:3:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "bcfad1af",
+   "motif_ops": [],
+   "motif_plan": [
+    "bcfad1af"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "bcfad1af",
+   "sha256": "c8c5acd80b9cf802d9c0fdc7d9824fa425cd4f78ecb576012fc9e946f21fc6e8"
+  },
+  "s1:calm:3:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d36ef247",
+   "motif_ops": [
+    "tone@1:-2"
+   ],
+   "motif_plan": [
+    "d36ef247"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "bcfad1af",
+   "sha256": "dc6aec38f46f2923128270cf10e4239be6feb5602464ea47ff2d3358b5798687"
+  },
+  "s1:calm:3:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "452fc355",
+   "motif_ops": [
+    "tone@2:-2"
+   ],
+   "motif_plan": [
+    "452fc355"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "bcfad1af",
+   "sha256": "c3ca36c182c0f9ecb2e1555d554106e63335abfac948730a724daac93408d6a0"
+  },
+  "s1:calm:3:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "313fb1a6",
+   "motif_ops": [],
+   "motif_plan": [
+    "313fb1a6"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "313fb1a6",
+   "sha256": "1b5577a9b551153bfef27dfeaaeb9f7b258ad679b7e22ea90ee606f8145975e7"
+  },
+  "s1:calm:4:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "605bdf3c",
+   "motif_ops": [],
+   "motif_plan": [
+    "605bdf3c"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "605bdf3c",
+   "sha256": "84a04002bcac10cbdb8e126d3d0d58842ffa5e0388679097a79d2cf4eb55774a"
+  },
+  "s1:calm:4:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "63be8d59",
+   "motif_ops": [
+    "tone@7:+2"
+   ],
+   "motif_plan": [
+    "63be8d59"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "605bdf3c",
+   "sha256": "63d426860eaea42279dd28f300ba0869b7e269d18e8b67105d6dde6f488e6fee"
+  },
+  "s1:calm:4:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1dacd0a6",
+   "motif_ops": [
+    "tone@6:-3"
+   ],
+   "motif_plan": [
+    "1dacd0a6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "6484c9d3",
+   "sha256": "ad69843742616e1d76c4434081119cd3a4f270f43a3ce3e827c08cd888071038"
+  },
+  "s1:calm:4:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "36c77b1c",
+   "motif_ops": [
+    "tone@5:-2"
+   ],
+   "motif_plan": [
+    "36c77b1c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "6484c9d3",
+   "sha256": "71e64f64e7692b024142791291984f6e25c4c4af588637bab81ba5124db9011c"
+  },
+  "s1:calm:4:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "12d58876",
+   "motif_ops": [
+    "tone@1:+2"
+   ],
+   "motif_plan": [
+    "12d58876"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "605bdf3c",
+   "sha256": "6668b84b6d0e389457a23d8ed6dde9af9fb66f7c6130d6f5dd97a2b9fffe70eb"
+  },
+  "s1:calm:4:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c3de0b10",
+   "motif_ops": [],
+   "motif_plan": [
+    "c3de0b10"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c3de0b10",
+   "sha256": "7cabc192e6fb241c6f24d5334e2c4e4898acca1b4fddb250643ba7614b0eb943"
+  },
+  "s1:calm:4:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b45c69ba",
+   "motif_ops": [
+    "tone@1:-5"
+   ],
+   "motif_plan": [
+    "b45c69ba"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "c3de0b10",
+   "sha256": "03436de06df3d94852acdb50f494e7cc4c8ead14b15b7c279ab0aa128b697dc8"
+  },
+  "s1:calm:4:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e6250691",
+   "motif_ops": [
+    "ending@8:+2"
+   ],
+   "motif_plan": [
+    "e6250691"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c3de0b10",
+   "sha256": "3e7feaa9168f61f79ed4635a462965a8d6b56f5d2de3b140db9d047173303500"
+  },
+  "s1:calm:4:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "835e1308",
+   "motif_ops": [],
+   "motif_plan": [
+    "835e1308"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "835e1308",
+   "sha256": "5a07c115c0eec9ee93898c042bdaae4b3b05bac6a2738a2fd11a345ed3ca00a6"
+  },
+  "s1:calm:4:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fc770266",
+   "motif_ops": [
+    "tone@2:-2"
+   ],
+   "motif_plan": [
+    "fc770266"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "835e1308",
+   "sha256": "77c84bdc12a73808683a7ed8da253b1ebba5df8b24c031e47cea99e10ede0915"
+  },
+  "s1:calm:4:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "46d90f3b",
+   "motif_ops": [
+    "tone@1:-3"
+   ],
+   "motif_plan": [
+    "46d90f3b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "835e1308",
+   "sha256": "207e490c298da643c15df09ba326e84db062c9cd35c8fd9280d93d6d607a2456"
+  },
+  "s1:calm:4:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6484c9d3",
+   "motif_ops": [],
+   "motif_plan": [
+    "6484c9d3"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "6484c9d3",
+   "sha256": "f6e6af5e090136cfca6f7aee042eb55d9739c6f4cf6b97d509e197f85fb4b06c"
+  },
+  "s1:calm:5:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "eb531cf1",
+   "motif_ops": [],
+   "motif_plan": [
+    "eb531cf1"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "eb531cf1",
+   "sha256": "1d03962356114d299681752d30ddb639085032f536ab69a5ab6a7ed11d510499"
+  },
+  "s1:calm:5:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fbc5188b",
+   "motif_ops": [
+    "tone@4:+2"
+   ],
+   "motif_plan": [
+    "fbc5188b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "eb531cf1",
+   "sha256": "ce751b7fe0e14180a95d8fecca45379e64705d97c25f077ef31008bb63d4cb32"
+  },
+  "s1:calm:5:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cdf6ba7",
+   "motif_ops": [
+    "tone@3:+2"
+   ],
+   "motif_plan": [
+    "7cdf6ba7"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e83a3c9d",
+   "sha256": "5673850524a5132f703d838b6f112c89b351d273cdf1a8843dbd4bdebd17acb0"
+  },
+  "s1:calm:5:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2aa6758d",
+   "motif_ops": [
+    "tone@2:-3"
+   ],
+   "motif_plan": [
+    "2aa6758d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "e83a3c9d",
+   "sha256": "10a81281142e5ed87a60fa998c21598cdbd58784a385aede3fbf9e055624bfbf"
+  },
+  "s1:calm:5:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "eb531cf1",
+   "motif_ops": [],
+   "motif_plan": [
+    "eb531cf1"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "eb531cf1",
+   "sha256": "c93755b2d2ff653e23de45d9d7ad5b3d1b3c151f0cf443f16993cd5b295b50ef"
+  },
+  "s1:calm:5:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "781703ab",
+   "motif_ops": [],
+   "motif_plan": [
+    "781703ab"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "781703ab",
+   "sha256": "7379c8dc39a0cb3b1777006fb7049d043c2088ee3d2e91ab2e627583ec439544"
+  },
+  "s1:calm:5:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "781703ab",
+   "motif_ops": [
+    "recall_pitch@1-2"
+   ],
+   "motif_plan": [
+    "781703ab"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "781703ab",
+   "sha256": "e0cfbd7c1a1fa86adb8f4c615a55cb06dcba112552ed1509a8f1cc06895eca43"
+  },
+  "s1:calm:5:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ebe65edc",
+   "motif_ops": [
+    "tone@3:-5"
+   ],
+   "motif_plan": [
+    "ebe65edc"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "781703ab",
+   "sha256": "a6d43c791c5aea16f99f1a521ecf342acfdf1bbe3e67ab91d8cb18149a10efce"
+  },
+  "s1:calm:5:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "48624583",
+   "motif_ops": [],
+   "motif_plan": [
+    "48624583"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "48624583",
+   "sha256": "decc9581040d82c147c23c9f4354d5ca205445349ded665d204a43ad1de64964"
+  },
+  "s1:calm:5:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77244a5f",
+   "motif_ops": [
+    "tone@6:-2"
+   ],
+   "motif_plan": [
+    "77244a5f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "48624583",
+   "sha256": "a8cc7449f35603c7e2c6ebd686fc6cf011608eed880bbf04bb602ebfe5f45fd1"
+  },
+  "s1:calm:5:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "48624583",
+   "motif_ops": [
+    "ending@8:+4"
+   ],
+   "motif_plan": [
+    "48624583"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "48624583",
+   "sha256": "a6405b2d7d0e9427031cc3fba87148631465d284075b846aa2edad43301969a5"
+  },
+  "s1:calm:5:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83a3c9d",
+   "motif_ops": [],
+   "motif_plan": [
+    "e83a3c9d"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e83a3c9d",
+   "sha256": "35f0a4c9f54ad0b7bc46bf87a101774e1463d0657fa46f6bf476ee10e991cce0"
+  },
+  "s2:calm:1:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d66f24e0",
+   "motif_ops": [],
+   "motif_plan": [
+    "d66f24e0"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d66f24e0",
+   "sha256": "82516f5b977ee6537e62d9bd755af266f6c6e5c361e1d96004e4587827759599"
+  },
+  "s2:calm:1:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cefade72",
+   "motif_ops": [
+    "tone@2:-2"
+   ],
+   "motif_plan": [
+    "cefade72"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d66f24e0",
+   "sha256": "0bc8da99aea990a514d723c42443281d68c2947f8600fc805a440b5ebbbe1803"
+  },
+  "s2:calm:1:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2e7f839b",
+   "motif_ops": [
+    "recall_contour@3-4"
+   ],
+   "motif_plan": [
+    "2e7f839b"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2e7f839b",
+   "sha256": "d66c41f14ccd9d46d7097acda5ddf420675bca7b56f646b5c2c2f5c379203e0b"
+  },
+  "s2:calm:1:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "9e86ebf2",
+   "motif_ops": [
+    "tone@5:-5"
+   ],
+   "motif_plan": [
+    "9e86ebf2"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "2e7f839b",
+   "sha256": "9fd7cf8dd60273a60563f347a305fca125388603ce6c8f5f454304ba8c42b072"
+  },
+  "s2:calm:1:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cefade72",
+   "motif_ops": [
+    "ending@8:-3"
+   ],
+   "motif_plan": [
+    "cefade72"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d66f24e0",
+   "sha256": "3832eaa05f9e9c5ba8ec66385c89aa52eeebc181f2c46d3f178a66daac7cc19f"
+  },
+  "s2:calm:1:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cffc86c3",
+   "motif_ops": [],
+   "motif_plan": [
+    "cffc86c3"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cffc86c3",
+   "sha256": "4b63988d6bb51e10a2563ee9ef36c470c177fdad97500d5aa072746e5cbda59f"
+  },
+  "s2:calm:1:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2f85114c",
+   "motif_ops": [
+    "tone@4:+3"
+   ],
+   "motif_plan": [
+    "2f85114c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "cffc86c3",
+   "sha256": "af5e03518507b28f05f1b72c8ef742970cf02d30f2ba8204d95a3ec2185675f5"
+  },
+  "s2:calm:1:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2f85114c",
+   "motif_ops": [
+    "tone@2:-5"
+   ],
+   "motif_plan": [
+    "2f85114c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "cffc86c3",
+   "sha256": "6752297bdf4150b0d1ebcbb29ab63a252d91188dfc0dfd4968205c6d2a24ff40"
+  },
+  "s2:calm:1:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fcfe4217",
+   "motif_ops": [],
+   "motif_plan": [
+    "fcfe4217"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "fcfe4217",
+   "sha256": "f11d8b0799a836d4d5904be554e7f90ad617d7cee01e7b70c6a150d36181ef1c"
+  },
+  "s2:calm:1:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e2ae2a7c",
+   "motif_ops": [
+    "tone@2:+3"
+   ],
+   "motif_plan": [
+    "e2ae2a7c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "fcfe4217",
+   "sha256": "7ee35ea66ef9535473cd70f1a81734ee492d750427a0a064f8a1a7fa80548fc8"
+  },
+  "s2:calm:1:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "fcfe4217",
+   "motif_ops": [],
+   "motif_plan": [
+    "fcfe4217"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "fcfe4217",
+   "sha256": "6646fc760173ea3b9575673ddb82b0e5828ac57360844081731790dfae033d56"
+  },
+  "s2:calm:1:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2e7f839b",
+   "motif_ops": [],
+   "motif_plan": [
+    "2e7f839b"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2e7f839b",
+   "sha256": "93f911bd6c399101528d75e47af0c0c5daab6995bf6d06372bc275df240488f0"
+  },
+  "s2:calm:2:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "474ff6ee",
+   "motif_ops": [],
+   "motif_plan": [
+    "474ff6ee"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "474ff6ee",
+   "sha256": "965dda6764e53779e92ed0ffe7a5670d72a71ffbe471b94dfe8124045f29135b"
+  },
+  "s2:calm:2:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5d8c170c",
+   "motif_ops": [
+    "tone@7:+2"
+   ],
+   "motif_plan": [
+    "5d8c170c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "474ff6ee",
+   "sha256": "688161063986a499d29b07c8ed2e2a1fbe3a0efce5e4db9d1b67a6b7077cb66a"
+  },
+  "s2:calm:2:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "88d35dc0",
+   "motif_ops": [
+    "tone@1:+2"
+   ],
+   "motif_plan": [
+    "88d35dc0"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a36cfc49",
+   "sha256": "37133ef5341d9972014b761361de0cba96fa2cc6f8b41a56d27f9df63d42df30"
+  },
+  "s2:calm:2:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ae895cef",
+   "motif_ops": [
+    "tone@5:+2"
+   ],
+   "motif_plan": [
+    "ae895cef"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "a36cfc49",
+   "sha256": "a963ed4eb065207adbec710b3c70a503170b2959018a940f77a4a0462289d1e6"
+  },
+  "s2:calm:2:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5d8c170c",
+   "motif_ops": [
+    "ending@8:-4"
+   ],
+   "motif_plan": [
+    "5d8c170c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "474ff6ee",
+   "sha256": "d29676c0ccf5c93d3e8dd8064639fa3247493b705bb3f89abda34822efdd2a6f"
+  },
+  "s2:calm:2:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a7437e88",
+   "motif_ops": [],
+   "motif_plan": [
+    "a7437e88"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a7437e88",
+   "sha256": "7eed6d9d14c679fc4553d90e4de1fa153bbc763bfa94742358767effdc22d01c"
+  },
+  "s2:calm:2:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a08f6aee",
+   "motif_ops": [
+    "recall_pitch@7-8"
+   ],
+   "motif_plan": [
+    "a08f6aee"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a7437e88",
+   "sha256": "396fe03abaa58a912a017d61aa8f4fe69d886bf58fe703c9ac70b0a7184ba8a4"
+  },
+  "s2:calm:2:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5183d7c2",
+   "motif_ops": [
+    "ending@8:+5"
+   ],
+   "motif_plan": [
+    "5183d7c2"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a7437e88",
+   "sha256": "677be23c1b03aa974ea30760572b0cea8b51d84a4652cda34203052a1c7a0351"
+  },
+  "s2:calm:2:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "48ab22f4",
+   "motif_ops": [],
+   "motif_plan": [
+    "48ab22f4"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "48ab22f4",
+   "sha256": "69c7861eb79e46c9778818e8a366b158178e7e0f676c2ae44356372a1ec3eed2"
+  },
+  "s2:calm:2:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "420d0ae1",
+   "motif_ops": [
+    "tone@5:-2"
+   ],
+   "motif_plan": [
+    "420d0ae1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "48ab22f4",
+   "sha256": "f0716652002082728f89348d3e462f06d040aeb07fc1fae606c37695b164236e"
+  },
+  "s2:calm:2:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cdb43767",
+   "motif_ops": [
+    "ending@8:-5"
+   ],
+   "motif_plan": [
+    "cdb43767"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "48ab22f4",
+   "sha256": "4d599ec261153deb713d86a310df86d2af6a8853a7fe3744ff7f25bd01bb8662"
+  },
+  "s2:calm:2:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a36cfc49",
+   "motif_ops": [],
+   "motif_plan": [
+    "a36cfc49"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a36cfc49",
+   "sha256": "27f5efc09b6055e5058e121508fbd54a1ba0a34c98beb5a0fcca81f30adf3432"
+  },
+  "s2:calm:3:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "23dd6446",
+   "motif_ops": [],
+   "motif_plan": [
+    "23dd6446"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "23dd6446",
+   "sha256": "ba35b204ed9e99ca2960f9bd1d27ca58fe99af579949dd1dafe4a6db9407266f"
+  },
+  "s2:calm:3:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "be4ee117",
+   "motif_ops": [
+    "tone@4:-5"
+   ],
+   "motif_plan": [
+    "be4ee117"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "23dd6446",
+   "sha256": "b83340248ba24fe3a2d78b156aa2ca2a750ab281f04fe507e4c76cad8d0670f1"
+  },
+  "s2:calm:3:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "ec5d3dc8",
+   "motif_ops": [],
+   "motif_plan": [
+    "ec5d3dc8"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "ec5d3dc8",
+   "sha256": "e6b6eb8a51b45914e0d2a09e175f73a3f49e4b520892d50fa2c513a568a5ef5b"
+  },
+  "s2:calm:3:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "ec5d3dc8",
+   "motif_ops": [],
+   "motif_plan": [
+    "ec5d3dc8"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "ec5d3dc8",
+   "sha256": "99900827a906436350eeb1ee91ba75f2fc9cc1be7ddb0c49ee5b571a1bddb04a"
+  },
+  "s2:calm:3:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7493f554",
+   "motif_ops": [
+    "ending@8:+2"
+   ],
+   "motif_plan": [
+    "7493f554"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "23dd6446",
+   "sha256": "a9fe8adca6bf001c4aa30550265b10531c912d835f1776649acaa20c0d155343"
+  },
+  "s2:calm:3:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1a8ee0ee",
+   "motif_ops": [],
+   "motif_plan": [
+    "1a8ee0ee"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1a8ee0ee",
+   "sha256": "8866c29f5884fd0a40a9e1ff318a9a40c75860662e46d2f70b03adc68d1d5cb3"
+  },
+  "s2:calm:3:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1a8ee0ee",
+   "motif_ops": [
+    "recall_contour@7-8"
+   ],
+   "motif_plan": [
+    "1a8ee0ee"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1a8ee0ee",
+   "sha256": "e070d486b0ea61c899969eef5a28dbfabf48920b09b00e0b803cc8c67ebc73e6"
+  },
+  "s2:calm:3:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77c90314",
+   "motif_ops": [
+    "tone@7:-5"
+   ],
+   "motif_plan": [
+    "77c90314"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "1a8ee0ee",
+   "sha256": "5694d200a77560c44911df35fbc77f6afb8e00dafc1c061a8b9cbb20580bf04a"
+  },
+  "s2:calm:3:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "184b025e",
+   "motif_ops": [],
+   "motif_plan": [
+    "184b025e"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "184b025e",
+   "sha256": "1a1b0b7c5d309bafda82f90a4e2733b5b400cdba245ab8d1206ed280aade178d"
+  },
+  "s2:calm:3:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "184b025e",
+   "motif_ops": [
+    "tone@1:+2"
+   ],
+   "motif_plan": [
+    "184b025e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "184b025e",
+   "sha256": "55eff14322149562536982f7b3429f52c5ccec268f9c77005dd525800912755b"
+  },
+  "s2:calm:3:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "60403dfa",
+   "motif_ops": [
+    "ending@8:-3"
+   ],
+   "motif_plan": [
+    "60403dfa"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "184b025e",
+   "sha256": "90b7f6cf9bd0a5c0ca88aafdaf4c3e750abc7ecc6fa8871487df396bd5a0e81f"
+  },
+  "s2:calm:3:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ec5d3dc8",
+   "motif_ops": [],
+   "motif_plan": [
+    "ec5d3dc8"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ec5d3dc8",
+   "sha256": "eb80b19b6952ca0158aef22bef5196f343133a031765a0c6b67c7ab092737865"
+  },
+  "s2:calm:4:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "01cc8f19",
+   "motif_ops": [],
+   "motif_plan": [
+    "01cc8f19"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "01cc8f19",
+   "sha256": "f8c94966dcf8210fc5719a3020bcd64d54c51276d1b25c8b320fc1ca1f3c62b8"
+  },
+  "s2:calm:4:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a5df84c0",
+   "motif_ops": [
+    "tone@2:-5"
+   ],
+   "motif_plan": [
+    "a5df84c0"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "01cc8f19",
+   "sha256": "5b4b8c7e2bf17a8ddb67ede2dd9ef4ad17dbc6d0f9c2a9351b1cca924b37c22b"
+  },
+  "s2:calm:4:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "efb53c9c",
+   "motif_ops": [
+    "tone@3:-3"
+   ],
+   "motif_plan": [
+    "efb53c9c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "2b777df2",
+   "sha256": "19574824da8d7a92108ef10764fe221c6ceaf782a5a7d2592093d2bd0da5316c"
+  },
+  "s2:calm:4:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "2b777df2",
+   "motif_ops": [],
+   "motif_plan": [
+    "2b777df2"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "2b777df2",
+   "sha256": "116a7f73bd756112b3cb1c1ae77fe08115f358fc6c5c879754dd143902ba2ea3"
+  },
+  "s2:calm:4:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "283a83e9",
+   "motif_ops": [
+    "ending@8:-3"
+   ],
+   "motif_plan": [
+    "283a83e9"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "01cc8f19",
+   "sha256": "7d06536a1ee4f0dad91cb60b56a9b3bc651a53f109425a25847c5a01c8449278"
+  },
+  "s2:calm:4:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f3825de1",
+   "motif_ops": [],
+   "motif_plan": [
+    "f3825de1"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f3825de1",
+   "sha256": "c2c0a3b086961357f7f600b69eba4816902e4d1e307d80d7b09de2f918ae930d"
+  },
+  "s2:calm:4:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d1313ddd",
+   "motif_ops": [
+    "recall_contour@7-8"
+   ],
+   "motif_plan": [
+    "d1313ddd"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f3825de1",
+   "sha256": "6e45b685f9fbb5cf71717a471cdcf52f0b98c9601d32f8942df3ec3fd2eefc2d"
+  },
+  "s2:calm:4:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "3eac9e9d",
+   "motif_ops": [
+    "tone@1:-5"
+   ],
+   "motif_plan": [
+    "3eac9e9d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "f3825de1",
+   "sha256": "d0f32b638c6d2a111195e2f64e18b2c2954a969316ed7ced689cd52ee461042a"
+  },
+  "s2:calm:4:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1c2acbf0",
+   "motif_ops": [],
+   "motif_plan": [
+    "1c2acbf0"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1c2acbf0",
+   "sha256": "0ab0fe01f3ee45605150bbcc99e4beca2728a5081ed8420bf050153b6baab03f"
+  },
+  "s2:calm:4:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "62b97c4c",
+   "motif_ops": [
+    "tone@1:-5"
+   ],
+   "motif_plan": [
+    "62b97c4c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "1c2acbf0",
+   "sha256": "5c1bf56fbbda6686b59dc6386d652f22634504577b5ed36e126193c0f6dc80ef"
+  },
+  "s2:calm:4:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "1c2acbf0",
+   "motif_ops": [],
+   "motif_plan": [
+    "1c2acbf0"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "1c2acbf0",
+   "sha256": "25a7918cc7f42753f548830931076f5e9fe87a5a2443276db8ba41bcb42ef1fb"
+  },
+  "s2:calm:4:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2b777df2",
+   "motif_ops": [],
+   "motif_plan": [
+    "2b777df2"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2b777df2",
+   "sha256": "06b88f0fbc6d182508c99ba320111bde1d51ce1affabf15a731d2d856a1c4503"
+  },
+  "s2:calm:5:v0": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "60403dfa",
+   "motif_ops": [],
+   "motif_plan": [
+    "60403dfa"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "60403dfa",
+   "sha256": "cdb4fabef0eed13bc5dcf1c583d24f2293fdfea20a8b4ea17a038522b9991d21"
+  },
+  "s2:calm:5:v1": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fc2e062e",
+   "motif_ops": [
+    "tone@3:+4"
+   ],
+   "motif_plan": [
+    "fc2e062e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "60403dfa",
+   "sha256": "498100135a4c700f1ea597397d7adc0340a65f4b074ba9eec468c5211e623b68"
+  },
+  "s2:calm:5:v10": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "38676e07",
+   "motif_ops": [
+    "recall_contour@1-2"
+   ],
+   "motif_plan": [
+    "38676e07"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "14a3a464",
+   "sha256": "5888e95888de8b5363cb1086d95b2771be28d08c20ccceb7d0071d5fb15b75d4"
+  },
+  "s2:calm:5:v11": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "98139fb1",
+   "motif_ops": [
+    "tone@5:-4"
+   ],
+   "motif_plan": [
+    "98139fb1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "14a3a464",
+   "sha256": "0873c1dad217c8fbb5f38429a1c9073781aafd35ab1443fb82ba964ed7576135"
+  },
+  "s2:calm:5:v2": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "616175ff",
+   "motif_ops": [
+    "tone@6:-3"
+   ],
+   "motif_plan": [
+    "616175ff"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "60403dfa",
+   "sha256": "32a969d884384b2d9e23ee639cede3d7bb646040a46a5b356f91add7ac5ab3cd"
+  },
+  "s2:calm:5:v3": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e3845e97",
+   "motif_ops": [],
+   "motif_plan": [
+    "e3845e97"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e3845e97",
+   "sha256": "75755f485cb71cc73a00048baeb6570a467c6d843c36347b2b22ea64758dac76"
+  },
+  "s2:calm:5:v4": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5f9b494f",
+   "motif_ops": [
+    "tone@1:-2"
+   ],
+   "motif_plan": [
+    "5f9b494f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e3845e97",
+   "sha256": "c65ec14afce994f494fa2d1ff508dcf0bdd65e6a70c69f07c060a1269c8fcbe7"
+  },
+  "s2:calm:5:v5": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "e3845e97",
+   "motif_ops": [],
+   "motif_plan": [
+    "e3845e97"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "e3845e97",
+   "sha256": "1063983042888fc79fca95f26ec48c1b4f2f359596c5044402234bb4a5403840"
+  },
+  "s2:calm:5:v6": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ec12b06f",
+   "motif_ops": [],
+   "motif_plan": [
+    "ec12b06f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ec12b06f",
+   "sha256": "65c0872dbfe887be6db883d34bf0ae4f32ac8bff24ad9c4c463227a6ff6e6ae9"
+  },
+  "s2:calm:5:v7": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4046d067",
+   "motif_ops": [
+    "tone@2:-2"
+   ],
+   "motif_plan": [
+    "4046d067"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ec12b06f",
+   "sha256": "b730c52ee1c23db35539c2db010d10b6a18057de9d79336c8820c8f737633b4d"
+  },
+  "s2:calm:5:v8": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4046d067",
+   "motif_ops": [
+    "ending@8:+4"
+   ],
+   "motif_plan": [
+    "4046d067"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ec12b06f",
+   "sha256": "09a1176ecdaeb14bd4be1f6f93f9f9c604d7a397c956c833bdb7c9b542c0dfa8"
+  },
+  "s2:calm:5:v9": {
+   "dev_version": "v2c.calm.0",
+   "drum_repeat_window": 12,
+   "gen_version": "v2a.3+v2c.calm.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "14a3a464",
+   "motif_ops": [],
+   "motif_plan": [
+    "14a3a464"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "14a3a464",
+   "sha256": "dac86354e111cee26295da39512c703a16f22759b1cbe5731762d0b91a851a06"
+  }
+ },
+ "lofi": {
+  "s19:lofi:1:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "ad2703e77cf0ef6d753d6b3af139914dbf92b20823c9dd6c12c9caf92193e4de"
+  },
+  "s19:lofi:1:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "bar4@4:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "c38f2b72e96c5e7321bfa5859d5ef985098b86ebf5ac9851d19bd90ee1d87379"
+  },
+  "s19:lofi:1:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "f884d8ec230011b39aff4fe35e7d4c346676358ed8a999de5c74f8d527e4d3e9"
+  },
+  "s19:lofi:1:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "06b7af7fe17093d4ae95cdd1fe24ad4a4b5fa768940e6a83298dcb3c925689cb"
+  },
+  "s19:lofi:1:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "7d4700210d55d7ff2f92b4328591dc3928085d25fd5848c683154daa9a306ce7"
+  },
+  "s19:lofi:1:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "02735610d0308d2a8c2e976221049add8366afad78527eaf27b54d70ca8daf16"
+  },
+  "s19:lofi:1:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@1:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "7674172d46330edb1739abd4c7c34660b79357373cc8d90692f6c8b45e5c2936"
+  },
+  "s19:lofi:1:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "719d30ea7e49eb688fd4efc984ff6e881a79ee5e1c20ba7643644865949b53ed"
+  },
+  "s19:lofi:1:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "d9023cbac87aaa4fcf6c3e98f1ca69176eac91e315d5e6a98fdc9d77cae74491"
+  },
+  "s19:lofi:1:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "7bbb1120e8676c5faf4f02160764825e45fd1ac837e9b2ef8998df55eee1065d"
+  },
+  "s19:lofi:1:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "2850cec6c51b53e2648b34bf58de352654c0b233920e6099be3daa61f1ad7d07"
+  },
+  "s19:lofi:1:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "3280eba3abff2ea700dfedf886b6cea4c43fbddafc982c4256521d21d49300ee"
+  },
+  "s19:lofi:2:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "f15333049e03b8ed9e74e0f21699a9e9883f6b24630fce5e83923b5b74e8b631"
+  },
+  "s19:lofi:2:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "bar4@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "069f1ba16d4f84c9a077f62264db526b4459f39c8370aa5155c8fdb681aacc98"
+  },
+  "s19:lofi:2:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "02155d77",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "02155d77"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "f3ceafcd9b5c5139b292e1f2a66fd16bb7eb5de4f851530a4876e38df7387830"
+  },
+  "s19:lofi:2:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "ending@8:76-81"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "f131581c4779783c16e5f9b41ef6043cf8f949ac22d025cdb5247bd501af5126"
+  },
+  "s19:lofi:2:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "20427393655ba71ba25db5b1739c209271402db8cc4ba442453148e0c9d5815c"
+  },
+  "s19:lofi:2:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "00959e688f274987eb21f17160bf402f29360afaf196347dbda3dab22801ff25"
+  },
+  "s19:lofi:2:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "ac5f2567b17b6f9af5afb77c26484c0463004c34d29b3ba4e4b08bda745915f8"
+  },
+  "s19:lofi:2:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "f7fd11e80841acd7f151275efe572d8776111ba0e902dad859a14969ba239329"
+  },
+  "s19:lofi:2:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "1d200542ca11ddd6d78ac05801bdfc2341951c055e3c3c049274d1d71416c015"
+  },
+  "s19:lofi:2:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@2:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "8a4c828cea3b6beed27ca7ddf35f937d0f0eb236c946c8f345a74a14b20ea9f8"
+  },
+  "s19:lofi:2:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "baccf71930018ad1398af7d99dfd2e6d213470c75e49ac822d42afbfd6e2c8e0"
+  },
+  "s19:lofi:2:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "e659068806db07336c5b71c3dc5bddfaac0c1e7754ffaa511c501082969a236e"
+  },
+  "s19:lofi:3:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "0ed8846bc9096a06c46c1ffb46ae1e02e3b9b20b6eb7f08d83ea6c42eb5a3713"
+  },
+  "s19:lofi:3:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "f6167dea15b724b651624eef5bc4a93c116fbbaa65d376dd59fb12032d144b9c"
+  },
+  "s19:lofi:3:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@6:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "1e07092bd6ed6f89cd626048de7f89b2ffa0a11a9f2ce6deff54a471c00ed6f6"
+  },
+  "s19:lofi:3:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "ending@8:76-79"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "c2128e05911713bd7347f63392e728599efad9059f8b9851dab39e80159c9eb2"
+  },
+  "s19:lofi:3:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@5:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "d9403d197ceac136e851defd0530bd8d5e1c076c34b3e85c20ca2dde4a91e30c"
+  },
+  "s19:lofi:3:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "fd41d6aa3b4ce6e6b35acb7dabb679388505b4a04f5da1f5b4d319bc7f36a14e"
+  },
+  "s19:lofi:3:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "832896b6e9915ce1859b731fdb01a4e52c5d7fb61a3394a39a53c10658b793da"
+  },
+  "s19:lofi:3:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "bdb8a6b6bb238ee04544c92dba42dbe9fa50b546c338411e5a5a9b056d9c3b4f"
+  },
+  "s19:lofi:3:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ed926b2471ed23f44adf625a407b50e81b523912ebf3f2f99677b10f8205713a"
+  },
+  "s19:lofi:3:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "99184e97f49e0bcd6719bf787ec3d830bf8cb71ff324f62a63305e9b07b16794"
+  },
+  "s19:lofi:3:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "df4ef0511b8d1f44db0e6f8c16de709b7cdfc3e55e8c600f00cb3b1216bcd493"
+  },
+  "s19:lofi:3:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "7eac0b4652fb7bdb75121970e7bbf01656364550704091372b6b2a9439921fce"
+  },
+  "s19:lofi:4:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "d0275f612935a83245838bf5405ef98ce2cd8fde681330180b9c42411e3e4e2b"
+  },
+  "s19:lofi:4:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@5:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "8cb07bbc1b5a3f2a240e0017fa1b38494213f815d425df8bed2b888b8247deff"
+  },
+  "s19:lofi:4:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "8a9e204c325edefd85aa9ec111bf141a961580040b09019bf66b92d8268e55d9"
+  },
+  "s19:lofi:4:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "94c3d66a259e0bef9b02769ddfd2056b6fe503bfc309dededa481fd1b48c1a0a"
+  },
+  "s19:lofi:4:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@7:61-64"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "630a5455c044e43e0e448708bb04de20769e1d86993c34fffba39bdadba010d9"
+  },
+  "s19:lofi:4:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "812e8dd8779cbc2f7829e755fdd30c12ec2f0eeddcdf806ca8357f6825673b7f"
+  },
+  "s19:lofi:4:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "7959d7cc7b02855adfffde849854caa420a55108afc1a1ba37fd6c964292d7c5"
+  },
+  "s19:lofi:4:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "ending@8:60-64"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "a33656bc880f88a937a0eb749772bda28a6e8a95a2737a70a576ef6002b11704"
+  },
+  "s19:lofi:4:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "2fd1d34e23c2ba8749863efe325cb8d28c135a2dcac12721594caf8c753f9484"
+  },
+  "s19:lofi:4:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "bar4@4:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "5ce7f4d1c10461d9c691e6b5e819a3bff94afae58a5aeaaa783fa49eaf0ba1f9"
+  },
+  "s19:lofi:4:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@1:76-79"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "62af149fd09f0da57ab5980b7d877d7acfb39804ff9395e332c223ad51b13de6"
+  },
+  "s19:lofi:4:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "804f03de4e6ef72c8fc5c53ec87d1c7fd53a0c87286107e58e9527d89c43920a"
+  },
+  "s19:lofi:5:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "65919d31f0b1a391af6962e39a8f822207c4bb3611260301811622843ddeddf7"
+  },
+  "s19:lofi:5:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@2:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "543b145bd29073a977de1623e0ab74b05ac837650fb056cc59df3b89e084989b"
+  },
+  "s19:lofi:5:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "003dd53600f9ed63f88d7c26e90d6608479d099603e051d39067af476a2ba4a4"
+  },
+  "s19:lofi:5:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "8f9df0fb7d5785b00ae848863dbefbe71725a5a0300e324b181989b26aa377bb"
+  },
+  "s19:lofi:5:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "ending@8:76-79"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "2dfaf4472e44892fbf4c0f37c2a13965fc75d08ab4aa5ba33dd9a5c8df5900f4"
+  },
+  "s19:lofi:5:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "900f78096f6337d7d432557d107c4a6f2978b1595359db3a9ab994a45386544c"
+  },
+  "s19:lofi:5:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "4551d10c90e29c5df86ecbc4d45c798bf776f8bca86f2993ea26317829b451fa"
+  },
+  "s19:lofi:5:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@6:76-79"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "bf80dc588c3803ae503196eac86631d73f82b76af99536692d97aba22d13e28b"
+  },
+  "s19:lofi:5:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "1e822ed2515de91ab1e5aaf54826dfdfc8183598b279ab61dd8d2575f8fedeb6"
+  },
+  "s19:lofi:5:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@4:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "462ca79b48f0140309814e03acfab676e8473d9d6a10d7ed735fc678abbf0c26"
+  },
+  "s19:lofi:5:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@5:76-79"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "fea30c6960dbb13be0cffec49db75302a661c7f52400ebe54376bcd98242d8b4"
+  },
+  "s19:lofi:5:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "2c840749182490d2da1ee838e6742751199a25cefca744c4d1057ac18867f491"
+  },
+  "s1:lofi:1:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "e47512a58148934724bdbfbdfcc0245fd6f538df49323e696a3000defb195100"
+  },
+  "s1:lofi:1:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "d272dada0cc59e082cc2976ad8e512360c213ff7c4bdf68da30e5cd5e6668c78"
+  },
+  "s1:lofi:1:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@1:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "35d2a40e54e6c4cea967e5010eed0ea4beba5acdb4d3816ea9422071d4d21a57"
+  },
+  "s1:lofi:1:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "3e449177ab4bf394a2e0c2ec49d2cb94df1c414c1bc63db950a9d4df2d474b84"
+  },
+  "s1:lofi:1:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@1:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "b23e82887d77b746d3839dc2cc05647784e496eb9829e129c9f69a5180405806"
+  },
+  "s1:lofi:1:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "d69a462c103a531afa7d61d2478fcb81431705dec1a19f0a34400c7952729977"
+  },
+  "s1:lofi:1:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@1:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ace4b75351a57577345a8e87d9642c4d55efdcb27cb2d1b6f8ad029ad13cb9ad"
+  },
+  "s1:lofi:1:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "3ba047cf670b18bb0edb24700950bbdb98722a16041ecc61b2b01e8213d8994a"
+  },
+  "s1:lofi:1:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "e446b305769818255c357a4ec645b35560be0c358a52b22178d99ea0d682c084"
+  },
+  "s1:lofi:1:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ce60e286ba3db58a80a0a7f0afe64ceba40c31e196d236eb19f67d8c43f9bb7a"
+  },
+  "s1:lofi:1:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "a11b1aa66b4ac23075826118408cee790a9eb41eed9a59940f6bccc53665cbf8"
+  },
+  "s1:lofi:1:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "2e16985720cbcf9358316367f700cdc730b99bc7080606c68aaf6355355033bc"
+  },
+  "s1:lofi:2:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "99afe788f7996d1c621e1c1d0f973bc10bcc6717fb9e6ad058350ef920073c76"
+  },
+  "s1:lofi:2:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "14e610ed4cdd90a02bc4e63d74d0feea1acdd19c1252be36ffb51e91690d9f80"
+  },
+  "s1:lofi:2:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "530c6772",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "530c6772"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "91bfc738f998b40b05d729dfe43e417b97db5f4dd098a157d9dd6ddd6f966cf2"
+  },
+  "s1:lofi:2:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1a75dfb4",
+   "motif_ops": [
+    "voice@2:76-81"
+   ],
+   "motif_plan": [
+    "1a75dfb4"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "82496c7d716007e3f66d09b8acf137a63b5e19a3e5ebbcc3845d717e03333780"
+  },
+  "s1:lofi:2:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "f822dbe5a8bc995e97493cfca668c1e119cb3c3ed421b9e99cfbd2a0bf7cb381"
+  },
+  "s1:lofi:2:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "8cbd47ff62852fa55043bd744c2b3280b7ccc2e4ef5252f8bd29c8c926db10dc"
+  },
+  "s1:lofi:2:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ed579a027b99ef17114d07c286f5f7fa0e6bc9f23a9012dd736a0812ec02dc40"
+  },
+  "s1:lofi:2:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@1:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "35f3625445868541b2797843e3b443ec9a722bee9e0f66d4c370e3d19c101b27"
+  },
+  "s1:lofi:2:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "2b35ac2eb71376ef53b8502b857943d2830f97bb96c5a99d9ae12f38819d14b2"
+  },
+  "s1:lofi:2:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@7:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "c8e8e6d84170c37270dd30505a0d82cd67a3f5f21929b8118f9ef7323be97634"
+  },
+  "s1:lofi:2:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "d345c96bdfd14b504e5489df917074b4bc4633c2a5bee65d2dc5806426742ef9"
+  },
+  "s1:lofi:2:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "a4c33ec61fec26dab94c47de66d65352441d3e9fd96af5cdcdec691136552c59"
+  },
+  "s1:lofi:3:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "f5a6ba847c93c6d9921e41c3e95961d978e46f4b6644d7f82d915d7fc7f223e0"
+  },
+  "s1:lofi:3:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [
+    "bar4@4:76-79"
+   ],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "5f313e789a1df01478bae66c65d70a22ab80f4719a05d9a751ef014ada003111"
+  },
+  "s1:lofi:3:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "bar4@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "4adfd8af775435f39956bd75d42043d04203f3d7b3e4b97a586d0807aa5b10e0"
+  },
+  "s1:lofi:3:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "8871ca60f48910838e12fb90088f38fc99a7b4590095029ca99d20e9e57a11d3"
+  },
+  "s1:lofi:3:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@2:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "668d9d645291de0a2981f85084c86dbd5956a2e7dbf3ddb89b5365fa941001df"
+  },
+  "s1:lofi:3:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "68c40c6ae51882fc49b48294c803263d1d95a986b071aeaef4d238d84ec6afcb"
+  },
+  "s1:lofi:3:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "bar4@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "793c361b21c2a9247fcdcba8c187702e7f0852becf34258530bd18e03fa87854"
+  },
+  "s1:lofi:3:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "b5b15424bc0cdb3dd57004996206e2f5bb7d62c00cff70343752b6f4d9d4b448"
+  },
+  "s1:lofi:3:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "c8d9e364b0300e4df79214e681a900a07c383cb7fe3ad2b5cfa2b4f6aa81af6e"
+  },
+  "s1:lofi:3:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "voice@7:59-62"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "4a62d677a882354ac861f547f58a24d0a8214a5bdbf3007605f0e37a5b695cf7"
+  },
+  "s1:lofi:3:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ea034f101cc422286e2cc872e79deaa6ec0931a82acd40f4509c2330a23d627f"
+  },
+  "s1:lofi:3:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "e3ace586b1bd2711ae7160d86915e337314b43106b2653467bf22c5380678ebd"
+  },
+  "s1:lofi:4:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "55ce9c0b658d25c6236147fae3282cdba32e5be0d3341a8cf572a432007bf7d7"
+  },
+  "s1:lofi:4:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "bar4@4:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "976e7fbe30d6368782b867d41d6572f649c14aa63194a05c7efa2e40229bbac7"
+  },
+  "s1:lofi:4:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "0dab46d82439111c701bb395441fd0ea919479f1ea70c1999c1a4f61d22311c1"
+  },
+  "s1:lofi:4:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "fc52679d662e12eae309286cd5531175b714d24ab492293823c35f2870662684"
+  },
+  "s1:lofi:4:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@6:61-64"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "1a2ec31b457cd8b38d94403c2979a9d158fbaf36d5a73ad14f8c146a1e2c424f"
+  },
+  "s1:lofi:4:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "03c72208ad08286d741661fbf3f1de2d1931df4776e77a0b6953442c0a22f27c"
+  },
+  "s1:lofi:4:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [
+    "bar4@4:76-79"
+   ],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "1552a904867356e9872d466cca20aded0bd0f412858bf6d9dfd601f63ab6b24b"
+  },
+  "s1:lofi:4:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@7:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "37fb075f50b91c3075fd22790dbe66748fdfbc48419cecc9ee8ac17d8c639a48"
+  },
+  "s1:lofi:4:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "5370aeba762a89daed81a77070a969d42be9758d7bee735406e748ce6a26e29c"
+  },
+  "s1:lofi:4:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "bar4@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ed7c2c4766d2e74ce2ea9103435e8f50554bb2e215a4bca4acc446ca4ea048ed"
+  },
+  "s1:lofi:4:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "6425d6ca49718d94cb440f2571e2d3fcd11dfcb9a1d4d355341c384d3eaf619c"
+  },
+  "s1:lofi:4:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "4d1a99c800c4f199fcf6058d142b9fe6f7d00dd025b6835539c760836918d75f"
+  },
+  "s1:lofi:5:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "cd35c457de0271d8cc9d4130aec1df556e1c7eaf80505d9c68b6ee7f8093115e"
+  },
+  "s1:lofi:5:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "63ce3408622852fe36d217ce735c53a94f92bf949f2787c5e5ca06d65f00cdab"
+  },
+  "s1:lofi:5:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "6e9b260cd18c469604abd198789b6eb9668db98273e94a2a6234981f618c60ea"
+  },
+  "s1:lofi:5:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "b4fd92dc8e3e7dbb2dc057d8bc53dbcfb3f10738f21cd5148cb5fbd2bb702950"
+  },
+  "s1:lofi:5:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "f3ac03c3299beaae7d15005684dd059c60e5a30b8efd21102ceec2132e9d1939"
+  },
+  "s1:lofi:5:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "9be8f669f3ccf09bd8cd2870c0d0e3beda4f5624fad8d78b9e9a40e815212e9e"
+  },
+  "s1:lofi:5:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "bar4@4:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "cf384751426eb7aa6aaf8f97c7a1321b665968a3d89973d59266bf3ca7e37fcb"
+  },
+  "s1:lofi:5:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "fc97b12c4ed0b6265a8318b59446ada334c20378e74d125905085f5d41830e1a"
+  },
+  "s1:lofi:5:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "a7f923a5f5810002311d8418b56e702d0532df1261a6d923d6ec75ce314e4717"
+  },
+  "s1:lofi:5:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "9c25e8ce884e45170a033c45fabf46d04e218c2038249c6e4d53b54131cb0784"
+  },
+  "s1:lofi:5:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "347cbe1b87dcc66e8cd7df194ac8cf97ecb007af9b8b3b97c2e13802246d0fb1"
+  },
+  "s1:lofi:5:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "1bb687b2c264c9cb926ac348d1f485c4817140106ca1de9935fbb9f448cd59c7"
+  },
+  "s2:lofi:1:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "b500a294a3245024334b647955b692230b415e4035e82aeaaf9133c77da038e1"
+  },
+  "s2:lofi:1:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "e640a6025726f1bf816e2942e13f482ef8a3bec2acf32f2e89b5bbef1211c8cd"
+  },
+  "s2:lofi:1:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "02155d77",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "02155d77"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "a7ff794eed9056990be4dbbff08bbc6e1bd01e018cb12fed5a4a7dd22820ac09"
+  },
+  "s2:lofi:1:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "voice@6:76-81"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "3acb71e78a98378b6b85d1f925e8a2cc62d7c6a6d86156c4ac00c1e7cd2cafb2"
+  },
+  "s2:lofi:1:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "d884ad36bd7ec1de3759abd3d70d8ae65d36f86088c58af547e142d3f9ea358b"
+  },
+  "s2:lofi:1:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "2a4303e1ef565fba187a57e78267da8359557da09f0a3103748cf36ef3d6b0a3"
+  },
+  "s2:lofi:1:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "3a264d18c1feed18041511496156b7c4dde206005b15c044650140fbbc1d9bd4"
+  },
+  "s2:lofi:1:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@1:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "17082b38c7db85519a91d83d045ced34dc39e275387ae19eb2f4dfcd3bce8e5f"
+  },
+  "s2:lofi:1:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ca2ba14c1ce526439426d0c51b6983302d529a77cd34a1a7977156166c2988df"
+  },
+  "s2:lofi:1:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@6:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "7048c6399e838d35520e0863a7784caabb394a835100037f84ee5fea7e62c912"
+  },
+  "s2:lofi:1:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "25b3bd1283b44b6f26d14719ca5a41cfcd26f2eecebd679db7e5d1d0a8db0c33"
+  },
+  "s2:lofi:1:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "4fffc85686e97d4f58f59fcde5a3f59aada0ba28183589970adc77eab7574b75"
+  },
+  "s2:lofi:2:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "80c122e253c192bfe2921f106ba48f98bc3b9bb10e4fa0e1c77f6a52b77e3c2e"
+  },
+  "s2:lofi:2:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "guide@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "365d0c534fe0d0484b24c6faf3f4be578af3be6dbc037603f4570cf919997e7f"
+  },
+  "s2:lofi:2:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "e216ba598e707e2afe5fb74478d15f0ed7d0fc30005ca29b3bf87ef21607b9cb"
+  },
+  "s2:lofi:2:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "voice@7:59-62"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "3cd3ce3943692f70d778b5e7912e99355cf848f38d05f728f16c3daa739e3de7"
+  },
+  "s2:lofi:2:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@5:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "9261a1984470c8e7dadef7f953ad1c613c1bb7d2bf0989de28b2db7b0bbefd61"
+  },
+  "s2:lofi:2:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "b00af46841b3e8a5c71a7ecd0f3ef6a34b31f8f1753bb51bc9c93f592f31f0ed"
+  },
+  "s2:lofi:2:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "5acf282f41aba7f120f5f764ede4e19d4bb57f425768799a7340280bf29f1ce8"
+  },
+  "s2:lofi:2:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "52220953",
+   "motif_ops": [
+    "voice@1:61-64"
+   ],
+   "motif_plan": [
+    "52220953"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "3dd4b4c7f1aa0679fe2947c7718ad5dbcbbbb8db978bdc4787985ffc36117aef"
+  },
+  "s2:lofi:2:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "85de38e5b51dde93b27c370912fba002dcd40af1b9de68ff72fecaa3aed98e67"
+  },
+  "s2:lofi:2:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "8269a72bd2403e67d2ff555f0e770f01bd7d17a066ef53c7232e37826c2432fd"
+  },
+  "s2:lofi:2:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "0086be872227d7fbbb00671f99837c896d22fb66a3403c572083a33320c33a28"
+  },
+  "s2:lofi:2:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "ea204078bb32d85f3c63d12d9ac1f64ae2007890054a055d70b17e24a6257487"
+  },
+  "s2:lofi:3:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "a9dff3b91fa679f1c313c273d79d782e43fe12a87ab2a720cd5294d3b933b527"
+  },
+  "s2:lofi:3:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "952bc9dc8647a05a26cb15636ff1461ca47c63574a4b28bb2bf85528ebe770f2"
+  },
+  "s2:lofi:3:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "1654b451e8cc83659f828c05abc5cabbf8152da97ee79f9bf0c3700882381e84"
+  },
+  "s2:lofi:3:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@6:78-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "bb5c26a8d19405b7aed62a7166bcd478e79ca3737c2cbbc9a1c19a670ccfe94c"
+  },
+  "s2:lofi:3:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "32a65049",
+   "sha256": "651d48fc61d15128aee1478bd97c5ca73731060092ca454c9f71e6c949d560c5"
+  },
+  "s2:lofi:3:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "c6440f498963695da423e94ce6c3fe302b23847e452a9c6402c54b4cb37ba574"
+  },
+  "s2:lofi:3:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@2:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "b620e15efdbaf4a080d9326da174a16fc329a8884dd22255844838c21b48daed"
+  },
+  "s2:lofi:3:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "557cd7e4f3cf6af1e1406f07d6e424bdf230cb65cfab49ad94a37eb923a9cb0f"
+  },
+  "s2:lofi:3:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "d371b75e9f6f4aee8469eb65ee76f4eae3e60e062992a270c0313569e48fbbdc"
+  },
+  "s2:lofi:3:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@5:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "6f4201c1ae2db3eb8c965a4c978c60f71f376d9687816719333fb37370727e4a"
+  },
+  "s2:lofi:3:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "voice@3:61-64"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "3c7e8070ca82b404c2d9dc5f40e4ff390b6f9e90eee6795401a853efa92e2e91"
+  },
+  "s2:lofi:3:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "c296dbab501c5d1d1f77d304304356287d46c80b4ce6fd3883dc9ad45d105d3a"
+  },
+  "s2:lofi:4:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "88075cc7777f8664931f60f4145d2153c7d4f4dc082bfb71891787a4efaeaa9a"
+  },
+  "s2:lofi:4:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "bar4@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "67671ae45fbaff4061c023ee25055ff69894301db28d4dba27dae18ddc7c191e"
+  },
+  "s2:lofi:4:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "f3e780795f833bc9a1a9aaac889d6d88bab6a6a91f6ebe77d34a48da0e361911"
+  },
+  "s2:lofi:4:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "b0a4fa5e0267d221f46c91c439698926d969d360fd6c448f4f408cfd727b9411"
+  },
+  "s2:lofi:4:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "c739d00a681b146aaeffad4c7522a9d3a456802abffd5da6d311d0bebe9ba4ab"
+  },
+  "s2:lofi:4:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "adc40a385b6cc13c11cfc26772455f0b82b56f242335f3f2a5453bcd42a5ed41"
+  },
+  "s2:lofi:4:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "29baf1dd98c8362b4df95fb5a5c78a4a29d2b11f324162bb473ed2646d5a0f26"
+  },
+  "s2:lofi:4:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "voice@3:59-62"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "32a65049",
+   "sha256": "264a0c0c3681b8dd25e1e86120b39b3b09769f0712ad50930d283ae014b2cc9a"
+  },
+  "s2:lofi:4:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "2373524a8320e0e3caff6431cb3fbfc4a0bc15099a32aac6663e5851656c6039"
+  },
+  "s2:lofi:4:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@1:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "41d62d1ae44ffc70f112a12363f5a8a057817ba8e4e534ad6c3af2150e71da34"
+  },
+  "s2:lofi:4:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "7d497d1a822f841134b0875ee124b630344f6c100423851f70356dd436f5a98e"
+  },
+  "s2:lofi:4:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "0b3d4fe4e57085f1b84337773f09466e92c3d93bb14d1f09495adb9b72d49f5d"
+  },
+  "s2:lofi:5:v0": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "f1676246f8883b668c61ee39c202426cf774e24e53516b486b2c3ec3b583dd32"
+  },
+  "s2:lofi:5:v1": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [
+    "bar4@4:76-79"
+   ],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "4f2e9e05f398d0e5b463a150d05d4918f36c13fa5646025bd476be6351500414"
+  },
+  "s2:lofi:5:v10": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "recall@5-8"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "3d47af7fa28788cf7d4d8e33f591563b49bc572854893a4702a93ee3c223116d"
+  },
+  "s2:lofi:5:v11": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "00d18b48e83b432a3ecc6c3e02641142d0a842ecfa22f70eead64319ac72770c"
+  },
+  "s2:lofi:5:v2": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@7:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "5927ad3c3136a09a2a12d870e61a4379f984f441d067b12f306b09ddf7d27c28"
+  },
+  "s2:lofi:5:v3": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "3da10d28790f873888e66b85c2c9b73edc1bb0f72f567760e682f2f1af5cd4c5"
+  },
+  "s2:lofi:5:v4": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "bar4@4:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "3e9041eb836fde60864f4e9817c8583e325424d2bf87bbf8404dfcff10177221"
+  },
+  "s2:lofi:5:v5": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1abfd301",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "1abfd301"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "b378995f4137c4186e43772fa0c2cf41a0b538a22689533352fe90236bd89b8d"
+  },
+  "s2:lofi:5:v6": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "71cd839cce72c8cf48ab85ced0caf6769178b0ed3e8528410717ac1f3b05ded6"
+  },
+  "s2:lofi:5:v7": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@5:76-81"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "d3b377673fbda89e67b7caaa3005cdfff520c4798bd56325e773c5c1070be3e0"
+  },
+  "s2:lofi:5:v8": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "77590d3e",
+   "motif_ops": [
+    "voice@6:76-79"
+   ],
+   "motif_plan": [
+    "77590d3e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "7cb7f7ba",
+   "sha256": "bcebf7f4812002276e04aee3ea54a291f6825df0bba7085b22f48da82c6167cf"
+  },
+  "s2:lofi:5:v9": {
+   "dev_version": "v2c.lofi.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.lofi.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "32a65049",
+   "sha256": "41dc4d73438433449b12ddcfca53b476b3b276b63795de4231b3ea78ce13f63d"
+  }
+ },
+ "meta": {
+  "accepted_auditions": {
+   "v2c_calm2_s1": [
+    "cd08456a275aacc31b0a68c242c75749b764dece195eff4e8122623945869ab8",
+    "6ebebf9ee175fa391dd23b6d9b5d815aaebc30a2aa7de8961a2fe54c8fb6601a",
+    "510c894d6a7fbeafb5fab846cfc57a5405fea8a1f21901f6260d4c46528e2849",
+    "22fb7d87ba6e1aeef6211acd46964e4b7d6821818c8142ca1b7434b98ba86eda",
+    "29345f122187851a40bb57fbb0715edea5db1e47073954b028d9190a6278fd26",
+    "141eb8b7f212efe38e56249459561ad896db214ab2285de4ed5e11a9b117c23b",
+    "25b031871f25507c2cb94ebcde60d69f4015690f964a76fcac2b31df2a310aa8",
+    "9f5b41a0d879e9cd38e67ec9a31e0688eabd6bc159e4a85eda0e8f833e2cf742",
+    "899913e02928f4a17e52c65918ad9add4f87a2e41731e05ff6030d91ce438bcb",
+    "f316adf0335ba0500e9097170a73ac8274ad3d154c91a10486364b55027e5d77",
+    "95d9c73f2ca1d9fbc45045c23386882d48a893e527e4fa0531581ea95329d8b2",
+    "2f223ebbb17794e60dbc3a62ed20e18b38f63c3aceae503daa13b172d990ff73"
+   ],
+   "v2c_lofi2_s1": [
+    "99afe788f7996d1c621e1c1d0f973bc10bcc6717fb9e6ad058350ef920073c76",
+    "14e610ed4cdd90a02bc4e63d74d0feea1acdd19c1252be36ffb51e91690d9f80",
+    "f822dbe5a8bc995e97493cfca668c1e119cb3c3ed421b9e99cfbd2a0bf7cb381",
+    "8cbd47ff62852fa55043bd744c2b3280b7ccc2e4ef5252f8bd29c8c926db10dc",
+    "ed579a027b99ef17114d07c286f5f7fa0e6bc9f23a9012dd736a0812ec02dc40",
+    "35f3625445868541b2797843e3b443ec9a722bee9e0f66d4c370e3d19c101b27",
+    "2b35ac2eb71376ef53b8502b857943d2830f97bb96c5a99d9ae12f38819d14b2",
+    "c8e8e6d84170c37270dd30505a0d82cd67a3f5f21929b8118f9ef7323be97634"
+   ],
+   "v2c_lofi3_s1": [
+    "f5a6ba847c93c6d9921e41c3e95961d978e46f4b6644d7f82d915d7fc7f223e0",
+    "5f313e789a1df01478bae66c65d70a22ab80f4719a05d9a751ef014ada003111",
+    "668d9d645291de0a2981f85084c86dbd5956a2e7dbf3ddb89b5365fa941001df",
+    "68c40c6ae51882fc49b48294c803263d1d95a986b071aeaef4d238d84ec6afcb",
+    "793c361b21c2a9247fcdcba8c187702e7f0852becf34258530bd18e03fa87854",
+    "b5b15424bc0cdb3dd57004996206e2f5bb7d62c00cff70343752b6f4d9d4b448",
+    "c8d9e364b0300e4df79214e681a900a07c383cb7fe3ad2b5cfa2b4f6aa81af6e",
+    "4a62d677a882354ac861f547f58a24d0a8214a5bdbf3007605f0e37a5b695cf7"
+   ]
+  },
+  "created": "2026-10-01T21:19:18",
+  "description": "SessionComposer develop-mode MIDI sha256 freeze (calm, lofi); see tests/test_develop_identity_v2c.py",
+  "git_branch": "v2-controlled-live-generation",
+  "git_dirty": true,
+  "git_head": "2bdf0e927ac5f5ebb939f9ae2c6f2b8450b6a9b8",
+  "stims": [
+   1,
+   2,
+   19
+  ],
+  "tiers": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "versions": {
+   "numpy": "2.5.2",
+   "pretty_midi": "0.2.11.post0",
+   "python": "3.12.13"
+  },
+  "visits": 12
+ }
+}

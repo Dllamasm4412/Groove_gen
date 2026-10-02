@@ -2,11 +2,12 @@
 
 Short source of truth for the v2 (controlled live generation) work. The design,
 history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4.4,
-6.7-6.12); this file only records the current state and the next step.
+6.7-6.13); this file only records the current state and the next step.
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: `7e4b5b9` v2b.0 motif
+- Branch `v2-controlled-live-generation`. Latest commits: `2bdf0e9` v2b.1 melody-only
+  checkpoint, `7e4b5b9` v2b.0 motif
   prototype, `03ff71c` audition
   harness, `62f7944` A6 novelty balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
   v2a.2, `d0cf24c` certification, `4e88a0a` v2a.
@@ -39,6 +40,14 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   'v2b.0', so v2b.1 replays the certified and auditioned Step A MIDI. Plumbing:
   `SessionGenerator(develop=)`, `certify_stimuli.py --develop`,
   `audition_v2.py --generator v2b|v2-v2b`.
+- `composer/develop_engine.py` (v2c, uncommitted pending approval): the shared
+  development engine (selection, history, fallbacks, generic guard, chord context,
+  levels). Policies are registered in `POLICIES`: hiphop `motif.py` (v2b.1, now a
+  policy on the engine, MIDI byte-identical), `composer/dev_calm.py` (v2c.calm.0) and
+  `composer/dev_lofi.py` (v2c.lofi.0). Other genres have no policy and are unchanged.
+  Level tables are `composer/levels_calm.py`, `levels_lofi_color.py` and
+  `levels_lofi_stab.py`. `develop_metrics.py` compares calm / lofi v2a.3 vs
+  developed (plan 6.13).
 - `composer/hook_levels.py`: measured per-(pitch, velocity) piano levels, generated
   by `measure_hook_levels.py`, sha-pinned to the sf2.
 - `pitched_metrics.py` (diagnostic): melody/bass/whole-segment repetition metrics
@@ -58,9 +67,14 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   snare, calm kick and rim, hiphop slot-10 kick).
 - Certification thresholds do not change in v2a.3; no envelope loosening without
   evidence reported first.
-- v2b: drums byte-identical to v2a.3; non-hiphop cells byte-identical; onsets,
-  note counts, velocities, LH and bass unchanged; the generator reads no physiology
-  (`tests/test_generator_boundary.py`, `tests/test_motif.py`).
+- Develop mode:
+  - genres without a policy (rnb, pop, latin, rock) are byte-identical to v2a.3;
+  - hiphop v2b.1 is byte-identical to its fixture (`tests/test_develop_identity.py`);
+  - onsets, note counts, velocities, bass, progressions, tempo and programs are
+    unchanged;
+  - drums equal v2a.3 except in calm (drum window 12);
+  - the generator reads no physiology (`tests/test_generator_boundary.py`,
+    `tests/test_motif.py`, `tests/test_develop_engine.py`).
 
 ## Previous certification (v2a.2, audio run `renders/certification/20260930_122337`)
 
@@ -248,10 +262,80 @@ Architecture of hiphop v2b.1:
   The listening comparison was `stepB_hiphop3_s1`; its 03 file is the rejected bass
   prototype.
 
+## Pitched audit, non-hiphop genres (2026-10-01, MIDI only, no generator change)
+
+Base segments via `schedule()` + `generate_segment()`, 12 visits x stim seeds 1-2,
+plus 150 sampled base seeds per cell. v2a.3 leaves pitched tracks equal to the base
+(checked on 7 cells).
+- Every genre: the 3 visits of a block replay identical pitched material (calm 88 s,
+  lofi 74 s, rnb 58 s, latin 55 s, pop 49 s, rock 44-52 s per block).
+- rnb, lofi, pop, latin: each genre uses exactly 4 chord pc-sets, and the 4
+  "progressions" are reorderings of the same 4 chords. The harmony is effectively
+  seed-invariant within a genre.
+- calm: the rhythm is seed-invariant. The piano plays one note on every downbeat (8 per
+  segment), the pad changes chord every 2 bars, and the drums are a fixed grid. Only
+  the pitches vary (the seed space is all-distinct). calm:1 and calm:2 produce
+  identical MIDI for a given seed (`max(2, int(d*8))` = 2 at both densities). The
+  ladder is not changed; this is recorded for later. 22% of piano notes clip at
+  velocity 127. Drum period 5 (v2a.3 `REPEAT_WINDOW` 4); a scratch run with a window
+  of 12 gave 12/12 distinct drums and 0 fallbacks (MIDI only, not adopted).
+- lofi / rnb: no melody. The keys track is a root+3rd dyad on beat 3, plus random
+  off-beat stabs at density >= 0.5. At density < 0.5 every pitched track loops 4 bars
+  x2. EP has 8 contents in the seed space, bass 16.
+- pop: the lead (program 25) is a per-bar chord-tone walk, 8/8 distinct bars, with no
+  internal motif. It is new every block (cross-block Jaccard 0.01-0.03).
+- latin: no melody (nylon montuno triads, piano dyads, tumbao). Every track loops 4
+  bars. The whole pitched seed space is 8 contents (tiers 1-2) or 12 (tiers 3-5); bass
+  and piano have 4, fixed by the progression. Cross-block exact repeats are frequent
+  (latin:2 s1: 2 distinct of 4 blocks).
+- rock: rock:3-4 have 4 pitched contents (progression only), rock:1-2 guitar and the
+  rock:5 lead are seed-varied. Listening at rock:3 was natural, so no change.
+- `hook_levels` covers program 0 at pitches 70-98 and velocities up to 112 only.
+  calm piano (62-81, up to 127), keys (60-81), pad 89, EP 4, guitar 25 and nylon 24
+  need tables before audio certification.
+- Proposed order: calm, lofi/rnb (one generator; lofi is the live initial cell), pop,
+  latin, rock none. Shared engine + genre policy; pitch-only; bass and harmony
+  unchanged.
+
+## v2c shared engine, Calm and Lo-fi (2026-10-01, plan 6.13; uncommitted)
+
+- Engine plus policies as above. Hiphop v2b.1 is byte-identical; no seed salt
+  changed.
+- Calm (calm:2 first, all tiers run):
+  - pitch-only piano, chord tones of the pad's bar chord;
+  - one tone move per visit, or a recall in odd blocks, and a bar-8 ending;
+  - 12-visit exact / near anti-repeat;
+  - not brighter or higher (mean +0.5 max, no new top);
+  - drum window 12 (develop only): 12/12 distinct, 0 drum fallbacks in 24 visits.
+
+  Results:
+  - MIDI: exact previous-visit repeats 8 -> 0-1; distinct 0.33 -> 0.92-1.0.
+  - Audio: segment_ok 0.583 vs base 0.625. All flips come from the drums (window 12
+    picks costlier variants late), not the piano. This is a residual; the proposed
+    fix is a pulse proxy in develop-mode drum ranking.
+- Lo-fi (lofi:2 prototype, lofi:3 live start):
+  - keys-only guide-tone / voicing development with EP-stacked adjacent dyads;
+  - one op per visit;
+  - source voicing may recur;
+  - pitched p95 never lowered (the lofi:3 bases sit on the v1 p95 floor).
+
+  Results:
+  - MIDI: exact previous-visit repeats 8-9 -> 0; distinct 0.33 -> 0.83-1.0.
+  - Audio: lofi:3 24/24 and lofi:2 20/24, identical to base, no flips, ΔLUFS
+    <= 0.03.
+- Not fixed, recorded:
+  - calm:1 = calm:2 MIDI;
+  - 22% of calm piano notes at velocity 127.
+- Auditions in `renders/audition_v2/`, all A/B v2a.3 vs developed, stim_seed 1:
+  - `v2c_calm2_s1` (calm:2 x12);
+  - `v2c_lofi3_s1` (lofi:3 x8);
+  - `v2c_lofi2_s1` (lofi:2 x8).
+
 ## Next task
 
-1. Commit the v2b.1 melody-only checkpoint once approved. Do not add bass variation.
-   Do not expand melody development to other genres without a new decision.
+1. Developer listening to the v2c auditions. Then, on approval, commit the shared
+   engine plus Calm and Lo-fi. Next is R&B, stronger than lofi (plan 6.13
+   recommendation). Do not add bass variation.
 2. Then the envelope review, separate from A6 and the generator:
    - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
      seed-invariant);
@@ -276,4 +360,9 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 certify_stimuli.py --cells hiphop:1,hiphop:3,hiphop:5 --visits 8 --audio --workers 3 --develop
 ../.venv/bin/python3.12 audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1 --generator v2-v2b
 ../.venv/bin/python3.12 measure_hook_levels.py                              # after a soundfont change
+../.venv/bin/python3.12 measure_hook_levels.py --profile calm               # also lofi_color, lofi_stab
+../.venv/bin/python3.12 -m pytest tests/test_develop_engine.py tests/test_develop_identity.py tests/test_dev_calm.py tests/test_dev_lofi.py -q
+../.venv/bin/python3.12 develop_metrics.py --cells calm:1,calm:2,lofi:2,lofi:3 --visits 12 --stim-seeds 1,2,19
+../.venv/bin/python3.12 certify_stimuli.py --cells lofi:2,lofi:3 --visits 12 --audio --workers 3 --develop --stim-seeds 1,2
+../.venv/bin/python3.12 audition_v2.py --mode dwell --cell calm:2 --visits 12 --stim-seed 1 --generator v2-v2b
 ```

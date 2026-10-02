@@ -43,14 +43,19 @@ far a variation moves. Of those, the lowest op cost (variation.COST) that
 passes the energy guard is used. If no round has one, the valid candidate
 nearest the range is used (novelty_fallback); if none is valid, the base.
 
-Motif development (v2b, opt-in: SessionComposer(stim_seed, develop=True))
--------------------------------------------------------------------------
-After drum selection, composer/motif.py develops the pitched hook of the
-DEVELOP_GENRES cells across visits (motif memory carried across blocks).
-Seeds still hash GEN_VERSION and the drum history holds the pre-development
-segment, so the drum layer is identical to develop=False; info gen_version
-is GEN_VERSION + '+' + motif.DEV_VERSION; motif seeds hash motif.SEED_VERSION.
-develop=False is unchanged v2a.3.
+Pitched development (opt-in: SessionComposer(stim_seed, develop=True))
+----------------------------------------------------------------------
+After drum selection, the shared engine (composer/develop_engine.py) develops
+the pitched material of the cells whose genre has a registered policy
+(develop_engine.POLICIES: hiphop v2b.1 composer/motif.py, calm
+composer/dev_calm.py, lofi composer/dev_lofi.py), with memory carried
+across blocks. Seeds still hash GEN_VERSION and the drum history holds the
+pre-development segment; info gen_version is GEN_VERSION + '+' + the
+policy's DEV_VERSION and development seeds hash the policy's SEED_VERSION.
+The drum layer is identical to develop=False except where a policy sets
+DRUM_REPEAT_WINDOW (calm: 12 instead of REPEAT_WINDOW), logged as info
+drum_repeat_window. develop=False, and develop=True for genres without a
+policy, is unchanged v2a.3.
 """
 
 from __future__ import annotations
@@ -167,7 +172,7 @@ class SessionComposer:
         self.gen_version = GEN_VERSION
         self.develop = bool(develop)
         self._history: dict[tuple, tuple] = {}   # (genre, tier, visit) -> (drum_sha, content_sha, drum bar sets, bar signatures)
-        self._motifs: dict[tuple, object] = {}   # (genre, tier, visit) -> motif.MotifRecord (develop only)
+        self._motifs: dict[tuple, object] = {}   # (genre, tier, visit) -> develop_engine.DevRecord (develop only)
 
     def _earlier(self, genre: str, tier: int, visit_idx: int) -> list[tuple]:
         """(drum_sha, content_sha, drum bar sets, bar signatures) of visits 0..visit_idx-1 of the cell, composing
@@ -178,14 +183,15 @@ class SessionComposer:
         return [self._history[(genre, int(tier), v)] for v in range(visit_idx)]
 
     @staticmethod
-    def _structure_failures(pm: pretty_midi.PrettyMIDI, earlier: list[tuple], drum: list) -> list[str]:
+    def _structure_failures(pm: pretty_midi.PrettyMIDI, earlier: list[tuple], drum: list,
+                            window: int = REPEAT_WINDOW) -> list[str]:
         import stimulus_metrics as sm
 
         drum_sha, content_sha = sm.content_sha(drum), sm.content_sha(sm.bar_onset_sets(pm, BARS))
         fails = [f'bar{e + 1}_unmarked' for e in (3, 7) if not sm._phrase_end_marked(drum, e)]
         if sm.max_identical_run(drum) > MAX_IDENTICAL_RUN:
             fails.append('identical_run')
-        if drum_sha in {e[0] for e in earlier[-REPEAT_WINDOW:]}:
+        if drum_sha in {e[0] for e in earlier[-window:]}:
             fails.append('drum_repeat')
         if content_sha in {e[1] for e in earlier}:
             fails.append('full_repeat')
@@ -205,24 +211,29 @@ class SessionComposer:
                 return c
         return None
 
-    def _develop(self, genre: str, tier: int, sched: SegmentSchedule, tempo: float,
-                 src: pretty_midi.PrettyMIDI, info: dict) -> pretty_midi.PrettyMIDI:
-        """v2b motif development of src (visits 0..visit_idx-1 of the cell are already composed)."""
-        from composer.motif import DEV_VERSION, SEED_VERSION, MotifRecord, develop, read_hook
+    def _policy(self, genre: str):
+        """The genre's development policy module (develop=True only), else None."""
+        from composer.develop_engine import policy_module
 
-        info['gen_version'] = f'{self.gen_version}+{DEV_VERSION}'
-        hook = read_hook(src, sched.session_key, tempo)
-        if hook is None:
-            info['motif_error'] = 'no_hook'
+        return policy_module(genre) if self.develop else None
+
+    def _develop(self, policy, genre: str, tier: int, sched: SegmentSchedule, tempo: float,
+                 src: pretty_midi.PrettyMIDI, info: dict) -> pretty_midi.PrettyMIDI:
+        """Pitched development of src by the genre's policy (visits 0..visit_idx-1 of
+        the cell are already composed)."""
+        info['gen_version'] = f'{self.gen_version}+{policy.DEV_VERSION}'
+        ctx = policy.read_context(src, sched, tempo)
+        if ctx is None:
+            info['motif_error'] = policy.NO_CONTEXT
             return src
         cell = (genre, int(tier))
         records = [self._motifs[cell + (v,)] for v in range(sched.visit_idx) if cell + (v,) in self._motifs]
         try:
-            out, rec, minfo = develop(src, hook, records, sched.visit_idx,
-                                      H('motif', self.stim_seed, genre, int(tier), sched.visit_idx, SEED_VERSION))
+            out, rec, minfo = policy.develop(src, ctx, records, sched.visit_idx,
+                                             H('motif', self.stim_seed, genre, int(tier), sched.visit_idx,
+                                               policy.SEED_VERSION))
         except Exception as exc:  # noqa: BLE001 - any development bug keeps the drum-varied segment
-            prev = records[-1] if records else MotifRecord(hook.motif, hook.motif, (hook.motif,) * 4, 'base', ())
-            out, rec, minfo = src, MotifRecord(prev.motif, prev.theme, (hook.motif,) * 4, 'fallback', ()), {
+            out, rec, minfo = src, policy.unchanged_record(ctx, records), {
                 'motif_error': repr(exc), 'motif_fallback': True}
         self._motifs[cell + (sched.visit_idx,)] = rec
         info.update(minfo)
@@ -235,6 +246,8 @@ class SessionComposer:
 
         sched = schedule(self.stim_seed, genre, tier, visit_idx, self.gen_version)
         earlier = self._earlier(genre, tier, sched.visit_idx)
+        policy = self._policy(genre)
+        window = getattr(policy, 'DRUM_REPEAT_WINDOW', REPEAT_WINDOW)
         tempo, density = cell_plan(genre, tier)
         base = generate_segment(genre, tempo_bpm=tempo, density=density,
                                 duration_bars=BARS, seed=sched.base_seed)
@@ -244,6 +257,8 @@ class SessionComposer:
             **asdict(sched), 'gen_attempts': 0, 'gen_fallback': True, 'form_template': None,
             'bar_roles': None, 'drum_ops': None, 'guard_failures': [], 'error': None,
         }
+        if policy is not None:
+            info['drum_repeat_window'] = window
         # Candidates that leave a phrase end unmarked or repeat an earlier visit
         # are dropped, then those outside the novelty range; the cheapest
         # remaining one that passes the guard wins. Any exception falls back
@@ -262,7 +277,7 @@ class SessionComposer:
                     varied, vinfo = vary(base, genre, seed, relax=rnd, avoid=avoid, fresh=rnd >= 1)
                     drum = sm.bar_onset_sets(varied, BARS, 'drum')
                     c = {'k': k, 'seed': seed, 'relax': rnd, 'pm': varied, 'vinfo': vinfo, 'verdict': None,
-                         'fails': self._structure_failures(varied, earlier, drum),
+                         'fails': self._structure_failures(varied, earlier, drum, window),
                          'r4_prev': None if prev is None else sm.near_repeat_similarity(prev, drum),
                          'r4_base': sm.near_repeat_similarity(base_drum, drum)}
                     cands.append(c)
@@ -292,9 +307,6 @@ class SessionComposer:
         drum = sm.bar_onset_sets(out, BARS, 'drum')
         self._history[(genre, int(tier), int(visit_idx))] = (
             sm.content_sha(drum), sm.content_sha(sm.bar_onset_sets(out, BARS)), drum, bar_signatures(out, genre))
-        if self.develop:
-            from composer.motif import DEVELOP_GENRES
-
-            if genre in DEVELOP_GENRES:
-                out = self._develop(genre, tier, sched, tempo, out, info)
+        if policy is not None:
+            out = self._develop(policy, genre, tier, sched, tempo, out, info)
         return out, info

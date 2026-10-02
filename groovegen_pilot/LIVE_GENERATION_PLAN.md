@@ -1231,6 +1231,169 @@ visit, over visits that share the previous visit's base seed.
   - it has no sample below MIDI 26 at velocity <= 100;
   - moving the hiphop ghost note to 16th 10 cost pulse_clarity -0.018 at hiphop:3.
 
+### 6.13 Shared development engine; Calm and Lo-fi slices (v2c, 2026-10-01)
+
+Opt-in only (`SessionComposer(stim_seed, develop=True)`), not wired live, not
+committed pending approval. Default v2a.3 and v1 output unchanged.
+
+#### Architecture
+
+    SessionComposer._develop -> develop_engine.select -> genre policy
+
+- `composer/develop_engine.py` owns what every genre shares:
+  - the record type and the deterministic candidate loop (sub-seed `seed << 8 | k`);
+  - the history window, energy cost with optional repair, the ranking and the
+    gentle pass;
+  - the fallback chain: previous material with a new ending, then unchanged;
+  - the generic guard (locked tracks, note shapes, energy_guard BOUNDS, pitched
+    register shift);
+  - measured levels, chord context and IDs.
+- Policies are registered in `POLICIES`: `motif.py` (hiphop, v2b.1),
+  `dev_calm.py` (v2c.calm.0) and `dev_lofi.py` (v2c.lofi.0). Any other genre has
+  no policy and is returned unchanged.
+- A policy can set `DRUM_REPEAT_WINDOW`. It applies in develop mode only and is
+  logged as `drum_repeat_window`.
+- Chord context (`develop_engine.chord_context`): per bar, the pitch classes held
+  at least half a bar by the comping tracks the policy names (calm pad 89; lofi EP 4).
+  No global scale. It is used only to choose legal pitches.
+- Seeds: `H('motif', stim, genre, tier, visit, SEED_VERSION)`. Hiphop keeps
+  `SEED_VERSION` 'v2b.0'. Calm and lofi use their own salts, and no existing salt
+  changed.
+- Hiphop v2b.1 is byte-identical after the refactor (`tests/test_develop_identity.py`
+  against the pinned fixture).
+- Level tables (`measure_hook_levels.py --profile calm|lofi_color|lofi_stab`) are
+  sha-pinned to Musyng_Kite.sf2. Each is measured with the note length the genre
+  plays: calm one bar at 65 bpm; lofi color 1.5 beats and stab 0.4 beats at 78 bpm.
+  There are no tables for R&B, Pop or Latin.
+
+#### Calm (v2c.calm.0)
+
+The rules are in the `dev_calm.py` docstring. In short:
+- pitch-only piano;
+- chord tones of the pad's bar chord;
+- within 5 of the block base;
+- no note above the base's highest, mean rise <= 0.5;
+- leaps <= max(base leap, 5);
+- predicted level within 0.2 dB.
+
+Schedule per block of three visits:
+- pos 0: the base line;
+- pos 1: one tone move, or, in odd blocks, a recall of a 2-bar region of the
+  previous block's theme snapped to the current chords;
+- pos 2: a new bar-8 ending.
+
+History: an exact repeat of the last 12 visits is rejected, and so is a line within
+one note of any of them except the previous visit. Drum window 12 in develop mode.
+
+- **MIDI (calm:1/2, seeds 1/2/19, 12 visits, `develop_metrics.py`):**
+
+  | metric | v2a.3 | v2c.calm.0 |
+  |---|---|---|
+  | exact repeat of previous visit | 8 | 0 (1 at s1 calm:2, an unchanged fallback) |
+  | distinct lines / visits | 0.25-0.33 | 0.92-1.0 |
+  | pitched repeats in window | 8 | 0-1 |
+  | ending variety | 0.25-0.33 | 0.42-0.58 |
+  | distinct drum layers | 0.58-0.83 (period 5-6) | 1.0 |
+  | max mean shift (semitones) | 0 | 0.25-0.5 (upward bound 0.5) |
+  | top-note rise | 0 | 0 |
+
+  Pad and drums are as in v2a.3 at every visit (`fixed_same` 12/12).
+- **Drum window 12, no exhaustion:** over 24 visits (calm:1/2, 3 seeds), 21-22
+  distinct drum layers, recurrence gaps 13-19 visits, 0 drum fallbacks.
+- **Selection census (12 visits x 3 seeds):** hard fallbacks (previous / unchanged)
+  are 3/72 at tiers 1-2 and 13/108 at tiers 3-5 (off the live ladder). The causes
+  are the 0.2 dB level tolerance and the pitched-bounds guard; neither was loosened.
+- **Audio** (`renders/certification/v2c_calm0_dev` vs `v2c_calm0_base`, stims 1-2,
+  12 visits): segment_ok is 0.583 developed vs 0.625 base.
+  - calm:1: 20/24 vs 21/24.
+  - calm:2: 8/24 vs 9/24. The base itself misses centroid 7, energy 6, LUFS 6 and
+    pulse 5.
+
+  Attribution:
+  - Hybrid renders (developed piano on base drums, and the reverse) put every
+    centroid / pulse flip on the drums. Window 12 forces costlier drum variants
+    late in the session.
+  - The developed piano alone moves centroid by about 2 Hz, pulse by 0.003 and
+    LUFS by <= 0.07 LU.
+  - Kept as a residual. The proposed fix is a develop-mode pulse / on-beat MIDI
+    proxy in drum ranking, not a smaller window; shared drum selection is unchanged.
+- **Not fixed, recorded:**
+  - calm:1 and calm:2 give identical MIDI for a seed (`max(2, int(d*8))` = 2), so
+    their developed output is identical too;
+  - 22% of piano notes are at velocity 127 (clipping). The level table includes
+    127, and development does not change velocities.
+- **Audition** `renders/audition_v2/v2c_calm2_s1` (calm:2 x12, stim_seed 1,
+  `01_..._v2` v2a.3 vs `02_..._v2b` v2c.calm.0, 355 s each).
+
+#### Lo-fi (v2c.lofi.0)
+
+Lofi is `_gen_rnb` softened (`lofi_cell.py` is not on this path). The rules are in
+the `dev_lofi.py` docstring. In short:
+- only the 'keys' track changes pitch;
+- each bar's dyad is two adjacent tones of the chord as the EP stacks it, a 2nd to
+  a 4th apart (no 7th added where the EP has none);
+- the color dyad and its stabs share the dyad;
+- top voice within 5 of the source, never above its highest, mean within 1.0 either
+  way, leaps <= max(5, the source's);
+- predicted level within 0.2 dB;
+- the segment's pitched p95 is not lowered.
+
+Schedule: one op per visit.
+- pos 0: the source voicing (may recur);
+- pos 1: guide (bars 5-8 smoothest), voice (one bar) or bar 4, or, in odd blocks,
+  a recall of the previous block's top-voice contour over bars 5-8;
+- pos 2: bar-8 ending.
+
+History: exact repeats only, window 6 (lighter than calm).
+
+- **Envelope floor (durable).** The lofi:3 v2a.3 bases sit on the v1
+  `pitched_pitch_p95` envelope floor (67.02; bases 68.1-68.9). The first run
+  re-voiced the peak bar downward (for example C#+E on F#min7), dropping three 69s
+  and putting four segments at 66.55-67.0 (MIDI misses only, no audio misses).
+
+  Two filters were added:
+  - the top-voice mean bound became symmetric;
+  - the guard rejects any segment whose pitched p95 falls below the source's.
+
+  After this, 0/108 segments have lowered p95.
+- **MIDI (lofi:2/3, seeds 1/2/19, 12 visits):**
+
+  | metric | v2a.3 | v2c.lofi.0 |
+  |---|---|---|
+  | exact repeat of previous visit | 8-9 | 0 |
+  | exact repeats in window | 8-9 | 0-2 (source recurrences allowed) |
+  | distinct voicings / visits | 0.25-0.33 | 0.83-1.0 |
+  | voicing variety | 1.25-2.29 | 2.0-2.86 |
+  | top-contour similarity | 0.84-0.97 | 0.68-0.77 |
+  | ending variety | 0.17-0.33 | 0.33-0.42 |
+  | max mean shift | 0 | 0.75-1.0 |
+
+  EP, bass and drums are byte-identical to v2a.3 (`fixed_same`, `drums_same` 12/12).
+- **Selection census:** 5/108 unchanged fallbacks, 20 gentle. Roles: base 36,
+  develop 59, recall 8.
+- **Audio** (`renders/certification/v2c_lofi0_dev` vs `v2c_lofi0_base`, stims 1-2,
+  12 visits):
+  - lofi:3 24/24 for both;
+  - lofi:2 20/24 for both, with identical misses (energy_e 3, pulse 1) inherited
+    from v2a.3;
+  - no flips; per-segment ΔLUFS mean 0.000, max 0.030.
+
+  The pre-filter run is kept in `v2c_lofi0_dev_prefilter`.
+- **Audition:**
+  - `renders/audition_v2/v2c_lofi3_s1` (lofi:3 x8, stim_seed 1, A/B, 198 s each);
+  - `v2c_lofi2_s1` (lofi:2 x8).
+
+#### R&B recommendation (not implemented)
+
+- R&B shares the lofi generator, so reuse `dev_lofi`'s dyad / guide-tone machinery
+  at a stronger setting:
+  - near-repeat history;
+  - two ops per visit;
+  - 7ths where the EP plays them;
+  - a short chord-tone hook in the keys.
+- Bass, progressions and tempo stay unchanged. R&B needs its own level table and
+  p95 / centroid floor check against its own v1 envelope before certification.
+
 ---
 
 ## 7. First implementation task: `groovegen_pilot/stimulus_audit.py`

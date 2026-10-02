@@ -795,7 +795,7 @@ def parse_args(argv=None):
     ap.add_argument('--audio-variants', type=int, default=32, help='v1_wide variants rendered per cell')
     ap.add_argument('--sf2', default=str(HERE / 'Musyng_Kite.sf2'))
     ap.add_argument('--workers', type=int, default=6)
-    ap.add_argument('--develop', action='store_true', help='v2_session with v2b motif development (opt-in)')
+    ap.add_argument('--develop', action='store_true', help='v2_session with pitched development (opt-in; develop_engine policy per genre)')
     ap.add_argument('--ladder', choices=('measured', 'prior'), default='measured')
     ap.add_argument('--out', default=None, help='output dir (default renders/certification/<stamp>)')
     args = ap.parse_args(argv)

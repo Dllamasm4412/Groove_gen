@@ -1,20 +1,28 @@
 """
-Measure the rendered level of the hiphop hook instrument (GM program 0) per
-pitch and velocity, and write composer/hook_levels.py (v2b motif level check,
-LIVE_GENERATION_PLAN.md section 6.12).
+Measure the rendered level of a pitched development instrument per pitch and
+velocity, and write its level table (v2 development level check,
+LIVE_GENERATION_PLAN.md sections 6.12-6.13).
 
 Why: the soundfont's piano is built from sample zones whose levels step by up
 to ~7 dB between adjacent semitones (Musyng_Kite: 77-79 and 92-97 are quiet
-zones), so a pitch-only motif change can move the segment's LUFS and
-low_ratio although note count, velocity and duration are unchanged. The table
-lets the composer predict that shift from MIDI alone.
+zones), so a pitch-only change can move the segment's LUFS and low_ratio
+although note count, velocity and duration are unchanged. The table lets the
+composer predict that shift from MIDI alone.
 
-Recipe: 8 isolated notes of 0.167 s (the hook's 16th at 90 bpm) per
-(pitch, velocity), rendered with certify_stimuli's renderer settings; level =
-mean per-note energy (sum of squares of the mono mix) in dB. Re-run after a
-soundfont change:
+Recipe: N_NOTES isolated notes of NOTE_S per (pitch, velocity), GAP_S apart,
+rendered with certify_stimuli's renderer settings (SymbolicSegmentRenderer,
+SAMPLE_RATE, session_seed 42); level = mean per-note energy (sum of squares of
+the mono mix) in dB. One profile per instrument use, with the note length the
+genre plays:
 
-    python measure_hook_levels.py --sf2 Musyng_Kite.sf2
+    hiphop      composer/hook_levels.py       RH hook 16th at 90 bpm (0.167 s)
+    calm        composer/levels_calm.py       calm piano, one bar at 65 bpm
+    lofi_color  composer/levels_lofi_color.py lofi keys beat-3 dyad, 1.5 beats at 78 bpm
+    lofi_stab   composer/levels_lofi_stab.py  lofi keys off-beat stab, 0.4 beats at 78 bpm
+
+Re-run after a soundfont change:
+
+    python measure_hook_levels.py --profile calm --sf2 Musyng_Kite.sf2
 """
 
 from __future__ import annotations
@@ -27,43 +35,62 @@ import numpy as np
 import pretty_midi
 
 HERE = Path(__file__).resolve().parent
-PROGRAM = 0
-PITCHES = range(70, 99)
-VELOCITIES = (64, 76, 88, 100, 112)
-N_NOTES, GAP_S, NOTE_S = 8, 0.6, 0.167
-OUT = HERE / 'composer' / 'hook_levels.py'
+PROFILES = {
+    'hiphop': dict(out='hook_levels.py', program=0, pitches=range(70, 99), velocities=(64, 76, 88, 100, 112),
+                   n_notes=8, gap_s=0.6, note_s=0.167, use='hiphop RH hook, 16th at 90 bpm'),
+    # calm piano: one note per bar, held 1-2 bars, velocity 100-118 + 12 boost (clipped at 127)
+    'calm': dict(out='levels_calm.py', program=0, pitches=range(58, 96), velocities=(104, 112, 120, 127),
+                 n_notes=8, gap_s=5.2, note_s=round(4 * 60 / 65, 3), use='calm piano, one bar at 65 bpm'),
+    # lofi keys: 0.85 x (65 | 55-70) + 12 boost = 67 | 58-71
+    'lofi_color': dict(out='levels_lofi_color.py', program=0, pitches=range(55, 92), velocities=(56, 64, 72),
+                       n_notes=8, gap_s=2.4, note_s=round(1.5 * 60 / 78, 3),
+                       use='lofi keys beat-3 dyad, 1.5 beats at 78 bpm'),
+    'lofi_stab': dict(out='levels_lofi_stab.py', program=0, pitches=range(55, 92), velocities=(56, 64, 72),
+                      n_notes=8, gap_s=1.2, note_s=round(0.4 * 60 / 78, 3),
+                      use='lofi keys off-beat stab, 0.4 beats at 78 bpm'),
+}
 
 
-def note_level_db(renderer, pitch: int, velocity: int) -> float:
+def note_level_db(renderer, prof: dict, pitch: int, velocity: int) -> float:
     """Mean per-note energy in dB."""
     pm = pretty_midi.PrettyMIDI(initial_tempo=90)
-    inst = pretty_midi.Instrument(program=PROGRAM)
-    for k in range(N_NOTES):
-        t = 0.5 + k * GAP_S
-        inst.notes.append(pretty_midi.Note(velocity=velocity, pitch=pitch, start=t, end=t + NOTE_S))
+    inst = pretty_midi.Instrument(program=prof['program'])
+    for k in range(prof['n_notes']):
+        t = 0.5 + k * prof['gap_s']
+        inst.notes.append(pretty_midi.Note(velocity=velocity, pitch=pitch, start=t, end=t + prof['note_s']))
     pm.instruments.append(inst)
     a = renderer._render_pm_to_audio(pm).astype(np.float64)
     x = a.mean(axis=1) if a.ndim == 2 else a
-    return float(10 * np.log10((x ** 2).sum() / N_NOTES))
+    return float(10 * np.log10((x ** 2).sum() / prof['n_notes']))
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split('\n\n')[0])
+    ap.add_argument('--profile', choices=sorted(PROFILES), default='hiphop')
     ap.add_argument('--sf2', default=str(HERE / 'Musyng_Kite.sf2'))
     args = ap.parse_args()
     import certify_stimuli as cs
+    prof = PROFILES[args.profile]
+    out = HERE / 'composer' / prof['out']
     cs._init_worker(args.sf2)
     sha = hashlib.sha256(Path(args.sf2).read_bytes()).hexdigest()
+    vels = prof['velocities']
     rows = []
-    for p in PITCHES:
-        rows.append(f'    {p}: (' + ', '.join(f'{note_level_db(cs._RENDERER, p, v):.2f}' for v in VELOCITIES) + '),')
-    OUT.write_text('"""\nRendered level (dB, per note) of GM program ' f'{PROGRAM} by MIDI pitch and velocity.\n'
-                   'Generated by measure_hook_levels.py; do not edit by hand.\n"""\n\n'
+    for p in prof['pitches']:
+        rows.append(f'    {p}: (' + ', '.join(f'{note_level_db(cs._RENDERER, prof, p, v):.2f}' for v in vels) + '),')
+    out.write_text('"""\nRendered level (dB, per note) of GM program ' f"{prof['program']} by MIDI pitch and velocity\n"
+                   f"({prof['use']}).\n"
+                   f'Generated by measure_hook_levels.py --profile {args.profile}; do not edit by hand.\n"""\n\n'
                    f"SOUNDFONT = '{Path(args.sf2).name}'\n"
                    f"SOUNDFONT_SHA256 = '{sha}'\n"
-                   f'VELOCITIES = {VELOCITIES}\n'
+                   f"PROGRAM = {prof['program']}\n"
+                   f"METHOD = ('{prof['n_notes']} isolated notes of {prof['note_s']} s, {prof['gap_s']} s apart, "
+                   f"certify_stimuli renderer (sr {cs.SAMPLE_RATE}); "
+                   "level = 10 log10(sum of squares of the mono mix / notes)')\n"
+                   f"NOTE_S = {prof['note_s']}\n"
+                   f'VELOCITIES = {vels}\n'
                    'LEVEL_DB = {\n' + '\n'.join(rows) + '\n}\n')
-    print(f'wrote {OUT} ({len(rows)} pitches x {len(VELOCITIES)} velocities, sf2 sha {sha[:12]})')
+    print(f'wrote {out} ({len(rows)} pitches x {len(vels)} velocities, sf2 sha {sha[:12]})')
 
 
 if __name__ == '__main__':
