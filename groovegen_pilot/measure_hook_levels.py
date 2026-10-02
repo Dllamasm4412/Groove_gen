@@ -1,7 +1,7 @@
 """
 Measure the rendered level of a pitched development instrument per pitch and
 velocity, and write its level table (v2 development level check,
-LIVE_GENERATION_PLAN.md sections 6.12-6.13).
+LIVE_GENERATION_PLAN.md sections 6.12-6.14).
 
 Why: the soundfont's piano is built from sample zones whose levels step by up
 to ~7 dB between adjacent semitones (Musyng_Kite: 77-79 and 92-97 are quiet
@@ -19,6 +19,8 @@ genre plays:
     calm        composer/levels_calm.py       calm piano, one bar at 65 bpm
     lofi_color  composer/levels_lofi_color.py lofi keys beat-3 dyad, 1.5 beats at 78 bpm
     lofi_stab   composer/levels_lofi_stab.py  lofi keys off-beat stab, 0.4 beats at 78 bpm
+    rnb_color   composer/levels_rnb_color.py  rnb keys beat-3 dyad, 1.5 beats at 100 bpm
+    rnb_stab    composer/levels_rnb_stab.py   rnb keys off-beat stab, 0.4 beats at 100 bpm
 
 Re-run after a soundfont change:
 
@@ -48,6 +50,13 @@ PROFILES = {
     'lofi_stab': dict(out='levels_lofi_stab.py', program=0, pitches=range(55, 92), velocities=(56, 64, 72),
                       n_notes=8, gap_s=1.2, note_s=round(0.4 * 60 / 78, 3),
                       use='lofi keys off-beat stab, 0.4 beats at 78 bpm'),
+    # rnb keys (unsoftened): 65 | 55-70
+    'rnb_color': dict(out='levels_rnb_color.py', program=0, pitches=range(55, 92), velocities=(56, 64, 72),
+                      n_notes=8, gap_s=2.0, note_s=round(1.5 * 60 / 100, 3),
+                      use='rnb keys beat-3 dyad, 1.5 beats at 100 bpm'),
+    'rnb_stab': dict(out='levels_rnb_stab.py', program=0, pitches=range(55, 92), velocities=(56, 64, 72),
+                     n_notes=8, gap_s=1.2, note_s=round(0.4 * 60 / 100, 3),
+                     use='rnb keys off-beat stab, 0.4 beats at 100 bpm'),
 }
 
 

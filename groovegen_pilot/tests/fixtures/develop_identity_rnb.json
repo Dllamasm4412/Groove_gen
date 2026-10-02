@@ -1,0 +1,3595 @@
+{
+ "meta": {
+  "accepted_auditions": {
+   "v2c_rnb2_s1": [
+    "09f9022bfa623d1dd8591472b58de775fc5e8c79647d93698ae3c3bb00d6d021",
+    "bf8609da2852043995bd7543bee9f19f8b782e3336a6f151ffa23aeb5eeda4d2",
+    "9d2bf736066e64fa144f20646f9d57cbbc4c406daa340f14f41a4fa259c9cd9a",
+    "130ec3383e8aeee627770cc29888e4924d14b3ec773ad434d6574dea873840f0",
+    "1b38fa659bc8e0d8e0bcc3edf613237429527e90fb49162ade72dc093280c87b",
+    "1a2417e5e1494b75266dd9da314d5b87428e2931d8226633776e9768b7c07624",
+    "f9fc253c387984d33920ece37c547f7b2f593c4812084e3b8844c97568d19cfa",
+    "4eecddb421efa654b75d64991f3b2a36b34d4eead8f3f8704809d39d04841636"
+   ],
+   "v2c_rnb3_s1": [
+    "cb7667a302f6fe6b4bb4b03311d69cddb7a16056e9e64dff812b1e4b7101bc36",
+    "582cd297839f27dff9ee25498feb7c4cd15957fb89c047fcec784ccb65da9b45",
+    "7f35903d239c447ecdda1601a6242fcf50eb8ff38c89e09349aee34c20ede75a",
+    "dce99ea20c6a87ed04278986d6e805ea61ecf10c19b1eaed61d778fcbc8ae75e",
+    "3ad04c3fb5fbaa654803cb1e4f65b14ab69cd27b2286095f72beab27a040032b",
+    "74d3c50314acbe65829fda46e97a533570386c65674a167d078c67bb135dd793",
+    "b841cb383a1c6a7847f5b9dc9fd655c89019e9346895662900c323a391072473",
+    "7a1cdaddaf7a5d735bdf88fca2a49bf6b865fe71d395e2e11d35c3c919482510"
+   ]
+  },
+  "created": "2026-10-01T22:09:01",
+  "description": "SessionComposer develop-mode MIDI sha256 freeze (rnb); see tests/test_develop_identity_rnb.py",
+  "git_branch": "v2-controlled-live-generation",
+  "git_dirty": true,
+  "git_head": "004c9dc2585445cb88113673de809080498516d5",
+  "stims": [
+   1,
+   2,
+   19
+  ],
+  "tiers": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "versions": {
+   "numpy": "2.5.2",
+   "pretty_midi": "0.2.11.post0",
+   "python": "3.12.13"
+  },
+  "visits": 12
+ },
+ "rnb": {
+  "s19:rnb:1:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "cb05b5cc16427439a90247d2c4db613fcdd8cddc76a75558ebf510cb004c4a75"
+  },
+  "s19:rnb:1:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-0",
+    "answer@5-8:0-+"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "2d63203a7c9be6f334f91897777476ea884aa557cf32b1fae7176e1aaa92dabe"
+  },
+  "s19:rnb:1:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@1:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "9ff0e943cc731e12368d4b22169e57dcb8a0df06ed838628902ddf16b4404431"
+  },
+  "s19:rnb:1:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@4:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "1c66cc03f4c1e18a60f89c6bbe6042179d11cdb314d25eb08d8c6cb5691591b4"
+  },
+  "s19:rnb:1:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "1324de9419e917cd5ad643ed93d71fa74ed1ee851e21fbf170aad5b645ab9bec"
+  },
+  "s19:rnb:1:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "786a3a42cf7093a237d3ed53e4baf7b4008a0a8f74abc09698c3e2a2d4dd9710"
+  },
+  "s19:rnb:1:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "hook@1-4:+-+",
+    "answer@5-8:+--"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "1faab3cc720c8fdd752fb17e3c30c7853756897f3eca85d7da3e3355d1ea7788"
+  },
+  "s19:rnb:1:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69",
+    "voice@4:62-64"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "506bc40eb7ad52275ccc0372c9f01809519ccfa4ef77f9de9f183c0ec26cf55a"
+  },
+  "s19:rnb:1:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "8c9c879b756ee3cebad2ec74d6b5a0008b4571841cbda6ad8c20bc919640034f"
+  },
+  "s19:rnb:1:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a7eb671b",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer@5-8:---"
+   ],
+   "motif_plan": [
+    "a7eb671b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "553381c42e56a950e2959a5f7e19c720835d07502dfc65e57d67143a40855507"
+  },
+  "s19:rnb:1:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ceded761",
+   "motif_ops": [
+    "ending@8:64-67",
+    "voice@2:60-64"
+   ],
+   "motif_plan": [
+    "ceded761"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "bec7a5f682880de52ef9c13625cd464ef0215c1428851a4cc64006922ef2ecf5"
+  },
+  "s19:rnb:1:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "b1334918ff8e32b5160e2315adfd4f584e1dc20c5690df2cf1ae877576ad1b80"
+  },
+  "s19:rnb:2:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "fdf8e11161e0673d6d0d4d67065e496b304605edaf476513cec60b173c21337c"
+  },
+  "s19:rnb:2:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4ccfe8e2",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "4ccfe8e2"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "fc9b130eef53bff02e4fd7872f252fb5ef05a68daae7af654a86a380d547abf2"
+  },
+  "s19:rnb:2:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "02155d77",
+   "motif_ops": [
+    "voice@6:73-76"
+   ],
+   "motif_plan": [
+    "02155d77"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "f26ff721d948c54fbb236b1c7e3f50124b8fe5078c1beba7ab1dd0175f3345ce"
+  },
+  "s19:rnb:2:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "voice@4:76-81"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "240b0d8ab63d14990dd57d93c48e2bba1d769835f8cb6faa7d31203655fc5af8"
+  },
+  "s19:rnb:2:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "voice@8:76-81"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "59e7a9c6bd68885ffebe4ea86428be8bf850d6d4157f48a47b56a8947d465cdc"
+  },
+  "s19:rnb:2:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "171705d585122ca5427899004a015a8f0151d865375b76b2364f12009c809122"
+  },
+  "s19:rnb:2:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@1:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "b845c1ca1863c17526ff692c80ca67c9518b0142e9e37b5346df8d93d4ce3692"
+  },
+  "s19:rnb:2:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@8:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "94b4790ba090bd86ba2b524057c112a05f8a15b2693f305e5c51f473236e46e9"
+  },
+  "s19:rnb:2:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "1a80ab1d76fdc0c144b411c55f04b30b40982bb39de1638e65be58c6fdacc5ce"
+  },
+  "s19:rnb:2:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4298e415",
+   "motif_ops": [
+    "hook@1-4:-+-",
+    "answer@5-8:-++"
+   ],
+   "motif_plan": [
+    "4298e415"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "269f26c281a3680bc03b58d490a063f721976ca674f2300e7d097a12fd025ded"
+  },
+  "s19:rnb:2:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "voice@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "d08ffe980f2f05a915fd4f387eb80796eb48f4293936339a326211dd880894c0"
+  },
+  "s19:rnb:2:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "b65780e635d0746e9f06f4f8635c385d2a5555e4f6f11b22144ad6b7baf62bfe"
+  },
+  "s19:rnb:3:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "0f69fad72b831bd8e246f9b98aa82978e1ec444493266d21b1311c2573b8471b"
+  },
+  "s19:rnb:3:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "79929d54",
+   "motif_ops": [
+    "hook@1-4:-++",
+    "answer@5-8:-+-"
+   ],
+   "motif_plan": [
+    "79929d54"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "21eb11eac0b29c85f031e93531f695e17f5ef62f7fb76a5495ae69d91f7f11c2"
+  },
+  "s19:rnb:3:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ceded761",
+   "motif_ops": [
+    "hook@1-4:+--",
+    "answer@5-8:+-0"
+   ],
+   "motif_plan": [
+    "ceded761"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "eaa3e920fe6080221c74eaf605c41cb85331ee21be274889c3320a490116be87"
+  },
+  "s19:rnb:3:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c81117ca",
+   "motif_ops": [
+    "ending@8:60-64",
+    "voice@5:66-69"
+   ],
+   "motif_plan": [
+    "c81117ca"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e62ed4a9f98575e04949edf78f7ac3299ff7e3b917b24140e2c8f81909ebcf1f"
+  },
+  "s19:rnb:3:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a59cb89c",
+   "motif_ops": [
+    "ending@8:76-81",
+    "voice@5:72-76"
+   ],
+   "motif_plan": [
+    "a59cb89c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "f3444ebb334528775787a4f3f09bdaace93bd0f973f976326d2ac9eae640d665"
+  },
+  "s19:rnb:3:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "2dc80c97b8080e81a7b264873b4412085f0174cedc7d8244248ba57455c8dd48"
+  },
+  "s19:rnb:3:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4298e415",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0-0"
+   ],
+   "motif_plan": [
+    "4298e415"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "da88ad922faaf1f79f092b05d35b674ca167f7fc81b62462fd9de9915625bf43"
+  },
+  "s19:rnb:3:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "ending@8:60-64",
+    "voice@3:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "62e2eb28f46f04076ffdea706e36556dd8e205fd7c766eb18cfd7559d105fe1f"
+  },
+  "s19:rnb:3:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4a25885e1f4fc685747a4c42075077d778164425a58683b89e19cb5207449439"
+  },
+  "s19:rnb:3:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "79929d54",
+   "motif_ops": [
+    "hook@1-4:-+-",
+    "answer@5-8:-++"
+   ],
+   "motif_plan": [
+    "79929d54"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "c32c9029ffc7d4647d1bcfa7f9ffe9e5459460315ed9d3a653a73ac248c0e10d"
+  },
+  "s19:rnb:3:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "79929d54",
+   "motif_ops": [
+    "ending@8:74-76",
+    "bar4@4:76-81"
+   ],
+   "motif_plan": [
+    "79929d54"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e94c88578768aac49aca135ee7030d20bf6976a2fdb3b0fc3f5007cb3cb33a8f"
+  },
+  "s19:rnb:3:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e9682281d98412479d4979c13be2717251aedd7fe8759b355e2311c2aa0d1d5b"
+  },
+  "s19:rnb:4:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "3037834de11edb82d135b06b0aaf88aab641ad8f0e58ddb37b2b4fa708668640"
+  },
+  "s19:rnb:4:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "hook@1-4:-++",
+    "answer@5-8:-+-"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "983852aee6a5dda4816051d56a4373151b6e889f0c718c6c3226368fc30defad"
+  },
+  "s19:rnb:4:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "37c45e59df0ecfda087d6a8bbd4392d045db40ffd508faa77e7309693ef1f384"
+  },
+  "s19:rnb:4:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "c8eb771398f7ca6e9223ca4b9c2749d3fbb6dca5e53233ec93f520737c2b37b9"
+  },
+  "s19:rnb:4:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "ending@8:76-79",
+    "bar4@4:72-76"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "6dda288526dbac46c92669385246a15569264e4d63137a84717e263dc58070d7"
+  },
+  "s19:rnb:4:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "b9c9dec4b51e90a0fdc08eecd2fd07aeb53079d14a448f178c154d42c2d7b397"
+  },
+  "s19:rnb:4:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "79105b5b",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0-0"
+   ],
+   "motif_plan": [
+    "79105b5b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "b0a288173e295e28d663100cbcea2d67e849ff5551ba00c6d0e34371d24222b2"
+  },
+  "s19:rnb:4:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "ending@8:72-76",
+    "voice@4:72-76"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "6111b5ec5f6bc33a5ff94e91e47be3cb9c27bc64e6e7414e3b338b84854d520e"
+  },
+  "s19:rnb:4:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "7a093313f50b5796a6f3177ee7bf29ccb0c2ca6f9466d9472d5ea0de605daa34"
+  },
+  "s19:rnb:4:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:-++",
+    "answer@5-8:-+-"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "27cc22ef45848db5affc999f559984288373777c4d0eb58ce01e26fb88c470cf"
+  },
+  "s19:rnb:4:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4510004b295f9252e4c728676f1dd244af56cb30a256b8515ac5aadc50b5baa8"
+  },
+  "s19:rnb:4:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "3ea3b3ee609d254d922ba8104f36d0734a4fdd71d1c35086385e49a6f5583a2c"
+  },
+  "s19:rnb:5:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "3f30d095eabf47c5334c5a7696b2123a739ce686b0df5e634fe24509bd6551d4"
+  },
+  "s19:rnb:5:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "a6af67c8338af200cbd980eefd1e3b83fdfc9c01bab851ee31024fd682c99367"
+  },
+  "s19:rnb:5:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a7eb671b",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer@5-8:---"
+   ],
+   "motif_plan": [
+    "a7eb671b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "58980831525eb36bd956be75c0be94aca73a48e7e6f50b265246f684b1798822"
+  },
+  "s19:rnb:5:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ceded761",
+   "motif_ops": [
+    "ending@8:64-67",
+    "voice@6:60-64"
+   ],
+   "motif_plan": [
+    "ceded761"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "bb2c91ff14fbaa58057bce2c74d390ed73d00f04505041eb92af8712cd70a31b"
+  },
+  "s19:rnb:5:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "f1111a5d47eccbe3acd43bf49326eb6d043400664e0732b9ffbf3956c14bec2f"
+  },
+  "s19:rnb:5:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "ae73ab09b1460f965f289fa92171158684478a8f9a9b580e3db95cbba05e8386"
+  },
+  "s19:rnb:5:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0--"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "048ad069ba45ed2ec46d6cdf6b56660773d3f0acd2470d38570ebf4d3e00d9ea"
+  },
+  "s19:rnb:5:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "2340b22ebb7572e976b8288122f996da6c3c85b815bc2b3127565ce0d7d6ce21"
+  },
+  "s19:rnb:5:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "77d3101ba4fe1fd8aaf86b485e6e08062c2b3903499be2ac359600d2e86b0552"
+  },
+  "s19:rnb:5:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:-+-",
+    "answer@5-8:-+0"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "cafc1a2349b126836af02c2e8b6d56a8ff05133a9417222e76bad13ea9113f02"
+  },
+  "s19:rnb:5:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "previous",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "ba132f02efc8eb1cc729813e62963121c73da913c29dcf92d7f8133edfb84f77"
+  },
+  "s19:rnb:5:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "5e70bc81cf16505269f604fa7a58d69fe588cd1c20455f2f953d9ffe6e6b14b1"
+  },
+  "s1:rnb:1:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "947eef6e0fdea2c3d31d0dbdaef9257938975c22ed95de4ba1c56570df41284d"
+  },
+  "s1:rnb:1:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4ccfe8e2",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "4ccfe8e2"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "25399aa46d462edc9edb7c8e9edf9ffadbdffa749378d7923900974d0c8fe108"
+  },
+  "s1:rnb:1:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4298e415",
+   "motif_ops": [
+    "recall@1-4:-+-",
+    "answer@5-8:-++"
+   ],
+   "motif_plan": [
+    "4298e415"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "918b6249c48b3d6dd10dd230a29a289110c0ef225c775461d27405978c0bbd9f"
+  },
+  "s1:rnb:1:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "ending@8:60-64",
+    "voice@6:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "8f86968b562efcdf18e914c7f1665b9f84899c70e25bf1cfb479152dc69db56c"
+  },
+  "s1:rnb:1:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "ending@8:76-81"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "previous",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "da8f5d7259fc177ac43e9dc344fd8f672238aa5f95fcb3e800bf6fb7199e2a2a"
+  },
+  "s1:rnb:1:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "a46f15622129ee856b8eed724e79cd887c083f7bbff90bc354437adab66e24cd"
+  },
+  "s1:rnb:1:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "43df92d68b18e71356f48855b9ecaaf1ad6753f31b9c294b1caa2bed9fca1732"
+  },
+  "s1:rnb:1:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "2893d3c338908c741f4e54a49c090b793e48a762db140e0395fbcbb5c811ccdf"
+  },
+  "s1:rnb:1:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "0436b3092a5fd7d86a258419132cd386f5b8090fce9c88188815d53f937afc48"
+  },
+  "s1:rnb:1:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "hook@1-4:-+-",
+    "answer@5-8:-++"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "f9f139674ada6b81d01846582a91d8be753909f395a0e021d1ee85cc36f80b30"
+  },
+  "s1:rnb:1:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "ending@8:72-76",
+    "voice@6:76-79"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e372d3cff96dabe62d2c90a054146af20ed00eea24e67e12692336b7301c1a82"
+  },
+  "s1:rnb:1:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "94cb0a44d288fdbc7b7fea253f6c42983daf6bcb86c0ecdfbac3e404fcfc3649"
+  },
+  "s1:rnb:2:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "09f9022bfa623d1dd8591472b58de775fc5e8c79647d93698ae3c3bb00d6d021"
+  },
+  "s1:rnb:2:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "hook@1-4:+-+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "bf8609da2852043995bd7543bee9f19f8b782e3336a6f151ffa23aeb5eeda4d2"
+  },
+  "s1:rnb:2:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4ccfe8e2",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "4ccfe8e2"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "ad98087bb2ec306d85f386c64becfd248bc552f4225477cccec0ff03f789030e"
+  },
+  "s1:rnb:2:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "voice@8:76-81"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "588e78d351926899df14d7506902f4e0a74ab2d6e1405dee5be8d39c6c5e3cf6"
+  },
+  "s1:rnb:2:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69",
+    "bar4@4:62-64"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "9d2bf736066e64fa144f20646f9d57cbbc4c406daa340f14f41a4fa259c9cd9a"
+  },
+  "s1:rnb:2:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "130ec3383e8aeee627770cc29888e4924d14b3ec773ad434d6574dea873840f0"
+  },
+  "s1:rnb:2:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0--"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "1b38fa659bc8e0d8e0bcc3edf613237429527e90fb49162ade72dc093280c87b"
+  },
+  "s1:rnb:2:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "207e89e6",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@6:74-76"
+   ],
+   "motif_plan": [
+    "207e89e6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "1a2417e5e1494b75266dd9da314d5b87428e2931d8226633776e9768b7c07624"
+  },
+  "s1:rnb:2:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "f9fc253c387984d33920ece37c547f7b2f593c4812084e3b8844c97568d19cfa"
+  },
+  "s1:rnb:2:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:-+-",
+    "answer@5-8:-+0"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4eecddb421efa654b75d64991f3b2a36b34d4eead8f3f8704809d39d04841636"
+  },
+  "s1:rnb:2:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "182644d6eb2d79d6276fbde6cf8bc17af909125e93228be54a1ae72d265c98b5"
+  },
+  "s1:rnb:2:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "64f2368b6302b54d675d4d4b5f5ed1b820331c6f557ce0b90f43de3befcc2b1c"
+  },
+  "s1:rnb:3:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "cb7667a302f6fe6b4bb4b03311d69cddb7a16056e9e64dff812b1e4b7101bc36"
+  },
+  "s1:rnb:3:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "hook@1-4:++-",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "582cd297839f27dff9ee25498feb7c4cd15957fb89c047fcec784ccb65da9b45"
+  },
+  "s1:rnb:3:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "hook@1-4:+-+",
+    "answer@5-8:+--"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "f90a7df27f32f05a91b5694a2fde91ae5992451633c0ffed8925bc5fc4e561df"
+  },
+  "s1:rnb:3:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "ending@8:64-69",
+    "bar4@4:62-64"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4342db7a332a1e66ff88d78216c8e1683ba5a6a862c302d9b52841d46b76c0e1"
+  },
+  "s1:rnb:3:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "7f35903d239c447ecdda1601a6242fcf50eb8ff38c89e09349aee34c20ede75a"
+  },
+  "s1:rnb:3:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "dce99ea20c6a87ed04278986d6e805ea61ecf10c19b1eaed61d778fcbc8ae75e"
+  },
+  "s1:rnb:3:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "18c080a6",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer@5-8:---"
+   ],
+   "motif_plan": [
+    "18c080a6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "3ad04c3fb5fbaa654803cb1e4f65b14ab69cd27b2286095f72beab27a040032b"
+  },
+  "s1:rnb:3:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a59cb89c",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@6:72-76"
+   ],
+   "motif_plan": [
+    "a59cb89c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "74d3c50314acbe65829fda46e97a533570386c65674a167d078c67bb135dd793"
+  },
+  "s1:rnb:3:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "b841cb383a1c6a7847f5b9dc9fd655c89019e9346895662900c323a391072473"
+  },
+  "s1:rnb:3:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-0",
+    "answer@5-8:0-+"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "7a1cdaddaf7a5d735bdf88fca2a49bf6b865fe71d395e2e11d35c3c919482510"
+  },
+  "s1:rnb:3:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "12124a10f293ade10b044e61df5b7aeb4b1002ff529ed6f1f982e0bf448c6501"
+  },
+  "s1:rnb:3:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "97bb54bcda29edeafce078da4b7b2b7218934424e5c88aa47a51c7a76b6150bc"
+  },
+  "s1:rnb:4:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "75d7580954dcd8bcc8806bb71693a59f6586543f617028df44a21ae10ad4d42e"
+  },
+  "s1:rnb:4:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "hook@1-4:++-",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "dd9073bd5ac9e7549da02f8f071afd1cc2e0fde16d738d9b48d5b9049d1f618d"
+  },
+  "s1:rnb:4:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0--"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "86d183a649fdcce729aacc789645863241177c580a1b1b927369f95a5d2d7565"
+  },
+  "s1:rnb:4:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "8765f0af7b7ac1883f86d7b400f11eb99b95d6476cc7cfadee7370cdb568ac61"
+  },
+  "s1:rnb:4:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "voice@4:76-79"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "979bce9d582048a5c8e351be72129727021b46df8440f2c72adef5bb68c691b0"
+  },
+  "s1:rnb:4:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "abe6723794fb459a37b9d26f4877d9510380132abcb7e31c4597a9a377026bb2"
+  },
+  "s1:rnb:4:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "18c080a6",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer@5-8:---"
+   ],
+   "motif_plan": [
+    "18c080a6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "5dc29405047d9ea0bfaff843c150626ba70a38857a72aebaba3d717585e9c990"
+  },
+  "s1:rnb:4:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a59cb89c",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@2:72-76"
+   ],
+   "motif_plan": [
+    "a59cb89c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e09e0da125f784216cb215c03c74aaf80b1c17afd3126902ef3cfb0ce0a4166d"
+  },
+  "s1:rnb:4:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "2134a782d130aebb0cdcc0e2201f829d90d50d3f952512f9dbcbe8ac868a78c6"
+  },
+  "s1:rnb:4:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "f13789f7fb4bb195470e9d6d0e26837b3f2dc67ae6ce5c1478467c85bae63d7c"
+  },
+  "s1:rnb:4:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "7e12fd2cb48b6860da8366acf3bd73d3a083fb65ba1bccb5b58163d6b07540ca"
+  },
+  "s1:rnb:4:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e0d2de28356e2f5f6822cd85b076b450504bd499ba0f3c903985347ec8408d6d"
+  },
+  "s1:rnb:5:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "d327a75e648e51a5fe0437730fe3ef65385b01024be23269231dc347c9a28e8f"
+  },
+  "s1:rnb:5:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "57d42067",
+   "motif_ops": [
+    "hook@1-4:0+-",
+    "answer@5-8:0++"
+   ],
+   "motif_plan": [
+    "57d42067"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "751ebb3b7b9c4f434004bded70b423e50701e15c8ff0279f1da644065356da5e"
+  },
+  "s1:rnb:5:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "77c2ee06ceb33907705cf5a647c3faaae6cbb6ba8290dafa6614603d692b14db"
+  },
+  "s1:rnb:5:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "84e11f12aee112274ad0b1d91258643df926a2b698023ec9e229a0aee095add0"
+  },
+  "s1:rnb:5:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "57d42067",
+   "motif_ops": [
+    "ending@8:74-76",
+    "bar4@4:76-81"
+   ],
+   "motif_plan": [
+    "57d42067"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "833e17ce60ecc013ad930f020567d831a08e8a15359abe4931b5a239eed897fb"
+  },
+  "s1:rnb:5:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "e7aecd6c0cd8c0e052e1a3816fb5f5e04dc36d193d1e69ca4a3242f0765badf6"
+  },
+  "s1:rnb:5:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "7d194629eef0d50d8b9b1c961abf528aa4410a65435d34048d70b93f4a274055"
+  },
+  "s1:rnb:5:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "6b0ab9b80a66f8bb4275d819e29fd6daa4abc9fa591514ad695e9e32a69551a4"
+  },
+  "s1:rnb:5:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "80dbaf6c3d12bee4d5db1fc8b74b3b5b260dea7c73b0bfe9e90be9f8de69cd69"
+  },
+  "s1:rnb:5:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@4:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "6536125c6de7f6f56adadb34da2ec3e014781052a61ad645bab835899a793e34"
+  },
+  "s1:rnb:5:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c81117ca",
+   "motif_ops": [
+    "ending@8:64-69",
+    "voice@2:61-64"
+   ],
+   "motif_plan": [
+    "c81117ca"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "29ca960bb96cdea873125195e925cca9b3c3b2b36cbe4d60d3a5dda803170e48"
+  },
+  "s1:rnb:5:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "c2f71e476bbb472f0af397fe2ca8c0afb6ca405f0c67beec48b34e5e36de847b"
+  },
+  "s2:rnb:1:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "b0506eafeb060171d0e4b05f3c1880611634f9be438bf53c3233f41f271d2fb6"
+  },
+  "s2:rnb:1:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a7eb671b",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer@5-8:---"
+   ],
+   "motif_plan": [
+    "a7eb671b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "86c7b0b69d5176b19b3d61ab4ce899a76e624001d80c325ee58c0d5bf012f663"
+  },
+  "s2:rnb:1:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "hook@1-4:++-",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e5636f63299442dea707641a24b3dbcb887ab9f4019cd9c0ab73ce30b3ea3ad2"
+  },
+  "s2:rnb:1:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "02155d77",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@3:74-76"
+   ],
+   "motif_plan": [
+    "02155d77"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "58f7239e05de40815720300d30bd01ecff050129905d5a96e0e15a15dda5bea9"
+  },
+  "s2:rnb:1:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ceded761",
+   "motif_ops": [
+    "ending@8:64-67",
+    "voice@6:60-64"
+   ],
+   "motif_plan": [
+    "ceded761"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "a979edd387e24137bc842962872c9c9e8a6f30fdeb8280f344c8e5b76d8ffc4d"
+  },
+  "s2:rnb:1:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "e44da7ee93538a33011037f4af104db384ae6628b4659b8982cc457693c6d34f"
+  },
+  "s2:rnb:1:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "e59e368c15845839f0b74416d78f20212ee4a4fae1d8af019c323363d4f1c062"
+  },
+  "s2:rnb:1:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "15b48f942b3b381716e1fbc8bde7e6278d39dbb5c7221dad5251d876f94545eb"
+  },
+  "s2:rnb:1:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "1a3251ca2fab3abe9b94d810006d472d5e34fd9f2c8cf0cf28fc710bb597bbb9"
+  },
+  "s2:rnb:1:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-0",
+    "answer@5-8:0-+"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "292792fcfa605ed33d9f8f05be497a37a40172669d494949ba710a8ee0434dd2"
+  },
+  "s2:rnb:1:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "e3fe9c3dd3a58a896e4b9b053fbc9f38e80e31d91cff333c5b2da457be645d31"
+  },
+  "s2:rnb:1:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "954d20e87f20a499827f5505bc6483fac7c09c6f08ec7e318d079789fc1b253c"
+  },
+  "s2:rnb:2:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "7fb1f0d532e1cba11d12a3404585859f636630b5a6ea97f8c9273edc7a21f30b"
+  },
+  "s2:rnb:2:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "530c6772",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "530c6772"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4c679ccae6eda7165fdd375a18bdfbcfc87ba985b38f5ed9d9f60399c591f4f5"
+  },
+  "s2:rnb:2:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [
+    "voice@8:64-67"
+   ],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "f3603a7c48ccbe3068775405d65bb3b5b9ec78892f1af510af82156b59da8162"
+  },
+  "s2:rnb:2:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "accc4aec47a37dae395f4e17715298bb0d3d41e634ce36190ec79df85b8b1935"
+  },
+  "s2:rnb:2:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "530c6772",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@4:72-76"
+   ],
+   "motif_plan": [
+    "530c6772"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4a7cd649c132047d945ceb7dbb9a33af5f846e3afd24ae34013c46b598b7c407"
+  },
+  "s2:rnb:2:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "8e22fe7657e0318e89fd8a3127d0e27785771bee28c5eaa0cba0c95d5ed43ff8"
+  },
+  "s2:rnb:2:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4298e415",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0-0"
+   ],
+   "motif_plan": [
+    "4298e415"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "8b77d2693d6a3d72c951f2c926e8e4d9d02d1c5480d8cbd25d89e5e3c61f15e5"
+  },
+  "s2:rnb:2:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "3d51511c",
+   "motif_ops": [
+    "ending@8:60-64",
+    "voice@1:66-69"
+   ],
+   "motif_plan": [
+    "3d51511c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "d947c2c06e1b89e0d242f8d122e342fd4aeb0098e11e42f0aad52190d03d4e0a"
+  },
+  "s2:rnb:2:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "f2f63ad89de7ad02f1f842d3997446ac9102929b7e8abd3941fbb444b346beb7"
+  },
+  "s2:rnb:2:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "02155d77",
+   "motif_ops": [
+    "hook@1-4:+-+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "02155d77"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "53d03ff40c30391cf1f54ca77a71b58a8bd23daeebd22c882af2510425a99859"
+  },
+  "s2:rnb:2:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "642440bddf4bc88549d8081a08c5d7c4a15423ec66f7c787a074a4009d3445ec"
+  },
+  "s2:rnb:2:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "89d7a67684f9e7f549f74adeb74f51c9b140bd3d3554b7bf45694669918b0be4"
+  },
+  "s2:rnb:3:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "7ffc78f4d3a054a6d2d35440700189f0f685f5753512953272af4585aa325c4d"
+  },
+  "s2:rnb:3:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "18c080a6",
+   "motif_ops": [
+    "hook@1-4:--+",
+    "answer@5-8:---"
+   ],
+   "motif_plan": [
+    "18c080a6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "0fbb835ec71bbcbe2a494c1805e3253db527a4c61550b49422be5fbd14f67463"
+  },
+  "s2:rnb:3:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "hook@1-4:++-",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "877272d094249d3de2da330538e0a18abedaf7300a35e57427b638963b2ea7be"
+  },
+  "s2:rnb:3:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "e83ea437",
+   "motif_ops": [
+    "ending@8:76-79"
+   ],
+   "motif_plan": [
+    "e83ea437"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "previous",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "d617d1d437db869000c2f80a1fcca62bd3990c44719357de78f67ef438e023f5"
+  },
+  "s2:rnb:3:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "79929d54",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@1:74-76"
+   ],
+   "motif_plan": [
+    "79929d54"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "f9d4190029b76d77429db28edfc1292874c548ea17c446e8d07f89d11c3fce32"
+  },
+  "s2:rnb:3:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "5e59df057ace7403bd392a6f31accc66f6357ac3bd44a76d43cb38e36ccb121e"
+  },
+  "s2:rnb:3:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "recall@1-4:--+",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "recall",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "201843b85d2d069f203cd1fe7ec945dab806e1adeadadbd8d3bcdf6a40568e01"
+  },
+  "s2:rnb:3:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "67a23254",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "67a23254"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4c6902c35e376a90ff6e9bb84d65adf2c84a8de56a786a6fe8635443ab84c1ea"
+  },
+  "s2:rnb:3:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "cfc686067fa145adea0bbaaf21f017b400b6c0766920548b19a6b5d7aa591703"
+  },
+  "s2:rnb:3:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "hook@1-4:-++",
+    "answer@5-8:-+-"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "827f7b4feaa8da3ebfdaef441182797573880e8728a2c611bf52583ff302b832"
+  },
+  "s2:rnb:3:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5a08ac2c",
+   "motif_ops": [
+    "ending@8:76-79",
+    "voice@4:72-76"
+   ],
+   "motif_plan": [
+    "5a08ac2c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "1c4620bda519f016629998b259f76bf52a08088a7529d5ce31687d97d63f5ae4"
+  },
+  "s2:rnb:3:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "167bd6e56102dff3e65332ad3c7659ad2817f2b715eac029120ca1ae2678bfda"
+  },
+  "s2:rnb:4:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "734313b464da880bdbd54bac387349f5438d21640ea9fb550394527cd43cd129"
+  },
+  "s2:rnb:4:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@4:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "fc3f7905f5041951d2c82cd4341bfdc37c1aba761e579b66b54e036d6b8ec758"
+  },
+  "s2:rnb:4:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d2bb1663",
+   "motif_ops": [
+    "voice@4:64-69"
+   ],
+   "motif_plan": [
+    "d2bb1663"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "e105d8836b7731f4b68259a07dce9e8bd37a5e29b37658babf3ec78fd60247ed"
+  },
+  "s2:rnb:4:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c81117ca",
+   "motif_ops": [
+    "ending@8:64-69",
+    "voice@6:61-64"
+   ],
+   "motif_plan": [
+    "c81117ca"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "4e517b0f7aef805d7a57f270628544905b46836a21c8bb1bccd697681d66e28d"
+  },
+  "s2:rnb:4:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c81117ca",
+   "motif_ops": [
+    "ending@8:64-69",
+    "voice@2:61-64"
+   ],
+   "motif_plan": [
+    "c81117ca"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "77c22c63f43eb3a5b32ed13c3e30cbf44a2e5c04675a7b0b2ec1b98d849d9f34"
+  },
+  "s2:rnb:4:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "9ca79de95d44153e02546c80f23bff0c358787d32759bb70836bda0890fc5ac9"
+  },
+  "s2:rnb:4:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "e22a7c993f0eba2c889f76cff4a33897907f0f9141b74c3368d623df1675ddf4"
+  },
+  "s2:rnb:4:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "d7a981a4de781ecaab8d256a032e386ce43e75fd515703eedb3b5e6f2a679897"
+  },
+  "s2:rnb:4:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "d10ac49d1861fff1260df48b0702b09a87e0d6f491569eb392d45c7b1bab6635"
+  },
+  "s2:rnb:4:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0--"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "7924300c131a97f83db2deb38079d5b0890033194da867def3051eb384bc74fa"
+  },
+  "s2:rnb:4:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "cf83639a105b56c67ad1be8b7c2ba28ab7cf6fcee6649a141c1e29407234221c"
+  },
+  "s2:rnb:4:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "ce06d9571bdb59878d4369fa7211bda6c374d8af0708a7b0d68837a86f0afbed"
+  },
+  "s2:rnb:5:v0": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "ba3ea7b008df6a55e0a6518028561096500336d35f406a12990bcd5b000ce649"
+  },
+  "s2:rnb:5:v1": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:0-0",
+    "answer@5-8:0-+"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "51908c78ec77d999457308143043f845a98a377b997965b9c64f4a89647928be"
+  },
+  "s2:rnb:5:v10": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "hook@1-4:---",
+    "answer:none"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "b6822f10ec2c57eeff013d2e69790df615d6beb22660f503bf4eee2b17e0c594"
+  },
+  "s2:rnb:5:v11": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "cf27d51c",
+   "sha256": "69a33d5a300584f8bafa2c26fd3dc2fb53f828b3fa4f36295b20ee4bedd5de7f"
+  },
+  "s2:rnb:5:v2": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee51d847",
+   "motif_ops": [
+    "ending@8:64-67",
+    "bar4@4:60-64"
+   ],
+   "motif_plan": [
+    "ee51d847"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "da69cc8b",
+   "sha256": "2283b93c2f2e09266ac617252d4afe2cb07fc1615a1e850e02b13651c019f8ac"
+  },
+  "s2:rnb:5:v3": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7cb7f7ba",
+   "motif_ops": [],
+   "motif_plan": [
+    "7cb7f7ba"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "a3b1c72a05a988bccc900e171cfc2e13d2af08512e3fb3fed4248a7df0168407"
+  },
+  "s2:rnb:5:v4": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "57d42067",
+   "motif_ops": [
+    "hook@1-4:0+-",
+    "answer@5-8:0++"
+   ],
+   "motif_plan": [
+    "57d42067"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "6af839b63bac6275da899abab6a3a79db0113a1ad5f76f2305f4375ced47c0ab"
+  },
+  "s2:rnb:5:v5": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "57d42067",
+   "motif_ops": [
+    "ending@8:74-76",
+    "bar4@4:76-81"
+   ],
+   "motif_plan": [
+    "57d42067"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "c8971c549fbc60fdcb6f470163465d50aa62e087a255af01fd19b8fcb2280782"
+  },
+  "s2:rnb:5:v6": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "88a7caa4",
+   "sha256": "586896c2f1da90af924440ad77a0a29e467297c7a68e49de71dde453806d5753"
+  },
+  "s2:rnb:5:v7": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4298e415",
+   "motif_ops": [
+    "hook@1-4:0-+",
+    "answer@5-8:0-0"
+   ],
+   "motif_plan": [
+    "4298e415"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "79d27b9bc5361c552e570cd3171ee2e24889506c9532368db980b1fe892cedc4"
+  },
+  "s2:rnb:5:v8": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a351d2a5",
+   "motif_ops": [
+    "ending@8:60-64",
+    "voice@3:64-67"
+   ],
+   "motif_plan": [
+    "a351d2a5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "a417a4b7d414e6117691cb94b34567ddef09a862cf095d2de4ed460ded491c6c"
+  },
+  "s2:rnb:5:v9": {
+   "dev_version": "v2c.rnb.0",
+   "drum_repeat_window": 4,
+   "gen_version": "v2a.3+v2c.rnb.0",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32a65049",
+   "motif_ops": [],
+   "motif_plan": [
+    "32a65049"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5f3c2a60",
+   "sha256": "c781f90f8d28a207193bd51528a1e4b985aa138419f688f43fe919f0a43040b9"
+  }
+ }
+}

@@ -1,11 +1,12 @@
 """
 MIDI-side before/after metrics for the v2c pitched development policies
-(Calm v2c.calm.0, Lo-fi v2c.lofi.0; LIVE_GENERATION_PLAN.md section 6.13).
+(Calm v2c.calm.0, Lo-fi v2c.lofi.0, R&B v2c.rnb.0; LIVE_GENERATION_PLAN.md
+sections 6.13-6.14).
 Debug / certification tooling, not in the live path.
 
 Compares SessionComposer(stim) (v2a.3) with SessionComposer(stim, develop=True)
 over the visits of a cell. The developed material is one track: the calm piano
-line (one note per bar) or the lofi keys (color dyads and stabs). Per session:
+line (one note per bar) or the lofi / rnb keys (color dyads and stabs). Per session:
 
   exact_prev        visits whose developed track equals the previous visit's
   exact_window      visits whose developed track equals one of the earlier
@@ -30,10 +31,14 @@ line (one note per bar) or the lofi keys (color dyads and stabs). Per session:
 Lofi adds voicing_variety (distinct (chord, dyad) pairs / chords played),
 top_contour_sim (mean contour similarity of the per-bar top voice with the
 previous visit) and identity checks (bass, drums, EP, onsets, durations,
-velocities, note counts) between the two versions.
+velocities, note counts) between the two versions. R&B has the lofi columns plus
+looped (visits whose keys bars 1-4 equal bars 5-8: the source's 4-bar loop),
+phrase_end_variety (distinct bar-4 / bar-8 keys pairs / visits) and mean_shift_min
+(register drift downward; rnb may move the top voice down as well as up).
 
 usage (from groovegen_pilot/):
     python develop_metrics.py --cells calm:1,calm:2 --visits 12 --stim-seeds 1,2,19
+    python develop_metrics.py --cells rnb:1,rnb:2,rnb:3,rnb:4 --visits 12 --stim-seeds 1,2,19
 """
 
 from __future__ import annotations
@@ -133,13 +138,17 @@ def session(genre: str, segs: list) -> dict:
         'mean_shift_max': round(max(s for s, _ in shifts), 2),
         'top_shift_max': max(t for _, t in shifts),
     }
-    if genre == 'lofi':
+    if genre in ('lofi', 'rnb'):
         chords = [lofi_chords(pm) for pm in pms]
         pairs = [(c, tuple(p for _, p in b)) for cs, line in zip(chords, lines) for c, b in zip(cs, line)]
         out['voicing_variety'] = round(len(set(pairs)) / len({c for c, _ in pairs}), 3)
         out['top_contour_sim'] = round(float(np.mean([1 - sm.edit_distance_norm(_contour(tops[v - 1]),
                                                                                   _contour(tops[v]))
                                                       for v in range(1, len(tops))])), 3)
+    if genre == 'rnb':
+        out['looped'] = sum(line[:BARS // 2] == line[BARS // 2:] for line in lines)
+        out['phrase_end_variety'] = round(len({(x[3], x[7]) for x in lines}) / len(lines), 3)
+        out['mean_shift_min'] = round(min(s for s, _ in shifts), 2)
     return out
 
 
@@ -174,7 +183,8 @@ def main(argv=None) -> int:
     ap.add_argument('--stim-seeds', default='1,2,19')
     args = ap.parse_args(argv)
     rows = compare(parse_cells(args.cells), args.visits, [int(s) for s in args.stim_seeds.split(',')])
-    extra = [c for c in ('voicing_variety', 'top_contour_sim') if c in rows[0]]
+    extra = [c for c in ('voicing_variety', 'top_contour_sim', 'looped', 'phrase_end_variety', 'mean_shift_min')
+             if c in rows[0]]
     cols = COLS + tuple(extra)
     print('cell     seed version ' + ' '.join(f'{c[:11]:>11s}' for c in cols) + '  fixed_same drums_same')
     for r in rows:

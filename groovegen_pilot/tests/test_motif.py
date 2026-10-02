@@ -115,7 +115,7 @@ def test_develop_is_deterministic_and_keeps_v2a3_drums():
     assert changed >= 6
 
 
-@pytest.mark.parametrize('cell', [('rnb', 4), ('pop', 3), ('latin', 2), ('rock', 3)])
+@pytest.mark.parametrize('cell', [('pop', 3), ('latin', 2), ('rock', 3)])
 def test_develop_leaves_other_genres_byte_identical(cell):
     base, dev = SessionComposer(1), SessionComposer(1, develop=True)
     for v in range(4):

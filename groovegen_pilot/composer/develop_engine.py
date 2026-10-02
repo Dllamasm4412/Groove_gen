@@ -1,6 +1,6 @@
 """
 Shared pitched-development engine for the v2 SessionComposer (opt-in,
-SessionComposer(stim_seed, develop=True); LIVE_GENERATION_PLAN.md 6.12-6.13).
+SessionComposer(stim_seed, develop=True); LIVE_GENERATION_PLAN.md 6.12-6.14).
 Not used by the live runner.
 
     SessionComposer -> develop_engine (this module) -> genre policy
@@ -14,7 +14,7 @@ energy_guard BOUNDS, pitched register shift), measured per-note levels,
 chord context read from the comping tracks, IDs and provenance.
 
 A genre policy (composer/motif.py hiphop, composer/dev_calm.py,
-composer/dev_lofi.py) supplies the musical part as a Policy plus module
+composer/dev_lofi.py, composer/dev_rnb.py) supplies the musical part as a Policy plus module
 functions read_context / develop / unchanged_record, and is registered in
 POLICIES. Policies are pitch-only: onsets, durations, velocities, note counts,
 programs and tempo stay the source segment's.
@@ -50,7 +50,8 @@ MAX_PITCH_SHIFT = 2.0      # semitones: pitched median / p05 / p95 vs the source
 # genre -> policy module. Each exposes DEV_VERSION, SEED_VERSION,
 # read_context(src, sched, tempo), develop(src, ctx, records, visit, seed),
 # unchanged_record(ctx, records) and, optionally, DRUM_REPEAT_WINDOW.
-POLICIES = {'hiphop': 'composer.motif', 'calm': 'composer.dev_calm', 'lofi': 'composer.dev_lofi'}
+POLICIES = {'hiphop': 'composer.motif', 'calm': 'composer.dev_calm', 'lofi': 'composer.dev_lofi',
+            'rnb': 'composer.dev_rnb'}
 DEVELOP_GENRES = tuple(POLICIES)
 
 

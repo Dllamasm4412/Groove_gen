@@ -21,8 +21,8 @@ Modes
 --generator v2 (default) | v1 | v2b | both (A/B v1 vs v2: the same trajectory
 through each) | v2-v2b (A/B v2 vs pitched development). 'v2b' means
 SessionComposer(develop=True): the genre's policy in composer/develop_engine.py
-(hiphop v2b.1, calm v2c.calm.0, lofi v2c.lofi.0; other genres unchanged); each
-row's dev_version names the policy.
+(hiphop v2b.1, calm v2c.calm.0, lofi v2c.lofi.0, rnb v2c.rnb.0; other genres
+unchanged); each row's dev_version names the policy.
 
 Usage (writes only under renders/, which is gitignored):
     python audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
@@ -332,6 +332,18 @@ def run_auditions(auditions: list[Audition], generators: list[str], stim_seed: i
     return {'auditions': summary, 'rows': rows}
 
 
+RNB_QUESTIONS = [
+    '### R&B development (v2c.rnb.0; A/B: v2 = v2a.3, v2b = developed)',
+    '- Does R&B sound less like a four-bar loop?',
+    '- Does the upper chord line feel more musical?',
+    '- Are the changes smooth?',
+    '- Does it still clearly sound like the same R&B piece?',
+    '- Is development more noticeable than Lo-fi without being distracting?',
+    '- Do the phrase endings help?',
+    '- Does the short contour / hook feel intentional or artificial?',
+    '- Does perceived intensity stay stable?', '']
+
+
 def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> str:
     lines = ['# v2 listening notes', '',
              f'Developer listening, engineering only. stim_seed {stim_seed}. Each WAV is a fresh session.', '',
@@ -365,6 +377,7 @@ def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> st
         '- Is the hook / line / voicing recognisable across visits without sounding looped?',
         '- Do the varied phrase endings sound intentional?',
         '- Does any melodic change sound wrong (off-key, awkward leap, clash with the bass)?', '',
+        *(RNB_QUESTIONS if any(c.startswith('rnb:') for s in summary for c in s['cells']) else []),
         '### Timbre',
         '- Do fills suddenly become darker or brighter?',
         '- Are cymbal / open-hat changes noticeable?',

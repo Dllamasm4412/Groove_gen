@@ -1264,7 +1264,7 @@ committed pending approval. Default v2a.3 and v1 output unchanged.
 - Level tables (`measure_hook_levels.py --profile calm|lofi_color|lofi_stab`) are
   sha-pinned to Musyng_Kite.sf2. Each is measured with the note length the genre
   plays: calm one bar at 65 bpm; lofi color 1.5 beats and stab 0.4 beats at 78 bpm.
-  There are no tables for R&B, Pop or Latin.
+  There are no tables for Pop or Latin (R&B's: section 6.14).
 
 #### Calm (v2c.calm.0)
 
@@ -1393,6 +1393,128 @@ History: exact repeats only, window 6 (lighter than calm).
   - a short chord-tone hook in the keys.
 - Bass, progressions and tempo stay unchanged. R&B needs its own level table and
   p95 / centroid floor check against its own v1 envelope before certification.
+  Implemented as v2c.rnb.0, section 6.14.
+
+### 6.14 R&B slice (v2c.rnb.0, 2026-10-01)
+
+Opt-in only (`develop=True`), not wired live. Developer listening approved it as
+implemented (2026-10-01); frozen by `tests/test_develop_identity_rnb.py`, including
+the two auditions. The rules and schedule are in the `composer/dev_rnb.py` docstring.
+Hiphop v2b.1, calm and lofi are byte-identical (`tests/test_develop_identity.py`,
+`tests/test_develop_identity_v2c.py`).
+
+#### Design
+
+- **Policy.** `dev_rnb.py` reuses the `dev_lofi` keys reader and dyad machinery (the
+  scaffold is the same; R&B is unsoftened at 100 bpm).
+- **What may change.** Only keys pitches. The dyad set per bar is the EP's adjacent
+  tones a 2nd to a 4th apart:
+  - root+3rd, 3rd+5th;
+  - 5th+7th only on F#min7 and Emin7. On Cadd9 G-D is a 5th, so it is not a dyad.
+- **Ops: two per developed visit.**
+  - pos 1: a hook on bars 1-4 (top-voice contour other than the source's; in odd
+    blocks the previous block's hook first), answered on bars 5-8 by the same
+    contour with its last step changed;
+  - pos 2: a bar-8 ending plus a bar-4 or one-bar re-voicing.
+- **No 4-bar loop.** A developed voicing never has bars 5-8 equal to bars 1-4. The
+  rnb:1-2 source keys are exactly that loop. At rnb:3-4 the stab positions already
+  differ between the halves.
+- **History, window 6, developed visits only:**
+  - exact repeats;
+  - near repeats (one bar off a visit before the previous one);
+  - bar-4 / bar-8 ending pairs.
+- **Motion bounds.** The source top-voice leaps are 0/2/3/5. Rules:
+  - leap <= 5;
+  - each bar within 5 of the source;
+  - no bar above the source's highest;
+  - mean shift within 1.0 either way.
+
+#### Register guard (durable)
+
+The MIDI distributions show a split. Every v2a.3 rnb segment's pitched p95 sits
+0.8-1.5 semitones inside one edge of its v1 envelope, and which edge follows the
+colour octave:
+- colour octave 5: p95 near the floor;
+- colour octave 6: p95 near the ceiling.
+
+The pitched median follows the EP octave in the same way. The envelope floor/ceiling
+pairs are rnb:3 p95 67.01/78.99 and rnb:4 68.21/76.79; the smallest base margin is
+0.79 (rnb:4).
+
+The guard therefore forbids any outward move of p95 or median, i.e. toward the edge
+the source sits on. Inward moves are allowed.
+- An exact-equality guard was tried first. It rejected 150/199 rule-valid rnb:3
+  candidates.
+- A 0.5-semitone outward allowance was tested and gained little, so it was not
+  adopted.
+
+#### Level table (durable)
+
+`measure_hook_levels.py --profile rnb_color|rnb_stab` produces
+`composer/levels_rnb_color.py` and `levels_rnb_stab.py`:
+- program 0 at 1.5 and 0.4 beats at 100 bpm;
+- Musyng_Kite sha ed8c5a34c28b;
+- within 0.15 dB of the lofi tables.
+
+Rendering 495 rule-valid rnb:1-4 candidates (stims 1-2), with the energy filter
+ignored:
+- the predicted keys level tracks the segment: r = +0.79..+0.94 with ΔLUFS and
+  -0.93..-0.97 with Δlow_ratio per tier;
+- the effect is small: |ΔLUFS| <= 0.07 and |Δlow_ratio| <= 0.009, up to 1.1 dB
+  predicted.
+
+So the table stays in filtering, at `LEVEL_TOL_DB` 0.5 rather than the hiphop/lofi
+0.2.
+- At 0.2, rnb:1-2 (8 colour dyads, two ops) left 12/36 and 11/36 visits unchanged.
+- At 0.5 the figure is 3/36 and 2/36.
+- The certification below shows no level-related miss.
+
+0.5 dB is a candidate-filter tolerance on the MIDI-predicted keys level, not an
+audio-certification tolerance. The certification envelopes are unchanged; the
+rendered developed segments moved at most 0.037 LU (mean 0.004) from their sources.
+
+#### Results (stims 1/2/19 MIDI, 1/2 audio; 12 visits)
+
+- **MIDI** (`develop_metrics.py --cells rnb:1,rnb:2,rnb:3,rnb:4`):
+
+  | metric | v2a.3 | v2c.rnb.0 |
+  |---|---|---|
+  | exact repeat of previous visit | 8-9 | 0 (2 at s1 rnb:1, fallbacks) |
+  | distinct keys / visits | 0.25-0.33 | 0.75-1.0 |
+  | pitched repeats in window | 8 | 0-2 |
+  | bar-8 ending variety | 0.25-0.33 | 0.33-0.67 |
+  | bar-4/bar-8 pair variety | 0.25-0.33 | 0.58-0.92 |
+  | voicing variety (dyads per chord) | 1.6-2.6 | 2.75-4.6 |
+  | top-contour similarity to previous visit | 0.84-0.97 | 0.51-0.68 |
+  | top-note rise | 0 | 0 |
+  | mean shift range (semitones) | 0 | -0.88..+1.0 |
+
+  EP, bass, drums and the keys' onsets, durations, velocities and counts are
+  identical (12/12 everywhere).
+- **Selection census (144 visits):**
+  - hard fallbacks 11 (unchanged 9, previous 2), i.e. 11 of 96 developed visits;
+    by tier rnb:1 4, rnb:2 2, rnb:3 2, rnb:4 3;
+  - gentle 13;
+  - roles: base 48, develop 83, recall 2.
+
+  Most remaining fallbacks are high-register rnb:1-2 segments. There every
+  available upward option raises p95 (78.15 -> 79.0) and the guard refuses it. The
+  rnb:1 ceiling (79.98) would allow it; rnb:3's (78.99) would not. A margin-aware
+  guard would need the v1 envelope at compose time and was not added.
+
+  Recall is rare (2 of 24 opportunities) because the previous block's hook contour
+  is usually not realisable on the next block's chord order.
+- **Audio** (`renders/certification/v2c_rnb0_dev` vs `v2c_rnb0_base`):
+  - segment_ok 0.9375 developed vs 0.9271 base;
+  - no new misses;
+  - two base misses pass after development (rnb:3 s2 v11 low_ratio, rnb:4 s2 v2
+    energy_e; both edge cases);
+  - inherited misses: rnb:3 low_ratio 2, pulse 1, energy 1; rnb:4
+    pitched_vel_mean 3;
+  - per-segment ΔLUFS mean 0.004, max 0.037.
+- **Auditions:**
+  - `renders/audition_v2/v2c_rnb3_s1` (rnb:3 x8, stim_seed 1, A/B, 154 s each);
+  - `v2c_rnb2_s1` (rnb:2 x8).
 
 ---
 

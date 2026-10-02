@@ -2,12 +2,13 @@
 
 Short source of truth for the v2 (controlled live generation) work. The design,
 history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4.4,
-6.7-6.13); this file only records the current state and the next step.
+6.7-6.14); this file only records the current state and the next step.
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: `2bdf0e9` v2b.1 melody-only
-  checkpoint, `7e4b5b9` v2b.0 motif
+- Branch `v2-controlled-live-generation`. Latest commits: R&B v2c.rnb.0 ("feat(v2c): add
+  stateful R&B guide-tone development"), `004c9dc` shared engine + Calm + Lo-fi,
+  `2bdf0e9` v2b.1 melody-only checkpoint, `7e4b5b9` v2b.0 motif
   prototype, `03ff71c` audition
   harness, `62f7944` A6 novelty balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
   v2a.2, `d0cf24c` certification, `4e88a0a` v2a.
@@ -48,6 +49,10 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   Level tables are `composer/levels_calm.py`, `levels_lofi_color.py` and
   `levels_lofi_stab.py`. `develop_metrics.py` compares calm / lofi v2a.3 vs
   developed (plan 6.13).
+- `composer/dev_rnb.py` (v2c.rnb.0, developer listening approved 2026-10-01): R&B
+  keys development on the engine, reusing the `dev_lofi` reader and dyads; level
+  tables `levels_rnb_color.py`, `levels_rnb_stab.py`; `develop_metrics.py` covers rnb
+  (plan 6.14).
 - `composer/hook_levels.py`: measured per-(pitch, velocity) piano levels, generated
   by `measure_hook_levels.py`, sha-pinned to the sf2.
 - `pitched_metrics.py` (diagnostic): melody/bass/whole-segment repetition metrics
@@ -68,8 +73,11 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
 - Certification thresholds do not change in v2a.3; no envelope loosening without
   evidence reported first.
 - Develop mode:
-  - genres without a policy (rnb, pop, latin, rock) are byte-identical to v2a.3;
+  - genres without a policy (pop, latin, rock) are byte-identical to v2a.3;
   - hiphop v2b.1 is byte-identical to its fixture (`tests/test_develop_identity.py`);
+  - calm v2c.calm.0 and lofi v2c.lofi.0 are byte-identical to theirs, including the
+    approved auditions (`tests/test_develop_identity_v2c.py`);
+  - rnb v2c.rnb.0 likewise (`tests/test_develop_identity_rnb.py`);
   - onsets, note counts, velocities, bass, progressions, tempo and programs are
     unchanged;
   - drums equal v2a.3 except in calm (drum window 12);
@@ -331,11 +339,33 @@ plus 150 sampled base seeds per cell. v2a.3 leaves pitched tracks equal to the b
   - `v2c_lofi3_s1` (lofi:3 x8);
   - `v2c_lofi2_s1` (lofi:2 x8).
 
+## v2c R&B (2026-10-01, plan 6.14; approved, frozen)
+
+- Keys-only, pitch-only; two ops per developed visit:
+  - pos 1: hook contour on bars 1-4 + answer on 5-8 (recall of the previous block's
+    hook in odd blocks);
+  - pos 2: bar-8 ending + bar 4 or one bar.
+- 5th+7th only where the EP plays the 7th (F#min7, Emin7); never the source's
+  4-bar loop; exact / near / ending history over 6 visits.
+- Register guard: pitched p95 and median never move toward the v1 envelope edge
+  the source sits on (the edge follows the colour / EP octave).
+- Level table predicts the rendered change (r ~0.9) but the effect is small, so the
+  candidate-filter tolerance is 0.5 dB, not 0.2 (0.2 left a third of rnb:1-2 visits
+  unchanged). It filters MIDI-predicted level only; certification envelopes are
+  unchanged and rendered developed segments moved <= 0.037 LU.
+- Results:
+  - MIDI: exact previous-visit repeats 8-9 -> 0 (2 fallbacks at one seed); distinct
+    0.25-0.33 -> 0.75-1.0; bar-4/8 pair variety 0.25-0.33 -> 0.58-0.92.
+  - Hard fallback 11/96 developed visits, mostly high-register rnb:1-2 (guard).
+  - Audio: segment_ok 0.9375 vs base 0.9271, no new misses, ΔLUFS <= 0.037.
+- Auditions (A/B, stim_seed 1): `renders/audition_v2/v2c_rnb3_s1` (rnb:3 x8),
+  `v2c_rnb2_s1` (rnb:2 x8).
+
 ## Next task
 
-1. Developer listening to the v2c auditions. Then, on approval, commit the shared
-   engine plus Calm and Lo-fi. Next is R&B, stronger than lofi (plan 6.13
-   recommendation). Do not add bass variation.
+1. Pop development slice (v2c.pop.0). R&B is frozen: keep its 0.5 dB filter,
+   strict guard, fallback rate and hook / recall behaviour. Do not add bass
+   variation.
 2. Then the envelope review, separate from A6 and the generator:
    - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
      seed-invariant);
@@ -365,4 +395,9 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 develop_metrics.py --cells calm:1,calm:2,lofi:2,lofi:3 --visits 12 --stim-seeds 1,2,19
 ../.venv/bin/python3.12 certify_stimuli.py --cells lofi:2,lofi:3 --visits 12 --audio --workers 3 --develop --stim-seeds 1,2
 ../.venv/bin/python3.12 audition_v2.py --mode dwell --cell calm:2 --visits 12 --stim-seed 1 --generator v2-v2b
+../.venv/bin/python3.12 -m pytest tests/test_dev_rnb.py tests/test_develop_identity_rnb.py -q
+../.venv/bin/python3.12 measure_hook_levels.py --profile rnb_color            # also rnb_stab
+../.venv/bin/python3.12 develop_metrics.py --cells rnb:1,rnb:2,rnb:3,rnb:4 --visits 12 --stim-seeds 1,2,19
+../.venv/bin/python3.12 certify_stimuli.py --cells rnb:1,rnb:2,rnb:3,rnb:4 --visits 12 --audio --workers 3 --develop --stim-seeds 1,2
+../.venv/bin/python3.12 audition_v2.py --mode dwell --cell rnb:3 --visits 8 --stim-seed 1 --generator v2-v2b
 ```
