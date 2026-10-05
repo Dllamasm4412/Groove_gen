@@ -124,6 +124,18 @@ def parse_args() -> argparse.Namespace:
             "(requires --hr-source estimator and the estimator run with --goal-udp)"
         ),
     )
+    parser.add_argument(
+        "--generator",
+        default="bank",
+        choices=("bank", "v2a", "v2c"),
+        help=(
+            "segment MIDI source: bank = v1 melody bank (default, unchanged); "
+            "v2a = SessionComposer arrangement; v2c = v2a + per-genre development "
+            "(session_generator.py; LIVE_GENERATION_PLAN.md section 6.18)"
+        ),
+    )
+    parser.add_argument("--stim-seed", type=int, default=1,
+                        help="SessionComposer stimulus seed (--generator v2a / v2c only)")
     parser.add_argument("--no-play", action="store_true", help="Skip audio playback.")
     return parser.parse_args()
 
@@ -378,6 +390,8 @@ def log_segment(logger: logging.Logger, seg_idx: int, row: Any) -> None:
         msg += f" | haptic={row.haptic_state} pace={pace} goal_eff={goal}"
     if row.rr_rpm is not None:
         msg += f" rr={row.rr_rpm:.1f}"
+    if row.generator == "v2_session":
+        msg += f" | visit={row.gen_visit_idx} sel={row.motif_selection or '-'}"
     logger.info(msg)
 
 
@@ -646,6 +660,14 @@ def main() -> int:
         # tail_out: each segment's downbeat plays at full level; only the
         # previous segment's release tail fades out underneath it
         mixer = CrossfadeMixer(fade_bars=0.25, fade_mode="tail_out")
+        # Opt-in v2 generator: one SessionComposer for the whole session; it
+        # sees only the chosen cell (session_generator.py)
+        segment_source = None
+        if args.generator != "bank":
+            from session_generator import GENERATORS, SessionSegmentSource
+
+            segment_source = SessionSegmentSource(args.stim_seed, develop=GENERATORS[args.generator])
+            logger.info("generator=%s stim_seed=%d", args.generator, args.stim_seed)
         cfg = SessionConfigV2(
             bars_per_segment=8,
             sample_rate=44100,
@@ -711,6 +733,7 @@ def main() -> int:
             summary["energy_table_sha256"] = energy_table_sha
             summary["ladder_cells"] = [f"{c.genre}{c.tier}:{c.u:.4f}" for c in ladder.cells]
             summary["crossfade_tail_scaled"] = mixer.n_tail_scaled
+            summary["generator"] = segment_source.config() if segment_source else {"generator": "bank"}
             # Condition provenance: what actually ran, not only the flags
             session_prov = take_prov() if callable(take_prov) else None
             audio = audio_output_info(player)
@@ -748,6 +771,7 @@ def main() -> int:
                 trace_writer=partial_trace_rows.append,
                 on_segment=on_segment,
                 hr_poll_log=log_hr_poll,
+                segment_source=segment_source,
             )
             # Keep one canonical reference after successful completion.
             partial_trace_rows = trace

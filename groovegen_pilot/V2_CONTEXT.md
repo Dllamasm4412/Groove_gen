@@ -2,12 +2,12 @@
 
 Short source of truth for the v2 (controlled live generation) work. The design,
 history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4.4,
-6.7-6.14); this file only records the current state and the next step.
+6.7-6.18); this file only records the current state and the next step.
 
 ## Branch and commits
 
-- Branch `v2-controlled-live-generation`. Latest commits: R&B v2c.rnb.0 ("feat(v2c): add
-  stateful R&B guide-tone development"), `004c9dc` shared engine + Calm + Lo-fi,
+- Branch `v2-controlled-live-generation`. Latest commits: `288743e` R&B v2c.rnb.0,
+  `004c9dc` shared engine + Calm + Lo-fi,
   `2bdf0e9` v2b.1 melody-only checkpoint, `7e4b5b9` v2b.0 motif
   prototype, `03ff71c` audition
   harness, `62f7944` A6 novelty balance, `7e47c3b` v2a.3 (op cost, deterministic novelty selection), `079d2ba`
@@ -41,7 +41,7 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   'v2b.0', so v2b.1 replays the certified and auditioned Step A MIDI. Plumbing:
   `SessionGenerator(develop=)`, `certify_stimuli.py --develop`,
   `audition_v2.py --generator v2b|v2-v2b`.
-- `composer/develop_engine.py` (v2c, uncommitted pending approval): the shared
+- `composer/develop_engine.py` (v2c, committed in `004c9dc`): the shared
   development engine (selection, history, fallbacks, generic guard, chord context,
   levels). Policies are registered in `POLICIES`: hiphop `motif.py` (v2b.1, now a
   policy on the engine, MIDI byte-identical), `composer/dev_calm.py` (v2c.calm.0) and
@@ -53,6 +53,22 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
   keys development on the engine, reusing the `dev_lofi` reader and dyads; level
   tables `levels_rnb_color.py`, `levels_rnb_stab.py`; `develop_metrics.py` covers rnb
   (plan 6.14).
+- `composer/dev_pop.py` (v2c.pop.0, uncommitted, awaiting developer listening): pop
+  lead-guitar development on the engine (theme -> variation -> answer -> recall);
+  level table `levels_pop_lead.py` (program 25); `develop_metrics.py` covers pop
+  (plan 6.15). `develop_engine.chord_context` gained `min_frac` (default 0.5 keeps
+  every accepted genre byte-identical; pop's stabbed EP needs 0).
+- `composer/dev_latin.py` (v2c.latin.0, uncommitted; technically validated;
+  developer listening pending): nylon voicing development (pitch classes kept,
+  exact pitched p05 / median / p95); level table `levels_latin_nylon.py`
+  (program 24); `develop_metrics.py` covers latin (plan 6.16).
+- Rock: deliberately no policy (plan 6.17); `develop=True` leaves it
+  byte-identical.
+- `session_generator.py` + `run_session_v2(segment_source=)` +
+  `run_pilot_zero.py --generator {bank,v2a,v2c} --stim-seed N` (uncommitted;
+  offline-verified, not yet run live): the opt-in v2 generator in the real session
+  path, default `bank` unchanged (plan 6.18). `simulate_session_v2.py` runs the
+  live stack offline with a scripted HR and real FluidSynth.
 - `composer/hook_levels.py`: measured per-(pitch, velocity) piano levels, generated
   by `measure_hook_levels.py`, sha-pinned to the sf2.
 - `pitched_metrics.py` (diagnostic): melody/bass/whole-segment repetition metrics
@@ -73,7 +89,7 @@ history and full result tables live in `LIVE_GENERATION_PLAN.md` (sections 4.3-4
 - Certification thresholds do not change in v2a.3; no envelope loosening without
   evidence reported first.
 - Develop mode:
-  - genres without a policy (pop, latin, rock) are byte-identical to v2a.3;
+  - genres without a policy (latin, rock) are byte-identical to v2a.3;
   - hiphop v2b.1 is byte-identical to its fixture (`tests/test_develop_identity.py`);
   - calm v2c.calm.0 and lofi v2c.lofi.0 are byte-identical to theirs, including the
     approved auditions (`tests/test_develop_identity_v2c.py`);
@@ -305,7 +321,7 @@ plus 150 sampled base seeds per cell. v2a.3 leaves pitched tracks equal to the b
   latin, rock none. Shared engine + genre policy; pitch-only; bass and harmony
   unchanged.
 
-## v2c shared engine, Calm and Lo-fi (2026-10-01, plan 6.13; uncommitted)
+## v2c shared engine, Calm and Lo-fi (2026-10-01, plan 6.13; approved, `004c9dc`)
 
 - Engine plus policies as above. Hiphop v2b.1 is byte-identical; no seed salt
   changed.
@@ -361,11 +377,85 @@ plus 150 sampled base seeds per cell. v2a.3 leaves pitched tracks equal to the b
 - Auditions (A/B, stim_seed 1): `renders/audition_v2/v2c_rnb3_s1` (rnb:3 x8),
   `v2c_rnb2_s1` (rnb:2 x8).
 
+## v2c Pop (2026-10-01, plan 6.15; technical validation complete; listening pending)
+
+- Lead-only (program 25), pitch-only; EP, bass, drums, onsets, durations,
+  velocities, counts and tempo are untouched.
+- Theme = the source's bars 1-2. Bars 5-6 share their chords, so a block's visits
+  run:
+  - theme (restated on 5-6);
+  - variation (answer on bar 8 + bar-4 ending), or a recall of the previous
+    block's theme in odd blocks;
+  - sequence on bar 7 + bar-8 ending.
+- Repairs:
+  - `fix_unisons`: FluidSynth ends both voices of a same-key overlap at the first
+    note-off, so new unisons are moved; the theme notes are never the ones moved.
+  - `balance`: lowers non-theme notes until the pitched p95 is back at the source.
+- Rules:
+  - chord tones in root..root + 12;
+  - no note above the source maximum; pitched median exact, p95 within the shift
+    bound (both predicted exactly from `others + lead`);
+  - bounded leaps;
+  - 6-visit exact / near / ending history.
+- `LEVEL_TOL_DB` 1.0: a candidate filter only. Pop's lead moves rendered LUFS by
+  0.031 LU/dB (max 0.042), and 0.5 only added fallbacks.
+- Results:
+  - exact repeats 24 -> 0 per cell; distinct 0.33 -> 1.0;
+  - theme on bars 5-6: 22-30 of 36;
+  - hard fallback 11/180.
+  - Audio: pop:1/3/5 segment_ok and miss sets identical to v2a.3; 0 flips; ΔLUFS
+    <= 0.051.
+- `chord_context` gained `min_frac` (default 0.5, so other genres are unchanged).
+  Bar binning in `develop_metrics.py` was fixed.
+- Auditions (A/B, stim_seed 1): `renders/audition_v2/v2c_pop3_s1` (pop:3 x8),
+  `v2c_pop1_s1` (pop:1 x8).
+
+## v2c Latin (2026-10-02, plan 6.16; technically validated; developer listening pending)
+
+- Nylon-only, pitch-only voicing changes: each triad keeps its chord, closed
+  voicings in the source window +- 2, one voicing per bar except bar 8's ending
+  triad, bars 1-2 fixed.
+- Latin's pitched median / p05 / p95 envelopes have zero width (every seed plays
+  the same pitch multiset). Ops therefore enumerate bar units jointly and keep only
+  lines with the exact register; the ending triad pairs with bar 8's other triads.
+- Results:
+  - exact repeats 8-9 -> 0 per session; distinct 0.25-0.33 -> 1.0;
+  - ending equal to the previous visit's 8-10 -> 0-2;
+  - top-contour similarity 0.84-0.96 -> 0.68-0.75;
+  - hard fallback 7/180.
+- Audio (latin:1-3): segment_ok 49/72 -> 47/72 (10 ok -> miss, 8 miss -> ok).
+  Every flip has identical drums and lies on a feature v2a.3 already misses;
+  ΔLUFS mean 0.008, max 0.074. Recorded as a residual; envelopes unchanged.
+- Ladder position and the live tier cap are unchanged.
+- Auditions: `renders/audition_v2/v2c_latin3_s1`, `v2c_latin1_s1`.
+
+## Rock (2026-10-02, plan 6.17): deliberate no-op
+
+- rock:3-5 is a root + 5th gallop on one power chord per 2 bars. The only pitch
+  freedoms are the progression (harmony, out of scope) or the dyad octave, which
+  zero-width p95 (64 at rock:3-4) and median (57 at rock:4) forbid.
+- Drums already rotate (10-12 distinct per 12 visits).
+- The rock:5 lead overlay is the only candidate for a future slice.
+
+## Opt-in live integration (2026-10-02, plan 6.18; offline-verified, not yet run live)
+
+- `--generator v2c` gives one SessionComposer per session. A revisit continues the
+  cell's visits. The source gets only (genre, tier). Appended trace columns record
+  provenance and timing (`render_s`, `planned_s`, `queued_ahead_s`).
+- Default `bank`: HEAD vs working copy, 3 scripted sessions, all HEAD columns and
+  the enqueued audio byte-identical.
+- `tests/test_session_v2_integration.py` (A-G + boundary, tempo, invariance): 11
+  pass.
+- Simulated session `renders/integration_v2/20261002_010333_v2c/`: 37 segments,
+  12.3 min, deterministic WAV.
+- Real compose + render max 2.09 s (p95 1.68) against the 3.0 s render lead.
+
 ## Next task
 
-1. Pop development slice (v2c.pop.0). R&B is frozen: keep its 0.5 dB filter,
-   strict guard, fallback rate and hook / recall behaviour. Do not add bass
-   variation.
+1. Developer listening: Pop (`v2c_pop3_s1`), Latin (`v2c_latin3_s1`, `v2c_latin1_s1`)
+   and the integration WAV. Then the first opt-in live developer run with
+   `--generator v2c` (no participant); check `queued_ahead_s` and gen_visit_idx in
+   its trace.
 2. Then the envelope review, separate from A6 and the generator:
    - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
      seed-invariant);
@@ -400,4 +490,17 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 develop_metrics.py --cells rnb:1,rnb:2,rnb:3,rnb:4 --visits 12 --stim-seeds 1,2,19
 ../.venv/bin/python3.12 certify_stimuli.py --cells rnb:1,rnb:2,rnb:3,rnb:4 --visits 12 --audio --workers 3 --develop --stim-seeds 1,2
 ../.venv/bin/python3.12 audition_v2.py --mode dwell --cell rnb:3 --visits 8 --stim-seed 1 --generator v2-v2b
+../.venv/bin/python3.12 -m pytest tests/test_dev_pop.py -q
+../.venv/bin/python3.12 measure_hook_levels.py --profile pop_lead
+../.venv/bin/python3.12 develop_metrics.py --cells pop:1,pop:2,pop:3,pop:4,pop:5 --visits 12 --stim-seeds 1,2,19
+../.venv/bin/python3.12 certify_stimuli.py --cells pop:1,pop:3,pop:5 --visits 12 --audio --workers 3 --develop --stim-seeds 1,2
+../.venv/bin/python3.12 audition_v2.py --mode dwell --cell pop:3 --visits 8 --stim-seed 1 --generator v2-v2b
+../.venv/bin/python3.12 -m pytest tests/test_dev_latin.py -q
+../.venv/bin/python3.12 measure_hook_levels.py --profile latin_nylon
+../.venv/bin/python3.12 develop_metrics.py --cells latin:1,latin:3,latin:5 --visits 12 --stim-seeds 1,2,19
+../.venv/bin/python3.12 certify_stimuli.py --cells latin:1,latin:2,latin:3 --visits 12 --audio --workers 4 --develop --stim-seeds 1,2
+../.venv/bin/python3.12 audition_v2.py --mode dwell --cell latin:3 --visits 8 --stim-seed 1 --generator v2-v2b
+../.venv/bin/python3.12 -m pytest tests/test_session_v2_integration.py -q
+../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c
+../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c --sweep 3
 ```

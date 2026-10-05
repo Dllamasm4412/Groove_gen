@@ -190,6 +190,11 @@ class SymbolicSegmentRenderer:
         # Render via fluidsynth: MIDI -> WAV -> numpy stereo float32
         return self._render_pm_to_audio(pm)
 
+    def render_pm(self, pm: pretty_midi.PrettyMIDI) -> np.ndarray:
+        """Render already-composed MIDI (the opt-in v2 session source) with the
+        same fluidsynth settings as render_segment."""
+        return self._render_pm_to_audio(pm)
+
     def _render_pm_to_audio(self, pm: pretty_midi.PrettyMIDI) -> np.ndarray:
         """MIDI -> stereo float32 audio buffer via fluidsynth."""
         with tempfile.TemporaryDirectory() as td:

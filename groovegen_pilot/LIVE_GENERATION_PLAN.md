@@ -1516,7 +1516,340 @@ rendered developed segments moved at most 0.037 LU (mean 0.004) from their sourc
   - `renders/audition_v2/v2c_rnb3_s1` (rnb:3 x8, stim_seed 1, A/B, 154 s each);
   - `v2c_rnb2_s1` (rnb:2 x8).
 
+### 6.15 Pop slice (v2c.pop.0, 2026-10-01; technical validation complete; listening pending)
+
+Opt-in only (`develop=True`), not wired live. The rules and schedule
+are in the `composer/dev_pop.py` docstring. Hiphop, calm, lofi and rnb stay
+byte-identical (their identity tests pass).
+
+#### Source structure (durable)
+
+- `composer._gen_pop`: the lead is a 'lead' track, program 25. Notes per bar
+  are 2/2/4/6/7 at pop:1-5, tempo 118 at every tier. The EP (program 4) plays
+  0.4-beat stabs, one chord per bar: orders of Cmaj7 / G / Am7 / Fmaj7, a 4-bar loop
+  played twice, so bars b and b + 4 share a chord.
+- Every lead note is a chord tone in the pool root..root + 12 (pitches 60-81).
+  There is no motif: each bar walks the pool in a seed contour rotated per bar.
+  - 5-8 distinct bars per segment;
+  - within-bar leaps up to 12, cross-bar leaps up to 21;
+  - overlapping and same-onset notes at pop:3-5.
+- v2a.3 replays a block's lead exactly on its three visits. The next block's lead
+  is unrelated (cross-block overlap <= 0.14).
+- `develop_engine.chord_context` needs `min_frac=0` here: stabs never cover half a
+  bar. The default 0.5 keeps every accepted genre unchanged.
+- Register (MIDI base certification, stims 1/2/19):
+  - pitched p95 sits 0.23-0.24 from its v1 ceiling at pop:4-5 and 0.45 from the
+    floor at pop:2;
+  - the pitched median envelope margin is 0.01 at pop:3 (the median lies on the
+    EP / lead boundary).
+
+  So the median must stay exact and p95 must not rise.
+
+#### Design
+
+- **Theme.** Bars 1-2 of the source are the block's theme and never change. A
+  theme is stored as intervals above the bar roots, and on another chord it snaps
+  to the nearest pool tone.
+- **Schedule:**
+  - pos 0 restates the theme on bars 5-6 (same chords, so the same pitches);
+  - pos 1 (A') keeps that call and answers it, moving bar 8's tail one pool step,
+    plus a new bar-4 ending. In odd blocks it may instead recall block 0's theme
+    on bars 5-6;
+  - pos 2 (A'') sequences bar 6's shape onto bar 7 (as is or one step) and adds a
+    new bar-8 ending.
+- **Repairs (deterministic):**
+  - `fix_unisons` re-pitches a note that would sound in unison with an overlapping
+    note the source did not double. FluidSynth ends both voices at the first
+    note-off. It prefers the note outside bars 1-2 / 5-6.
+  - `balance` lowers the highest notes outside bars 1-2 / 5-6 one pool tone at a
+    time until the predicted pitched p95 is back at the source's. The engine ranks
+    balanced candidates last. Most theme statements raise p95, because bars 1-2
+    often hold the segment's top notes.
+- **Rules:**
+  - chord tones in the pool;
+  - no note above the source's highest;
+  - mean shift <= 1.5;
+  - cross-bar leaps <= max(12, the source's there);
+  - mean |leap| <= source + 1;
+  - no new unison;
+  - root share <= source + 0.125;
+  - predicted pitched median exact, p95 not raised and not lowered by more than 2.
+
+  The register rules are computed from every pitched note, as
+  `bounded_features` does, so the guard never fires: in the census it refused 0
+  candidates.
+- **History (window 6, developed visits):** exact, near (one note off an older
+  visit) and bar-4 / bar-8 ending pairs. Theme statements may recur.
+
+#### Level table (durable)
+
+- `measure_hook_levels.py --profile pop_lead` produces `composer/levels_pop_lead.py`:
+  - program 25, 3 sixteenths at 118 bpm, pitches 58-83;
+  - Musyng_Kite sha ed8c5a34c28b.
+- The guitar's level steps by up to 6 dB between adjacent semitones. The sf2
+  switches velocity layer between 77 and 78 (+3 to +6 dB), so velocities 64 / 70 /
+  77 / 78 / 82 are all measured; interpolating across 77-78 would hide the jump.
+- Rendering 1105 rule-valid candidates (pop:1-5, stims 1-2), with the energy
+  filter ignored:
+  - the prediction tracks segment ΔLUFS (r 0.62 overall; 0.80 at pop:1, 0.87 at
+    pop:3);
+  - it tracks Δlow_ratio at r -0.57;
+  - but only at 0.031 LU per predicted dB: the lead is a small part of the mix;
+  - max |ΔLUFS| is 0.042 for |level| < 0.25 dB and 0.041 for 0.5-1.0 dB.
+
+  `LEVEL_TOL_DB` is therefore 1.0 for pop. At 0.5 the filter only added fallbacks
+  (theme returns at pop:1-2 predict -0.6 to -0.9 dB) without lowering the rendered
+  worst case.
+- Like R&B's 0.5, this is a candidate-filter tolerance on the MIDI prediction, not
+  an audio-certification tolerance; no envelope changes.
+
+#### Results (stims 1/2/19 MIDI, 12 visits)
+
+- **MIDI** (`develop_metrics.py --cells pop:1,...,pop:5`; per cell, 3 sessions):
+
+  | metric | v2a.3 | v2c.pop.0 |
+  |---|---|---|
+  | exact repeat of previous visit | 24 | 0 |
+  | exact repeat within session | 24 | 0 |
+  | distinct lead lines / visits | 0.33 | 1.0 |
+  | bar-8 ending variety | 0.33 | 0.75-0.86 |
+  | bar-4/bar-8 ending-pair variety | 0.33 | 0.97-1.0 |
+  | opening (bars 1-2) similarity to previous visit | 0.73-0.75 | same |
+  | later (bars 3-8) similarity to previous visit | 0.73-0.75 (1.0 in a block, ~0 across) | 0.59-0.65 |
+  | theme on bars 5-6 (of 36) | 0-3 | 22-30 |
+  | cross-block recall (of 36) | 0 | 2-4 |
+  | pitched-layer repeat within the window (of 36) | 24 | 0 |
+  | bar-8 ending equal to previous visit's (of 33) | 24 | 2-5 |
+  | top-voice mean, last vs first visit of a block (semitones) | 0 | -1.5..+2.1 |
+
+  The last row compares against the block's theme visit, which `balance` may have
+  lowered. Against the source, no developed note is above the source's highest
+  (rule, tested) and the lead mean stays within 1.5.
+
+  EP, bass, drums and the lead's onsets, durations, velocities, counts, program
+  and tempo are identical (12/12 everywhere).
+- **Selection census (180 visits):**
+  - hard fallbacks 11 (previous 8, unchanged 3); by tier pop:1 1, pop:2 3, pop:3
+    2, pop:4 3, pop:5 2;
+  - gentle 11;
+  - roles: theme 58, develop 98, recall 13 (of 30 odd-block opportunities).
+  - Before the theme-aware repairs and the 1.0 dB filter the figure was 37.
+- **Audio certification** (`certify_stimuli.py --cells pop:1,pop:3,pop:5 --audio
+  --develop`, stims 1/2, 12 visits; envelopes unchanged):
+
+  | cell | v2a.3 segment_ok | v2c.pop.0 segment_ok | misses (both) |
+  |---|---|---|---|
+  | pop:1 | 18/24 | 18/24 | audio energy_e 3, lufs 3 |
+  | pop:3 | 23/24 | 23/24 | audio pulse_clarity 1 |
+  | pop:5 | 21/24 | 21/24 | midi pitched_vel_mean 3 |
+
+  - The same segments miss on the same features in both runs: zero ok/miss flips,
+    so there is no new miss to attribute.
+  - Every miss is in v2a.3 already. The pitched_vel_mean misses are velocity, which
+    the policy never changes.
+  - Per-segment dev - base LUFS: mean 0.000, max |.| 0.051.
+- **Auditions** (`renders/audition_v2/`, A/B v2 = v2a.3, v2b = developed, stim 1):
+  - `v2c_pop3_s1`: pop:3 x8.
+  - `v2c_pop1_s1`: pop:1 x8.
+  - Developed passes: 0 hard fallbacks, 3 gentle in 16 segments.
+- `develop_metrics.py` bar binning now uses `int(start / bar_s + 1e-6)`. Plain `//`
+  put notes on a bar line into the previous bar. Output for calm:2, lofi:2-3 and
+  rnb:2-3 (stims 1/2/19) is byte-identical to the committed version.
+
 ---
+
+### 6.16 Latin slice (v2c.latin.0, 2026-10-02; technically validated; developer listening pending)
+
+Opt-in only (`develop=True`). The rules and schedule are in the
+`composer/dev_latin.py` docstring. Hiphop, calm, lofi, rnb and pop stay
+byte-identical (their identity tests pass). The ladder position and the live tier
+cap (latin <= 3) are unchanged, and so are the certification envelopes.
+
+#### Source structure (durable)
+
+- `composer._gen_latin`: one chord per bar from four orders of Cmin / A#maj /
+  G#maj / Gmaj, a 4-bar loop played twice.
+  - The nylon (program 24) plays the root-position triad in octave 4 on 2 / 3 / 4
+    off-beats per bar (latin:1-2 / 3 / 4-5).
+  - The piano plays root + third in octave 5; the bass plays a tumbao.
+  - There is no melody. The nylon's top voice is the triad's fifth, so the top
+    line leaps up to 10.
+- Every v1 seed plays the same pitch multiset, because the progressions only
+  reorder the chords. The pitched median (58.5 / 59), p05 and p95 are therefore
+  constant per cell, and their envelopes have zero width. The median lies on the
+  nylon, so developed lines must keep it exactly.
+- Each chord's closed voicings put a different number of notes below the median,
+  so a single bar or triad can rarely move alone. At latin:3 (3 stabs per bar) a
+  whole bar moves the count in multiples of 3, which is why the ending triad
+  needs bar 8's other triads as its compensating unit.
+
+#### Design
+
+- **Material changed:** nylon pitches only (voicings). Every triad keeps its
+  chord; voicings are closed and stay inside the source window +- 2. All triads of
+  a bar share one voicing, except bar 8's last (the ending). Bars 1-2 never change.
+- **Schedule:**
+  - pos 0 (theme): bars 5-8 answer bars 1-4 with a voice-led top line;
+  - pos 1 (A'): bars 7-8 are re-led with their own ending; odd blocks may recall
+    an earlier theme over the same chords;
+  - pos 2 (A''): bars 3-4 approach bar 5, plus a new ending.
+- **Candidate generation:** every op enumerates its units jointly and keeps only
+  rule-passing lines.
+- **Rules:**
+  - predicted pitched p05 / median / p95 exactly the source's;
+  - nylon mean within 0.5;
+  - top-voice leaps no larger than the source's (maximum and mean);
+  - predicted nylon level within 0.5 dB (`levels_latin_nylon.py`; the sf2 switches
+    velocity layer at 84/85).
+- **History:** 12 visits (latin blocks often repeat exactly). It checks exact,
+  near and ending-pair repeats and the previous visit's top contour.
+
+#### Results
+
+- **MIDI** (`develop_metrics.py --cells latin:1,latin:3,latin:5`, stims 1/2/19,
+  12 visits):
+
+  | metric | v2a.3 | v2c.latin.0 |
+  |---|---|---|
+  | exact repeat of previous visit | 8-9 | 0 |
+  | exact repeat within the window | 8-9 | 0 |
+  | distinct nylon lines / visits | 0.25-0.33 | 1.0 |
+  | bar-8 ending equal to previous visit's | 8-10 | 0-2 |
+  | ending variety | 0.17-0.33 | 0.5-0.83 |
+  | voicing variety (`develop_metrics` voicing_var) | 1.0 | 2.75-3.75 |
+  | top-contour similarity to previous visit | 0.84-0.96 | 0.68-0.75 |
+  | phrase-end variety | 0.17-0.33 | 0.75-1.0 |
+  | nylon mean shift (semitones) | 0 | -0.25..0 |
+
+  Piano, bass, percussion and the nylon's onsets, durations, velocities, counts,
+  program and tempo are identical (12/12 everywhere).
+- **Selection census (latin:1-5 x stims 1/2/19 x 12 = 180 visits):**
+  - hard fallbacks 7 (previous 6, unchanged 1); gentle 11; no errors;
+  - predicted level -0.16..+0.35 dB; nylon mean shift -0.375..+0.125.
+- **Level check:** I rendered 697 rule-valid candidates (latin:1-5, stims 1/2,
+  filter ignored).
+  - The predicted level ranged -0.21..+0.44 dB; segment ΔLUFS -0.08..+0.11
+    (r 0.38 with the prediction); Δlow_ratio -0.015..+0.009.
+  - The exact register rule already bounds the level, so the 0.5 dB filter is a
+    backstop.
+- **Audio certification** (`certify_stimuli.py --cells latin:1,latin:2,latin:3
+  --audio [--develop]`, stims 1/2, 12 visits; latin:4-5 are off the live ladder, so
+  certify_stimuli refuses them):
+
+  | cell | v2a.3 segment_ok | v2c.latin.0 segment_ok |
+  |---|---|---|
+  | latin:1 | 16/24 | 14/24 |
+  | latin:2 | 12/24 | 11/24 |
+  | latin:3 | 21/24 | 22/24 |
+
+  - **Flips:** 10 ok -> miss and 8 miss -> ok, net -2 of 72.
+  - **Attribution** (every flip):
+    - drums are identical and only the nylon differs;
+    - every flipped feature already misses in v2a.3 at the same cells
+      (low_ratio 12, energy_e 10, flux 4, centroid 2, pulse 1);
+    - the flips are edge moves: |ΔLUFS| <= 0.074 (mean 0.008), |Δpulse_clarity|
+      <= 0.014, |Δlow_ratio| <= 0.015, Δcentroid about -8 Hz.
+  - **Features that miss only in dev:**
+    - lufs, 6 segments: ΔLUFS +0.02..+0.07 on segments whose v2a.3 LUFS already
+      sits at the envelope top;
+    - pulse_clarity, 7 segments at latin:1-2: Δ +0.002..+0.011.
+  - Both come from the voicing change itself (register and onset mix), not from
+    level drift. Envelopes unchanged; recorded as a residual.
+- **Auditions** (`renders/audition_v2/`, A/B v2 = v2a.3, v2b = developed, stim 1):
+  - `v2c_latin3_s1`: latin:3 x8; developed pass 7 candidate, 1 gentle, 0 hard
+    fallbacks.
+  - `v2c_latin1_s1`: latin:1 x8.
+  - Listening questions are in `LATIN_QUESTIONS` (audition_v2.py).
+
+### 6.17 Rock: deliberate no-op (policy, 2026-10-02)
+
+Rock has no development policy, so `develop=True` leaves it byte-identical
+(`tests/test_motif.py` identity for rock:1/3/4; `test_develop_engine.py` checks
+`policy_module('rock') is None`). This is a decision, not a gap.
+
+- **Material** (`composer/rock_cell.py`):
+  - bass: root eighths;
+  - guitar at rock:1-2: open-triad strums;
+  - guitar at rock:3-5: a root + 5th palm-mute 16th gallop, one power chord per 2
+    bars, with the bass doubling the roots;
+  - rock:5 adds a pentatonic lead overlay.
+- **No line to develop:** at rock:3-4 the only pitch freedom is the octave of a
+  root + 5th dyad or the progression.
+  - Changing the progression is harmony, which is out of scope.
+  - Moving the dyad's octave breaks zero-width envelopes: pitched p95 is 64 at
+    rock:3 and rock:4, and the median is 57 at rock:4.
+  - Inverting a power chord also loses the idiom.
+- **Variation already present:** v2a.3 rotates drums (10-12 distinct drum sets
+  per 12 visits). Pitched distinct per 12 visits: rock:1 4, rock:2 4, rock:3 2,
+  rock:4 3, rock:5 4.
+- **Possible future slice:** the rock:5 lead overlay (49 notes, pentatonic) is
+  the one developable line. rock:5 is the top cell, its register envelopes are
+  wide, and it is rarely held.
+- **Not applicable:** no rock audition or certification is needed, because
+  nothing changed. The rock listening questions in the task do not apply to v2c
+  (identical audio).
+
+### 6.18 Opt-in v2 generator in the live session path (2026-10-02; offline-verified, not yet run live)
+
+- **Flag:** `run_pilot_zero.py --generator {bank,v2a,v2c}` (default `bank` = the v1
+  melody bank, unchanged) and `--stim-seed N` (default 1).
+- **Wiring:**
+  - `session_generator.SessionSegmentSource` holds one `SessionComposer` for the
+    session and a per-cell visit counter.
+  - `run_session_v2(..., segment_source=)` asks it for `next_segment(genre, tier)`
+    and renders the MIDI with `SymbolicSegmentRenderer.render_pm`.
+  - A tempo mismatch with the runner's `GENRE_CFG` tempo raises an error.
+  - With `segment_source=None` the v1 path runs as before.
+- **What the generator sees:** only the cell (genre, tier). It receives no HR,
+  target, error, gains, identity or physiological history.
+  `session_generator.py` imports nothing in
+  `tests/test_generator_boundary.FORBIDDEN`.
+- **State:**
+  - A revisit continues the cell's visit count, e.g. lofi:3, lofi:3, rnb:3, rnb:3,
+    lofi:3, hiphop:3, lofi:3 gives lofi visits 0, 1, 2, 3.
+  - The k-th visit's MIDI equals `SessionComposer(stim).compose(cell, k)`,
+    whatever the path.
+  - `reset()` rebuilds the composer (same stim seed, same MIDI).
+- **Trace** (`TraceRowV2`, appended columns only):
+  - timing: `render_s` (compose + render), `planned_s`, `queued_ahead_s`;
+  - provenance: `generator` ('v1_bank' | 'v2_session'), `gen_version`,
+    `dev_version`, `gen_stim_seed`, `gen_visit_idx`, `gen_block_idx`,
+    `gen_pos_in_block`, `gen_base_seed`, `gen_var_seed`, `motif_policy`,
+    `motif_selection`, `motif_role`, `motif_ops`, `motif_id`, `motif_theme_id`,
+    `motif_error`.
+  - The summary gains `generator` (the `SessionSegmentSource.config()`: stim seed,
+    gen_version, per-genre dev_versions).
+- **Default unchanged:** HEAD's `run_session_v2` and the working copy were run on
+  the same scripted sessions (up, down, mixed with a stale window; 240 rows each).
+  All 39 HEAD columns were equal (NaN == NaN) and the enqueued audio was
+  byte-identical (sha256). Every new column is None except
+  `generator='v1_bank'` and the timing columns.
+- **Headless tests** (`tests/test_session_v2_integration.py`, 11):
+  - A: hold (stale HR -> stale_hold, visits 0-7, no consecutive repeat);
+  - B: step up; C: step down (real LadderMPC);
+  - D: revisit; E: Calm -> Lo-fi -> R&B -> Pop -> Latin -> Hip-hop -> Rock;
+  - F: restart / reset determinism; G: default mode;
+  - also: the source sees only (genre, tier); tempo and length agree on every live
+    cell; within-segment plan invariance.
+- **Simulated session** (`simulate_session_v2.py`): the live runner's ladder,
+  controller, config, mixer and renderer, with a scripted HR that does not respond
+  to the music, a fake clock and a capturing NullPlayer.
+  - v2c, stim 1, phases up:+10:6, down:-4:6, 20 s stale window: 37 segments, 15
+    cells, modes mpc / rotate / stale_hold, 735.7 s WAV.
+  - 6 rock segments have no development; the others are 29 candidate, 1 gentle,
+    1 previous.
+  - Plan invariance holds. The longest stretch below -50 dBFS is 0.4 s. A second
+    run gave the same WAV sha256 and trace.
+- **Real FluidSynth timing (idle machine):**
+  - session compose + render: mean 1.09 s, p95 1.68 s, max 2.09 s (hiphop:2,
+    first segment); slowest cell by mean: rnb:3, 1.54 s;
+  - sweep of every live cell x 3 visits (81): mean 0.91 s, p95 1.40 s, max
+    1.76 s; compose mean 0.10 s, max 0.39 s;
+  - the default bank path: max 1.54 s.
+  - The loop wakes `render_lead_s` = 3.0 s before the queue runs dry, so the worst
+    lead ratio is 0.70 and no segment exceeded the lead.
+  - Live, the estimator and audio output share the CPU; `queued_ahead_s` in the
+    trace shows the real margin (0 = gap).
 
 ## 7. First implementation task: `groovegen_pilot/stimulus_audit.py`
 

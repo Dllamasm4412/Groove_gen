@@ -99,6 +99,31 @@ class TraceRowV2(NamedTuple):
     # Ladder energy coordinate u of the played cell (appended; the ladder
     # source is in the session summary)
     cell_u: Optional[float] = None
+    # Render timing (appended): fluidsynth render wall time of the segment,
+    # its planned duration (bars at tempo) and the audio still queued when it
+    # was enqueued (0 = the player had run dry: an audible gap)
+    render_s: Optional[float] = None
+    planned_s: Optional[float] = None
+    queued_ahead_s: Optional[float] = None
+    # Generator provenance (appended): 'v1_bank' (default) or the opt-in v2
+    # session source (session_generator.py); the gen_* / motif_* columns are
+    # None for v1_bank. gen_visit_idx is the cell's visit count this session.
+    generator: Optional[str] = None
+    gen_version: Optional[str] = None
+    dev_version: Optional[str] = None
+    gen_stim_seed: Optional[int] = None
+    gen_visit_idx: Optional[int] = None
+    gen_block_idx: Optional[int] = None
+    gen_pos_in_block: Optional[int] = None
+    gen_base_seed: Optional[int] = None
+    gen_var_seed: Optional[int] = None
+    motif_policy: Optional[str] = None
+    motif_selection: Optional[str] = None
+    motif_role: Optional[str] = None
+    motif_ops: Optional[str] = None
+    motif_id: Optional[str] = None
+    motif_theme_id: Optional[str] = None
+    motif_error: Optional[str] = None
 
 
 HR_POLL_LOG_FIELDS = ('poll_wall', 'for_segment', 'kind', 't_wall', 'bpm',
@@ -171,6 +196,7 @@ def run_session_v2(
     trace_writer: Optional[Callable[[TraceRowV2], None]] = None,
     on_segment: Optional[Callable[[int, TraceRowV2], None]] = None,
     hr_poll_log: Optional[Callable[[dict], None]] = None,
+    segment_source=None,
     sleep_fn: Callable[[float], None] = time.sleep,
     time_fn: Callable[[], float] = time.time,
     perf_counter_fn: Callable[[], float] = time.perf_counter,
@@ -197,6 +223,11 @@ def run_session_v2(
     hr_poll_log    : optional f(row) called on every HR read with a dict of
                      HR_POLL_LOG_FIELDS; kind is 'decision' or 'wait', and
                      for_segment the segment whose decision the read feeds
+    segment_source : optional opt-in v2 generator (session_generator.
+                     SessionSegmentSource): next_segment(genre, tier) ->
+                     (MIDI, info), rendered with renderer.render_pm. It gets
+                     only the chosen cell. None (default) = the v1 bank via
+                     melody_bank + renderer.render_segment, unchanged.
 
     Returns
     -------
@@ -342,17 +373,32 @@ def run_session_v2(
         genre_cfg = GENRE_CFG[genre]
         tempo_bpm = float(genre_cfg.get('tier_tempo', {}).get(tier, genre_cfg['tempo_default']))
 
-        # 3. Pick a seed from the melody bank (rotates on each visit)
-        seed = melody_bank.seed_for(genre, tier)
+        render_t0 = perf_counter_fn()
+        if segment_source is None:
+            # 3. Pick a seed from the melody bank (rotates on each visit)
+            seed = melody_bank.seed_for(genre, tier)
 
-        # 4. Render segment
-        audio = renderer.render_segment(
-            genre=genre,
-            tempo_bpm=tempo_bpm,
-            tier=tier,
-            n_bars=config.bars_per_segment,
-            segment_idx=seed,   # use seed as segment_idx for determinism
-        )
+            # 4. Render segment
+            audio = renderer.render_segment(
+                genre=genre,
+                tempo_bpm=tempo_bpm,
+                tier=tier,
+                n_bars=config.bars_per_segment,
+                segment_idx=seed,   # use seed as segment_idx for determinism
+            )
+            gen_fields = {'generator': 'v1_bank'}
+        else:
+            # 3-4. Opt-in v2: the cell's next visit from the session source
+            #      (it sees only genre and tier), rendered as composed
+            from session_generator import trace_fields
+
+            pm, info = segment_source.next_segment(genre, tier)
+            if abs(float(info['tempo_bpm']) - tempo_bpm) > 1e-9:
+                raise RuntimeError(f"v2 tempo {info['tempo_bpm']} != runner tempo {tempo_bpm} for {genre}{tier}")
+            seed = int(info['base_seed'])
+            audio = renderer.render_pm(pm)
+            gen_fields = {'generator': 'v2_session', **trace_fields(info)}
+        render_s = perf_counter_fn() - render_t0
 
         if config.trim_render_tail:
             fade_frames = int(round(
@@ -366,6 +412,7 @@ def run_session_v2(
         #    starts when the previously queued audio ends (or now, if drained).
         emit = mixer.push(audio, tempo_bpm=tempo_bpm)
         now_perf = perf_counter_fn()
+        queued_ahead_s = max(play_end - now_perf, 0.0)
         play_start = max(now_perf, play_end)
         if emit.shape[0] > 0:
             enqueue_segment(player, emit)
@@ -416,6 +463,10 @@ def run_session_v2(
                 hr_decision_t_wall=now_wall,
                 hr_read_t_wall=None if reading is None else float(reading.t_wall),
                 cell_u=ladder.by_rung[current_rung].u,
+                render_s=render_s,
+                planned_s=config.bars_per_segment * bar_s,
+                queued_ahead_s=queued_ahead_s if seg_idx else None,
+                **gen_fields,
             )
             trace.append(row)
             if trace_writer is not None:
