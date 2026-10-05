@@ -1,7 +1,7 @@
 """
 Measure the rendered level of a pitched development instrument per pitch and
 velocity, and write its level table (v2 development level check,
-LIVE_GENERATION_PLAN.md sections 6.12-6.14).
+LIVE_GENERATION_PLAN.md sections 6.12-6.16).
 
 Why: the soundfont's piano is built from sample zones whose levels step by up
 to ~7 dB between adjacent semitones (Musyng_Kite: 77-79 and 92-97 are quiet
@@ -21,6 +21,8 @@ genre plays:
     lofi_stab   composer/levels_lofi_stab.py  lofi keys off-beat stab, 0.4 beats at 78 bpm
     rnb_color   composer/levels_rnb_color.py  rnb keys beat-3 dyad, 1.5 beats at 100 bpm
     rnb_stab    composer/levels_rnb_stab.py   rnb keys off-beat stab, 0.4 beats at 100 bpm
+    pop_lead    composer/levels_pop_lead.py   pop lead guitar (program 25), 3 sixteenths at 118 bpm
+    latin_nylon composer/levels_latin_nylon.py latin nylon triad note (program 24), 0.9 eighth at 104 bpm
 
 Re-run after a soundfont change:
 
@@ -57,6 +59,17 @@ PROFILES = {
     'rnb_stab': dict(out='levels_rnb_stab.py', program=0, pitches=range(55, 92), velocities=(56, 64, 72),
                      n_notes=8, gap_s=1.2, note_s=round(0.4 * 60 / 100, 3),
                      use='rnb keys off-beat stab, 0.4 beats at 100 bpm'),
+    # pop lead (guitar, program 25): pitches 60-81, velocity 65-82, 2-4 sixteenths at 118 bpm; the
+    # sf2 switches velocity layer between 77 and 78 (+3 to +6 dB by pitch), so both are measured
+    'pop_lead': dict(out='levels_pop_lead.py', program=25, pitches=range(58, 84), velocities=(64, 70, 77, 78, 82),
+                     n_notes=8, gap_s=1.2, note_s=round(3 * 15 / 118, 3),
+                     use='pop lead guitar, 3 sixteenths at 118 bpm'),
+    # latin nylon (program 24): off-beat triads, velocity 70-85, 0.9 eighth at 104 bpm; level
+    # rises ~0.25 dB per velocity step except the sf2 layer switch between 84 and 85 (-2.7 to
+    # +3.2 dB by pitch), so both are measured
+    'latin_nylon': dict(out='levels_latin_nylon.py', program=24, pitches=range(44, 70),
+                        velocities=(70, 77, 84, 85), n_notes=8, gap_s=1.2, note_s=round(0.9 * 30 / 104, 3),
+                        use='latin nylon montuno triad note, 0.9 eighth at 104 bpm'),
 }
 
 

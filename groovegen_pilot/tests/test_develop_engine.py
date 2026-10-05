@@ -36,17 +36,17 @@ def test_policy_dispatch(genre):
 def test_policy_versions_distinct():
     versions = {g: de.policy_module(g).DEV_VERSION for g in de.POLICIES}
     assert versions == {'hiphop': 'v2b.1', 'calm': 'v2c.calm.0', 'lofi': 'v2c.lofi.0',
-                        'rnb': 'v2c.rnb.0'}
+                        'rnb': 'v2c.rnb.0', 'pop': 'v2c.pop.0', 'latin': 'v2c.latin.0'}
     assert de.policy_module('hiphop').SEED_VERSION == 'v2b.0'      # hiphop seeds preserved
 
 
 def test_unregistered_genre_has_no_policy():
-    assert de.policy_module('pop') is None
+    assert de.policy_module('rock') is None
     comp = SessionComposer(1, develop=True)
-    assert all(comp._policy(g) is None for g in ('pop', 'latin', 'rock'))
+    assert comp._policy('rock') is None
 
 
-@pytest.mark.parametrize('cell', [('calm', 2), ('lofi', 3), ('hiphop', 3), ('rnb', 3)])
+@pytest.mark.parametrize('cell', [('calm', 2), ('lofi', 3), ('hiphop', 3), ('rnb', 3), ('pop', 3), ('latin', 3)])
 def test_default_off(cell):
     """SessionComposer(stim) never develops or logs development fields."""
     for v in range(3):
@@ -55,7 +55,7 @@ def test_default_off(cell):
         assert '+' not in info['gen_version']
 
 
-@pytest.mark.parametrize('cell', [('calm', 2), ('lofi', 3), ('rnb', 3)])
+@pytest.mark.parametrize('cell', [('calm', 2), ('lofi', 3), ('rnb', 3), ('pop', 3), ('latin', 3)])
 def test_develop_deterministic_and_labelled(cell):
     a, b = SessionComposer(2, develop=True), SessionComposer(2, develop=True)
     pol = de.policy_module(cell[0])

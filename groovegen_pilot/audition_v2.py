@@ -21,8 +21,8 @@ Modes
 --generator v2 (default) | v1 | v2b | both (A/B v1 vs v2: the same trajectory
 through each) | v2-v2b (A/B v2 vs pitched development). 'v2b' means
 SessionComposer(develop=True): the genre's policy in composer/develop_engine.py
-(hiphop v2b.1, calm v2c.calm.0, lofi v2c.lofi.0, rnb v2c.rnb.0; other genres
-unchanged); each row's dev_version names the policy.
+(hiphop v2b.1, calm v2c.calm.0, lofi v2c.lofi.0, rnb v2c.rnb.0, pop v2c.pop.0,
+latin v2c.latin.0; rock unchanged); each row's dev_version names the policy.
 
 Usage (writes only under renders/, which is gitignored):
     python audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
@@ -343,6 +343,29 @@ RNB_QUESTIONS = [
     '- Does the short contour / hook feel intentional or artificial?',
     '- Does perceived intensity stay stable?', '']
 
+POP_QUESTIONS = [
+    '### Pop development (v2c.pop.0; A/B: v2 = v2a.3, v2b = developed)',
+    '- Does developed Pop feel less repetitive?',
+    '- Is there now a recognizable hook / theme?',
+    '- Does the motif feel naturally derived from the original lead?',
+    '- Does it still sound like Pop?',
+    '- Is there enough variation after several visits?',
+    '- Does anything sound overly mechanical?',
+    '- Is the theme repeated too obviously?',
+    '- Does perceived energy remain stable?',
+    '- Which do you prefer: original (v2) or developed (v2b)?', '']
+
+LATIN_QUESTIONS = [
+    '### Latin development (v2c.latin.0; A/B: v2 = v2a.3, v2b = developed)',
+    '- Does it feel less like the same 4-bar loop?',
+    '- Is the nylon top line more alive?',
+    '- Do the voicing changes remain subtle?',
+    '- Is the Latin rhythmic identity untouched?',
+    '- Does anything sound harmonically odd?',
+    '- Does perceived energy remain stable?',
+    '- Does the developed version still feel like one piece?',
+    '- (Latin ladder placement is a separate calibration issue; not changed here.)', '']
+
 
 def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> str:
     lines = ['# v2 listening notes', '',
@@ -378,6 +401,8 @@ def listening_notes(summary: list[dict], rows: list[dict], stim_seed: int) -> st
         '- Do the varied phrase endings sound intentional?',
         '- Does any melodic change sound wrong (off-key, awkward leap, clash with the bass)?', '',
         *(RNB_QUESTIONS if any(c.startswith('rnb:') for s in summary for c in s['cells']) else []),
+        *(POP_QUESTIONS if any(c.startswith('pop:') for s in summary for c in s['cells']) else []),
+        *(LATIN_QUESTIONS if any(c.startswith('latin:') for s in summary for c in s['cells']) else []),
         '### Timbre',
         '- Do fills suddenly become darker or brighter?',
         '- Are cymbal / open-hat changes noticeable?',

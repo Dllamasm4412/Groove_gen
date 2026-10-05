@@ -1,6 +1,6 @@
 """
 Shared pitched-development engine for the v2 SessionComposer (opt-in,
-SessionComposer(stim_seed, develop=True); LIVE_GENERATION_PLAN.md 6.12-6.14).
+SessionComposer(stim_seed, develop=True); LIVE_GENERATION_PLAN.md 6.12-6.15).
 Not used by the live runner.
 
     SessionComposer -> develop_engine (this module) -> genre policy
@@ -14,7 +14,7 @@ energy_guard BOUNDS, pitched register shift), measured per-note levels,
 chord context read from the comping tracks, IDs and provenance.
 
 A genre policy (composer/motif.py hiphop, composer/dev_calm.py,
-composer/dev_lofi.py, composer/dev_rnb.py) supplies the musical part as a Policy plus module
+composer/dev_lofi.py, composer/dev_rnb.py, composer/dev_pop.py) supplies the musical part as a Policy plus module
 functions read_context / develop / unchanged_record, and is registered in
 POLICIES. Policies are pitch-only: onsets, durations, velocities, note counts,
 programs and tempo stay the source segment's.
@@ -50,8 +50,11 @@ MAX_PITCH_SHIFT = 2.0      # semitones: pitched median / p05 / p95 vs the source
 # genre -> policy module. Each exposes DEV_VERSION, SEED_VERSION,
 # read_context(src, sched, tempo), develop(src, ctx, records, visit, seed),
 # unchanged_record(ctx, records) and, optionally, DRUM_REPEAT_WINDOW.
+# rock has deliberately no policy (LIVE_GENERATION_PLAN.md section 6.17): its
+# pitched layer is a power-chord gallop with no line to develop, so develop mode
+# leaves it byte-identical.
 POLICIES = {'hiphop': 'composer.motif', 'calm': 'composer.dev_calm', 'lofi': 'composer.dev_lofi',
-            'rnb': 'composer.dev_rnb'}
+            'rnb': 'composer.dev_rnb', 'pop': 'composer.dev_pop', 'latin': 'composer.dev_latin'}
 DEVELOP_GENRES = tuple(POLICIES)
 
 
@@ -247,16 +250,17 @@ class ChordContext:
 
 
 def chord_context(pm: pretty_midi.PrettyMIDI, tracks: Sequence[int], bar_s: float,
-                  bars: int = BARS) -> list[Optional[ChordContext]]:
+                  bars: int = BARS, min_frac: float = 0.5) -> list[Optional[ChordContext]]:
     """Per bar, the chord the comping tracks actually play: the pitch classes of
-    every note of `tracks` sounding for more than half the bar, root = lowest
-    of them. Read from the MIDI (no key or scale assumed); None for a bar with
-    no such note. Used only to choose legal pitches."""
+    every note of `tracks` sounding for more than min_frac of the bar (0: any
+    note sounding in the bar, for stabbed comping such as pop's EP), root =
+    lowest of them. Read from the MIDI (no key or scale assumed); None for a
+    bar with no such note. Used only to choose legal pitches."""
     out: list[Optional[ChordContext]] = []
     for b in range(bars):
         lo, hi = b * bar_s, (b + 1) * bar_s
         held = [n.pitch for i in tracks for n in pm.instruments[i].notes
-                if min(n.end, hi) - max(n.start, lo) > bar_s / 2]
+                if min(n.end, hi) - max(n.start, lo) > bar_s * min_frac]
         out.append(ChordContext(frozenset(p % 12 for p in held), min(held) % 12, min(held)) if held else None)
     return out
 
