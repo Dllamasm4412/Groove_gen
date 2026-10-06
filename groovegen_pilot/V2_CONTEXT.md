@@ -579,6 +579,21 @@ Rock was heard (the session never climbed past hiphop4, rung 22, so rock3-5 at
   ladder ends.
 - Frozen unless a live run shows a clearly broken transition.
 
+## Rotation keeps the controller's direction (2026-10-06)
+
+- `LadderMPC._rotation_pick(d, current, mpc_rung)`: when the MPC asks to move
+  during rotation, the pick takes only band cells on the MPC's side, then one
+  not played recently, then another genre, then nearest the MPC's rung (the
+  MPC's own rung if no band cell lies that way). Holds keep the variety pick.
+  Before, genre recency could step against a requested move (synthetic sweep:
+  6 reversals in 41 requested rotation moves; after: 0 in 45).
+- An empty band (current cell outside the anchor's band) now holds instead of
+  raising IndexError. The bug was latent and was found by the ear-ladder
+  simulation.
+- Largest rotation jump on the frozen ladder: 4 rungs (rnb2 <-> latin3, 0.026 u,
+  inside the 0.0267 u band). PD gains, target, governor, HR smoothing and step
+  magnitudes are unchanged.
+
 ## Next task
 
 1. Developer: listen to the Latin dwell auditions, then fill

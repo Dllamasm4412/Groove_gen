@@ -272,3 +272,141 @@ def test_energy_audio_drops_only_the_presentation_gain():
 def test_table_records_the_exclusion():
     table = json.loads(TABLE.read_text())
     assert 'render gain' in table['excludes']
+
+
+# ---------------------------------------------------------------------------
+# Rotation keeps the controller's direction (2026-10-06)
+# ---------------------------------------------------------------------------
+
+
+def _random_history(ctrl, rng, n_steps=12):
+    """A random recent-play history (cell and genre recency) on ctrl's ladder."""
+    ctrl._step_idx = n_steps
+    ctrl._cell_last_seen, ctrl._genre_last_seen = {}, {}
+    for s in range(n_steps):
+        c = rng.choice(ctrl.ladder.cells)
+        ctrl._cell_last_seen[c.gt()] = ctrl._genre_last_seen[c.genre] = s
+
+
+@pytest.mark.parametrize('m', [+1, -1], ids=['up', 'down'])
+def test_requested_move_never_reversed_by_rotation(runtime_ladders, m):
+    """Every rung of the frozen ladder as current cell, anchors across the band,
+    either push direction, 30 random histories: when the MPC asks for a move,
+    the rotation pick moves the same way (never holds, never reverses)."""
+    import random
+
+    (ear, ctl, _, _), _ = runtime_ladders
+    rng = random.Random(0)
+    ctrl = LadderMPC(ear, ctl.cfg)
+    w = ctrl.cfg.rotation_band_u
+    checked = 0
+    for cur in ear.cells:
+        mpc = cur.rung + m
+        if not 0 <= mpc < len(ear.cells):
+            continue
+        for anchor in [c for c in ear.cells if abs(c.u - cur.u) <= w]:
+            ctrl._anchor_rung = anchor.rung
+            for d in (+1, -1):
+                for _ in range(30):
+                    _random_history(ctrl, rng)
+                    pick = ctrl._rotation_pick(d, cur.rung, mpc)
+                    assert m * (pick - cur.rung) > 0, (cur, anchor, d, pick)
+                    checked += 1
+    assert checked > 1000
+
+
+def test_requested_move_prefers_fresh_cells_then_other_genre():
+    """Direction first; among the cells that way, one not played recently, then
+    another genre, then nearest the MPC's rung."""
+    L = _to_ladder({('calm', 1): 0.0, ('rnb', 1): 0.50, ('rnb', 2): 0.505, ('latin', 2): 0.51,
+                    ('pop', 1): 0.515, ('rock', 5): 1.0})
+    ctrl = LadderMPC(L, ControllerConfig(saturation_rotation=True, rotation_band_u=0.026))
+    cur = ctrl._anchor_rung = L.index('rnb', 1)
+    ctrl._step_idx = 10
+    ctrl._cell_last_seen = {('rnb', 2): 9}                      # rnb2 recent
+    assert ctrl._rotation_pick(+1, cur, cur + 1) == L.index('latin', 2)
+    ctrl._cell_last_seen = {}
+    assert ctrl._rotation_pick(+1, cur, cur + 1) == L.index('latin', 2)   # rnb2 same genre as current
+    ctrl._cell_last_seen = {('latin', 2): 9}
+    assert ctrl._rotation_pick(+1, cur, cur + 1) == L.index('pop', 1)
+    ctrl._cell_last_seen = {('latin', 2): 9, ('pop', 1): 8, ('rnb', 2): 7}
+    assert ctrl._rotation_pick(+1, cur, cur + 1) == L.index('rnb', 2)     # fresh beats other genre
+    ctrl._cell_last_seen = {('latin', 2): 9, ('pop', 1): 8, ('rnb', 2): 9}
+    assert ctrl._rotation_pick(+1, cur, cur + 1) == L.index('latin', 2)   # all recent: nearest other genre
+    top = L.index('pop', 1)
+    ctrl._anchor_rung, ctrl._cell_last_seen = top, {}
+    assert ctrl._rotation_pick(+1, top, top + 1) == top + 1    # nothing that way in the band: the MPC's rung
+    assert ctrl._rotation_pick(-1, top, top - 1) == L.index('latin', 2)   # nearest the MPC's rung
+
+
+def test_hold_rotation_still_varies_on_the_frozen_ladder(runtime_ladders):
+    """A hold at a saturated top (rock5) or mid-ladder (rnb2): picks stay in the
+    band, rotate through several cells and never alternate two."""
+    (ear, ctl, _, _), _ = runtime_ladders
+    for genre, tier, d in (('rock', 5, +1), ('rnb', 2, +1), ('latin', 2, -1)):
+        ctrl = LadderMPC(ear, ctl.cfg)
+        cur = ctrl._anchor_rung = ear.index(genre, tier)
+        anchor_u = ear.by_rung[cur].u
+        played = []
+        for _ in range(12):
+            c = ear.by_rung[cur]
+            ctrl._genre_last_seen[c.genre] = ctrl._cell_last_seen[c.gt()] = ctrl._step_idx
+            ctrl._step_idx += 1
+            cur = ctrl._rotation_pick(d, cur, None)
+            played.append(cur)
+            assert abs(ear.by_rung[cur].u - anchor_u) <= ctrl.cfg.rotation_band_u + 1e-12
+        band = [c for c in ear.cells if abs(c.u - anchor_u) <= ctrl.cfg.rotation_band_u]
+        if len(band) >= 3:
+            assert len(set(played)) >= 3, (genre, tier, played)
+            assert not any(a == c and b == e for a, b, c, e in zip(played, played[1:], played[2:], played[3:]))
+
+
+def test_max_rotation_jump_characterized(runtime_ladders):
+    """Frozen ladder, live band (2 x noise_u = 0.0267 u): a rotation pick can move
+    at most 4 rungs (rnb2 <-> latin3, 0.026 u); no single pick exceeds the band."""
+    (ear, ctl, _, _), _ = runtime_ladders
+    w = ctl.cfg.rotation_band_u
+    assert w == pytest.approx(0.0267, abs=1e-4)
+    jumps = [(abs(a.rung - b.rung), a.gt(), b.gt()) for a in ear.cells for b in ear.cells if abs(a.u - b.u) <= w]
+    big = max(jumps)
+    assert big[0] == 4 and {big[1], big[2]} == {('rnb', 2), ('latin', 3)}
+
+
+def test_closed_loop_never_reverses_a_requested_move(runtime_ladders):
+    """step() under synthetic first-order plants (engineering only; not a model of
+    any person): weak and typical responders, up then down targets, 10 seeds.
+    Every decision where the MPC asked to move goes that way, including the
+    rotation segments, and rotation segments where the MPC asked to move occur."""
+    import random
+
+    from plant_model import FOPDTPlant, Subject
+
+    (ear, ctl, _, _), _ = runtime_ladders
+    rotating_moves = 0
+    for K in (3.0, 14.0):
+        for seed in range(10):
+            ctrl = LadderMPC(ear, ctl.cfg)
+            plant = FOPDTPlant(Subject(72.0, K, 60.0, 1, 1.0, 'synthetic'), dt=18.0, noise_sigma=1.0,
+                               rng=random.Random(seed))
+            rung, hr = ear.index('lofi', 3), 72.0
+            for k in range(60):
+                target = 72.0 + (25.0 if k < 30 else -15.0)
+                dec = ctrl.step(hr_bpm=hr, hr_target=target, hr_base=72.0, current_rung=rung)
+                m = (dec.mpc_rung > rung) - (dec.mpc_rung < rung)
+                if m:
+                    assert m * (dec.next_rung - rung) > 0, (K, seed, k, rung, dec)
+                    rotating_moves += dec.control_mode == 'rotate'
+                hr = plant.step(ear.by_rung[dec.next_rung].u)
+                rung = dec.next_rung
+    assert rotating_moves > 0
+
+
+def test_rotation_with_current_outside_the_anchor_band_holds():
+    """Current cell more than the band away from the anchor (the MPC moved it
+    there): a hold pick keeps the current cell instead of raising."""
+    L = _to_ladder({('calm', 1): 0.0, ('rnb', 1): 0.50, ('rnb', 2): 0.51, ('pop', 1): 0.60, ('rock', 5): 1.0})
+    ctrl = LadderMPC(L, ControllerConfig(saturation_rotation=True, rotation_band_u=0.026))
+    ctrl._anchor_rung = L.index('rnb', 1)
+    cur = L.index('pop', 1)
+    assert ctrl._rotation_pick(+1, cur, None) == cur
+    assert ctrl._rotation_pick(+1, cur, cur + 1) == cur + 1          # a requested move still follows the MPC

@@ -122,7 +122,10 @@ class ControllerConfig:
     #     recently-played band cell (furthest in the push direction among
     #     equals): a band holding one cell of one genre no longer alternates
     #     that cell every other segment (v2c live run 2026-10-05: latin2 /
-    #     rnb3 x3 each). 0 = the earlier picks.
+    #     rnb3 x3 each). 0 = the earlier picks. When the MPC asks to move
+    #     during rotation, the pick stays on the MPC's side of the current
+    #     cell (direction first, then recency, then genre, then nearest the
+    #     MPC's rung); genre variety only reorders holds (2026-10-06).
     #   target_relaxation: after relax_after_segments stuck, set the target
     #     aside: step away from it at max_step_per_segment until u has moved
     #     relax_depth_u from the stall cell, then re-climb to the stall cell
@@ -545,7 +548,7 @@ class LadderMPC:
             self._relax_dir, self._relax_phase = d, "down"
             return self._capped_step(current_rung, -d), "relax"
         if cfg.saturation_rotation and self._stuck_count >= cfg.rotation_after_segments:
-            return self._rotation_pick(d, current_rung), "rotate"
+            return self._rotation_pick(d, current_rung, mpc_rung), "rotate"
         return mpc_rung, "mpc"
 
     def _du_ok(self, from_rung: int, to_rung: int) -> bool:
@@ -568,10 +571,19 @@ class LadderMPC:
         self._stuck_dir, self._stuck_count, self._released = 0, 0, 0
         self._relax_dir, self._relax_phase = 0, ""
 
-    def _rotation_pick(self, d: int, current_rung: int) -> int:
-        """Most extreme cell (in push direction d) of the least-recently-played
-        genre within rotation_band_u of both the anchor cell's energy (no
-        drift) and the current cell's energy (no large single-segment hop)."""
+    def _rotation_pick(self, d: int, current_rung: int, mpc_rung: int | None = None) -> int:
+        """A cell within rotation_band_u of both the anchor cell's energy (no
+        drift) and the current cell's energy (no large single-segment hop).
+
+        When the MPC asks to move (mpc_rung != current_rung) the pick keeps
+        that direction: only band cells on the MPC's side of the current cell,
+        then not played in the last rotation_no_repeat segments, then another
+        genre, then nearest the MPC's rung (the MPC's own rung if no other
+        band cell lies that way). Genre variety never reverses a requested
+        move (before 2026-10-06 it could: a stall rotating up could step down).
+        When the MPC holds (or mpc_rung is None), the variety pick below:
+        least-recently-played genre, then cell, then furthest in the push
+        direction d."""
         anchor_u = self.ladder.by_rung[self._anchor_rung].u
         current_u = self.ladder.by_rung[current_rung].u
         w = self.cfg.rotation_band_u
@@ -580,11 +592,23 @@ class LadderMPC:
             if abs(c.u - anchor_u) <= w
             and abs(c.u - current_u) <= w
             and self._du_ok(current_rung, c.rung)
-        ]
+        ] or [self.ladder.by_rung[current_rung]]
+        # The current cell can lie outside the anchor's band (the MPC moved it
+        # there during the stall, or a requested move followed the MPC past
+        # the band): with no band cell left, hold (an empty band raised
+        # IndexError; found in the 2026-10-06 ear-ladder simulation).
         current_genre = self.ladder.by_rung[current_rung].genre
         n = self.cfg.rotation_no_repeat
+        recent = {k for k, s in self._cell_last_seen.items() if s >= self._step_idx - n} if n > 0 else set()
+        m = 0 if mpc_rung is None else (mpc_rung > current_rung) - (mpc_rung < current_rung)
+        if m != 0:
+            ahead = [c for c in band if m * (c.rung - current_rung) > 0]
+            if not ahead:
+                return mpc_rung
+            ahead.sort(key=lambda c: (c.gt() in recent, c.genre == current_genre,
+                                      abs(c.rung - mpc_rung), m * c.rung))
+            return ahead[0].rung
         if n > 0:
-            recent = {k for k, s in self._cell_last_seen.items() if s >= self._step_idx - n}
             pool = [c for c in band if c.rung != current_rung and c.gt() not in recent] \
                 or [c for c in band if c.rung != current_rung] or band
             options = [c for c in pool if c.genre != current_genre] or pool
