@@ -38,10 +38,19 @@ distinguishable, so within such a tie group they are ordered by played
 tempo (then E) and take the group's E values in that order; the set of u
 values is unchanged. Stimulus-side measurements only.
 
+By-ear order (ear_ratings=..., measured ladder only): the developer's energy
+ratings of the kept cells (energy_by_ear.py) replace the measured order. The
+kept cells' measured E values, sorted, are reassigned in rating order (equal
+ratings in measured order), so the set of u values, the spacing the
+controller and the rotation band were tuned on, is unchanged; only which cell
+holds which value follows the ear. Ratings must not fall with tier within a
+genre (monotone-in-tier stays an invariant).
+
 Public API
 ----------
     build_ladder(genre_cfg=None, tier_caps=None, exclude_genres=(),
-                 features=None, weights=None, tie_band=0.0) -> Ladder
+                 features=None, weights=None, tie_band=0.0,
+                 ear_ratings=None) -> Ladder
         Compute the (genre, tier) energy table from a genre config dict.
         tier_caps drops cells the renderer would clamp to a lower tier.
         Returns a Ladder with .cells (sorted low->high), .index(genre, tier),
@@ -49,6 +58,9 @@ Public API
 
     load_energy_table(path) -> (features, weights, tie_band, sha256)
         Read energy_table_v1.json for build_ladder(features=...).
+
+    load_ear_ratings(path) -> (ratings, sha256)
+        Read energy_order_by_ear.json for build_ladder(ear_ratings=...).
 
     Ladder.cells : list[Cell]  where Cell = (rung, genre, tier, u)
     Ladder.by_rung : dict[int, Cell]
@@ -163,6 +175,7 @@ def build_ladder(
     features: Optional[dict[tuple[str, int], dict[str, float]]] = None,
     weights: Optional[dict[str, float]] = None,
     tie_band: float = 0.0,
+    ear_ratings: Optional[dict[tuple[str, int], float]] = None,
 ) -> Ladder:
     """
     Build the energy ladder (35 cells, or fewer with tier_caps).
@@ -190,6 +203,10 @@ def build_ladder(
     tie_band : float
         Measured ladder only: kept cells whose E differ by less than this
         (chained) form a tie group ordered by played tempo; 0 disables.
+    ear_ratings : dict, optional
+        Measured ladder only: (genre, tier) -> by-ear energy rating for
+        every kept cell; the kept cells take the measured E values in
+        rating order (see module docstring).
     """
     if genre_cfg is None:
         from composer import GENRE_CFG as _CFG
@@ -197,7 +214,9 @@ def build_ladder(
 
     if features is not None:
         return _measured_ladder(genre_cfg, tier_caps, exclude_genres,
-                                features, weights, tie_band)
+                                features, weights, tie_band, ear_ratings)
+    if ear_ratings is not None:
+        raise ValueError('ear_ratings reorder the measured ladder; pass features too')
 
     # Compute raw feature vectors for each (genre, tier)
     raw = []  # list of (genre, tier, tempo, onset_density, rms, centroid)
@@ -289,7 +308,8 @@ def _to_ladder(corrected: dict[tuple[str, int], float], noise_e: float = 0.0) ->
     return Ladder(cells=tuple(cells), by_rung=by_rung, by_gt=by_gt, noise_u=noise_e / span)
 
 
-def _measured_ladder(genre_cfg, tier_caps, exclude_genres, features, weights, tie_band):
+def _measured_ladder(genre_cfg, tier_caps, exclude_genres, features, weights, tie_band,
+                     ear_ratings=None):
     if weights is None:
         raise ValueError('weights are required with features')
     keys = [(g, t) for g in _GENRES for t in range(1, 6)]
@@ -327,7 +347,24 @@ def _measured_ladder(genre_cfg, tier_caps, exclude_genres, features, weights, ti
         us = [tied[(g, t)] for t in range(1, 6) if (g, t) in tied]
         if any(a >= b for a, b in zip(us, us[1:])):
             raise ValueError(f'tie ordering broke monotone-in-tier for {g}')
+    if ear_ratings is not None:
+        tied = _ear_order(tied, ear_ratings)
     return _to_ladder(tied, tie_band)
+
+
+def _ear_order(e_map: dict[tuple[str, int], float],
+               ratings: dict[tuple[str, int], float]) -> dict[tuple[str, int], float]:
+    """The sorted E values of e_map reassigned in by-ear rating order (equal
+    ratings keep the measured order)."""
+    missing = sorted(k for k in e_map if k not in ratings)
+    if missing:
+        raise ValueError(f'by-ear ratings are missing cells: {missing}')
+    for g in sorted({k[0] for k in e_map}):
+        rs = [ratings[(g, t)] for t in range(1, 6) if (g, t) in e_map]
+        if any(a > b for a, b in zip(rs, rs[1:])):
+            raise ValueError(f'by-ear ratings fall with tier for {g}: {rs}')
+    order = sorted(e_map, key=lambda k: (float(ratings[k]), e_map[k]))
+    return dict(zip(order, sorted(e_map.values())))
 
 
 def load_energy_table(path):
@@ -345,6 +382,21 @@ def load_energy_table(path):
         features[(g, int(t))] = vals
     return (features, table['weights'], float(table.get('tie_band_e', 0.0)),
             hashlib.sha256(raw).hexdigest())
+
+
+def load_ear_ratings(path):
+    """(ratings, sha256 of the file) from energy_order_by_ear.json
+    (energy_by_ear.py apply)."""
+    import hashlib
+    import json
+    from pathlib import Path
+
+    raw = Path(path).read_bytes()
+    ratings = {}
+    for key, r in json.loads(raw)['ratings'].items():
+        g, t = key.split(':')
+        ratings[(g, int(t))] = float(r)
+    return ratings, hashlib.sha256(raw).hexdigest()
 
 
 if __name__ == '__main__':

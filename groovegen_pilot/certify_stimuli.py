@@ -471,16 +471,16 @@ def _init_worker(sf2: str) -> None:
 
 
 def render_one(job: tuple) -> tuple[str, dict]:
-    """music_features_measured.measure_one's recipe: render, trim to 8 bars +
-    fade, audio_features. The sha check makes sure the rendered MIDI is the
-    one the row describes."""
-    from music_features_measured import audio_features
+    """music_features_measured.measure_one's recipe: render without the
+    presentation gain (energy_audio), trim to 8 bars + fade, audio_features.
+    The sha check makes sure the rendered MIDI is the one the row describes."""
+    from music_features_measured import audio_features, energy_audio
 
     sha, pm = job
     if sm.midi_sha256(pm) != sha:
         raise RuntimeError(f'MIDI changed in transit: {sha[:12]}')
     t0 = time.perf_counter()
-    audio = _RENDERER._render_pm_to_audio(pm)
+    audio = energy_audio(_RENDERER, pm)
     render_ms = (time.perf_counter() - t0) * 1e3
     bar_s = sm.bar_seconds(sm.played_tempo(pm))
     raw_s = len(audio) / SAMPLE_RATE

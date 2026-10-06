@@ -116,7 +116,13 @@ class ControllerConfig:
     #   saturation_rotation: after rotation_after_segments stuck, rotate
     #     through genres with cells within rotation_band_u of the stall
     #     cell's energy (least-recently-played genre, its cell furthest in
-    #     the push direction).
+    #     the push direction). With rotation_no_repeat > 0 a pick skips the
+    #     cells played in the last rotation_no_repeat segments while any
+    #     other band cell remains, and within a genre takes its least-
+    #     recently-played band cell (furthest in the push direction among
+    #     equals): a band holding one cell of one genre no longer alternates
+    #     that cell every other segment (v2c live run 2026-10-05: latin2 /
+    #     rnb3 x3 each). 0 = the earlier picks.
     #   target_relaxation: after relax_after_segments stuck, set the target
     #     aside: step away from it at max_step_per_segment until u has moved
     #     relax_depth_u from the stall cell, then re-climb to the stall cell
@@ -127,6 +133,7 @@ class ControllerConfig:
     saturation_rotation: bool = False
     rotation_after_segments: int = 3
     rotation_band_u: float = 0.20
+    rotation_no_repeat: int = 2
     target_relaxation: bool = False
     relax_after_segments: int = 8
     relax_depth_u: float = 0.35
@@ -199,6 +206,7 @@ class LadderMPC:
         self._last_target: float | None = None  # stuck state resets on change
         self._step_idx = 0
         self._genre_last_seen: dict[str, int] = {}
+        self._cell_last_seen: dict[tuple[str, int], int] = {}
 
     # -----------------------------------------------------------------
     # Reference governor
@@ -412,6 +420,7 @@ class LadderMPC:
         self._prev_hr = hr_bpm
         self._prev_u = u_next
         self._genre_last_seen[cell.genre] = self._step_idx
+        self._cell_last_seen[cell.gt()] = self._step_idx
         self._step_idx += 1
         self._prev_hr_base = hr_base
 
@@ -572,12 +581,21 @@ class LadderMPC:
             and abs(c.u - current_u) <= w
             and self._du_ok(current_rung, c.rung)
         ]
+        current_genre = self.ladder.by_rung[current_rung].genre
+        n = self.cfg.rotation_no_repeat
+        if n > 0:
+            recent = {k for k, s in self._cell_last_seen.items() if s >= self._step_idx - n}
+            pool = [c for c in band if c.rung != current_rung and c.gt() not in recent] \
+                or [c for c in band if c.rung != current_rung] or band
+            options = [c for c in pool if c.genre != current_genre] or pool
+            options.sort(key=lambda c: (self._genre_last_seen.get(c.genre, -1),
+                                        self._cell_last_seen.get(c.gt(), -1), -d * c.u))
+            return options[0].rung
         best: dict[str, Cell] = {}
         for c in band:
             b = best.get(c.genre)
             if b is None or (c.u > b.u if d > 0 else c.u < b.u):
                 best[c.genre] = c
-        current_genre = self.ladder.by_rung[current_rung].genre
         options = [c for g, c in best.items() if g != current_genre] or list(best.values())
         options.sort(key=lambda c: (self._genre_last_seen.get(c.genre, -1), -d * c.u))
         return options[0].rung

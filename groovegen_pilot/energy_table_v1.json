@@ -1,5 +1,6 @@
 {
  "description": "Measured per-cell energy features (music_features_measured.py); cell means over melody-bank variants. Stimulus-side only.",
+ "excludes": "presentation render gain (composer.render_directive; see energy_audio)",
  "weights": {
   "lufs": 0.4,
   "drum_rate": 0.25,
@@ -8,8 +9,8 @@
   "flux": 0.05
  },
  "variants": 8,
- "renders_sha256": "1c046e394aa990b21239c035464ae3f4fae8dbb532034530cbccbb1b24cfd589",
- "tie_band_e": 0.03813,
+ "renders_sha256": "13ba9be5e4034c1189e97bf127ee2741acf57a584a6b46c16968e937a0251206",
+ "tie_band_e": 0.04224,
  "cells": {
   "calm:1": {
    "tempo_bpm": 65.0,
@@ -25,7 +26,7 @@
    "flux": 0.86222,
    "low_ratio": 0.81306,
    "pulse_clarity": 0.70643,
-   "energy_sd": 0.04105
+   "energy_sd": 0.04536
   },
   "calm:2": {
    "tempo_bpm": 65.0,
@@ -41,7 +42,7 @@
    "flux": 0.8593,
    "low_ratio": 0.83085,
    "pulse_clarity": 0.70347,
-   "energy_sd": 0.04306
+   "energy_sd": 0.04769
   },
   "calm:3": {
    "tempo_bpm": 65.0,
@@ -57,7 +58,7 @@
    "flux": 0.85761,
    "low_ratio": 0.81267,
    "pulse_clarity": 0.6992,
-   "energy_sd": 0.03143
+   "energy_sd": 0.03491
   },
   "calm:4": {
    "tempo_bpm": 65.0,
@@ -73,7 +74,7 @@
    "flux": 0.86116,
    "low_ratio": 0.82061,
    "pulse_clarity": 0.70679,
-   "energy_sd": 0.03263
+   "energy_sd": 0.03611
   },
   "calm:5": {
    "tempo_bpm": 65.0,
@@ -89,7 +90,7 @@
    "flux": 0.86245,
    "low_ratio": 0.82239,
    "pulse_clarity": 0.69916,
-   "energy_sd": 0.03156
+   "energy_sd": 0.03489
   },
   "hiphop:1": {
    "tempo_bpm": 85.00004,
@@ -105,7 +106,7 @@
    "flux": 0.82179,
    "low_ratio": 0.72706,
    "pulse_clarity": 0.86004,
-   "energy_sd": 0.0134
+   "energy_sd": 0.01457
   },
   "hiphop:2": {
    "tempo_bpm": 87.00002,
@@ -121,7 +122,7 @@
    "flux": 1.2254,
    "low_ratio": 0.76856,
    "pulse_clarity": 0.85223,
-   "energy_sd": 0.01546
+   "energy_sd": 0.01697
   },
   "hiphop:3": {
    "tempo_bpm": 89.99996,
@@ -137,7 +138,7 @@
    "flux": 1.43624,
    "low_ratio": 0.71931,
    "pulse_clarity": 0.80632,
-   "energy_sd": 0.02279
+   "energy_sd": 0.02565
   },
   "hiphop:4": {
    "tempo_bpm": 93.00004,
@@ -153,7 +154,7 @@
    "flux": 1.37036,
    "low_ratio": 0.64534,
    "pulse_clarity": 0.80581,
-   "energy_sd": 0.03973
+   "energy_sd": 0.04423
   },
   "hiphop:5": {
    "tempo_bpm": 96.0,
@@ -169,7 +170,7 @@
    "flux": 1.35875,
    "low_ratio": 0.65281,
    "pulse_clarity": 0.83182,
-   "energy_sd": 0.04008
+   "energy_sd": 0.0447
   },
   "latin:1": {
    "tempo_bpm": 104.0,
@@ -185,7 +186,7 @@
    "flux": 1.10623,
    "low_ratio": 0.70477,
    "pulse_clarity": 0.59499,
-   "energy_sd": 0.01402
+   "energy_sd": 0.01417
   },
   "latin:2": {
    "tempo_bpm": 104.0,
@@ -201,7 +202,7 @@
    "flux": 1.21572,
    "low_ratio": 0.69986,
    "pulse_clarity": 0.75829,
-   "energy_sd": 0.00665
+   "energy_sd": 0.00648
   },
   "latin:3": {
    "tempo_bpm": 104.0,
@@ -217,7 +218,7 @@
    "flux": 1.2674,
    "low_ratio": 0.67492,
    "pulse_clarity": 0.79832,
-   "energy_sd": 0.02206
+   "energy_sd": 0.0242
   },
   "latin:4": {
    "tempo_bpm": 104.0,
@@ -233,7 +234,7 @@
    "flux": 1.22358,
    "low_ratio": 0.66111,
    "pulse_clarity": 0.81235,
-   "energy_sd": 0.02279
+   "energy_sd": 0.02469
   },
   "latin:5": {
    "tempo_bpm": 104.0,
@@ -249,7 +250,7 @@
    "flux": 1.23605,
    "low_ratio": 0.64867,
    "pulse_clarity": 0.78405,
-   "energy_sd": 0.02739
+   "energy_sd": 0.03052
   },
   "lofi:1": {
    "tempo_bpm": 78.0,
@@ -265,7 +266,7 @@
    "flux": 0.97155,
    "low_ratio": 0.90021,
    "pulse_clarity": 0.78665,
-   "energy_sd": 0.06019
+   "energy_sd": 0.06773
   },
   "lofi:2": {
    "tempo_bpm": 78.0,
@@ -281,7 +282,7 @@
    "flux": 0.89782,
    "low_ratio": 0.89267,
    "pulse_clarity": 0.76875,
-   "energy_sd": 0.1228
+   "energy_sd": 0.12237
   },
   "lofi:3": {
    "tempo_bpm": 78.0,
@@ -297,7 +298,7 @@
    "flux": 0.83668,
    "low_ratio": 0.8469,
    "pulse_clarity": 0.76573,
-   "energy_sd": 0.15248
+   "energy_sd": 0.15463
   },
   "lofi:4": {
    "tempo_bpm": 78.0,
@@ -313,7 +314,7 @@
    "flux": 0.90182,
    "low_ratio": 0.86001,
    "pulse_clarity": 0.78097,
-   "energy_sd": 0.16426
+   "energy_sd": 0.16778
   },
   "lofi:5": {
    "tempo_bpm": 78.0,
@@ -329,7 +330,7 @@
    "flux": 0.87872,
    "low_ratio": 0.84662,
    "pulse_clarity": 0.78012,
-   "energy_sd": 0.12138
+   "energy_sd": 0.12021
   },
   "pop:1": {
    "tempo_bpm": 118.0,
@@ -345,7 +346,7 @@
    "flux": 1.26324,
    "low_ratio": 0.64304,
    "pulse_clarity": 0.77842,
-   "energy_sd": 0.11366
+   "energy_sd": 0.11456
   },
   "pop:2": {
    "tempo_bpm": 118.0,
@@ -361,7 +362,7 @@
    "flux": 1.2324,
    "low_ratio": 0.62774,
    "pulse_clarity": 0.79277,
-   "energy_sd": 0.08727
+   "energy_sd": 0.08835
   },
   "pop:3": {
    "tempo_bpm": 118.0,
@@ -377,7 +378,7 @@
    "flux": 1.18916,
    "low_ratio": 0.61696,
    "pulse_clarity": 0.78283,
-   "energy_sd": 0.12665
+   "energy_sd": 0.12416
   },
   "pop:4": {
    "tempo_bpm": 118.0,
@@ -393,7 +394,7 @@
    "flux": 1.22618,
    "low_ratio": 0.6144,
    "pulse_clarity": 0.81631,
-   "energy_sd": 0.10432
+   "energy_sd": 0.1102
   },
   "pop:5": {
    "tempo_bpm": 118.0,
@@ -409,7 +410,7 @@
    "flux": 1.18329,
    "low_ratio": 0.63112,
    "pulse_clarity": 0.76367,
-   "energy_sd": 0.09606
+   "energy_sd": 0.09511
   },
   "rnb:1": {
    "tempo_bpm": 100.0,
@@ -425,7 +426,7 @@
    "flux": 1.10904,
    "low_ratio": 0.8803,
    "pulse_clarity": 0.80802,
-   "energy_sd": 0.07344
+   "energy_sd": 0.0821
   },
   "rnb:2": {
    "tempo_bpm": 100.0,
@@ -441,7 +442,7 @@
    "flux": 1.10099,
    "low_ratio": 0.88521,
    "pulse_clarity": 0.81125,
-   "energy_sd": 0.03813
+   "energy_sd": 0.04224
   },
   "rnb:3": {
    "tempo_bpm": 100.0,
@@ -457,7 +458,7 @@
    "flux": 1.10602,
    "low_ratio": 0.86028,
    "pulse_clarity": 0.81679,
-   "energy_sd": 0.06612
+   "energy_sd": 0.07272
   },
   "rnb:4": {
    "tempo_bpm": 100.0,
@@ -473,7 +474,7 @@
    "flux": 1.11268,
    "low_ratio": 0.85905,
    "pulse_clarity": 0.80621,
-   "energy_sd": 0.05622
+   "energy_sd": 0.06239
   },
   "rnb:5": {
    "tempo_bpm": 100.0,
@@ -489,87 +490,87 @@
    "flux": 1.1086,
    "low_ratio": 0.86127,
    "pulse_clarity": 0.80478,
-   "energy_sd": 0.03131
+   "energy_sd": 0.03302
   },
   "rock:1": {
    "tempo_bpm": 109.99991,
-   "lufs": -17.48896,
-   "peak_dbfs": -2.32,
+   "lufs": -21.48896,
+   "peak_dbfs": -6.31997,
    "drum_rate": 3.66666,
    "drum_low_rate": 0.91667,
    "drum_backbeat_rate": 0.91667,
    "drum_hats_rate": 3.66666,
    "drum_hand_rate": 0.0,
    "note_rate": 3.66666,
-   "centroid_hz": 3214.8423,
-   "flux": 1.27695,
+   "centroid_hz": 3217.85097,
+   "flux": 1.27699,
    "low_ratio": 0.79349,
    "pulse_clarity": 0.92542,
-   "energy_sd": 0.03666
+   "energy_sd": 0.04132
   },
   "rock:2": {
    "tempo_bpm": 115.00003,
-   "lufs": -15.9456,
-   "peak_dbfs": -1.16345,
+   "lufs": -18.94329,
+   "peak_dbfs": -3.95558,
    "drum_rate": 3.83333,
    "drum_low_rate": 0.95833,
    "drum_backbeat_rate": 0.95833,
    "drum_hats_rate": 3.83333,
    "drum_hand_rate": 0.0,
    "note_rate": 3.83333,
-   "centroid_hz": 2972.26194,
-   "flux": 1.31038,
-   "low_ratio": 0.70712,
+   "centroid_hz": 2974.05041,
+   "flux": 1.31042,
+   "low_ratio": 0.70723,
    "pulse_clarity": 0.94605,
-   "energy_sd": 0.02412
+   "energy_sd": 0.0267
   },
   "rock:3": {
    "tempo_bpm": 120.0,
-   "lufs": -15.15222,
-   "peak_dbfs": -1.0,
+   "lufs": -18.08985,
+   "peak_dbfs": -2.40675,
    "drum_rate": 4.0,
    "drum_low_rate": 1.0,
    "drum_backbeat_rate": 1.0,
    "drum_hats_rate": 4.0,
    "drum_hand_rate": 0.0,
    "note_rate": 8.0,
-   "centroid_hz": 3565.43969,
-   "flux": 1.49873,
-   "low_ratio": 0.83767,
-   "pulse_clarity": 0.93692,
-   "energy_sd": 0.01313
+   "centroid_hz": 3566.908,
+   "flux": 1.49811,
+   "low_ratio": 0.83816,
+   "pulse_clarity": 0.93707,
+   "energy_sd": 0.0185
   },
   "rock:4": {
    "tempo_bpm": 125.0,
-   "lufs": -14.4552,
-   "peak_dbfs": -1.0,
+   "lufs": -15.82275,
+   "peak_dbfs": -0.62917,
    "drum_rate": 4.16667,
    "drum_low_rate": 1.04167,
    "drum_backbeat_rate": 1.04167,
    "drum_hats_rate": 4.16667,
    "drum_hand_rate": 0.0,
    "note_rate": 8.33333,
-   "centroid_hz": 3395.93387,
-   "flux": 1.55245,
-   "low_ratio": 0.76255,
-   "pulse_clarity": 0.87848,
-   "energy_sd": 0.02934
+   "centroid_hz": 3396.78453,
+   "flux": 1.54443,
+   "low_ratio": 0.76695,
+   "pulse_clarity": 0.87907,
+   "energy_sd": 0.03207
   },
   "rock:5": {
    "tempo_bpm": 130.00013,
-   "lufs": -13.72715,
-   "peak_dbfs": -1.0,
+   "lufs": -13.53019,
+   "peak_dbfs": 0.0,
    "drum_rate": 4.33334,
    "drum_low_rate": 1.08333,
    "drum_backbeat_rate": 1.08333,
    "drum_hats_rate": 4.33334,
    "drum_hand_rate": 0.0,
    "note_rate": 8.66668,
-   "centroid_hz": 3603.59345,
-   "flux": 1.3815,
-   "low_ratio": 0.64651,
-   "pulse_clarity": 0.82253,
-   "energy_sd": 0.02579
+   "centroid_hz": 3604.30907,
+   "flux": 1.37928,
+   "low_ratio": 0.65882,
+   "pulse_clarity": 0.82763,
+   "energy_sd": 0.03177
   }
  }
 }

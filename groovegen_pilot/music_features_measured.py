@@ -123,6 +123,27 @@ def cell_plan(genre, tier, variant):
     return tempo, TIER_TO_DENSITY[tier_c], bank_seed
 
 
+def energy_audio(renderer, pm):
+    """Render a segment for energy measurement: as played, minus the
+    presentation gain.
+
+    The Rock render gain (composer.render_directive) is a loudness match by
+    ear (developer listening, 2026-10-05), not extra energy; metered as
+    energy it lifted rock:1 next to pop1 on the live ladder and the first
+    v2c live run rotated pop -> rock1 (2026-10-05). The directive is dropped,
+    so the segment takes the plain render (equal to the float render at
+    0 dB to -95 dB); the composition, Rock's drum velocity scale included,
+    is measured unchanged."""
+    import copy
+    from composer import RENDER_DIRECTIVE, render_directive
+
+    if render_directive(pm) is not None:
+        pm = copy.deepcopy(pm)
+        pm.text_events = [e for e in pm.text_events
+                          if not e.text.startswith(RENDER_DIRECTIVE)]
+    return renderer._render_pm_to_audio(pm)
+
+
 def measure_one(args):
     genre, tier, variant, sf2 = args
     from composer import generate_segment
@@ -135,7 +156,7 @@ def measure_one(args):
     played_tempo = float(pm.get_tempo_changes()[1][0])
     bar_s = 60.0 / played_tempo * BEATS_PER_BAR
     dur_s = BARS * bar_s
-    audio = r._render_pm_to_audio(pm)
+    audio = energy_audio(r, pm)
     audio = audio[:int(round(BARS * bar_s * SR + FADE_BARS * bar_s * SR))]
     row = {'genre': genre, 'tier': tier, 'variant': variant, 'seed': bank_seed,
            'tempo_bpm': played_tempo}
@@ -210,6 +231,7 @@ def main():
         table = {
             'description': 'Measured per-cell energy features (music_features_measured.py); '
                            'cell means over melody-bank variants. Stimulus-side only.',
+            'excludes': 'presentation render gain (composer.render_directive; see energy_audio)',
             'weights': ENERGY_WEIGHTS,
             'variants': args.variants,
             'renders_sha256': digest,

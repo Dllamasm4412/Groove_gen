@@ -26,6 +26,9 @@ LIVE_EXCLUDE_GENRES: tuple[str, ...] = ()
 LIVE_TIER_CAP_OVERRIDES: dict[str, int] = {"latin": 3}
 # Measured per-cell energy features (music_features_measured.py).
 ENERGY_TABLE = Path(__file__).resolve().parent / "energy_table_v1.json"
+# The developer's by-ear energy ratings of the live cells (energy_by_ear.py);
+# --ladder ear reorders the measured ladder by them.
+EAR_ORDER = Path(__file__).resolve().parent / "energy_order_by_ear.json"
 
 
 def parse_args() -> argparse.Namespace:
@@ -54,15 +57,22 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--ladder",
-        choices=("measured", "prior"),
+        choices=("measured", "ear", "prior"),
         default="measured",
-        help="cell energy source: measured features (--energy-table) or the unmeasured prior",
+        help="cell energy source: measured features (--energy-table), measured values "
+        "in the developer's by-ear order (--ear-order), or the unmeasured prior",
     )
     parser.add_argument(
         "--energy-table",
         type=Path,
         default=ENERGY_TABLE,
-        help="measured energy table for --ladder measured",
+        help="measured energy table for --ladder measured / ear",
+    )
+    parser.add_argument(
+        "--ear-order",
+        type=Path,
+        default=EAR_ORDER,
+        help="by-ear ratings for --ladder ear (energy_by_ear.py apply)",
     )
     parser.add_argument(
         "--max-step-per-segment",
@@ -595,16 +605,22 @@ def main() -> int:
         # Only cells the renderer plays distinctly (calm<=2, lofi<=3, rnb<=4).
         # Measured ladder: cell energy from rendered loudness, drum onset
         # rate, played tempo, centroid and flux (energy_table_v1.json).
-        energy_table_sha = None
+        energy_table_sha = ear_order_sha = None
         live_tier_caps = {**RUNG_TIER_CAP, **LIVE_TIER_CAP_OVERRIDES}
-        if args.ladder == "measured":
-            from ladder import load_energy_table
+        if args.ladder in ("measured", "ear"):
+            from ladder import load_ear_ratings, load_energy_table
             features, weights, tie_band, energy_table_sha = load_energy_table(args.energy_table)
+            ear_ratings = None
+            if args.ladder == "ear":
+                ear_ratings, ear_order_sha = load_ear_ratings(args.ear_order)
             ladder = build_ladder(
                 tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES,
                 features=features, weights=weights, tie_band=tie_band,
+                ear_ratings=ear_ratings,
             )
             logger.info("ladder: measured (%s, sha256 %s)", args.energy_table, energy_table_sha[:16])
+            if ear_ratings is not None:
+                logger.info("ladder: by-ear order (%s, sha256 %s)", args.ear_order, ear_order_sha[:16])
         else:
             ladder = build_ladder(tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES)
             logger.info("ladder: prior")
@@ -629,7 +645,7 @@ def main() -> int:
             )
         if args.rotation_band_u is not None:
             rotation_band_u = args.rotation_band_u
-        elif args.ladder == "measured":
+        elif args.ladder in ("measured", "ear"):
             # cells within ~2 noise SDs of the stall cell (user OK 2026-09-25
             # to rotate slightly below the top)
             rotation_band_u = 2.0 * ladder.noise_u
@@ -729,8 +745,11 @@ def main() -> int:
             summary["ladder_excluded_genres"] = list(LIVE_EXCLUDE_GENRES)
             summary["ladder_source"] = args.ladder
             summary["rotation_band_u"] = rotation_band_u
-            summary["energy_table"] = str(args.energy_table) if args.ladder == "measured" else None
+            summary["rotation_no_repeat"] = controller.cfg.rotation_no_repeat
+            summary["energy_table"] = str(args.energy_table) if args.ladder != "prior" else None
             summary["energy_table_sha256"] = energy_table_sha
+            summary["ear_order"] = str(args.ear_order) if args.ladder == "ear" else None
+            summary["ear_order_sha256"] = ear_order_sha
             summary["ladder_cells"] = [f"{c.genre}{c.tier}:{c.u:.4f}" for c in ladder.cells]
             summary["crossfade_tail_scaled"] = mixer.n_tail_scaled
             summary["generator"] = segment_source.config() if segment_source else {"generator": "bank"}

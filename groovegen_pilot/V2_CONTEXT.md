@@ -450,12 +450,109 @@ plus 150 sampled base seeds per cell. v2a.3 leaves pitched tracks equal to the b
   12.3 min, deterministic WAV.
 - Real compose + render max 2.09 s (p95 1.68) against the 3.0 s render lead.
 
+## Rock presentation (2026-10-05; wired, gains set, uncommitted)
+
+- Developer decision by ear: keep the guitar (program 26, Musyng Kite "Jazz Guitar";
+  rock_cell.py's clean/overdriven docstring is wrong), drums x1.20, Rock as loud as
+  its neighbours, in both `bank` and `v2c`. Composition frozen.
+- Wired in `composer.py` `GENRE_CFG['rock']`:
+  - `drum_velocity_scale=1.20`, applied in `_gen_rock` (clamp 1..127). Variation ops
+    are velocity-neutral, so v2c keeps it.
+  - `render_gain_db={1: 4.0, 2: 3.0, 3: 3.0, 4: 1.5, 5: 0.0}`. The developer chose
+    rock:1 +4 dB by ear (hiphop2 -> rock1 -> latin1); tiers 2-5 sit at the same
+    metered offset (+3.1 LU) above their live neighbours, rounded to 0.5 dB, and
+    rock:5 is not cut. Check: `renders/rock_mix/20261005_rock_final/listen/`.
+    `_gen_rock` writes the gain into the MIDI as a text event (`render_directive`).
+- Renderer (`segment_renderer.py`): directive MIDI renders `-O float`, then the
+  gain, then `limit_peaks` (look-ahead, -1 dBFS ceiling, 20 ms). Float matches the
+  16-bit render to -95 dB. MIDI without the directive (every other genre) uses the
+  old command, bit-identical to HEAD (checked on pop, hiphop, latin).
+- Why the gain needs float + limiter: by LUFS, Rock at x1.20 already matches pop at
+  rock:2-3 and is louder than hiphop at rock:4-5 (rock:1 ~0.9 LU low), and rock:5
+  clipped inside fluidsynth's int16 output. The developer still hears Rock as low,
+  so the gains are set by ear per tier.
+- Gain audition: `renders/rock_mix/20261005_rock_gain/listen/` (0/+2/+4/+6 dB per
+  tier between live neighbours; built before wiring, with the candidate tool).
+- Verified: identity fixtures regenerated, only Rock keys changed
+  (`composer_identity_v1.json`, `develop_identity_v2b1.json`); full suite before
+  regeneration 566 pass / 3 fail (all Rock identity); after it, rock + identity
+  tests 250 pass; 5 gates exit 0. v2c sim
+  `renders/integration_v2/20261005_rock_wired_v2c/`: 0 full-scale samples, max
+  compose+render 1.58 s; rock:4-5 compose+render max 1.82 s.
+- `energy_table_v1.json` re-measured (`renders/smoke_audit/energy_20261005_rock/`):
+  - No non-Rock cell changed.
+  - Rock LUFS: -22.22/-19.52/-18.82/-16.37/-14.23 -> -17.49/-15.95/-15.15/-14.46/-13.73.
+  - Rock centroid is +450..+565 Hz.
+- Live 27-cell ladder: rock:1 rung 7 -> 14 (above latin:3), rock:2 15 -> 21,
+  rock:3 20 -> 24, rock:4 24 -> 25, rock:5 stays at 26. hiphop:5 drops 25 -> 23.
+  The default scripted v2c sim (`renders/integration_v2/20261005_rock_final_v2c/`)
+  no longer reaches Rock: 35 segments, max 1.34 s, 0 full-scale samples.
+- Rock certification `--audio` (`renders/certification/20261005_rock_presentation/`):
+  - It reproduces the new table exactly.
+  - Verdicts are as before the change (2026-09-30 audio run): variation and
+    within-range still fail, with 16-20 failing checks per cell either way.
+  - These are the pre-existing Rock envelope issue (see Next task). Nothing was
+    loosened.
+- Full suite after the table: 610 pass. The 4 failures were Rock identity
+  fixtures (regenerated; only Rock keys changed) and one gain test (fixed).
+- `rock_mix_audition.py` is audition-only. Its outputs from before wiring are not
+  reproducible now, because composed Rock already carries x1.20.
+
+## After the first v2c live run (2026-10-05; uncommitted)
+
+Developer feedback on the run: up-steps pop5 -> rock1 and pop5 -> hiphop3 sound
+wrong; latin2 held for several segments "sounded the same all the time"; no high
+Rock was heard (the session never climbed past hiphop4, rung 22, so rock3-5 at
+24-26 were never asked for).
+
+- **Energy without the Rock gain.** The presentation gain is a loudness match by
+  ear, not energy. `music_features_measured.energy_audio` (also used by
+  `certify_stimuli.render_one`) drops the render directive before metering.
+  Table re-measured (`renders/smoke_audit/energy_20261005_rock_nogain/`); only
+  rock:1-5 changed. The table records `excludes`. Live ladder now: calm1 calm2
+  hiphop1 lofi1-3 hiphop2 latin1 **rock1 (8)** rnb1-3 latin2 rnb4 latin3 **rock2
+  (15)** pop1-5 **rock3 (21)** hiphop3-5 **rock4 (25) rock5 (26)**. hiphop3 is still
+  above pop5 by measurement.
+- **By-ear order** (`ladder.build_ladder(ear_ratings=)`, `run_pilot_zero --ladder
+  ear`, file `energy_order_by_ear.json`). The developer's ratings re-assign the
+  measured u values in rating order (ties keep the measured order; ratings must
+  not fall with tier). The u set is unchanged, so controller and rotation-band
+  tuning carry over. Kit: `energy_by_ear.py render` writes one clip per live cell
+  (v2c, two visits, live renderer incl. Rock gain), every adjacent step, and
+  `ratings.csv`; `energy_by_ear.py apply` validates and writes the JSON.
+  Kit rendered: `renders/energy_by_ear/20261005_1526/`. Ratings pending.
+- **Rotation without ping-pong** (`ControllerConfig.rotation_no_repeat=2`, live
+  default). The rotation pick skips cells played in the last 2 segments while the
+  band has others, prefers another genre, then genre and cell recency. The old
+  pick (least-recent genre, most extreme cell) alternated latin2 / rnb3; it is
+  kept for `rotation_no_repeat=0`. Tests in `tests/test_energy_order.py`.
+- **Latin v2c.latin.1: piano and bass development** (`composer/dev_latin.py`
+  `accompany`). The nylon is unchanged (seed `v2c.latin.0`; 180/180 visits
+  identical). Every visit plays one bass pattern (swap, anticipate, octave,
+  swap+anticipate) and one piano dyad pattern (35, 5R, R3>35, R3>5R, 35>R3,
+  5R>35) over bars 5-8 or 3-8. Both change every visit; pitch-only; chord tones;
+  exact register.
+  - Unbalanced first try: piano re-voicings raised latin:1-2 low_ratio shift to
+    +0.0070 / +0.0051 (allowed 0.0021), segment_ok 0.08 / 0.17
+    (`renders/certification/v2c_latin1_dev_unbalanced`). Fix: measured
+    per-pattern effects (`ACCOMP_EFFECT`); only pairs whose predicted dLUFS /
+    dlow_ratio stay within 0.15 LU / 0.005 are played; bass "third" dropped.
+  - Certification `--audio` (`renders/certification/v2c_latin1_dev`): cell
+    verdicts as v2c.latin.0; segment_ok latin:1-3 0.21 / 0.25 / 0.79 (was 0.58 /
+    0.46 / 0.92); LUFS and low_ratio cell shifts inside allowance; pulse_clarity
+    latin:1 +0.0144 (allowed 0.0130; was +0.0097), latin:2 +0.0092 (allowed 0.0025;
+    already over at +0.0056). Recorded as a residual, envelopes unchanged.
+  - Rendered census vs v2c.latin.0 (60 segments): dLUFS -0.22..+0.04, median -0.09.
+  - Dwell auditions: `renders/audition_v2/20261005_latin1_latin2_dwell`, `..._latin3_dwell`.
+- v2c sim `renders/integration_v2/20261005_latin1_v2c/`: 38 segments, plan
+  invariance max nunique 1.
+
 ## Next task
 
-1. Developer listening: Pop (`v2c_pop3_s1`), Latin (`v2c_latin3_s1`, `v2c_latin1_s1`)
-   and the integration WAV. Then the first opt-in live developer run with
-   `--generator v2c` (no participant); check `queued_ahead_s` and gen_visit_idx in
-   its trace.
+1. Developer: listen to the Latin dwell auditions, then fill
+   `renders/energy_by_ear/20261005_1526/ratings.csv`; then `energy_by_ear.py
+   apply`. Then a live developer run with `--generator v2c --ladder ear`; check
+   `queued_ahead_s` and gen_visit_idx in its trace.
 2. Then the envelope review, separate from A6 and the generator:
    - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
      seed-invariant);
@@ -503,4 +600,8 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 -m pytest tests/test_session_v2_integration.py -q
 ../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c
 ../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c --sweep 3
+../.venv/bin/python3.12 -m pytest tests/test_energy_order.py tests/test_dev_latin.py -q
+../.venv/bin/python3.12 music_features_measured.py --table          # after any composer / cell change
+../.venv/bin/python3.12 energy_by_ear.py render --sf2 Musyng_Kite.sf2 --out renders/energy_by_ear/<ts>
+../.venv/bin/python3.12 energy_by_ear.py apply --ratings renders/energy_by_ear/<ts>/ratings.csv
 ```
