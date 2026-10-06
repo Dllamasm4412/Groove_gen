@@ -47,7 +47,7 @@ PLAN_COLS = ['genre', 'tier', 'rung', 'tempo_bpm', 'seed', 'generator', 'gen_vis
 
 def live_stack():
     """The ladder and controller run_pilot_zero builds with its default flags."""
-    ladder, controller, _ = sim.live_stack()
+    ladder, controller, _, _ = sim.live_stack()
     return ladder, controller
 
 

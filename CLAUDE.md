@@ -64,9 +64,10 @@ M1 active. Verified: HRTrajectory self-test converges in both directions (75→1
   - Rock identity fixtures have been regenerated (only Rock keys changed).
 - After the first v2c live run (2026-10-05, uncommitted; detail in V2_CONTEXT.md "After the first v2c live run"):
   - Energy is measured WITHOUT the Rock presentation gain (`music_features_measured.energy_audio`; certification too). Table re-measured, only Rock changed. Live rungs: rock1 8, rock2 15, rock3 21, rock4 25, rock5 26; hiphop3 (22) is still above pop5 (20) by measurement.
-  - `--ladder ear` + `energy_order_by_ear.json`: developer by-ear ratings re-assign the measured u values (u set unchanged). Kit `renders/energy_by_ear/20261005_1526/` (`energy_by_ear.py render` / `apply`); ratings pending.
+  - `--ladder ear` + `energy_order_by_ear.json`: a by-ear order with the measured u values (u set unchanged).
   - Saturation rotation no longer ping-pongs: `ControllerConfig.rotation_no_repeat=2` (0 = old pick).
   - Latin v2c.latin.1: piano and bass development (pitch-only, chord tones, exact register, only measured-balanced pattern pairs); nylon unchanged. Certification residual: pulse_clarity shift latin:1-2 over allowance.
+- Final perceptual ladder (2026-10-06, frozen): `energy_order_by_ear.json` from `ladder_min_change.py freeze` (the minimum-change re-order under the four blind listening relations that replicated; detail in V2_CONTEXT.md). Live: `--ladder ear`.
 - Next: developer fills the by-ear ratings, then `energy_by_ear.py apply`, then a live run with `--generator v2c --ladder ear` (the developer runs live PPG).
 
 ## Notes

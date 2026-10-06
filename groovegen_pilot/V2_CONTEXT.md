@@ -547,6 +547,38 @@ Rock was heard (the session never climbed past hiphop4, rung 22, so rock3-5 at
 - v2c sim `renders/integration_v2/20261005_latin1_v2c/`: 38 segments, plan
   invariance max nunique 1.
 
+## Final perceptual ladder (2026-10-06; frozen, `energy_order_by_ear.json`)
+
+- Blind developer listening (`renders/ladder_audit/`): 14 boundary pairs (stim
+  seed 1, random play order), then the six relations that reversed the B-iso
+  proposal plus the rnb4 / latin2 tie again (stim seed 2, reversed play order,
+  complete 8-bar excerpts).
+- Four relations held in both orders: lofi1 < hiphop1, rnb1 < rock1,
+  hiphop3 < pop4, hiphop4 < rock3. latin1 / hiphop2 flipped with play order (no
+  preference); pop1 / rock2 went from rock2 higher to a tie; rnb4 / latin2 went
+  from a tie to latin2 higher. Unstable or tied comparisons fall back to the
+  measured order (rnb4 stays above latin2, +2.8 noise floors).
+- Ladder: the unique minimum-change re-order of the measured ladder that keeps
+  tier order and the four relations (exact integer program,
+  `ladder_min_change.py`): total displacement 12, largest 3, 9 cells moved.
+  Genre is descriptive only. No BPM term was added: tempo already has weight
+  0.20, and the acoustic terms predict 83% of BPM variance (`ladder_audit.py`).
+- Order: calm1 calm2 lofi1 hiphop1 lofi2 lofi3 hiphop2 latin1 rnb1 rock1 rnb2
+  rnb3 latin2 rnb4 latin3 rock2 pop1 pop2 pop3 hiphop3 pop4 pop5 hiphop4 rock3
+  hiphop5 rock4 rock5.
+- Runtime: `run_pilot_zero --ladder ear` (the existing mechanism;
+  `ladder_min_change.py freeze` writes the file). The u values are the measured
+  ones, so step sizes, the noise floor and the rotation band are unchanged.
+  Pinned in `tests/test_energy_order.py`.
+- Ambiguous adjacent boundaries left (near ties, not listened): hiphop1/lofi2,
+  rnb3/latin2, rnb4/latin3, hiphop5/rock4; held by tier order only:
+  calm1/calm2 (measured falls), lofi2/lofi3, rnb2/rnb3.
+- `simulate_session_v2.py --ladder ear` builds the ladder through
+  `run_pilot_zero.build_live_ladder`; `--hr plant` adds a synthetic first-order
+  HR (engineering only, not a model of any person) so a session reaches both
+  ladder ends.
+- Frozen unless a live run shows a clearly broken transition.
+
 ## Next task
 
 1. Developer: listen to the Latin dwell auditions, then fill

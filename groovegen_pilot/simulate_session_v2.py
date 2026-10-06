@@ -4,14 +4,17 @@ trajectory (engineering only; no PPG, no hardware, no playback;
 LIVE_GENERATION_PLAN.md section 6.18).
 
 Runs run_session_v2 exactly as run_pilot_zero wires it with its default flags
-(measured live ladder, LadderMPC, SessionConfigV2 with 1 Hz HR polls and
+(live ladder from run_pilot_zero.build_live_ladder, --ladder measured by default
+or ear / prior, LadderMPC, SessionConfigV2 with 1 Hz HR polls and
 stale_hr_policy='hold', CrossfadeMixer tail_out, SymbolicSegmentRenderer
 session_seed=42) and --generator bank | v2a | v2c. The player is a NullPlayer
 that keeps every enqueued block, so the WAV is the stream the live player
 would have been given.
 
 The HR is a fixed function of session time (SCRIPTED_HR); it does not respond
-to the music and is not a physiological model. The session runs on a fake
+to the music and is not a physiological model. --hr plant instead drives a
+synthetic first-order HR from the chosen cell's energy, to exercise up / down
+movement and both saturations (engineering only; not a model of any person). The session runs on a fake
 clock that advances --clock-render-s per render, so the trace and WAV are
 deterministic; the real compose and FluidSynth times are measured separately
 (timing.csv) and compared with SessionConfigV2.render_lead_s: the loop wakes
@@ -81,24 +84,20 @@ def live_args(extra: tuple = ()) -> argparse.Namespace:
         sys.argv = argv
 
 
-def live_stack():
-    """(ladder, controller, energy table sha256) as run_pilot_zero builds them
-    with its default flags (--ladder measured)."""
+def live_stack(ladder_mode: str = 'measured'):
+    """(ladder, controller, energy table sha256, ear order sha256) as
+    run_pilot_zero builds them (build_live_ladder, live_rotation_band_u) with
+    its default flags and --ladder ladder_mode."""
     import run_pilot_zero as rpz
     from control import ControllerConfig, LadderMPC
-    from ladder import build_ladder, load_energy_table
-    from segment_renderer import RUNG_TIER_CAP
 
-    args = live_args()
-    features, weights, tie_band, sha = load_energy_table(args.energy_table)
-    ladder = build_ladder(tier_caps={**RUNG_TIER_CAP, **rpz.LIVE_TIER_CAP_OVERRIDES},
-                          exclude_genres=rpz.LIVE_EXCLUDE_GENRES,
-                          features=features, weights=weights, tie_band=tie_band)
+    args = live_args(('--ladder', ladder_mode))
+    ladder, sha, ear_sha = rpz.build_live_ladder(args)
     controller = LadderMPC(ladder, ControllerConfig(
         max_step_per_segment=args.max_step_per_segment, saturation_rotation=args.saturation_rotation,
-        rotation_band_u=2.0 * ladder.noise_u, target_relaxation=args.target_relaxation,
+        rotation_band_u=rpz.live_rotation_band_u(args, ladder), target_relaxation=args.target_relaxation,
         max_du_per_segment=args.max_du_per_segment))
-    return ladder, controller, sha
+    return ladder, controller, sha, ear_sha
 
 
 class FakeClock:
@@ -122,6 +121,45 @@ class ScriptedHRSource:
     def read(self):
         bpm = self.fn(self.clock.perf())
         return None if bpm is None else HRReading(self.clock.time(), float(bpm), 'scripted', True)
+
+
+class PlantHRSource:
+    """Synthetic first-order HR that follows the energy u of the cell the
+    controller chose (engineering only: exercises up / down movement and both
+    saturations; not a model of any person, not efficacy evidence). The input
+    is the latest decision made at least PLANT_LEAD_S earlier (a decision
+    precedes its bars by about render_lead_s)."""
+
+    PLANT_LEAD_S = 3.0
+
+    def __init__(self, clock, ladder, initial_rung, k_bpm, tau_s=60.0, noise_bpm=0.3, seed=7):
+        import random
+
+        self.clock, self.ladder, self.k, self.tau = clock, ladder, k_bpm, tau_s
+        self.decisions = [(-1e9, ladder.by_rung[initial_rung].u)]
+        self.hr, self.t, self.noise, self.rng = BASELINE_BPM, 0.0, noise_bpm, random.Random(seed)
+
+    def wrap(self, controller):
+        step = controller.step
+
+        def recorded(*a, **kw):
+            d = step(*a, **kw)
+            self.decisions.append((self.clock.perf(), self.ladder.by_rung[d.next_rung].u))
+            return d
+        controller.step = recorded
+        return controller
+
+    def _u(self, t):
+        return [u for td, u in self.decisions if td <= t - self.PLANT_LEAD_S][-1]
+
+    def read(self):
+        now = self.clock.perf()
+        while self.t < now:
+            dt = min(1.0, now - self.t)
+            self.t += dt
+            target = BASELINE_BPM + self.k * self._u(self.t)
+            self.hr += (1.0 - math.exp(-dt / self.tau)) * (target - self.hr)
+        return HRReading(self.clock.time(), self.hr + self.rng.gauss(0.0, self.noise), 'plant', True)
 
 
 class TimedRenderer:
@@ -207,7 +245,7 @@ def simulate(args, out: Path) -> tuple[dict[str, Any], list[dict]]:
     from segment_renderer import SymbolicSegmentRenderer, _write_wav
     from session_generator import GENERATORS, SessionSegmentSource
 
-    ladder, controller, table_sha = live_stack()
+    ladder, controller, table_sha, ear_sha = live_stack(args.ladder)
     clock = FakeClock()
     renderer = TimedRenderer(SymbolicSegmentRenderer(sf2_path=args.sf2, sr=44100, session_seed=42),
                              clock, args.clock_render_s)
@@ -223,8 +261,13 @@ def simulate(args, out: Path) -> tuple[dict[str, Any], list[dict]]:
     mixer = CrossfadeMixer(fade_bars=0.25, fade_mode='tail_out')
     genre0, tier0 = live_args().initial_cell.split(':')
     initial = ladder.index(genre0, int(tier0))
+    if args.hr == 'plant':
+        hr_source = PlantHRSource(clock, ladder, initial, args.plant_k)
+        controller = hr_source.wrap(controller)
+    else:
+        hr_source = ScriptedHRSource(clock)
     trace = run_session_v2(
-        ScriptedHRSource(clock), renderer, player, mixer, ladder, controller, cfg,
+        hr_source, renderer, player, mixer, ladder, controller, cfg,
         hr_target_bpm=BASELINE_BPM + phases[0][1], hr_baseline_bpm=BASELINE_BPM, initial_rung=initial,
         target_schedule=rpz.make_target_schedule(phases, BASELINE_BPM), segment_source=source,
         sleep_fn=clock.sleep, time_fn=clock.time, perf_counter_fn=clock.perf)
@@ -267,11 +310,15 @@ def simulate(args, out: Path) -> tuple[dict[str, Any], list[dict]]:
         'command': ' '.join([Path(sys.executable).name, *sys.argv]),
         'created': datetime.now().astimezone().isoformat(timespec='seconds'),
         'generator': source.s.config() if source else {'generator': 'bank'},
-        'hr': {'source': 'SCRIPTED_HR (fixed function of time; does not respond to the music)',
-               'baseline_bpm': BASELINE_BPM, 'phases': args.phases, 'stale_window_s': STALE},
+        'hr': ({'source': 'SCRIPTED_HR (fixed function of time; does not respond to the music)',
+                'stale_window_s': STALE} if args.hr == 'scripted' else
+               {'source': f'PlantHRSource (synthetic first-order, K={args.plant_k} bpm at u=1, tau 60 s; '
+                          'engineering only, not a model of any person)'})
+              | {'baseline_bpm': BASELINE_BPM, 'phases': args.phases},
         'runner_config': {'session_config': cfg.__dict__, 'mixer': 'CrossfadeMixer(fade_bars=0.25, tail_out)',
-                          'initial_cell': live_args().initial_cell, 'ladder': 'measured',
-                          'energy_table_sha256': table_sha, 'ladder_cells': [f'{c.genre}{c.tier}:{c.u:.4f}'
+                          'initial_cell': live_args().initial_cell, 'ladder': args.ladder,
+                          'energy_table_sha256': table_sha, 'ear_order_sha256': ear_sha,
+                          'controller': {k: v for k, v in controller.cfg.__dict__.items() if k != 'user_descriptor'}, 'ladder_cells': [f'{c.genre}{c.tier}:{c.u:.4f}'
                                                                               for c in ladder.cells]},
         'clock_render_s': args.clock_render_s,
         'sf2': {'path': str(Path(args.sf2).resolve()), 'bytes': Path(args.sf2).stat().st_size},
@@ -300,7 +347,7 @@ def sweep(args, out: Path) -> dict[str, Any]:
     from segment_renderer import SymbolicSegmentRenderer
     from session_generator import GENERATORS, SessionSegmentSource
 
-    ladder, _, _ = live_stack()
+    ladder = live_stack(args.ladder)[0]
     renderer = SymbolicSegmentRenderer(sf2_path=args.sf2, sr=44100, session_seed=42)
     src = SessionSegmentSource(args.stim_seed, develop=GENERATORS[args.generator])
     rows = []
@@ -333,11 +380,12 @@ def listening_notes(m: dict[str, Any], timing: list[dict]) -> str:
         '# Integration audition: simulated closed-loop session',
         '',
         f"Generator: {m['generator']}  ",
-        f"HR: {m['hr']['source']}; baseline {m['hr']['baseline_bpm']} bpm, phases {m['hr']['phases']}, "
-        f"no HR during {m['hr']['stale_window_s'][0]:.0f}-{m['hr']['stale_window_s'][1]:.0f} s.  ",
+        f"HR: {m['hr']['source']}; baseline {m['hr']['baseline_bpm']} bpm, phases {m['hr']['phases']}"
+        + (f", no HR during {m['hr']['stale_window_s'][0]:.0f}-{m['hr']['stale_window_s'][1]:.0f} s.  "
+           if 'stale_window_s' in m['hr'] else '.  '),
         'The controller, ladder, mixer and renderer are the live runner\'s (default flags). The HR is '
-        'scripted and does not respond to the music, so this file shows how the music follows the '
-        'controller\'s cell choices; it is not evidence of any effect on a listener.',
+        'scripted or synthetic, so this file shows how the music follows the controller\'s cell '
+        'choices; it is not evidence of any effect on a listener.',
         '',
         'Differences from a live session: no PPG, no haptics, fake clock (no real gaps; real render '
         'times are in timing.csv), the WAV is the queued stream (live, a late render would add silence).',
@@ -372,6 +420,11 @@ def parse_args(argv=None):
     p.add_argument('--generator', default='v2c', choices=('bank', 'v2a', 'v2c'))
     p.add_argument('--stim-seed', type=int, default=1)
     p.add_argument('--phases', default=PHASES)
+    p.add_argument('--hr', default='scripted', choices=('scripted', 'plant'),
+                   help='scripted: fixed HR(t); plant: synthetic first-order HR driven by the chosen cell')
+    p.add_argument('--plant-k', type=float, default=14.0, help='--hr plant: HR rise (bpm) at u = 1')
+    p.add_argument('--ladder', default='measured', choices=('measured', 'ear', 'prior'),
+                   help='as run_pilot_zero --ladder (ear: energy_order_by_ear.json)')
     p.add_argument('--clock-render-s', type=float, default=1.5,
                    help='fake-clock time charged per render (keeps the run deterministic)')
     p.add_argument('--no-wav', action='store_true')

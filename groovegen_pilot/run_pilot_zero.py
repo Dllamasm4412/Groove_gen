@@ -150,6 +150,47 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def build_live_ladder(args: argparse.Namespace):
+    """(ladder, energy table sha256, ear order sha256) for --ladder measured /
+    ear / prior with the live tier caps (also used by simulate_session_v2)."""
+    from ladder import build_ladder
+    from segment_renderer import RUNG_TIER_CAP
+
+    logger = logging.getLogger("pilot_zero")
+    energy_table_sha = ear_order_sha = None
+    live_tier_caps = {**RUNG_TIER_CAP, **LIVE_TIER_CAP_OVERRIDES}
+    if args.ladder in ("measured", "ear"):
+        from ladder import load_ear_ratings, load_energy_table
+        features, weights, tie_band, energy_table_sha = load_energy_table(args.energy_table)
+        ear_ratings = None
+        if args.ladder == "ear":
+            ear_ratings, ear_order_sha = load_ear_ratings(args.ear_order)
+        ladder = build_ladder(
+            tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES,
+            features=features, weights=weights, tie_band=tie_band,
+            ear_ratings=ear_ratings,
+        )
+        logger.info("ladder: measured (%s, sha256 %s)", args.energy_table, energy_table_sha[:16])
+        if ear_ratings is not None:
+            logger.info("ladder: by-ear order (%s, sha256 %s)", args.ear_order, ear_order_sha[:16])
+    else:
+        ladder = build_ladder(tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES)
+        logger.info("ladder: prior")
+    return ladder, energy_table_sha, ear_order_sha
+
+
+def live_rotation_band_u(args: argparse.Namespace, ladder) -> float:
+    from control import ControllerConfig
+
+    if args.rotation_band_u is not None:
+        return args.rotation_band_u
+    if args.ladder in ("measured", "ear"):
+        # cells within ~2 noise SDs of the stall cell (user OK 2026-09-25
+        # to rotate slightly below the top)
+        return 2.0 * ladder.noise_u
+    return ControllerConfig().rotation_band_u
+
+
 def parse_phases(spec: str) -> list[tuple[str, float, float]]:
     """'up:10:5,down:-4:5' -> [('up', 10.0, 5.0), ('down', -4.0, 5.0)]."""
     phases = []
@@ -605,25 +646,7 @@ def main() -> int:
         # Only cells the renderer plays distinctly (calm<=2, lofi<=3, rnb<=4).
         # Measured ladder: cell energy from rendered loudness, drum onset
         # rate, played tempo, centroid and flux (energy_table_v1.json).
-        energy_table_sha = ear_order_sha = None
-        live_tier_caps = {**RUNG_TIER_CAP, **LIVE_TIER_CAP_OVERRIDES}
-        if args.ladder in ("measured", "ear"):
-            from ladder import load_ear_ratings, load_energy_table
-            features, weights, tie_band, energy_table_sha = load_energy_table(args.energy_table)
-            ear_ratings = None
-            if args.ladder == "ear":
-                ear_ratings, ear_order_sha = load_ear_ratings(args.ear_order)
-            ladder = build_ladder(
-                tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES,
-                features=features, weights=weights, tie_band=tie_band,
-                ear_ratings=ear_ratings,
-            )
-            logger.info("ladder: measured (%s, sha256 %s)", args.energy_table, energy_table_sha[:16])
-            if ear_ratings is not None:
-                logger.info("ladder: by-ear order (%s, sha256 %s)", args.ear_order, ear_order_sha[:16])
-        else:
-            ladder = build_ladder(tier_caps=live_tier_caps, exclude_genres=LIVE_EXCLUDE_GENRES)
-            logger.info("ladder: prior")
+        ladder, energy_table_sha, ear_order_sha = build_live_ladder(args)
         if args.initial_rung is not None:
             initial_rung = args.initial_rung
         else:
@@ -643,14 +666,7 @@ def main() -> int:
                 "some 1-rung moves are blocked",
                 args.max_du_per_segment, max_gap,
             )
-        if args.rotation_band_u is not None:
-            rotation_band_u = args.rotation_band_u
-        elif args.ladder in ("measured", "ear"):
-            # cells within ~2 noise SDs of the stall cell (user OK 2026-09-25
-            # to rotate slightly below the top)
-            rotation_band_u = 2.0 * ladder.noise_u
-        else:
-            rotation_band_u = ControllerConfig().rotation_band_u
+        rotation_band_u = live_rotation_band_u(args, ladder)
         controller = LadderMPC(
             ladder,
             ControllerConfig(

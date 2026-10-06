@@ -3,8 +3,9 @@ Live-ladder energy order after the first v2c live run (2026-10-05): energy is
 measured without the Rock presentation gain (music_features_measured.
 energy_audio), the developer's by-ear ratings can reorder the measured ladder
 (ladder.build_ladder(ear_ratings=), energy_by_ear.py, run_pilot_zero --ladder
-ear), and saturation rotation no longer alternates two cells
-(ControllerConfig.rotation_no_repeat).
+ear), the frozen perceptual ladder (energy_order_by_ear.json from
+ladder_min_change.py, 2026-10-06) is pinned, and saturation rotation no longer
+alternates two cells (ControllerConfig.rotation_no_repeat).
 """
 
 from __future__ import annotations
@@ -118,6 +119,73 @@ def test_energy_by_ear_apply_reports_bad_rows(tmp_path):
     csv_path.write_text('cell,rating,notes\nrnb:1,high,\nrock:9,3,\n')
     with pytest.raises(SystemExit, match='not a number'):
         energy_by_ear.main(['apply', '--ratings', str(csv_path), '--out', str(tmp_path / 'o.json')])
+
+
+# ---------------------------------------------------------------------------
+# The frozen perceptual ladder (energy_order_by_ear.json, 2026-10-06)
+# ---------------------------------------------------------------------------
+
+FINAL = ['calm1', 'calm2', 'lofi1', 'hiphop1', 'lofi2', 'lofi3', 'hiphop2', 'latin1', 'rnb1', 'rock1',
+         'rnb2', 'rnb3', 'latin2', 'rnb4', 'latin3', 'rock2', 'pop1', 'pop2', 'pop3', 'hiphop3',
+         'pop4', 'pop5', 'hiphop4', 'rock3', 'hiphop5', 'rock4', 'rock5']
+
+
+@pytest.fixture(scope='module')
+def runtime_ladders():
+    """The ladders run_pilot_zero builds for --ladder ear and --ladder measured."""
+    import simulate_session_v2 as sim
+
+    return sim.live_stack('ear'), sim.live_stack('measured')
+
+
+def test_final_ladder_order_pinned(runtime_ladders):
+    (ear, _, _, ear_sha), _ = runtime_ladders
+    assert [f'{c.genre}{c.tier}' for c in ear.cells] == FINAL
+    assert ear_sha is not None
+
+
+def test_final_ladder_integrity(runtime_ladders):
+    """27 live cells, each once; tiers ascending within every genre; the live
+    tier caps (latin capped at 3 live) unchanged."""
+    from run_pilot_zero import LIVE_TIER_CAP_OVERRIDES
+    from segment_renderer import RUNG_TIER_CAP
+
+    (ear, _, _, _), (measured, _, _, _) = runtime_ladders
+    cells = [c.gt() for c in ear.cells]
+    assert len(cells) == len(set(cells)) == 27 and set(cells) == {c.gt() for c in measured.cells}
+    caps = {**RUNG_TIER_CAP, **LIVE_TIER_CAP_OVERRIDES}
+    assert LIVE_TIER_CAP_OVERRIDES == {'latin': 3}
+    for g in {c.genre for c in ear.cells}:
+        tiers = [c.tier for c in ear.cells if c.genre == g]
+        assert tiers == list(range(1, caps.get(g, 5) + 1))      # ascending rung order = ascending tier
+
+
+def test_final_ladder_keeps_step_magnitudes(runtime_ladders):
+    """Order-only: the rung u values (so every step size, the noise floor and
+    the rotation band) are the measured ladder's."""
+    (ear, ctl_e, _, _), (measured, ctl_m, _, _) = runtime_ladders
+    assert [c.u for c in ear.cells] == pytest.approx([c.u for c in measured.cells], abs=1e-12)
+    assert ear.noise_u == pytest.approx(measured.noise_u)
+    assert ctl_e.cfg == ctl_m.cfg
+
+
+def test_final_ladder_is_the_min_change_solution():
+    """ladder_min_change: the replicated listening relations give FINAL as the unique
+    minimum-change order (total 12, largest 3, 9 moved), and the file matches it."""
+    import ladder_min_change as lm
+    from run_pilot_zero import EAR_ORDER
+
+    assert list(lm.FINAL_ORDER) == FINAL
+    features, tie_band, sha, e, current = lm.inputs()
+    cells = [c.gt() for c in current.cells]
+    cur = {k: i for i, k in enumerate(cells)}
+    order, stats = lm.solve(cells, cur, e)
+    assert [lm.name(k) for k in order] == FINAL
+    assert stats == {'total_displacement': 12, 'max_displacement': 3, 'moved_cells': 9}
+    assert lm.solve(cells, cur, e, extra_cuts=[order], fix=tuple(stats.values())) is None   # unique
+    ratings, _ = load_ear_ratings(EAR_ORDER)
+    assert sorted(ratings, key=ratings.get) == [(lm.name(k)[:-1], int(lm.name(k)[-1])) for k in order]
+    assert json.loads(EAR_ORDER.read_text())['energy_table_sha256'] == load_energy_table(TABLE)[3]
 
 
 # ---------------------------------------------------------------------------
