@@ -1,7 +1,7 @@
 """
 MIDI-side before/after metrics for the v2c pitched development policies
 (Calm v2c.calm.0, Lo-fi v2c.lofi.0, R&B v2c.rnb.0, Pop v2c.pop.0, Latin
-v2c.latin.0; LIVE_GENERATION_PLAN.md sections 6.13-6.16).
+v2c.latin.1; LIVE_GENERATION_PLAN.md sections 6.13-6.16).
 Debug / certification tooling, not in the live path.
 
 Compares SessionComposer(stim) (v2a.3) with SessionComposer(stim, develop=True)

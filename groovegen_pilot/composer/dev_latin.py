@@ -1,8 +1,12 @@
 """
-Latin development policy (v2c.latin.0) for the shared engine
+Latin development policy (v2c.latin.1) for the shared engine
 (composer/develop_engine.py; LIVE_GENERATION_PLAN.md section 6.16).
 
-Opt-in only (SessionComposer(develop=True)); not used by the live runner.
+Opt-in only (SessionComposer(develop=True)); live with run_pilot_zero
+--generator v2c. v2c.latin.0 developed the nylon only; after the first v2c live
+run (2026-10-05: latin2 for several segments "sounded the same all the time")
+v2c.latin.1 adds piano and bass development over the same nylon lines (see
+"Piano and bass" below; the nylon seed stays v2c.latin.0).
 
 Material
 --------
@@ -22,11 +26,11 @@ constant per cell and their certification envelopes have zero width. The
 median falls on the nylon (A#maj root 58 / Gmaj third 59); p05 is bass, p95
 piano.
 
-Rules (pitch-only, nylon only)
-------------------------------
+Rules (pitch-only; nylon)
+-------------------------
 - every nylon note keeps its onset, duration and velocity (by voice: low /
-  middle / top of its triad); note count, piano, bass, percussion, programs
-  and tempo are untouched;
+  middle / top of its triad); note count, percussion, programs and tempo are
+  untouched (piano and bass: pitches only, below);
 - every triad keeps its pitch-class set (the chord); only its voicing changes:
   a closed voicing (span < 12) inside [source low - REG_SLACK, source high +
   REG_SLACK]; all triads of a bar share a voicing, except the last one of bar 8
@@ -70,6 +74,36 @@ top contour (developed visits). Gentle pass: two adjacent bars of 3-8 take
 the rule-passing voicings that move their tops least, with a new ending triad
 where one passes. Fallbacks as the engine: the previous voicing line with
 bars 7-8 and the ending re-voiced, then the source.
+
+Piano and bass (v2c.latin.1; accompany(), after the nylon)
+----------------------------------------------------------
+Every visit (fallbacks included) plays one bass and one piano pattern over
+bars 5-8 (pos 0: the answer to the source's bars 1-4) or 3-8 (pos 1, 2);
+bars 1-2 stay the source's. Pitch-only: every note keeps its onset, duration
+and velocity.
+    bass    swap (fifth on 2.5, octave on 3), anticipate (the next bar's root
+            on 4.5, the tumbao anticipation; not in bar 8), octave (the root's
+            octave on 4.5), swap+anticipate
+    piano   dyads R3 (root + third, the source), 35 (third + fifth), 5R (fifth +
+            root above), each placed nearest the source dyad: '35' / '5R' on
+            every onset, 'x>y' x on beat 1 and y after it (motion in the bar)
+Each pattern must differ from the previous visit's, and the pair from every
+visit in HISTORY_WINDOW (relaxed in turn when nothing passes; 1 repeat in 108
+visits, 4 visits apart). Only balanced() pairs are played: the measured
+per-pattern effects (ACCOMP_EFFECT) predict the segment's dLUFS and
+dlow_ratio within ACCOMP_LUFS_TOL / ACCOMP_LOW_TOL (without it, piano
+re-voicings raised the latin:1-2 low_ratio shift to 2.4-3.4x its allowed
+value). Pairs are tried in a seeded order; the first whose pitched p05 / median
+/ p95 equal the source's (zero-width envelopes; piano and bass sit on either
+side of the nylon median, so p05 and p95 decide) and that passes guard() is
+played (piano and bass notes are chord tones, the beat-4.5 bass note may be
+the next bar's, each inside the source's range +- REG_SLACK). Rendered census
+vs v2c.latin.0 (60 segments, latin:1-5, stims 1/2, visits 0-5): segment dLUFS
+-0.22..+0.04 (median -0.09), dlow_ratio -0.014..+0.010. Certification --audio
+(latin:1-3, stims 1/2, 12 visits): same cell verdicts as v2c.latin.0;
+low_ratio and LUFS cell shifts inside their allowance; pulse_clarity shift
+latin:1 +0.0144 (allowed 0.0130; v2c.latin.0 +0.0097), latin:2 +0.0092
+(allowed 0.0025; v2c.latin.0 +0.0056, already over).
 """
 
 from __future__ import annotations
@@ -77,7 +111,7 @@ from __future__ import annotations
 import copy
 import itertools
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import cache
 from statistics import mean
 from typing import Optional
@@ -91,10 +125,14 @@ from composer import levels_latin_nylon
 from composer.develop_engine import DevRecord
 from composer.energy_guard import GuardResult
 
-DEV_VERSION = 'v2c.latin.0'
-SEED_VERSION = 'v2c.latin.0'
+DEV_VERSION = 'v2c.latin.1'
+SEED_VERSION = 'v2c.latin.0'        # the nylon's seed: v2c.latin.0 nylon lines are kept
+ACCOMP_VERSION = 'v2c.latin.1'      # the piano / bass layer's seed
 NO_CONTEXT = 'no_nylon'
 NYLON = 24
+BASS = 33
+PIANO = 0
+TUMBAO = (0.0, 1.5, 2.0, 3.5)       # bass beats: root, octave, fifth, root (+ octave on 2.75 at latin:4-5)
 BLOCK_LEN = 3
 BARS = 8
 HALF = 4
@@ -113,7 +151,21 @@ LEVEL_TOL_DB = 0.5                  # predicted nylon level vs the source (rule-
 Voicing = tuple[int, int, int]
 Line = tuple[tuple[Voicing, ...], ...]
 
-__all__ = ['DEV_VERSION', 'SEED_VERSION', 'NO_CONTEXT', 'read_context', 'develop', 'unchanged_record', 'POLICY']
+__all__ = ['DEV_VERSION', 'SEED_VERSION', 'ACCOMP_VERSION', 'NO_CONTEXT', 'read_context', 'develop', 'unchanged_record',
+           'POLICY']
+
+
+@dataclass(frozen=True)
+class Accomp:
+    """The source's piano and bass, per bar (composer._gen_latin layout)."""
+    bass: int                                    # bass track index
+    piano: int                                   # piano track index
+    bass_at: tuple[tuple[tuple[float, int], ...], ...]               # per bar: (beat, note index)
+    piano_at: tuple[tuple[tuple[float, tuple[int, int]], ...], ...]  # per bar: (beat, dyad low / high)
+    bass_lo: int
+    bass_hi: int
+    piano_lo: int
+    piano_hi: int
 
 
 @dataclass(frozen=True)
@@ -127,6 +179,7 @@ class LatinNylon:
     others: tuple[int, ...]                      # pitches of the other pitched tracks
     lo: int
     hi: int
+    accomp: Optional[Accomp] = None              # None: piano / bass not in the expected layout
 
 
 def voicings(pcs: frozenset, lo: int, hi: int) -> tuple[Voicing, ...]:
@@ -171,7 +224,50 @@ def read_context(src: pretty_midi.PrettyMIDI, sched, tempo: float) -> Optional[L
                       velocities=tuple(notes[j].velocity for bar in bars for g in bar for j in g),
                       others=tuple(sorted(n.pitch for i, x in enumerate(src.instruments)
                                           if not x.is_drum and i != nylon for n in x.notes)),
-                      lo=lo, hi=hi)
+                      lo=lo, hi=hi, accomp=read_accomp(src, bar_s, chords))
+
+
+def read_accomp(src: pretty_midi.PrettyMIDI, bar_s: float, chords: tuple[frozenset, ...]) -> Optional[Accomp]:
+    """Piano dyads and tumbao bass by bar and beat; None unless every bar has the
+    bass on beats 1, 2.5, 3 and 4.5 (+ 3.75) with chord roots on beat 1, and
+    piano dyads of chord tones."""
+    find = lambda name, prog: next((i for i, x in enumerate(src.instruments)  # noqa: E731
+                                    if not x.is_drum and x.name == name and x.program == prog and x.notes), None)
+    bass, piano = find('bass', BASS), find('piano', PIANO)
+    if bass is None or piano is None:
+        return None
+
+    def by_bar(notes):
+        out: list[dict[float, list[int]]] = [{} for _ in range(BARS)]
+        for j, n in enumerate(notes):
+            b = int(n.start / bar_s + 1e-6)
+            if not 0 <= b < BARS:
+                return None
+            out[b].setdefault(round((n.start / bar_s - b) * 4 * 4) / 4, []).append(j)
+        return out
+
+    bn, pn = src.instruments[bass].notes, src.instruments[piano].notes
+    bb, pb = by_bar(bn), by_bar(pn)
+    if bb is None or pb is None:
+        return None
+    bass_at, piano_at = [], []
+    for b, ch in enumerate(chords):
+        if not set(TUMBAO) <= set(bb[b]) <= set(TUMBAO) | {2.75} or any(len(v) != 1 for v in bb[b].values()):
+            return None
+        if bn[bb[b][0.0][0]].pitch % 12 not in ch or not pb[b]:
+            return None
+        dyads = []
+        for beat, js in sorted(pb[b].items()):
+            js = sorted(js, key=lambda j: pn[j].pitch)
+            if len(js) != 2 or any(pn[j].pitch % 12 not in ch for j in js):
+                return None
+            dyads.append((beat, (js[0], js[1])))
+        bass_at.append(tuple(sorted((beat, js[0]) for beat, js in bb[b].items())))
+        piano_at.append(tuple(dyads))
+    bp, pp = [n.pitch for n in bn], [n.pitch for n in pn]
+    return Accomp(bass=bass, piano=piano, bass_at=tuple(bass_at), piano_at=tuple(piano_at),
+                  bass_lo=min(bp) - REG_SLACK, bass_hi=max(bp) + REG_SLACK,
+                  piano_lo=min(pp) - REG_SLACK, piano_hi=max(pp) + REG_SLACK)
 
 
 # =============================================================================
@@ -448,9 +544,33 @@ def realize(src: pretty_midi.PrettyMIDI, c: LatinNylon, plan: tuple[Line, ...]) 
     return out
 
 
+def accomp_failures(pm: pretty_midi.PrettyMIDI, c: LatinNylon) -> list[str]:
+    """Piano notes are tones of their bar's chord, bass notes too (the beat-4.5 one
+    may anticipate the next bar's), each inside its window."""
+    a = c.accomp
+    if a is None:
+        return []
+    bn, pn = pm.instruments[a.bass].notes, pm.instruments[a.piano].notes
+    fails = set()
+    for b, ch in enumerate(c.chords):
+        nxt = c.chords[b + 1] if b + 1 < BARS else ch
+        for beat, j in a.bass_at[b]:
+            if bn[j].pitch % 12 not in (ch | nxt if beat == TUMBAO[-1] else ch):
+                fails.add('bass_chord')
+            if not a.bass_lo <= bn[j].pitch <= a.bass_hi:
+                fails.add('bass_window')
+        for _, js in a.piano_at[b]:
+            if any(pn[j].pitch % 12 not in ch for j in js):
+                fails.add('piano_chord')
+            if any(not a.piano_lo <= pn[j].pitch <= a.piano_hi for j in js):
+                fails.add('piano_window')
+    return sorted(fails)
+
+
 def guard(developed: pretty_midi.PrettyMIDI, src: pretty_midi.PrettyMIDI, c: LatinNylon) -> GuardResult:
-    """Only nylon pitches may change; every triad keeps its pitch classes inside the
-    window; pitched p05 / median / p95 unchanged."""
+    """Only nylon, piano and bass pitches may change (piano and bass only when read
+    by read_accomp); every triad keeps its pitch classes inside the window; piano
+    and bass as accomp_failures; pitched p05 / median / p95 unchanged."""
     def check(pm: pretty_midi.PrettyMIDI) -> list[str]:
         notes = pm.instruments[c.nylon].notes
         chord = any({notes[j].pitch % 12 for j in g} != ch for gs, ch in zip(c.idx, c.chords) for g in gs)
@@ -458,9 +578,166 @@ def guard(developed: pretty_midi.PrettyMIDI, src: pretty_midi.PrettyMIDI, c: Lat
         a, b = sm.bounded_features(pm, BARS), sm.bounded_features(src, BARS)
         moved = [f for f in ('pitched_pitch_p05', 'pitched_pitch_median', 'pitched_pitch_p95')
                  if abs(a[f] - b[f]) > 1e-9]
-        return (['chord'] if chord else []) + (['window'] if window else []) + moved
+        return (['chord'] if chord else []) + (['window'] if window else []) + accomp_failures(pm, c) + moved
 
-    return de.guard(developed, src, {c.nylon: None}, check, de.MAX_PITCH_SHIFT, BARS)
+    mutable = {c.nylon: None} | ({} if c.accomp is None else {c.accomp.bass: None, c.accomp.piano: None})
+    return de.guard(developed, src, mutable, check, de.MAX_PITCH_SHIFT, BARS)
+
+
+# =============================================================================
+# Piano and bass (v2c.latin.1)
+# =============================================================================
+
+ACCOMP_SPANS = {0: tuple(ANSWER), 1: tuple(range(len(THEME), BARS)), 2: tuple(range(len(THEME), BARS))}
+BASS_PATTERNS = ('swap', 'anticipate', 'octave', 'swap+anticipate')
+PIANO_PATTERNS = ('35', '5R', 'R3>35', 'R3>5R', '35>R3', '5R>35')
+# Rendered effect of each pattern alone over bars 3-8 vs the source (dLUFS,
+# dlow_ratio; Musyng_Kite, latin:1-3 x stims 1/2/19, 6 segments, 2026-10-05; the
+# spread over segments was within +-0.005 low_ratio). Every piano re-voicing
+# raises low_ratio (its dyads sit higher, and play quieter); bass swap lowers
+# it. A bass 'third' (the chord's third on 2.5: +0.20 LU, +0.0097 low_ratio)
+# had no piano pattern to balance it and was dropped.
+ACCOMP_EFFECT = {'swap': (-0.078, -0.0093), 'anticipate': (0.002, 0.0), 'octave': (0.047, -0.0001),
+                 'swap+anticipate': (-0.077, -0.0094),
+                 '35': (-0.050, 0.0059), '5R': (-0.119, 0.0166), 'R3>35': (-0.022, 0.0027),
+                 'R3>5R': (-0.053, 0.0073), '35>R3': (-0.028, 0.0032), '5R>35': (-0.087, 0.0120)}
+EFFECT_BARS = 6
+ACCOMP_LUFS_TOL = 0.15              # LU, predicted segment change
+ACCOMP_LOW_TOL = 0.005              # predicted low_ratio change (half the latin:1-2 audio envelope)
+
+
+def _span_tag(span) -> str:
+    return f'{span[0] + 1}-{span[-1] + 1}'
+
+
+def _degrees(root: int, ch: frozenset) -> tuple[int, int, int]:
+    """Root, third and fifth pitch classes of triad ch over root."""
+    third = next(p for p in ch if (p - root) % 12 in (3, 4))
+    fifth = next(p for p in ch if (p - root) % 12 == 7)
+    return root % 12, third, fifth
+
+
+def predicted_effect(bass: str, piano: str, span) -> tuple[float, float]:
+    """Predicted (dLUFS, dlow_ratio) of a pattern pair over `span` (additive, scaled by bars)."""
+    k = len(span) / EFFECT_BARS
+    return tuple(round(k * (a + b), 4) for a, b in zip(ACCOMP_EFFECT[bass], ACCOMP_EFFECT[piano]))
+
+
+def balanced(bass: str, piano: str, span) -> bool:
+    lufs, low = predicted_effect(bass, piano, span)
+    return abs(lufs) <= ACCOMP_LUFS_TOL + 1e-9 and abs(low) <= ACCOMP_LOW_TOL + 1e-9
+
+
+def bass_line(src: pretty_midi.PrettyMIDI, c: LatinNylon, pattern: str, span) -> Optional[dict[int, int]]:
+    """Bass note index -> pitch for `pattern` over the bars of `span` (the tumbao,
+    pitch-only): swap = fifth on 2.5, octave on 3; anticipate = the next bar's
+    root on 4.5 (not in bar 8: what follows the segment is unknown); octave = the
+    root's octave on 4.5. None if a pitch leaves the window."""
+    a = c.accomp
+    notes = src.instruments[a.bass].notes
+    at = [dict(bar) for bar in a.bass_at]
+    out = {}
+    for b in span:
+        p = {beat: notes[j].pitch for beat, j in at[b].items()}
+        new = {}
+        for op in pattern.split('+'):
+            if op == 'swap':
+                new[1.5], new[2.0] = p[2.0], p[1.5]
+            elif op == 'anticipate' and b + 1 < BARS:
+                new[3.5] = notes[at[b + 1][0.0]].pitch
+            elif op == 'octave':
+                new[3.5] = p[0.0] + 12
+        if any(x is None or not a.bass_lo <= x <= a.bass_hi for x in new.values()):
+            return None
+        out.update({at[b][beat]: x for beat, x in new.items()})
+    return out
+
+
+def _dyad(kind: str, root: int, ch: frozenset, low: int, a: Accomp) -> Optional[tuple[int, int]]:
+    """Dyad `kind` of the chord (R3 root + third, 35 third + fifth, 5R fifth + the
+    root above) with its low note nearest `low`, both inside the piano window."""
+    r, t, f = _degrees(root, ch)
+    pcs = {'R3': (r, t), '35': (t, f), '5R': (f, r)}[kind]
+    gap = (pcs[1] - pcs[0]) % 12
+    lows = [p for p in range(a.piano_lo, a.piano_hi - gap + 1) if p % 12 == pcs[0]]
+    if not lows:
+        return None
+    x = min(lows, key=lambda p: (abs(p - low), p))
+    return x, x + gap
+
+
+def piano_line(src: pretty_midi.PrettyMIDI, c: LatinNylon, pattern: str, span) -> Optional[dict[int, int]]:
+    """Piano note index -> pitch for `pattern` over the bars of `span`: 'x' plays
+    dyad x on every onset; 'x>y' plays x on beat 1 and y on the later onsets
+    (motion inside the bar). Each dyad sits nearest the source's. None if a
+    dyad does not fit the window."""
+    a = c.accomp
+    notes, bass = src.instruments[a.piano].notes, src.instruments[a.bass].notes
+    first, _, rest = pattern.partition('>')
+    out = {}
+    for b in span:
+        root = bass[dict(a.bass_at[b])[0.0]].pitch
+        for k, (_, (lo, hi)) in enumerate(a.piano_at[b]):
+            d = _dyad(first if k == 0 or not rest else rest, root, c.chords[b], notes[lo].pitch, a)
+            if d is None:
+                return None
+            out[lo], out[hi] = d
+    return out
+
+
+def _accomp_of(rec: DevRecord) -> Optional[tuple[str, str]]:
+    """(bass pattern, piano pattern) of a record's ops, else None."""
+    pat = {op.split(':', 1)[0]: op.split(':', 1)[1].split('@')[0] for op in rec.ops
+           if op.startswith(('bass:', 'piano:'))}
+    return (pat['bass'], pat['piano']) if {'bass', 'piano'} <= set(pat) else None
+
+
+def accompany(out: pretty_midi.PrettyMIDI, src: pretty_midi.PrettyMIDI, c: LatinNylon,
+              records: list[DevRecord], visit: int, seed: int) -> tuple[pretty_midi.PrettyMIDI, tuple[str, ...]]:
+    """Piano and bass development over the (developed) nylon `out`: one bass and one
+    piano pattern over bars 5-8 (pos 0) or 3-8 (pos 1, 2; the other span when
+    nothing passes), bars 1-2 the source's. Both patterns differ from the previous
+    visit's, and the pair from every visit in HISTORY_WINDOW; those rules relax in
+    turn when nothing passes. Only balanced() pairs are played. Pairs are tried in
+    a seeded order; the first whose pitched p05 / median / p95 equal the source's
+    and that passes guard() wins."""
+    a = c.accomp
+    if a is None:
+        return out, ('accomp:none',)
+    rng = random.Random(f'{ACCOMP_VERSION}:{seed}')
+    pairs = list(itertools.product(BASS_PATTERNS, PIANO_PATTERNS))
+    rng.shuffle(pairs)
+    pos = visit % BLOCK_LEN
+    spans = (ACCOMP_SPANS[pos], ACCOMP_SPANS[1 if pos == 0 else 0])
+    prev = _accomp_of(records[-1]) if records else None
+    recent = {_accomp_of(r) for r in records[-HISTORY_WINDOW:]}
+    fixed = [n.pitch for i, x in enumerate(out.instruments) if not x.is_drum and i not in (a.bass, a.piano)
+             for n in x.notes]
+    want = tuple(float(np.percentile([n.pitch for x in src.instruments if not x.is_drum for n in x.notes], q))
+                 for q in (5, 50, 95))
+    for strict in (2, 1, 0):
+        for span in spans:
+            for bp, pp in pairs:
+                if strict >= 1 and prev is not None and (bp == prev[0] or pp == prev[1]):
+                    continue
+                if strict >= 2 and (bp, pp) in recent:
+                    continue
+                if not balanced(bp, pp, span):
+                    continue
+                bass, piano = bass_line(src, c, bp, span), piano_line(src, c, pp, span)
+                if bass is None or piano is None:
+                    continue
+                ps = fixed + [bass.get(j, n.pitch) for j, n in enumerate(out.instruments[a.bass].notes)] \
+                    + [piano.get(j, n.pitch) for j, n in enumerate(out.instruments[a.piano].notes)]
+                if any(abs(float(np.percentile(ps, q)) - w) > 1e-9 for q, w in zip((5, 50, 95), want)):
+                    continue
+                pm = copy.deepcopy(out)
+                for track, line in ((a.bass, bass), (a.piano, piano)):
+                    for j, p in line.items():
+                        pm.instruments[track].notes[j].pitch = p
+                if guard(pm, src, c).ok:
+                    return pm, (f'bass:{bp}@{_span_tag(span)}', f'piano:{pp}@{_span_tag(span)}')
+    return out, ('accomp:none',)
 
 
 def _previous(prev: DevRecord, rng: random.Random, c: LatinNylon) -> DevRecord:
@@ -487,4 +764,9 @@ POLICY = de.Policy(
 
 def develop(src: pretty_midi.PrettyMIDI, c: LatinNylon, records: list[DevRecord], visit: int,
             seed: int) -> tuple[pretty_midi.PrettyMIDI, DevRecord, dict]:
-    return de.select(POLICY, src, c, records, visit, seed)
+    """The nylon line (de.select; v2c.latin.0 lines), then the piano and bass (accompany)."""
+    out, rec, info = de.select(POLICY, src, c, records, visit, seed)
+    out, ops = accompany(out, src, c, records, visit, seed)
+    rec = replace(rec, ops=rec.ops + ops)
+    info['motif_ops'] = list(rec.ops)
+    return out, rec, info

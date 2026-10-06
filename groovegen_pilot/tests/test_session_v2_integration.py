@@ -288,7 +288,7 @@ def test_tempo_and_length_agree_on_every_live_cell(stack):
 
 def test_config_and_trace_keys():
     cfg = SessionSegmentSource(5).config()
-    assert cfg['generator'] == 'v2c' and cfg['stim_seed'] == 5 and cfg['dev_versions']['latin'] == 'v2c.latin.0'
+    assert cfg['generator'] == 'v2c' and cfg['stim_seed'] == 5 and cfg['dev_versions']['latin'] == 'v2c.latin.1'
     assert 'rock' not in cfg['dev_versions']
     assert SessionSegmentSource(5, develop=False).config()['generator'] == 'v2a'
     fields = set(TraceRowV2._fields)

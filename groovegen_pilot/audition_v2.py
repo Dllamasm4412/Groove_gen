@@ -22,7 +22,7 @@ Modes
 through each) | v2-v2b (A/B v2 vs pitched development). 'v2b' means
 SessionComposer(develop=True): the genre's policy in composer/develop_engine.py
 (hiphop v2b.1, calm v2c.calm.0, lofi v2c.lofi.0, rnb v2c.rnb.0, pop v2c.pop.0,
-latin v2c.latin.0; rock unchanged); each row's dev_version names the policy.
+latin v2c.latin.1; rock unchanged); each row's dev_version names the policy.
 
 Usage (writes only under renders/, which is gitignored):
     python audition_v2.py --mode dwell --cell hiphop:3 --visits 8 --stim-seed 1
@@ -356,7 +356,7 @@ POP_QUESTIONS = [
     '- Which do you prefer: original (v2) or developed (v2b)?', '']
 
 LATIN_QUESTIONS = [
-    '### Latin development (v2c.latin.0; A/B: v2 = v2a.3, v2b = developed)',
+    '### Latin development (v2c.latin.1, nylon + piano + bass; A/B: v2 = v2a.3, v2b = developed)',
     '- Does it feel less like the same 4-bar loop?',
     '- Is the nylon top line more alive?',
     '- Do the voicing changes remain subtle?',

@@ -36,8 +36,9 @@ def test_policy_dispatch(genre):
 def test_policy_versions_distinct():
     versions = {g: de.policy_module(g).DEV_VERSION for g in de.POLICIES}
     assert versions == {'hiphop': 'v2b.1', 'calm': 'v2c.calm.0', 'lofi': 'v2c.lofi.0',
-                        'rnb': 'v2c.rnb.0', 'pop': 'v2c.pop.0', 'latin': 'v2c.latin.0'}
+                        'rnb': 'v2c.rnb.0', 'pop': 'v2c.pop.0', 'latin': 'v2c.latin.1'}
     assert de.policy_module('hiphop').SEED_VERSION == 'v2b.0'      # hiphop seeds preserved
+    assert de.policy_module('latin').SEED_VERSION == 'v2c.latin.0'  # latin nylon seeds preserved
 
 
 def test_unregistered_genre_has_no_policy():
