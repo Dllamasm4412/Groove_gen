@@ -34,7 +34,7 @@ from pathlib import Path
 
 import numpy as np
 import pretty_midi
-from composer import GENRE_CFG, generate_segment
+from composer import GENRE_CFG, generate_segment, render_directive
 
 # =============================================================================
 # Constants
@@ -196,7 +196,19 @@ class SymbolicSegmentRenderer:
         return self._render_pm_to_audio(pm)
 
     def _render_pm_to_audio(self, pm: pretty_midi.PrettyMIDI) -> np.ndarray:
-        """MIDI -> stereo float32 audio buffer via fluidsynth."""
+        """MIDI -> stereo float32 audio buffer via fluidsynth.
+
+        A segment carrying a render directive (composer.render_directive; Rock
+        only) renders as 32-bit float, so nothing clips inside fluidsynth,
+        then takes its fixed gain and the fixed peak limiter. Everything else
+        renders exactly as before (16-bit)."""
+        gain_db = render_directive(pm)
+        if gain_db is None:
+            return self._fluidsynth(pm)
+        audio = self._fluidsynth(pm, ["-O", "float"]) * np.float32(10 ** (gain_db / 20))
+        return limit_peaks(audio, self.sr)
+
+    def _fluidsynth(self, pm: pretty_midi.PrettyMIDI, extra: list[str] | None = None) -> np.ndarray:
         with tempfile.TemporaryDirectory() as td:
             midi_path = Path(td) / "seg.mid"
             wav_path = Path(td) / "seg.wav"
@@ -207,6 +219,7 @@ class SymbolicSegmentRenderer:
                 "-ni",
                 "-F",
                 str(wav_path),
+                *(extra or []),
                 "-r",
                 str(self.sr),
                 "-g",
@@ -226,7 +239,7 @@ class SymbolicSegmentRenderer:
 
 
 # =============================================================================
-# WAV I/O — minimal, avoids scipy/soundfile dependency
+# WAV I/O — minimal, no soundfile dependency (scipy is used only by limit_peaks)
 # =============================================================================
 
 
@@ -236,6 +249,9 @@ def _read_wav_float32(path: Path) -> np.ndarray:
     Returns (n_samples, 2) float32 in [-1, 1].
     """
     import wave
+
+    if _is_float_wav(path):   # fluidsynth -O float (Rock render path)
+        return _read_float_wav(path)
 
     with wave.open(str(path), "rb") as wf:
         n_channels = wf.getnchannels()
@@ -255,6 +271,63 @@ def _read_wav_float32(path: Path) -> np.ndarray:
     else:
         pcm = pcm.reshape(-1, n_channels)[:, :2]  # take first two channels
     return pcm.astype(np.float32)
+
+
+def _wav_chunks(path: Path) -> dict[bytes, bytes]:
+    data = Path(path).read_bytes()
+    chunks, i = {}, 12
+    while i + 8 <= len(data):
+        cid, size = data[i:i + 4], int.from_bytes(data[i + 4:i + 8], "little")
+        chunks.setdefault(cid, data[i + 8:i + 8 + size])
+        i += 8 + size + (size & 1)
+    return chunks
+
+
+def _is_float_wav(path: Path) -> bool:
+    """IEEE float format tag (3), or WAVE_FORMAT_EXTENSIBLE with float SubFormat."""
+    fmt = _wav_chunks(path).get(b"fmt ", b"")
+    tag = int.from_bytes(fmt[0:2], "little") if len(fmt) >= 2 else 0
+    return tag == 3 or (tag == 0xFFFE and len(fmt) >= 26 and fmt[24:26] == b"\x03\x00")
+
+
+def _read_float_wav(path: Path) -> np.ndarray:
+    """32-bit IEEE float WAV -> (n_samples, 2) float32."""
+    chunks = _wav_chunks(path)
+    fmt = chunks[b"fmt "]
+    n_channels = int.from_bytes(fmt[2:4], "little")
+    bits = int.from_bytes(fmt[14:16], "little")
+    if bits != 32:
+        raise ValueError(f"unexpected float width: {bits} bits")
+    pcm = np.frombuffer(chunks[b"data"], dtype="<f4").reshape(-1, n_channels)
+    if n_channels == 1:
+        pcm = np.concatenate([pcm, pcm], axis=1)
+    return pcm[:, :2].astype(np.float32)
+
+
+# Fixed peak limiter for directive (Rock) segments. Stateless per segment and
+# deterministic; there is no per-segment normalization (quiet segments pass
+# through untouched).
+LIMIT_CEILING_DBFS = -1.0
+LIMIT_WINDOW_S = 0.02
+
+
+def limit_peaks(audio: np.ndarray, sr: int, ceiling_dbfs: float = LIMIT_CEILING_DBFS,
+                window_s: float = LIMIT_WINDOW_S) -> np.ndarray:
+    """Look-ahead peak limiter. The gain each sample needs to stay under the
+    ceiling is min-filtered over 2W and box-smoothed over W: the smoothed gain
+    never exceeds the need (so peaks stay under the ceiling) and each dip
+    lasts about 3W, without a hard clip."""
+    from scipy.ndimage import minimum_filter1d, uniform_filter1d
+
+    ceil = 10 ** (ceiling_dbfs / 20)
+    w = max(1, round(window_s * sr))
+    need = np.minimum(1.0, ceil / np.maximum(np.max(np.abs(audio), axis=1), 1e-12))
+    if need.min() >= 1.0:
+        return audio.astype(np.float32)
+    g = uniform_filter1d(minimum_filter1d(need, 2 * w + 1, mode="nearest"), w, mode="nearest")
+    g = np.minimum(g, need)   # guards float rounding; already <= need by construction
+    out = (audio.astype(np.float64) * g[:, None]).astype(np.float32)
+    return np.clip(out, -np.float32(ceil), np.float32(ceil))   # float32 cast rounding (<= 1 ulp)
 
 
 def _write_wav(path: Path, audio: np.ndarray, sr: int) -> None:

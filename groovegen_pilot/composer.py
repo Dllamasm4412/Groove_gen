@@ -138,6 +138,16 @@ GENRE_CFG: dict[str, dict] = {
         include_drums=True, drum_program=0,
         notes_per_sec_target=4.8,
         velocity_boost=0,
+        # Presentation only, composition unchanged (developer listening,
+        # 2026-10-05; V2_CONTEXT.md "Rock timbre / mix calibration"): drum
+        # velocities x1.20 (accents kept, clamped 1..127), and a fixed Rock
+        # output gain per tier that the renderer applies after a float render,
+        # followed by a fixed peak limiter (see render_directive).
+        drum_velocity_scale=1.20,
+        # rock:1 +4 dB chosen by ear (hiphop2 -> rock1 -> latin1); tiers 2-5 keep
+        # the same LUFS offset over their live neighbours (+3.1 LU), rounded
+        # to 0.5 dB, rock:5 not cut.
+        render_gain_db={1: 4.0, 2: 3.0, 3: 3.0, 4: 1.5, 5: 0.0},
     ),
 }
 
@@ -965,8 +975,34 @@ def _gen_hiphop(tempo_bpm, duration_bars, seed, cfg, density):
 
 def _gen_rock(tempo_bpm, duration_bars, seed, cfg, density):
     from composer.rock_cell import generate_segment_rock_adapter
-    return _score_to_pm(generate_segment_rock_adapter(
+    pm = _score_to_pm(generate_segment_rock_adapter(
         'rock', tempo_bpm, density, duration_bars, seed))
+    scale = cfg.get('drum_velocity_scale', 1.0)
+    for inst in pm.instruments:
+        if inst.is_drum and scale != 1.0:
+            for note in inst.notes:
+                note.velocity = max(1, min(127, int(round(note.velocity * scale))))
+    # The cell picks its tier as the nearest tier tempo; the gain follows it.
+    tier = min(cfg['tier_tempo'], key=lambda t: abs(cfg['tier_tempo'][t] - tempo_bpm))
+    pm.text_events.append(pretty_midi.Text(
+        f"{RENDER_DIRECTIVE} gain_db={cfg['render_gain_db'][tier]:+.2f}", 0.0))
+    return pm
+
+
+# Text event that asks the renderer for the float + gain + limiter path. It
+# travels with the MIDI, so live and audition renders treat a segment the same
+# way; MIDI without it renders as before. Energy measurement and certification
+# drop it (music_features_measured.energy_audio): the gain is a loudness match
+# by ear, not energy.
+RENDER_DIRECTIVE = 'groovegen_render'
+
+
+def render_directive(pm: pretty_midi.PrettyMIDI) -> float | None:
+    """Output gain (dB) requested by the segment, or None for the plain render."""
+    for ev in pm.text_events:
+        if ev.text.startswith(RENDER_DIRECTIVE + ' gain_db='):
+            return float(ev.text.split('=', 1)[1])
+    return None
 
 
 _GENERATORS = {

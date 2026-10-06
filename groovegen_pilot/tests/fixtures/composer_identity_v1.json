@@ -120,26 +120,26 @@
   "rnb:5:123456789": "9d235bc916a5c50917e121b21c74ed1eca3774810926a348438c6f151fa5ca61",
   "rnb:5:20003": "a51eb447800ab56c8ae929ebcef69cfe15a041cd929a2d7af861c75c1ee728d5",
   "rnb:5:77777": "45f8cf8aa3a8ef9e4c88fe71b313b279e88d5b8eb051e20f27007e739d870834",
-  "rock:1:1": "1bcb52a255c6dbed7fc8acd7d0af7e6122c102fc89e3f2de95742597fe459af4",
-  "rock:1:123456789": "f1cabf9940179386867a26856d00fed68256c705e02e5c09529ecc988de9d590",
-  "rock:1:20003": "d51f5017d2cf31dbbf75cb257a90098acc9691a0edf3d051db0f10e8ee524869",
-  "rock:1:77777": "598fc8e5e12883736dcd6d43ef0dcb82c7465d4f2a8426073e140bda01fe84d8",
-  "rock:2:1": "29fe4d11edc6f9b163ee15b49f506cccdc1a3cd539339da80c27c9d7449f0b51",
-  "rock:2:123456789": "543a9d76379208419ae44a9978532b0bdc1304f433f1702360cc76e8cbd253f8",
-  "rock:2:20003": "fc7b1ca2169f201011296d6e3ef8d0979c42ebee9c091e3d0548936051013016",
-  "rock:2:77777": "7efe0b5d4a75f6362f4bb1b56fac18460f8eb4ebcf2a99d9e75b5fed3e30b59a",
-  "rock:3:1": "40aea173a829f39a307efc3f977ff3daac133034e460e0c2ba6bdfb4068985af",
-  "rock:3:123456789": "8f7112b4a367927846b9636ae068c708b097c5a432417a248f05fc7ab87225d7",
-  "rock:3:20003": "7178a932e5e0e94d6eca0e8c5c9414ed41e7db682df03e5c94c5fe72ee578655",
-  "rock:3:77777": "f52c1dfcc716972b22d97f675b16943758166cfdda6fe81f1c774f8cbf280f07",
-  "rock:4:1": "65b7f638ea73c141445aeca560ee8bbf2bec2f6e36816c6a9e281698d1dd3627",
-  "rock:4:123456789": "30c77046c89a5982a83cf9408d455fd4cb60409c44f4d817fa0827ac068d76c3",
-  "rock:4:20003": "2369b27db45f22ce9a0c76ed703a2120b6aec170c4bec2cbb691e142b5710e77",
-  "rock:4:77777": "cc19b0a5150cfa9658043854414536354aca93eb6f6c698f15f31a9a1d4ce344",
-  "rock:5:1": "10415aaea479aefcee2e0c8c281660e7e980ae82743d5bc299d1f9bd402433b5",
-  "rock:5:123456789": "0515128b259f0810f9e0d2bc0188ac043f2954e105eeeefa5a8aa901a2ed3344",
-  "rock:5:20003": "29a02f0fee8844dca2a04bf7f16de9ece9d9fe4d094484ae39bec786b84ffe04",
-  "rock:5:77777": "b3a17bcdc52c7d4601c65e59a9f20bc9829f649cb983691b4f277201fc86444e"
+  "rock:1:1": "863841b1cf03d3234b49eedf28e27e917a74bf3ad1cdca17a8d3a6422686e184",
+  "rock:1:123456789": "1955b7abc8a8f0cb6e463b0cd294b781810809ef338f7aaf09af0c691314b78d",
+  "rock:1:20003": "b917a0c91d8ac23be1f30179fbbe5d84b411d3e5b2c99baf29f1eb9fac387163",
+  "rock:1:77777": "32be770bf8f98e8923fe541a78b124244576810fe8f486d067985b4fb9591c54",
+  "rock:2:1": "7b5fe1f04ba7cf92bc36143ca52ee4922f855f5dfd4287c5cf5bb533ab8faae4",
+  "rock:2:123456789": "4cb327e61a488e8cd2345cd39b7419a8014bf7e5992a5e741d49ffca06aa4e4f",
+  "rock:2:20003": "348ba1b48536f55f0575fde0402d892fd4285378fd9e8338e8897f115d022546",
+  "rock:2:77777": "09b192b7081f4d041cd01e231c078f4a1b7ba57b945e180feea88aa90746b98c",
+  "rock:3:1": "3e14e972522945a7d1af49385494a40f78289a42a18788bcd7906e9502164b9f",
+  "rock:3:123456789": "11a0e251a1cdf6ea86ad3d708c998a302fc015acc3def74c8083e932ac91b02c",
+  "rock:3:20003": "80dae36fec535050fa67f83ff916c3851a3552771a4e8ac9f2e93148c4fc3ee7",
+  "rock:3:77777": "34d1ddf409a40f684c6b58b6dc26c121982eb43ef9fe0266aca705d107c52e3f",
+  "rock:4:1": "6bef58d3b311cf637294b84cbdf2c2abd0d0a2337205964d9f83556f3f665549",
+  "rock:4:123456789": "3d774e5c4b618b6d534627d207c2dd4d8a60148d8dffa31c4b026f6b4017401f",
+  "rock:4:20003": "83ad1e93609e2cecc7381f0e44ddb9b39546c5b0f10858756985baf38501a91d",
+  "rock:4:77777": "7c0e8a654acbb42d184693f9090e3ea1d37648933d3b80657afc90ae50c6f7a4",
+  "rock:5:1": "93291a94ec23f80d70ae23b95831ae857eccf616a6e851a6e3e35063a8069aac",
+  "rock:5:123456789": "0d02a2472381d08594ad5634d2754dc92d355e8e0cb7ec2493e06f0b8564ae74",
+  "rock:5:20003": "18b795a14eec4498fe0d4ff219fc91a1567d889df9f6d8cbacb713287328401e",
+  "rock:5:77777": "cac3674dbe7bc4de5146e04755f0c605b91e951a7c3bd2d77325ce450b033229"
  },
  "live": {
   "calm:1:v0": {
@@ -986,146 +986,146 @@
    "bank_seed": 71000,
    "composer_seed": 1816082646,
    "density": 0.15,
-   "sha256": "9db74639491da8e8ea886193377fc011d18f9d758ef55b59fd624d4a507466ce",
+   "sha256": "1c27efd102db499ff8fa92e0230beebcb65d7b826f671956ed0016d018f6665d",
    "tempo_bpm": 110.0
   },
   "rock:1:v1": {
    "bank_seed": 71001,
    "composer_seed": 175551111,
    "density": 0.15,
-   "sha256": "a7e3b74f8045c43de21e08dc511b49c235bf3070566990b176b0ca332a415a0f",
+   "sha256": "c816106dd26ac7526a45d2787af2e3cc05e0c719d318655c95ebf4fa2372d4d7",
    "tempo_bpm": 110.0
   },
   "rock:1:v2": {
    "bank_seed": 71002,
    "composer_seed": 2829986872,
    "density": 0.15,
-   "sha256": "28ff69f6ac149c0d06574d72d579c6b57a3856b7c15da9cf8f383f54e39ccffe",
+   "sha256": "7be8f5dc45fa61d921ae067820562b619a4d8788f77da42fe4a04796e1f35a8e",
    "tempo_bpm": 110.0
   },
   "rock:1:v3": {
    "bank_seed": 71003,
    "composer_seed": 1189455337,
    "density": 0.15,
-   "sha256": "6d44090b8c85ac4c616a753f8ce997b2eb2cfc5cd74678c0e593ad14357d9bf5",
+   "sha256": "c56ea33c73da676a5e033281468159aeafa4802ea2458f25d56ffde9c57d11b2",
    "tempo_bpm": 110.0
   },
   "rock:2:v0": {
    "bank_seed": 72000,
    "composer_seed": 1962054718,
    "density": 0.35,
-   "sha256": "5052ea24c5a0dcc18fdb0faa0d759d1a49c3c8835519415f200f94d7536fff4d",
+   "sha256": "fcc51a28ceabef562471385777d4055cfceef5a822bede3c753365432741e864",
    "tempo_bpm": 115.0
   },
   "rock:2:v1": {
    "bank_seed": 72001,
    "composer_seed": 321523183,
    "density": 0.35,
-   "sha256": "15d09e30b00241abac3e659dc61c3228809e1323fcdb249c0f035f8343ebfba0",
+   "sha256": "970a97f9a472512c9bcd989ceb563f3727df9d547604393bee80bb3f3c753e30",
    "tempo_bpm": 115.0
   },
   "rock:2:v2": {
    "bank_seed": 72002,
    "composer_seed": 2975958944,
    "density": 0.35,
-   "sha256": "cae2f6b9fddb93cabbaadbf6d4100345559cd5a29d6c8f8093823430c5461b71",
+   "sha256": "909f996a31cc1be4bc74a9aa1f7a5f86b1ea623132b9eced5160f4a4cc187181",
    "tempo_bpm": 115.0
   },
   "rock:2:v3": {
    "bank_seed": 72003,
    "composer_seed": 1335427409,
    "density": 0.35,
-   "sha256": "19c103b5c6c5260d92b311b036c4327754d9f335f135c58db6e1fa0e56db2108",
+   "sha256": "8a09ce0cc62e32621b074aa55576f65502b8b8a8931291a4059832020292bca8",
    "tempo_bpm": 115.0
   },
   "rock:3:v0": {
    "bank_seed": 73000,
    "composer_seed": 2108026790,
    "density": 0.55,
-   "sha256": "9539006983d70af83535402726f0fc0c33060c0f009c5e967ddd87388f478849",
+   "sha256": "7ea11c800352e2427ccebbf21d98f4a7fb52073d5b3aa1e2179590c62e9a0ec5",
    "tempo_bpm": 120.0
   },
   "rock:3:v1": {
    "bank_seed": 73001,
    "composer_seed": 467495255,
    "density": 0.55,
-   "sha256": "4c52459b983d305a2386ee27e5c0dbf0e7931390dc4918145869bc137f8a0436",
+   "sha256": "f85d834a5aed286a51b19c690ecaddba40477918c7ce4c77ba65b88642e284d4",
    "tempo_bpm": 120.0
   },
   "rock:3:v2": {
    "bank_seed": 73002,
    "composer_seed": 3121931016,
    "density": 0.55,
-   "sha256": "0528c2e0bbef66f1004f47df1353cbe6e76b2afa9f8db9e5c0b017336c282e9d",
+   "sha256": "132cbda0f7716176d7a85e47357237420971834dc3812b71558c755f0dfd3fea",
    "tempo_bpm": 120.0
   },
   "rock:3:v3": {
    "bank_seed": 73003,
    "composer_seed": 1481399481,
    "density": 0.55,
-   "sha256": "d74a96fc8cc6f4c3f86cb9a4aeca855fb4b753985241c7180e22e8d67eb93dc1",
+   "sha256": "db99537ede47a902f9c1bce1a20375f20afb33dfbdfcaf160ca78e3bd9253a26",
    "tempo_bpm": 120.0
   },
   "rock:4:v0": {
    "bank_seed": 74000,
    "composer_seed": 2253998862,
    "density": 0.75,
-   "sha256": "25d274563cb511decf20d7e763db38e6ce0587e0fb9cab6e565289f583b8cfc1",
+   "sha256": "d17273e35a8ff00a54c7e9e1a8f7114abdd06c961920e1cd181c659555834a01",
    "tempo_bpm": 125.0
   },
   "rock:4:v1": {
    "bank_seed": 74001,
    "composer_seed": 613467327,
    "density": 0.75,
-   "sha256": "9461a7f93f5865e0ea44d15bd12fa3fdb6db9e7dd5a8859ca35664cb807e9081",
+   "sha256": "c77062286cd69a3357b26e943eef5e347c921a9f32609383ca9a502fbc3184ea",
    "tempo_bpm": 125.0
   },
   "rock:4:v2": {
    "bank_seed": 74002,
    "composer_seed": 3267903088,
    "density": 0.75,
-   "sha256": "98b7885e2410949b7a36878733e4e91a2650b02ee9e833caec8aec4d9a19738b",
+   "sha256": "34ce2a3dc67276fd6a0bbe2515ec8e0ae03fcac8d7489eb29aba5bf2614457a3",
    "tempo_bpm": 125.0
   },
   "rock:4:v3": {
    "bank_seed": 74003,
    "composer_seed": 1627371553,
    "density": 0.75,
-   "sha256": "e6025d658361f57a84dc690dc7c8a8bab666b3f7870af9d5cdb8523354044059",
+   "sha256": "3ff39746b87ef27e292a1303aa80db0b532e9ffaaeab8303456ce4c177ca4b9f",
    "tempo_bpm": 125.0
   },
   "rock:5:v0": {
    "bank_seed": 75000,
    "composer_seed": 2399970934,
    "density": 0.9,
-   "sha256": "6a1dc70e7348894930b4a52889ee8fc3d72087702526fbb08676638b35d1f3b4",
+   "sha256": "c24a4e897d568d65ee617e78f490248886570f6a2d66ce6634fb553a3452a324",
    "tempo_bpm": 130.0
   },
   "rock:5:v1": {
    "bank_seed": 75001,
    "composer_seed": 759439399,
    "density": 0.9,
-   "sha256": "060f0675e30206b5c70f1ecabba29eef2fe0e3eb00f486287cefa75e9d7644bf",
+   "sha256": "e85d583f66c683a80ca550e377cf5b84ad23ca7353b046345a2299bbcc6d56d3",
    "tempo_bpm": 130.0
   },
   "rock:5:v2": {
    "bank_seed": 75002,
    "composer_seed": 3413875160,
    "density": 0.9,
-   "sha256": "7def987fefc04b2f21b694101690de2be5e3726c5fee79f51d8a784f04442e6b",
+   "sha256": "f594a5ce80eb46287311db85bfca04219568ff62cc76f7d08f1551fef3536fdf",
    "tempo_bpm": 130.0
   },
   "rock:5:v3": {
    "bank_seed": 75003,
    "composer_seed": 1773343625,
    "density": 0.9,
-   "sha256": "3f02c1630fe83aca241312b938b90c71bf74f36b6935526da63f18b0f35c61f4",
+   "sha256": "28c2b9b867c96082e0cd17862d2ede0c35e65f88106fca789ffa0bd58bc3e3e8",
    "tempo_bpm": 130.0
   }
  },
  "meta": {
   "bank_base_seed": 0,
-  "created": "2026-09-29T20:30:12",
+  "created": "2026-10-05T13:58:45",
   "description": "v1 composer MIDI sha256 freeze; see tests/test_composer_identity.py",
   "fixed_seeds": [
    1,
@@ -1135,7 +1135,7 @@
   ],
   "git_branch": "v2-controlled-live-generation",
   "git_dirty": true,
-  "git_head": "9095ec6dabbaf22a0de7dc3be91ba13b337bfc46",
+  "git_head": "e33067761ae9ee42b245311201cbb0aeeab01a9b",
   "n_bars": 8,
   "session_seed": 42,
   "variants_per_cell": 4,

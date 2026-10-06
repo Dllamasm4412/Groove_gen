@@ -8,8 +8,8 @@
   "flux": 0.05
  },
  "variants": 8,
- "renders_sha256": "da75717e4cba81f4e07f85ea093aa597d2e8398759d6b0f2e5a97bc39ab90250",
- "tie_band_e": 0.04574,
+ "renders_sha256": "1c046e394aa990b21239c035464ae3f4fae8dbb532034530cbccbb1b24cfd589",
+ "tie_band_e": 0.03813,
  "cells": {
   "calm:1": {
    "tempo_bpm": 65.0,
@@ -25,7 +25,7 @@
    "flux": 0.86222,
    "low_ratio": 0.81306,
    "pulse_clarity": 0.70643,
-   "energy_sd": 0.0469
+   "energy_sd": 0.04105
   },
   "calm:2": {
    "tempo_bpm": 65.0,
@@ -41,7 +41,7 @@
    "flux": 0.8593,
    "low_ratio": 0.83085,
    "pulse_clarity": 0.70347,
-   "energy_sd": 0.04932
+   "energy_sd": 0.04306
   },
   "calm:3": {
    "tempo_bpm": 65.0,
@@ -57,7 +57,7 @@
    "flux": 0.85761,
    "low_ratio": 0.81267,
    "pulse_clarity": 0.6992,
-   "energy_sd": 0.03614
+   "energy_sd": 0.03143
   },
   "calm:4": {
    "tempo_bpm": 65.0,
@@ -73,7 +73,7 @@
    "flux": 0.86116,
    "low_ratio": 0.82061,
    "pulse_clarity": 0.70679,
-   "energy_sd": 0.03735
+   "energy_sd": 0.03263
   },
   "calm:5": {
    "tempo_bpm": 65.0,
@@ -89,7 +89,7 @@
    "flux": 0.86245,
    "low_ratio": 0.82239,
    "pulse_clarity": 0.69916,
-   "energy_sd": 0.03607
+   "energy_sd": 0.03156
   },
   "hiphop:1": {
    "tempo_bpm": 85.00004,
@@ -105,7 +105,7 @@
    "flux": 0.82179,
    "low_ratio": 0.72706,
    "pulse_clarity": 0.86004,
-   "energy_sd": 0.01504
+   "energy_sd": 0.0134
   },
   "hiphop:2": {
    "tempo_bpm": 87.00002,
@@ -121,7 +121,7 @@
    "flux": 1.2254,
    "low_ratio": 0.76856,
    "pulse_clarity": 0.85223,
-   "energy_sd": 0.01755
+   "energy_sd": 0.01546
   },
   "hiphop:3": {
    "tempo_bpm": 89.99996,
@@ -137,7 +137,7 @@
    "flux": 1.43624,
    "low_ratio": 0.71931,
    "pulse_clarity": 0.80632,
-   "energy_sd": 0.02657
+   "energy_sd": 0.02279
   },
   "hiphop:4": {
    "tempo_bpm": 93.00004,
@@ -153,7 +153,7 @@
    "flux": 1.37036,
    "low_ratio": 0.64534,
    "pulse_clarity": 0.80581,
-   "energy_sd": 0.04574
+   "energy_sd": 0.03973
   },
   "hiphop:5": {
    "tempo_bpm": 96.0,
@@ -169,7 +169,7 @@
    "flux": 1.35875,
    "low_ratio": 0.65281,
    "pulse_clarity": 0.83182,
-   "energy_sd": 0.04623
+   "energy_sd": 0.04008
   },
   "latin:1": {
    "tempo_bpm": 104.0,
@@ -185,7 +185,7 @@
    "flux": 1.10623,
    "low_ratio": 0.70477,
    "pulse_clarity": 0.59499,
-   "energy_sd": 0.01451
+   "energy_sd": 0.01402
   },
   "latin:2": {
    "tempo_bpm": 104.0,
@@ -201,7 +201,7 @@
    "flux": 1.21572,
    "low_ratio": 0.69986,
    "pulse_clarity": 0.75829,
-   "energy_sd": 0.0066
+   "energy_sd": 0.00665
   },
   "latin:3": {
    "tempo_bpm": 104.0,
@@ -217,7 +217,7 @@
    "flux": 1.2674,
    "low_ratio": 0.67492,
    "pulse_clarity": 0.79832,
-   "energy_sd": 0.02502
+   "energy_sd": 0.02206
   },
   "latin:4": {
    "tempo_bpm": 104.0,
@@ -233,7 +233,7 @@
    "flux": 1.22358,
    "low_ratio": 0.66111,
    "pulse_clarity": 0.81235,
-   "energy_sd": 0.02549
+   "energy_sd": 0.02279
   },
   "latin:5": {
    "tempo_bpm": 104.0,
@@ -249,7 +249,7 @@
    "flux": 1.23605,
    "low_ratio": 0.64867,
    "pulse_clarity": 0.78405,
-   "energy_sd": 0.0316
+   "energy_sd": 0.02739
   },
   "lofi:1": {
    "tempo_bpm": 78.0,
@@ -265,7 +265,7 @@
    "flux": 0.97155,
    "low_ratio": 0.90021,
    "pulse_clarity": 0.78665,
-   "energy_sd": 0.0704
+   "energy_sd": 0.06019
   },
   "lofi:2": {
    "tempo_bpm": 78.0,
@@ -281,7 +281,7 @@
    "flux": 0.89782,
    "low_ratio": 0.89267,
    "pulse_clarity": 0.76875,
-   "energy_sd": 0.12299
+   "energy_sd": 0.1228
   },
   "lofi:3": {
    "tempo_bpm": 78.0,
@@ -297,7 +297,7 @@
    "flux": 0.83668,
    "low_ratio": 0.8469,
    "pulse_clarity": 0.76573,
-   "energy_sd": 0.15661
+   "energy_sd": 0.15248
   },
   "lofi:4": {
    "tempo_bpm": 78.0,
@@ -313,7 +313,7 @@
    "flux": 0.90182,
    "low_ratio": 0.86001,
    "pulse_clarity": 0.78097,
-   "energy_sd": 0.16969
+   "energy_sd": 0.16426
   },
   "lofi:5": {
    "tempo_bpm": 78.0,
@@ -329,7 +329,7 @@
    "flux": 0.87872,
    "low_ratio": 0.84662,
    "pulse_clarity": 0.78012,
-   "energy_sd": 0.12101
+   "energy_sd": 0.12138
   },
   "pop:1": {
    "tempo_bpm": 118.0,
@@ -345,7 +345,7 @@
    "flux": 1.26324,
    "low_ratio": 0.64304,
    "pulse_clarity": 0.77842,
-   "energy_sd": 0.11501
+   "energy_sd": 0.11366
   },
   "pop:2": {
    "tempo_bpm": 118.0,
@@ -361,7 +361,7 @@
    "flux": 1.2324,
    "low_ratio": 0.62774,
    "pulse_clarity": 0.79277,
-   "energy_sd": 0.08897
+   "energy_sd": 0.08727
   },
   "pop:3": {
    "tempo_bpm": 118.0,
@@ -377,7 +377,7 @@
    "flux": 1.18916,
    "low_ratio": 0.61696,
    "pulse_clarity": 0.78283,
-   "energy_sd": 0.12359
+   "energy_sd": 0.12665
   },
   "pop:4": {
    "tempo_bpm": 118.0,
@@ -393,7 +393,7 @@
    "flux": 1.22618,
    "low_ratio": 0.6144,
    "pulse_clarity": 0.81631,
-   "energy_sd": 0.11214
+   "energy_sd": 0.10432
   },
   "pop:5": {
    "tempo_bpm": 118.0,
@@ -409,7 +409,7 @@
    "flux": 1.18329,
    "low_ratio": 0.63112,
    "pulse_clarity": 0.76367,
-   "energy_sd": 0.09501
+   "energy_sd": 0.09606
   },
   "rnb:1": {
    "tempo_bpm": 100.0,
@@ -425,7 +425,7 @@
    "flux": 1.10904,
    "low_ratio": 0.8803,
    "pulse_clarity": 0.80802,
-   "energy_sd": 0.0856
+   "energy_sd": 0.07344
   },
   "rnb:2": {
    "tempo_bpm": 100.0,
@@ -441,7 +441,7 @@
    "flux": 1.10099,
    "low_ratio": 0.88521,
    "pulse_clarity": 0.81125,
-   "energy_sd": 0.04312
+   "energy_sd": 0.03813
   },
   "rnb:3": {
    "tempo_bpm": 100.0,
@@ -457,7 +457,7 @@
    "flux": 1.10602,
    "low_ratio": 0.86028,
    "pulse_clarity": 0.81679,
-   "energy_sd": 0.07489
+   "energy_sd": 0.06612
   },
   "rnb:4": {
    "tempo_bpm": 100.0,
@@ -473,7 +473,7 @@
    "flux": 1.11268,
    "low_ratio": 0.85905,
    "pulse_clarity": 0.80621,
-   "energy_sd": 0.06486
+   "energy_sd": 0.05622
   },
   "rnb:5": {
    "tempo_bpm": 100.0,
@@ -489,87 +489,87 @@
    "flux": 1.1086,
    "low_ratio": 0.86127,
    "pulse_clarity": 0.80478,
-   "energy_sd": 0.03414
+   "energy_sd": 0.03131
   },
   "rock:1": {
    "tempo_bpm": 109.99991,
-   "lufs": -22.2232,
-   "peak_dbfs": -8.44829,
+   "lufs": -17.48896,
+   "peak_dbfs": -2.32,
    "drum_rate": 3.66666,
    "drum_low_rate": 0.91667,
    "drum_backbeat_rate": 0.91667,
    "drum_hats_rate": 3.66666,
    "drum_hand_rate": 0.0,
    "note_rate": 3.66666,
-   "centroid_hz": 2768.45189,
-   "flux": 1.24877,
-   "low_ratio": 0.77648,
-   "pulse_clarity": 0.92401,
-   "energy_sd": 0.05504
+   "centroid_hz": 3214.8423,
+   "flux": 1.27695,
+   "low_ratio": 0.79349,
+   "pulse_clarity": 0.92542,
+   "energy_sd": 0.03666
   },
   "rock:2": {
    "tempo_bpm": 115.00003,
-   "lufs": -19.52223,
-   "peak_dbfs": -6.3287,
+   "lufs": -15.9456,
+   "peak_dbfs": -1.16345,
    "drum_rate": 3.83333,
    "drum_low_rate": 0.95833,
    "drum_backbeat_rate": 0.95833,
    "drum_hats_rate": 3.83333,
    "drum_hand_rate": 0.0,
    "note_rate": 3.83333,
-   "centroid_hz": 2519.79476,
-   "flux": 1.29115,
-   "low_ratio": 0.67588,
-   "pulse_clarity": 0.9471,
-   "energy_sd": 0.03165
+   "centroid_hz": 2972.26194,
+   "flux": 1.31038,
+   "low_ratio": 0.70712,
+   "pulse_clarity": 0.94605,
+   "energy_sd": 0.02412
   },
   "rock:3": {
    "tempo_bpm": 120.0,
-   "lufs": -18.82429,
-   "peak_dbfs": -4.83383,
+   "lufs": -15.15222,
+   "peak_dbfs": -1.0,
    "drum_rate": 4.0,
    "drum_low_rate": 1.0,
    "drum_backbeat_rate": 1.0,
    "drum_hats_rate": 4.0,
    "drum_hand_rate": 0.0,
    "note_rate": 8.0,
-   "centroid_hz": 3104.57579,
-   "flux": 1.49812,
-   "low_ratio": 0.84079,
-   "pulse_clarity": 0.93765,
-   "energy_sd": 0.01945
+   "centroid_hz": 3565.43969,
+   "flux": 1.49873,
+   "low_ratio": 0.83767,
+   "pulse_clarity": 0.93692,
+   "energy_sd": 0.01313
   },
   "rock:4": {
    "tempo_bpm": 125.0,
-   "lufs": -16.36842,
-   "peak_dbfs": -2.75452,
+   "lufs": -14.4552,
+   "peak_dbfs": -1.0,
    "drum_rate": 4.16667,
    "drum_low_rate": 1.04167,
    "drum_backbeat_rate": 1.04167,
    "drum_hats_rate": 4.16667,
    "drum_hand_rate": 0.0,
    "note_rate": 8.33333,
-   "centroid_hz": 2911.78495,
-   "flux": 1.51797,
-   "low_ratio": 0.75236,
-   "pulse_clarity": 0.86938,
-   "energy_sd": 0.03774
+   "centroid_hz": 3395.93387,
+   "flux": 1.55245,
+   "low_ratio": 0.76255,
+   "pulse_clarity": 0.87848,
+   "energy_sd": 0.02934
   },
   "rock:5": {
    "tempo_bpm": 130.00013,
-   "lufs": -14.23017,
-   "peak_dbfs": -0.3817,
+   "lufs": -13.72715,
+   "peak_dbfs": -1.0,
    "drum_rate": 4.33334,
    "drum_low_rate": 1.08333,
    "drum_backbeat_rate": 1.08333,
    "drum_hats_rate": 4.33334,
    "drum_hand_rate": 0.0,
    "note_rate": 8.66668,
-   "centroid_hz": 3038.3767,
-   "flux": 1.37651,
-   "low_ratio": 0.61711,
-   "pulse_clarity": 0.85659,
-   "energy_sd": 0.03946
+   "centroid_hz": 3603.59345,
+   "flux": 1.3815,
+   "low_ratio": 0.64651,
+   "pulse_clarity": 0.82253,
+   "energy_sd": 0.02579
   }
  }
 }
