@@ -125,7 +125,10 @@ def cell_plan(genre, tier, variant):
 
 def energy_audio(renderer, pm):
     """Render a segment for energy measurement: as played, minus the
-    presentation gain.
+    presentation gain and the master attenuation (segment_renderer.
+    MASTER_GAIN_DB, one output level for every segment, so it carries no
+    energy information; measuring at the reference level keeps the table,
+    and so the ladder and certification envelopes, unchanged).
 
     The Rock render gain (composer.render_directive) is a loudness match by
     ear (developer listening, 2026-10-05), not extra energy; metered as
@@ -141,7 +144,7 @@ def energy_audio(renderer, pm):
         pm = copy.deepcopy(pm)
         pm.text_events = [e for e in pm.text_events
                           if not e.text.startswith(RENDER_DIRECTIVE)]
-    return renderer._render_pm_to_audio(pm)
+    return renderer._render_pm_to_audio(pm, master=False)
 
 
 def measure_one(args):

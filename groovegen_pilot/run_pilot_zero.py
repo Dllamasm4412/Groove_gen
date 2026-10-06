@@ -768,6 +768,7 @@ def main() -> int:
             summary["ear_order_sha256"] = ear_order_sha
             summary["ladder_cells"] = [f"{c.genre}{c.tier}:{c.u:.4f}" for c in ladder.cells]
             summary["crossfade_tail_scaled"] = mixer.n_tail_scaled
+            summary["master_gain_db"] = renderer.master_gain_db
             summary["generator"] = segment_source.config() if segment_source else {"generator": "bank"}
             # Condition provenance: what actually ran, not only the flags
             session_prov = take_prov() if callable(take_prov) else None

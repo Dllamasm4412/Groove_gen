@@ -69,6 +69,7 @@ M1 active. Verified: HRTrajectory self-test converges in both directions (75→1
   - Latin v2c.latin.1: piano and bass development (pitch-only, chord tones, exact register, only measured-balanced pattern pairs); nylon unchanged. Certification residual: pulse_clarity shift latin:1-2 over allowance.
 - Final perceptual ladder (2026-10-06, frozen): `energy_order_by_ear.json` from `ladder_min_change.py freeze` (the minimum-change re-order under the four blind listening relations that replicated; detail in V2_CONTEXT.md). Live: `--ladder ear`.
 - Rotation keeps the controller direction (2026-10-06): during rotation, genre variety never reverses a move the MPC requested; holds keep the variety pick.
+- Master headroom (2026-10-06): `segment_renderer.MASTER_GAIN_DB = -2.5` on every rendered segment (hiphop:4-5 clipped in fluidsynth 16-bit). Energy measurement renders the reference level, so the table, ladder and envelopes are unchanged.
 - Next: developer fills the by-ear ratings, then `energy_by_ear.py apply`, then a live run with `--generator v2c --ladder ear` (the developer runs live PPG).
 
 ## Notes

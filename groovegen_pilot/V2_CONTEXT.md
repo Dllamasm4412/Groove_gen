@@ -594,6 +594,24 @@ Rock was heard (the session never climbed past hiphop4, rung 22, so rock3-5 at
   inside the 0.0267 u band). PD gains, target, governor, HR smoothing and step
   magnitudes are unchanged.
 
+## Master headroom (2026-10-06)
+
+- Clipping audit (`renders/clip_audit/`): hiphop:5 hard-clipped in
+  fluidsynth's 16-bit output in every render (6-14 full-scale samples per
+  segment, flat runs up to 3 samples; float peaks up to +1.49 dBFS with bank,
+  +0.45 with v2c), and hiphop:4 in some. Rock never clipped (its limiter holds
+  -1 dBFS).
+- `segment_renderer.MASTER_GAIN_DB = -2.5` is one fixed attenuation on every
+  rendered segment. It is applied inside fluidsynth for the 16-bit path (linear
+  to -139 dB) and after the limiter for Rock. Relative genre levels are
+  unchanged; there is no normalization.
+- Energy measurement and certification render the reference level
+  (`energy_audio`, `master=False`), so the energy table, ladder and envelopes
+  are unchanged (certification reproduces the table, max diff 0).
+- After the change: 55 audited segments have 0 full-scale samples, max -2.06
+  dBFS (the worst bank segment is at -1.01); joins peak at -2.06 dBFS at most.
+  The live summary records `master_gain_db`.
+
 ## Next task
 
 1. Developer: listen to the Latin dwell auditions, then fill

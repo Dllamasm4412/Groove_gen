@@ -260,13 +260,13 @@ def test_energy_audio_drops_only_the_presentation_gain():
     plain = copy.deepcopy(rock)
     plain.text_events = [e for e in plain.text_events if not e.text.startswith(RENDER_DIRECTIVE)]
     got = energy_audio(r, rock)
-    assert np.array_equal(got, r._render_pm_to_audio(plain))
+    assert np.array_equal(got, r._render_pm_to_audio(plain, master=False))     # reference level
     assert render_directive(rock) is not None                     # input untouched
     rms = lambda x: float(np.sqrt(np.mean(np.asarray(x, np.float64) ** 2)))  # noqa: E731
-    assert 20 * np.log10(rms(r._render_pm_to_audio(rock)) / rms(got)) > 2.0
+    assert 20 * np.log10(rms(r._render_pm_to_audio(rock, master=False)) / rms(got)) > 2.0
     tempo, density = cell_plan('pop', 3)
     pop = generate_segment('pop', tempo_bpm=tempo, density=density, duration_bars=8, seed=7)
-    assert np.array_equal(energy_audio(r, pop), r._render_pm_to_audio(pop))
+    assert np.array_equal(energy_audio(r, pop), r._render_pm_to_audio(pop, master=False))
 
 
 def test_table_records_the_exclusion():

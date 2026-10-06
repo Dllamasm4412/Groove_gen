@@ -129,13 +129,15 @@ class SymbolicSegmentRenderer:
     """
 
     def __init__(
-        self, sf2_path: str | Path, sr: int = 44100, gain: float = 0.8, session_seed: int = 42
+        self, sf2_path: str | Path, sr: int = 44100, gain: float = 0.8, session_seed: int = 42,
+        master_gain_db: float | None = None,
     ):
         self.sf2_path = Path(sf2_path)
         if not self.sf2_path.exists():
             raise FileNotFoundError(f"soundfont not found: {self.sf2_path}")
         self.sr = sr
         self.gain = gain
+        self.master_gain_db = MASTER_GAIN_DB if master_gain_db is None else float(master_gain_db)
         self.session_seed = session_seed
         # Check fluidsynth is on PATH
         r = subprocess.run(["fluidsynth", "--version"], capture_output=True, text=True)
@@ -195,20 +197,28 @@ class SymbolicSegmentRenderer:
         same fluidsynth settings as render_segment."""
         return self._render_pm_to_audio(pm)
 
-    def _render_pm_to_audio(self, pm: pretty_midi.PrettyMIDI) -> np.ndarray:
+    def _render_pm_to_audio(self, pm: pretty_midi.PrettyMIDI, master: bool = True) -> np.ndarray:
         """MIDI -> stereo float32 audio buffer via fluidsynth.
 
         A segment carrying a render directive (composer.render_directive; Rock
         only) renders as 32-bit float, so nothing clips inside fluidsynth,
         then takes its fixed gain and the fixed peak limiter. Everything else
-        renders exactly as before (16-bit)."""
+        renders 16-bit. The master attenuation (master_gain_db, one value for
+        every segment) scales the output: inside fluidsynth for the 16-bit
+        path (its gain is linear to float precision, and the 16-bit stage is
+        where hiphop:4-5 clipped), after the limiter for directive segments,
+        so relative levels are unchanged. master=False renders the reference
+        level (energy measurement and certification; MASTER_GAIN_DB)."""
+        m = self.master_gain_db if master else 0.0
         gain_db = render_directive(pm)
         if gain_db is None:
-            return self._fluidsynth(pm)
+            return self._fluidsynth(pm, gain=self.gain * 10 ** (m / 20))
         audio = self._fluidsynth(pm, ["-O", "float"]) * np.float32(10 ** (gain_db / 20))
-        return limit_peaks(audio, self.sr)
+        audio = limit_peaks(audio, self.sr)
+        return audio if m == 0.0 else (audio * np.float32(10 ** (m / 20))).astype(np.float32)
 
-    def _fluidsynth(self, pm: pretty_midi.PrettyMIDI, extra: list[str] | None = None) -> np.ndarray:
+    def _fluidsynth(self, pm: pretty_midi.PrettyMIDI, extra: list[str] | None = None,
+                    gain: float | None = None) -> np.ndarray:
         with tempfile.TemporaryDirectory() as td:
             midi_path = Path(td) / "seg.mid"
             wav_path = Path(td) / "seg.wav"
@@ -223,7 +233,7 @@ class SymbolicSegmentRenderer:
                 "-r",
                 str(self.sr),
                 "-g",
-                str(self.gain),  # fixed gain, no normalization
+                str(self.gain if gain is None else gain),  # fixed gain, no normalization
                 str(self.sf2_path),
                 str(midi_path),
             ]
@@ -303,6 +313,16 @@ def _read_float_wav(path: Path) -> np.ndarray:
         pcm = np.concatenate([pcm, pcm], axis=1)
     return pcm[:, :2].astype(np.float32)
 
+
+# Fixed master attenuation (dB) on every rendered segment (live and auditions;
+# not energy measurement or certification, which render the reference level).
+# Clipping audit 2026-10-06 (renders/clip_audit/): hiphop:5 hard-clipped in
+# fluidsynth's 16-bit output in every render (6-14 full-scale samples per
+# segment, flat runs up to 3 samples) and hiphop:4 in some; float renders
+# peaked up to +1.49 dBFS (bank hiphop:5; v2c +0.45). Rock never clipped (its
+# limiter holds -1 dBFS). -2.5 dB puts every non-directive segment at or below
+# -1 dBFS, the Rock limiter ceiling; crossfade joins add up to ~0.6 dB.
+MASTER_GAIN_DB = -2.5
 
 # Fixed peak limiter for directive (Rock) segments. Stateless per segment and
 # deterministic; there is no per-segment normalization (quiet segments pass
