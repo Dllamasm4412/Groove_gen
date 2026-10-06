@@ -612,18 +612,23 @@ Rock was heard (the session never climbed past hiphop4, rung 22, so rock3-5 at
   dBFS (the worst bank segment is at -1.01); joins peak at -2.06 dBFS at most.
   The live summary records `master_gain_db`.
 
+## Release candidate `pilot-zero-v2c-rc1` (2026-10-06)
+
+Notes, configuration and verification: `RELEASE_pilot_zero_v2c_rc1.md`. Music
+is frozen: no composition, BPM, Rock instrument / mix, development-pattern or
+certification-envelope changes. Only blocking reliability or safety fixes are
+allowed; known imperfections go to future work.
+
 ## Next task
 
-1. Developer: listen to the Latin dwell auditions, then fill
-   `renders/energy_by_ear/20261005_1526/ratings.csv`; then `energy_by_ear.py
-   apply`. Then a live developer run with `--generator v2c --ladder ear`; check
-   `queued_ahead_s` and gen_visit_idx in its trace.
-2. Then the envelope review, separate from A6 and the generator:
-   - calm:1-2, hiphop:1 and rock:1-5 (pulse / centroid; their v1 drums are
-     seed-invariant);
-   - then the single-segment misses.
-   Use `--preset problem` to audition these cells.
-Non-drum novelty beyond the v2b hiphop slice, and the calm:2 cross-block drum cycle, are future work.
+1. First live developer run of the RC: real PPG via the estimator, 10 min,
+   `--generator v2c --ladder ear --stim-seed 1`, no haptics (commands in
+   `RELEASE_pilot_zero_v2c_rc1.md`). Then `summarize_session.py <session> --render`:
+   queued_ahead_s, cells / rungs, direction violations, peaks, PPG validity.
+2. Future work (not blocking): the envelope review (calm:1-2, hiphop:1, rock:1-5;
+   single-segment misses); calm:1 / calm:2 are barely distinguishable;
+   latin:1-2 pulse-clarity certification residual; non-drum novelty beyond the
+   v2b hiphop slice; the calm:2 cross-block drum cycle.
 
 ## Reproduce
 
@@ -669,4 +674,7 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 music_features_measured.py --table          # after any composer / cell change
 ../.venv/bin/python3.12 energy_by_ear.py render --sf2 Musyng_Kite.sf2 --out renders/energy_by_ear/<ts>
 ../.venv/bin/python3.12 energy_by_ear.py apply --ratings renders/energy_by_ear/<ts>/ratings.csv
+../.venv/bin/python3.12 ladder_min_change.py freeze                      # energy_order_by_ear.json
+../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c --ladder ear --hr plant --phases 'up:30:7,mid:6:5,down:-30:7'
+../.venv/bin/python3.12 summarize_session.py <session_dir> --render
 ```
