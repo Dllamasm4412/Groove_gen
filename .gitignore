@@ -52,3 +52,8 @@ new_biofeedback/ppg_live_recordings/
 *.swp
 *~
 Thumbs.db
+
+# Experiment 1 (music rating): frozen stimulus audio (regenerated and verified
+# against the committed manifest) and participant data
+experiments/music_rating/stimuli/*.wav
+study_data/

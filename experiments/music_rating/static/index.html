@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening study</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #eeeeee; color: #222; }
+  body { font: 22px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; justify-content: center; }
+  main { width: 100%; max-width: 820px; padding: 48px 32px; }
+  h1 { font-size: 34px; font-weight: 600; margin: 0 0 24px; }
+  p { margin: 0 0 18px; }
+  .muted { color: #555; }
+  button { font: inherit; font-size: 24px; min-height: 64px; min-width: 220px; padding: 10px 32px;
+           border: 0; border-radius: 10px; background: #2f5d8a; color: #fff; cursor: pointer; }
+  button:disabled { background: #b5b5b5; color: #f4f4f4; cursor: default; }
+  button:focus-visible, input:focus-visible { outline: 4px solid #e0a000; outline-offset: 4px; }
+  button.secondary { background: #ffffff; color: #2f5d8a; border: 2px solid #2f5d8a; }
+  .row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 32px; }
+  label.check { display: flex; gap: 16px; align-items: center; margin: 24px 0; cursor: pointer; }
+  label.check input { width: 32px; height: 32px; }
+  .question { margin: 36px 0 8px; font-weight: 600; }
+  .anchors { display: flex; justify-content: space-between; color: #444; font-size: 19px; }
+  input[type=range].vas { -webkit-appearance: none; appearance: none; width: 100%; height: 56px;
+                          background: transparent; margin: 8px 0 0; touch-action: none; }
+  input[type=range].vas::-webkit-slider-runnable-track { height: 12px; background: #9a9a9a; border-radius: 6px; }
+  input[type=range].vas::-moz-range-track { height: 12px; background: #9a9a9a; border-radius: 6px; }
+  input[type=range].vas::-webkit-slider-thumb { -webkit-appearance: none; width: 40px; height: 40px; margin-top: -14px;
+                                                border-radius: 50%; background: #2f5d8a; border: 3px solid #fff; }
+  input[type=range].vas::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: #2f5d8a; border: 3px solid #fff; }
+  input[type=range].vas.untouched::-webkit-slider-thumb { opacity: 0; }
+  input[type=range].vas.untouched::-moz-range-thumb { opacity: 0; }
+  .listening { font-size: 28px; color: #2f5d8a; margin: 40px 0; }
+  .error { background: #fbe3e3; color: #7a1b1b; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div id="error" class="error" hidden>Something went wrong. Please tell the researcher.</div>
+
+  <section id="loading"><p class="muted">Loading…</p></section>
+
+  <section id="welcome" hidden>
+    <h1>Welcome</h1>
+    <p>Thank you for taking part in this listening study.</p>
+    <p>Before you start, the researcher will have gone through the consent form with you.</p>
+    <label class="check"><input type="checkbox" id="consent"> I have given my consent to take part.</label>
+    <div class="row">
+      <button id="welcome-next" disabled>Begin</button>
+      <button id="fullscreen" class="secondary">Full screen</button>
+    </div>
+  </section>
+
+  <section id="instructions" hidden>
+    <h1>Instructions</h1>
+    <p>You will hear 29 short music clips: 2 practice clips, then 27 clips for the study.
+       Each clip lasts about 15 to 30 seconds and plays once.</p>
+    <p>After each clip, please answer two questions by moving each slider:</p>
+    <p>1. How much does this music make you want to move or dance?<br>
+       2. How calming or relaxing does this music feel?</p>
+    <p>Please answer both questions for every clip. There are no right or wrong answers;
+       we are interested in your own impression of each clip on its own.</p>
+    <p>You can take a short break between clips, and you can stop at any time by telling the researcher.</p>
+    <div class="row"><button id="instructions-next">Continue</button></div>
+  </section>
+
+  <section id="volume" hidden>
+    <h1>Headphones and volume</h1>
+    <p>Please put on the headphones now.</p>
+    <p>Press <b>Play sample</b> to hear a short piece of music. Adjust the computer's volume so the music is
+       clearly audible and comfortable. You can play the sample as often as you like.</p>
+    <p>Please do not change the volume after this step.</p>
+    <div class="row">
+      <button id="volume-play" class="secondary" disabled>Loading…</button>
+      <button id="volume-next" disabled>The volume is comfortable</button>
+    </div>
+  </section>
+
+  <section id="trial" hidden>
+    <h1 id="trial-label"></h1>
+    <p id="trial-note" class="muted"></p>
+    <div id="play-area">
+      <p id="play-msg"></p>
+      <div class="row"><button id="play" disabled>Loading…</button></div>
+    </div>
+    <div id="listening" hidden>
+      <p class="listening">Listening…</p>
+      <div class="row"><button id="resume" hidden>Continue listening</button></div>
+    </div>
+    <div id="ratings" hidden>
+      <p class="question" id="q-dance">How much does this music make you want to move or dance?</p>
+      <input type="range" class="vas untouched" id="danceability" min="0" max="100" step="1" value="50"
+             aria-labelledby="q-dance">
+      <div class="anchors"><span>Not at all</span><span>Extremely</span></div>
+      <p class="question" id="q-calming">How calming or relaxing does this music feel?</p>
+      <input type="range" class="vas untouched" id="calming" min="0" max="100" step="1" value="50"
+             aria-labelledby="q-calming">
+      <div class="anchors"><span>Not at all calming</span><span>Extremely calming</span></div>
+      <p id="rate-hint" class="muted" style="margin-top:24px">Please move both sliders to continue.</p>
+      <div class="row"><button id="submit" disabled>Continue</button></div>
+    </div>
+  </section>
+
+  <section id="done" hidden>
+    <h1>Thank you</h1>
+    <p>You have finished. Please take off the headphones and let the researcher know.</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const SLIDERS = ["danceability", "calming"];
+let state = null;
+let clip = null;            // {seq, url, audio}
+let volume = null;          // {url, audio}
+let startSent = false, perfStart = null, perfEnd = null, ratingsSeq = null;
+let touched = {};
+
+function clientStamp(extra) { return Object.assign({wall_ms: Date.now(), perf_ms: performance.now()}, extra || {}); }
+
+async function post(path, body, extra) {
+  body = Object.assign({}, body || {}, {client: clientStamp(extra)});
+  const r = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || String(r.status)); e.status = r.status; throw e; }
+  return j;
+}
+
+function fail(err) {
+  console.error(err);
+  $("error").hidden = false;
+  post("/api/client_event", {kind: "audio_error", seq: state && state.trial ? state.trial.seq : null,
+                             detail: String(err && err.message || err)}).catch(() => {});
+}
+
+// 409 = the server's state moved on (another tab, a reload): resync instead of failing.
+async function guarded(fn) {
+  try { await fn(); }
+  catch (e) { if (e.status === 409) { await refresh(); } else { fail(e); } }
+}
+
+async function refresh(newState) {
+  if (newState) { state = newState; }
+  else {
+    const r = await fetch("/api/state", {cache: "no-store"});
+    if (!r.ok) throw new Error("state " + r.status);
+    state = await r.json();
+  }
+  render();
+}
+
+function show(id) { for (const s of document.querySelectorAll("section")) s.hidden = s.id !== id; }
+
+function render() {
+  if (state.stage !== "volume") stopVolume();
+  if (state.stage === "welcome") show("welcome");
+  else if (state.stage === "instructions") show("instructions");
+  else if (state.stage === "volume") { show("volume"); $("volume-next").disabled = !state.volume_played; loadVolume(); }
+  else if (state.stage === "trials") renderTrial().catch(fail);
+  else if (state.stage === "done") { dropClip(); show("done"); }
+}
+
+// ---- welcome / instructions -------------------------------------------------
+
+$("consent").addEventListener("change", () => { $("welcome-next").disabled = !$("consent").checked; });
+$("welcome-next").addEventListener("click", () => guarded(async () => {
+  $("welcome-next").disabled = true;
+  await refresh(await post("/api/advance", {from: "welcome"}));
+}));
+$("fullscreen").addEventListener("click", () => {
+  const el = document.documentElement;
+  (el.requestFullscreen ? el.requestFullscreen() : Promise.reject()).then(
+    () => post("/api/client_event", {kind: "fullscreen", detail: "on"}).catch(() => {}), () => {});
+});
+$("instructions-next").addEventListener("click", () => guarded(async () => {
+  $("instructions-next").disabled = true;
+  await refresh(await post("/api/advance", {from: "instructions"}));
+}));
+
+// ---- volume check -------------------------------------------------------------
+
+async function loadVolume() {
+  if (volume) return;
+  volume = {};
+  const r = await fetch("/clip?n=volume", {cache: "no-store"});
+  if (!r.ok) { fail(new Error("volume clip " + r.status)); return; }
+  volume.url = URL.createObjectURL(await r.blob());
+  volume.audio = new Audio(volume.url);
+  volume.audio.addEventListener("playing", () => {
+    $("volume-play").textContent = "Stop";
+    post("/api/volume_play", {}).then((s) => { state = s; $("volume-next").disabled = !s.volume_played; }).catch(fail);
+  });
+  volume.audio.addEventListener("pause", () => { $("volume-play").textContent = "Play sample"; });
+  $("volume-play").textContent = "Play sample";
+  $("volume-play").disabled = false;
+}
+function stopVolume() {
+  if (!volume || !volume.audio) return;
+  volume.audio.pause();
+  URL.revokeObjectURL(volume.url);
+  volume = null;
+}
+$("volume-play").addEventListener("click", () => {
+  if (!volume || !volume.audio) return;
+  if (volume.audio.paused) { volume.audio.currentTime = 0; volume.audio.play().catch(fail); }
+  else volume.audio.pause();
+});
+$("volume-next").addEventListener("click", () => guarded(async () => {
+  $("volume-next").disabled = true;
+  stopVolume();
+  await refresh(await post("/api/advance", {from: "volume"}));
+}));
+
+// ---- trials ---------------------------------------------------------------------
+
+function dropClip() {
+  if (!clip) return;
+  if (clip.audio) clip.audio.pause();
+  if (clip.url) URL.revokeObjectURL(clip.url);
+  clip = null;
+}
+
+async function loadClip(seq) {
+  if (clip && clip.seq === seq) return clip.ready;
+  dropClip();
+  const c = {seq: seq};
+  clip = c;
+  c.ready = (async () => {
+    const r = await fetch("/clip?n=" + seq, {cache: "no-store"});
+    if (!r.ok) { const e = new Error("clip " + r.status); e.status = r.status; throw e; }
+    c.url = URL.createObjectURL(await r.blob());
+    const a = new Audio();
+    a.preload = "auto";
+    await new Promise((res, rej) => {
+      a.addEventListener("canplaythrough", res, {once: true});
+      a.addEventListener("error", () => rej(new Error("audio decode")), {once: true});
+      a.src = c.url;
+      a.load();
+    });
+    a.addEventListener("playing", () => onPlaying(c));
+    a.addEventListener("pause", () => onPause(c));
+    a.addEventListener("ended", () => guarded(() => onEnded(c)));
+    a.addEventListener("error", () => fail(new Error("audio playback")));
+    c.audio = a;
+  })();
+  return c.ready;
+}
+
+async function renderTrial() {
+  const t = state.trial;
+  show("trial");
+  $("trial-label").textContent = (t.practice ? "Practice clip " : "Clip ") + t.number + " of " + t.total;
+  let note = "";
+  if (t.practice && t.number === 1) note = "These two practice clips help you get used to the task.";
+  if (t.first_main && !t.ended) note = "Practice is over. The study clips start now.";
+  $("trial-note").textContent = note;
+  if (t.ended) { showRatings(t); return; }
+  $("ratings").hidden = true;
+  $("listening").hidden = true;
+  $("play-area").hidden = false;
+  $("play-msg").textContent = t.plays > 0
+    ? "The clip was interrupted. Press Play to hear it again from the start."
+    : "Press Play when you are ready. The clip plays once.";
+  $("play").disabled = true;
+  $("play").textContent = "Loading…";
+  try { await loadClip(t.seq); }
+  catch (e) { if (e.status === 409) { await refresh(); return; } throw e; }
+  if (state.trial && state.trial.seq === t.seq && !state.trial.ended) {
+    $("play").disabled = false;
+    $("play").textContent = "Play";
+    $("play").focus();
+  }
+}
+
+$("play").addEventListener("click", () => {
+  if (!clip || !clip.audio || clip.seq !== state.trial.seq) return;
+  $("play").disabled = true;
+  startSent = false;
+  perfEnd = null;
+  clip.audio.currentTime = 0;
+  clip.audio.play().catch((e) => { $("play").disabled = false; fail(e); });
+});
+
+function onPlaying(c) {
+  if (c !== clip) return;
+  $("play-area").hidden = true;
+  $("listening").hidden = false;
+  $("resume").hidden = true;
+  if (startSent) { post("/api/client_event", {kind: "audio_resumed", seq: c.seq}).catch(() => {}); return; }
+  startSent = true;
+  perfStart = performance.now();
+  post("/api/play_start", {seq: c.seq}).catch((e) => {
+    c.audio.pause();
+    if (e.status === 409) refresh().catch(fail); else fail(e);
+  });
+}
+
+function onPause(c) {
+  if (c !== clip || c.audio.ended || !startSent) return;
+  post("/api/client_event", {kind: "audio_paused", seq: c.seq, detail: c.audio.currentTime}).catch(() => {});
+  $("resume").hidden = false;
+}
+$("resume").addEventListener("click", () => { if (clip && clip.audio) clip.audio.play().catch(fail); });
+
+async function onEnded(c) {
+  if (c !== clip) return;
+  perfEnd = performance.now();
+  const played = (perfEnd - perfStart) / 1000;
+  await refresh(await post("/api/play_end", {seq: c.seq}, {played_s: played}));
+}
+
+function showRatings(t) {
+  $("play-area").hidden = true;
+  $("listening").hidden = true;
+  $("ratings").hidden = false;
+  if (ratingsSeq === t.seq) return;
+  ratingsSeq = t.seq;
+  if (perfEnd === null) perfEnd = performance.now();     // after a reload: latency from when the sliders appear
+  touched = {};
+  for (const id of SLIDERS) { $(id).value = 50; $(id).classList.add("untouched"); }
+  $("submit").disabled = true;
+  $("rate-hint").hidden = false;
+  $("ratings").scrollIntoView({block: "start"});     // both sliders and Continue on screen in short windows
+}
+
+function markTouched(id) {
+  touched[id] = true;
+  $(id).classList.remove("untouched");
+  const all = SLIDERS.every((s) => touched[s]);
+  $("submit").disabled = !all;
+  $("rate-hint").hidden = all;
+}
+for (const id of SLIDERS) {
+  for (const ev of ["input", "change", "pointerup"]) $(id).addEventListener(ev, () => markTouched(id));
+}
+
+$("submit").addEventListener("click", () => guarded(async () => {
+  if (!SLIDERS.every((s) => touched[s])) return;
+  $("submit").disabled = true;
+  const body = {seq: state.trial.seq, latency_ms: performance.now() - perfEnd};
+  for (const id of SLIDERS) { body[id] = parseInt($(id).value, 10); body["touched_" + id] = true; }
+  const s = await post("/api/response", body);
+  dropClip();
+  ratingsSeq = null;
+  perfEnd = null;
+  await refresh(s);
+}));
+
+window.addEventListener("beforeunload", (e) => {
+  if (state && state.stage === "trials") { e.preventDefault(); e.returnValue = ""; }
+});
+
+post("/api/client_event", {kind: "page_loaded"}).catch(() => {});
+refresh().catch(fail);
+</script>
+</body>
+</html>
