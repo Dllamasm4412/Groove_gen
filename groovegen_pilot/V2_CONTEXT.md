@@ -619,16 +619,21 @@ is frozen: no composition, BPM, Rock instrument / mix, development-pattern or
 certification-envelope changes. Only blocking reliability or safety fixes are
 allowed; known imperfections go to future work.
 
+## Release candidate `pilot-zero-v2c-rc2` (2026-10-07)
+
+RC1 passed live Tests A (music), B (music + haptic pacing) and C (phased
+up/down, with revisits). RC2 adds two fixes: variety at the top-of-ladder stall
+(`top_rotation_cells`) and fixed sessions that end by music time. Notes:
+`RELEASE_pilot_zero_v2c_rc2.md`. Music, ladder, gains and haptics are frozen.
+
 ## Next task
 
-1. First live developer run of the RC: real PPG via the estimator, 10 min,
-   `--generator v2c --ladder ear --stim-seed 1`, no haptics (commands in
-   `RELEASE_pilot_zero_v2c_rc1.md`). Then `summarize_session.py <session> --render`:
-   queued_ahead_s, cells / rungs, direction violations, peaks, PPG validity.
-2. Future work (not blocking): the envelope review (calm:1-2, hiphop:1, rock:1-5;
-   single-segment misses); calm:1 / calm:2 are barely distinguishable;
-   latin:1-2 pulse-clarity certification residual; non-drum novelty beyond the
-   v2b hiphop slice; the calm:2 cross-block drum cycle.
+1. Developer review of the Test C and RC2 report, then the locked tag
+   (`pilot-zero-v2c-locked`), only on the developer's word.
+2. Future work (not blocking): envelope review (calm:1-2, hiphop:1, rock:1-5);
+   calm:1 / calm:2 barely distinguishable; latin:1-2 pulse-clarity residual;
+   collapsed-gain rotation stalls mid-ladder; the two new_biofeedback replay
+   test gaps; non-drum novelty beyond the v2b hiphop slice.
 
 ## Reproduce
 
@@ -677,4 +682,5 @@ cd groovegen_pilot
 ../.venv/bin/python3.12 ladder_min_change.py freeze                      # energy_order_by_ear.json
 ../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c --ladder ear --hr plant --phases 'up:30:7,mid:6:5,down:-30:7'
 ../.venv/bin/python3.12 summarize_session.py <session_dir> --render
+../.venv/bin/python3.12 simulate_session_v2.py --sf2 ../soundfonts/Musyng_Kite.sf2 --generator v2c --ladder ear --hr plant --session-minutes 10
 ```

@@ -136,3 +136,59 @@ Check in `session_summary.json`:
   / `accepted_fraction` / `decision_polls_not_accepted`. The bug was in the
   summary tool only; runtime HR handling and controller behaviour were not
   affected, and the runtime code for Test B is the code at the tag.
+
+## Live engineering validation on RC1 code (developer only)
+
+Engineering results only. Tests A and B started from very different resting
+HRs (55 vs 69 bpm) and are not a controlled comparison; nothing here shows
+that music or haptics changed HR.
+
+**Test A, music only** (`daniel_rc1_live1_20261006_151426`, accepted 2026-10-07)
+- v2c, `--ladder ear`, stim seed 1, -2.5 dB headroom, condition `music`, no
+  haptic pulses; baseline 55.0, target +10 (governed down to about 58-62).
+- 30 segments, about 8.6 min of music (the `--session-minutes` bug).
+- 15 up, 0 down, 10 holds, 5 rotations; 0 direction violations. Reached rock5
+  and held it 6 segments, because rotation cannot leave rock5 (fix pending).
+- Queue margin at least 1.29 s, render max 1.70 s, no gaps; peak -2.06 dBFS,
+  no clipping; the trace rebuilds the audio exactly.
+- Every segment had fresh HR; two PPG dropouts (8 s, 6 s) recovered; 88.7%
+  of HR polls accepted; 1 development fallback.
+
+**Test B, music + haptic pacing** (`daniel_rc1_live2_haptic_20261007_112533`,
+accepted 2026-10-07; an earlier attempt, `..._112022`, was interrupted after
+4 segments and is not analysed)
+- Same configuration plus `--haptic-pacing`; estimator `--pace-max-seconds 720
+  --pace-invalid-window-s 60` (per-run approval, DEVIATIONS.md). Baseline
+  69.4, music target 79.4; pacer goal 75.0 (its HR0 + 6 clip, by design).
+- 592 HB pulses during the music (657/657 commands acknowledged sent), no
+  communication failures. Pacing ran from +11 s to session end, without
+  reaching the time limit. One 2 s invalid-HR pause, then recovery;
+  `hr_past_goal` pauses behaved as designed. Cumulative invalid HR reached
+  46 s, so the default 30 s cumulative limit would have ended pacing
+  halfway.
+- 30 segments, about 9.0 min of music; 18 up, 0 down, 8 holds, 4 rotations
+  (all while the MPC held); 0 direction violations; normal moves 1 rung.
+- Queue margin at least 1.03 s, render max 1.96 s, no underruns; peak -3.5
+  dBFS, no clipping; 6 revisits with visit state preserved; 1 development
+  fallback. Every segment had fresh HR; 91.6% of HR polls accepted; longest
+  dropout 9.1 s.
+- Learned gain 2.5 -> 5.5 bpm. It is not a music-only gain and is not pooled
+  with Test A.
+
+**Test C, music only, phased up/down** (`daniel_rc1_live3_phased_20261007_115716`,
+2026-10-07)
+- Same configuration as Test A with `--phases 'up:10:5,down:-6:6'`: baseline
+  63.9, targets 73.9 then 57.9; condition `music`, no haptic pulses.
+- 32 segments, about 11.0 min of music. Up phase: hiphop2 to latin2; 5 up, 2
+  holds, 9 rotations. The learned gain collapsed to 0-0.5 bpm while HR fell, so
+  the MPC held at rnb2 and rotation filled the stall. Down phase: rnb3 to
+  calm2; 8 down, 4 holds, 4 rotations, one low-saturation segment at calm1.
+- 6 requested up and 9 requested down moves, 0 direction violations; normal
+  moves 1 rung; rotation jumps at most 4 rungs (inside the band).
+- 7 revisits in the down phase. Every visit counter continued and every
+  revisit's MIDI was new. Composing each cell's visits on their own gives the
+  same MIDI as the session, so no state passes between cells.
+- Queue margin at least 1.22 s, render max 1.84 s, no underruns; peak -4.33
+  dBFS, no clipping; 0 development fallbacks; 99.85% of HR polls accepted;
+  every segment had fresh HR.
+- Learned gain 2.5 -> 3.4 bpm (music only).
