@@ -144,10 +144,12 @@ def hr_validity(rows, segs, session: Path):
     polls = session / 'hr_polls.csv'
     if polls.exists():
         p = list(csv.DictReader(polls.open()))
-        hr_col = next((c for c in ('hr_bpm', 'hr', 'bpm') if p and c in p[0]), None)
-        valid = [r for r in p if hr_col and _f(r.get(hr_col)) is not None]
-        out['hr_polls'] = {'n': len(p), 'valid': len(valid), 'invalid': len(p) - len(valid),
-                           'valid_fraction': round(len(valid) / len(p), 4) if p else None}
+        # accepted = the poll returned a fresh estimator reading (bpm alone also holds stale values)
+        valid = [r for r in p if r.get('accepted') == 'True']
+        out['hr_polls'] = {'n': len(p), 'accepted': len(valid), 'not_accepted': len(p) - len(valid),
+                           'accepted_fraction': round(len(valid) / len(p), 4) if p else None,
+                           'decision_polls_not_accepted': sum(r.get('kind') == 'decision' and r.get('accepted') != 'True'
+                                                              for r in p)}
     hr = [_f(s['hr_bpm']) for s in segs]
     tgt = [_f(s['hr_target_bpm']) for s in segs]
     gov = [_f(s['governed_r_bpm']) for s in segs]

@@ -125,4 +125,14 @@ Check in `session_summary.json`:
 - `visit_state.visit_counter_breaks` is empty;
 - `development.fallback_segments`;
 - `audio_rebuilt` (composition mismatches 0, peak, full-scale samples);
-- `hr` (fresh vs stale segments, stale_hold, `hr_polls` valid fraction).
+- `hr` (fresh vs stale segments, stale_hold, `hr_polls` accepted fraction).
+
+## Post-RC fixes (code at the tag unchanged)
+
+- `fix(tools): count only accepted HR polls` (2026-10-07). `summarize_session.py`
+  counted every HR poll that returned a number as valid, including repeated
+  stale values, so it reported Test A as 531/531 valid; the correct figure is
+  471/531 accepted (88.7%). Its output keys are now `accepted` / `not_accepted`
+  / `accepted_fraction` / `decision_polls_not_accepted`. The bug was in the
+  summary tool only; runtime HR handling and controller behaviour were not
+  affected, and the runtime code for Test B is the code at the tag.
