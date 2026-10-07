@@ -126,6 +126,8 @@ class ControllerConfig:
     #     during rotation, the pick stays on the MPC's side of the current
     #     cell (direction first, then recency, then genre, then nearest the
     #     MPC's rung); genre variety only reorders holds (2026-10-06).
+    #     An upward stall at the top rung rotates among the top rung and its
+    #     top_rotation_cells nearest cells below (2026-10-07).
     #   target_relaxation: after relax_after_segments stuck, set the target
     #     aside: step away from it at max_step_per_segment until u has moved
     #     relax_depth_u from the stall cell, then re-climb to the stall cell
@@ -137,6 +139,12 @@ class ControllerConfig:
     rotation_after_segments: int = 3
     rotation_band_u: float = 0.20
     rotation_no_repeat: int = 2
+    # Upward stall at the top rung: rotation draws from the top rung and its
+    # top_rotation_cells nearest cells below it, instead of the energy band
+    # (2026-10-07). On the frozen ladder rock5 is 0.14 u above rock4 / hiphop5,
+    # beyond the band, so rotation could only replay rock5 (Test A: 6
+    # segments). 0 = the band only.
+    top_rotation_cells: int = 2
     target_relaxation: bool = False
     relax_after_segments: int = 8
     relax_depth_u: float = 0.35
@@ -593,6 +601,13 @@ class LadderMPC:
             and abs(c.u - current_u) <= w
             and self._du_ok(current_rung, c.rung)
         ] or [self.ladder.by_rung[current_rung]]
+        last = len(self.ladder.cells) - 1
+        if d > 0 and self._anchor_rung == last and self.cfg.top_rotation_cells > 0:
+            # The September "slightly below the top" rotation, at the hard top:
+            # the top cell and its nearest cells below (energy order), so a
+            # long upward stall does not replay the top cell every segment.
+            band = [self.ladder.by_rung[r] for r in range(max(0, last - self.cfg.top_rotation_cells), last + 1)
+                    if self._du_ok(current_rung, r)] or [self.ladder.by_rung[current_rung]]
         # The current cell can lie outside the anchor's band (the MPC moved it
         # there during the stall, or a requested move followed the MPC past
         # the band): with no band cell left, hold (an empty band raised

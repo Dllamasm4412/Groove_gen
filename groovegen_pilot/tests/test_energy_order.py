@@ -230,7 +230,8 @@ def test_rotation_stays_in_the_band():
 
 def test_rotation_with_a_single_band_cell_holds_it():
     L = _to_ladder({('calm', 1): 0.0, ('pop', 5): 0.9, ('rock', 5): 1.0})
-    ctrl = LadderMPC(L, ControllerConfig(saturation_rotation=True, rotation_band_u=0.026))
+    ctrl = LadderMPC(L, ControllerConfig(saturation_rotation=True, rotation_band_u=0.026,
+                                         top_rotation_cells=0))         # the band only
     ctrl._anchor_rung = top = L.index('rock', 5)
     assert ctrl._rotation_pick(+1, top) == top
 
@@ -340,13 +341,19 @@ def test_requested_move_prefers_fresh_cells_then_other_genre():
 
 
 def test_hold_rotation_still_varies_on_the_frozen_ladder(runtime_ladders):
-    """A hold at a saturated top (rock5) or mid-ladder (rnb2): picks stay in the
-    band, rotate through several cells and never alternate two."""
+    """A hold at a saturated top (rock5) or mid-ladder (rnb2, latin2): picks stay
+    in the band (at the top: the top neighbourhood), rotate through several
+    cells and never alternate two."""
     (ear, ctl, _, _), _ = runtime_ladders
+    top = len(ear.cells) - 1
     for genre, tier, d in (('rock', 5, +1), ('rnb', 2, +1), ('latin', 2, -1)):
         ctrl = LadderMPC(ear, ctl.cfg)
         cur = ctrl._anchor_rung = ear.index(genre, tier)
         anchor_u = ear.by_rung[cur].u
+        if cur == top and d > 0:
+            band = list(ear.cells[top - ctl.cfg.top_rotation_cells:])
+        else:
+            band = [c for c in ear.cells if abs(c.u - anchor_u) <= ctrl.cfg.rotation_band_u]
         played = []
         for _ in range(12):
             c = ear.by_rung[cur]
@@ -354,8 +361,7 @@ def test_hold_rotation_still_varies_on_the_frozen_ladder(runtime_ladders):
             ctrl._step_idx += 1
             cur = ctrl._rotation_pick(d, cur, None)
             played.append(cur)
-            assert abs(ear.by_rung[cur].u - anchor_u) <= ctrl.cfg.rotation_band_u + 1e-12
-        band = [c for c in ear.cells if abs(c.u - anchor_u) <= ctrl.cfg.rotation_band_u]
+            assert ear.by_rung[cur] in band
         if len(band) >= 3:
             assert len(set(played)) >= 3, (genre, tier, played)
             assert not any(a == c and b == e for a, b, c, e in zip(played, played[1:], played[2:], played[3:]))
@@ -410,3 +416,78 @@ def test_rotation_with_current_outside_the_anchor_band_holds():
     cur = L.index('pop', 1)
     assert ctrl._rotation_pick(+1, cur, None) == cur
     assert ctrl._rotation_pick(+1, cur, cur + 1) == cur + 1          # a requested move still follows the MPC
+
+
+# ---------------------------------------------------------------------------
+# Variety at the top of the ladder (2026-10-07)
+# ---------------------------------------------------------------------------
+
+
+def _top_stall(ladder, cfg, n=45, seed=0):
+    """Closed loop with a synthetic first-order plant that cannot reach the
+    target (engineering only): the controller climbs to the top and stalls.
+    Returns the (rung, control_mode, mpc_rung, prev_rung) of every decision."""
+    import random
+
+    from plant_model import FOPDTPlant, Subject
+
+    ctrl = LadderMPC(ladder, cfg)
+    plant = FOPDTPlant(Subject(72.0, 14.0, 60.0, 1, 1.0, 'synthetic'), dt=18.0, noise_sigma=0.5,
+                       rng=random.Random(seed))
+    rung, hr, out = ladder.index('lofi', 3), 72.0, []
+    for _ in range(n):
+        dec = ctrl.step(hr_bpm=hr, hr_target=72.0 + 40.0, hr_base=72.0, current_rung=rung)
+        out.append((dec.next_rung, dec.control_mode, dec.mpc_rung, rung))
+        hr = plant.step(ladder.by_rung[dec.next_rung].u)
+        rung = dec.next_rung
+    return out
+
+
+def test_top_stall_rotates_near_the_top(runtime_ladders):
+    """Frozen ladder, live config: a long upward stall at rock5 rotates among
+    rock5, rock4 and hiphop5 (never two rock5 in a row once rotating), with
+    rotation jumps of at most 2 rungs and no reversal of a requested move."""
+    (ear, ctl, _, _), _ = runtime_ladders
+    top = len(ear.cells) - 1
+    near = {top - 2, top - 1, top}
+    assert {ear.by_rung[r].gt() for r in near} == {('hiphop', 5), ('rock', 4), ('rock', 5)}
+    for seed in range(5):
+        seq = _top_stall(ear, ctl.cfg, seed=seed)
+        rot = [i for i, x in enumerate(seq) if x[1] == 'rotate']
+        assert len(rot) >= 10, seed
+        assert all(seq[i][0] in near for i in rot)
+        assert all(abs(seq[i][0] - seq[i][3]) <= 2 for i in rot)
+        assert {seq[i][0] for i in rot} == near
+        tail = [x[0] for x in seq[rot[0]:]]
+        assert not any(a == b == top for a, b in zip(tail, tail[1:])), tail
+        for nxt, _, mpc, prev in seq:
+            m = (mpc > prev) - (mpc < prev)
+            assert m == 0 or m * (nxt - prev) > 0
+
+
+def test_top_stall_old_behaviour_replays_the_top(runtime_ladders):
+    """top_rotation_cells=0 (the band only) reproduces Test A: rock5 every segment."""
+    import dataclasses
+
+    (ear, ctl, _, _), _ = runtime_ladders
+    seq = _top_stall(ear, dataclasses.replace(ctl.cfg, top_rotation_cells=0))
+    rot = [x[0] for x in seq if x[1] == 'rotate']
+    assert rot and set(rot) == {len(ear.cells) - 1}
+
+
+def test_top_neighbourhood_only_for_upward_top_stalls():
+    """A downward stall at the bottom and an upward stall below the top keep the
+    energy band."""
+    L = _to_ladder({('calm', 1): 0.0, ('calm', 2): 0.001, ('lofi', 1): 0.15, ('pop', 1): 0.5,
+                    ('pop', 2): 0.51, ('rock', 4): 0.86, ('hiphop', 5): 0.855, ('rock', 5): 1.0})
+    ctrl = LadderMPC(L, ControllerConfig(saturation_rotation=True, rotation_band_u=0.027))
+    ctrl._step_idx = 5
+    bottom = L.index('calm', 1)
+    ctrl._anchor_rung = bottom
+    assert ctrl._rotation_pick(-1, bottom, None) in {bottom, L.index('calm', 2)}
+    mid = L.index('pop', 2)
+    ctrl._anchor_rung = mid
+    assert ctrl._rotation_pick(+1, mid, None) in {mid, L.index('pop', 1)}
+    top = L.index('rock', 5)
+    ctrl._anchor_rung = top
+    assert ctrl._rotation_pick(+1, top, None) == L.index('hiphop', 5)     # other genre, never played
