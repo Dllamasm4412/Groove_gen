@@ -253,7 +253,13 @@ def simulate(args, out: Path) -> tuple[dict[str, Any], list[dict]]:
     if args.generator != 'bank':
         source = TimedSource(SessionSegmentSource(args.stim_seed, develop=GENERATORS[args.generator]))
     player = capture_player(44100)
-    phases = rpz.parse_phases(args.phases)
+    if args.session_minutes is not None:      # fixed target, as run_pilot_zero without --phases
+        offset = float(live_args().target_offset_bpm)
+        phases = [('', offset, args.session_minutes)]
+        schedule = rpz.fixed_target_schedule(offset, args.session_minutes, BASELINE_BPM)
+    else:
+        phases = rpz.parse_phases(args.phases)
+        schedule = rpz.make_target_schedule(phases, BASELINE_BPM)
     minutes = sum(p[2] for p in phases)
     # run_pilot_zero's SessionConfigV2 and mixer (phase schedule: 12 s cap per segment)
     cfg = SessionConfigV2(bars_per_segment=8, sample_rate=44100, fade_bars=0.25, hr_poll_s=1.0,
@@ -269,7 +275,7 @@ def simulate(args, out: Path) -> tuple[dict[str, Any], list[dict]]:
     trace = run_session_v2(
         hr_source, renderer, player, mixer, ladder, controller, cfg,
         hr_target_bpm=BASELINE_BPM + phases[0][1], hr_baseline_bpm=BASELINE_BPM, initial_rung=initial,
-        target_schedule=rpz.make_target_schedule(phases, BASELINE_BPM), segment_source=source,
+        target_schedule=schedule, segment_source=source,
         sleep_fn=clock.sleep, time_fn=clock.time, perf_counter_fn=clock.perf)
 
     rows = [r._asdict() for r in trace]
@@ -314,7 +320,8 @@ def simulate(args, out: Path) -> tuple[dict[str, Any], list[dict]]:
                 'stale_window_s': STALE} if args.hr == 'scripted' else
                {'source': f'PlantHRSource (synthetic first-order, K={args.plant_k} bpm at u=1, tau 60 s; '
                           'engineering only, not a model of any person)'})
-              | {'baseline_bpm': BASELINE_BPM, 'phases': args.phases},
+              | {'baseline_bpm': BASELINE_BPM, 'phases': None if args.session_minutes else args.phases,
+                 'session_minutes': args.session_minutes},
         'runner_config': {'session_config': cfg.__dict__, 'mixer': 'CrossfadeMixer(fade_bars=0.25, tail_out)',
                           'initial_cell': live_args().initial_cell, 'ladder': args.ladder,
                           'energy_table_sha256': table_sha, 'ear_order_sha256': ear_sha,
@@ -420,6 +427,9 @@ def parse_args(argv=None):
     p.add_argument('--generator', default='v2c', choices=('bank', 'v2a', 'v2c'))
     p.add_argument('--stim-seed', type=int, default=1)
     p.add_argument('--phases', default=PHASES)
+    p.add_argument('--session-minutes', type=float, default=None,
+                   help='fixed-target session of this many minutes (run_pilot_zero without --phases); '
+                        'overrides --phases')
     p.add_argument('--hr', default='scripted', choices=('scripted', 'plant'),
                    help='scripted: fixed HR(t); plant: synthetic first-order HR driven by the chosen cell')
     p.add_argument('--plant-k', type=float, default=14.0, help='--hr plant: HR rise (bpm) at u = 1')

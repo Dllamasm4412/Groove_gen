@@ -218,6 +218,16 @@ def make_target_schedule(phases: list[tuple[str, float, float]], baseline_bpm: f
     return schedule
 
 
+def fixed_target_schedule(offset_bpm: float, minutes: float, baseline_bpm: float):
+    """A fixed-target session as one unnamed phase (the trace's phase column
+    stays ''), so music time ends it as it ends a phased session: a segment
+    starts while planned session time is below `minutes`, and the last one
+    plays to its end. Before 2026-10-07 a fixed-target session stopped after
+    minutes * 60 / 20 segments; live segments run 14.8-29.5 s (mean ~18 s), so
+    10 min gave 8.6-9.0 min of music."""
+    return make_target_schedule([("", float(offset_bpm), float(minutes))], baseline_bpm)
+
+
 def setup_logging(session_dir: Path) -> logging.Logger:
     session_dir.mkdir(parents=True, exist_ok=True)
     log_path = session_dir / "pilot.log"
@@ -641,7 +651,8 @@ def main() -> int:
                     name, baseline_median + offset, offset, minutes,
                 )
         else:
-            logger.info("target_bpm=%.2f bpm", target_bpm)
+            target_schedule = fixed_target_schedule(args.target_offset_bpm, session_minutes, baseline_median)
+            logger.info("target_bpm=%.2f bpm for %.1f min of music", target_bpm, session_minutes)
 
         # Only cells the renderer plays distinctly (calm<=2, lofi<=3, rnb<=4).
         # Measured ladder: cell energy from rendered loudness, drum onset
@@ -707,9 +718,9 @@ def main() -> int:
             hr_poll_s=1.0,
             stale_hr_policy="hold",
             haptic_pacing=args.haptic_pacing,
-            # With a phase schedule the schedule ends the session; segments
-            # run 15-22 s, so this is only a cap.
-            max_segments=int(session_minutes * 60 / (12 if target_schedule else 20)),
+            # The target schedule (phased or fixed) ends the session by music
+            # time; live segments run 14.8-29.5 s, so this is only a cap.
+            max_segments=int(session_minutes * 60 / 12),
         )
         if cfg.max_segments <= 0:
             raise RuntimeError("ERROR: computed max_segments <= 0; increase --session-minutes")

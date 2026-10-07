@@ -293,3 +293,64 @@ def test_config_and_trace_keys():
     assert SessionSegmentSource(5, develop=False).config()['generator'] == 'v2a'
     fields = set(TraceRowV2._fields)
     assert {k if k.startswith(('gen_', 'motif_', 'dev_')) else f'gen_{k}' for k in TRACE_KEYS} <= fields
+
+
+# ---------------------------------------------------------------------------
+# Fixed-target session duration (2026-10-07)
+# ---------------------------------------------------------------------------
+
+def _fixed_session(ladder, cells, minutes):
+    """run_session_v2 with run_pilot_zero's fixed-target schedule and segment cap,
+    a scripted cell sequence (cycled) and steady HR. Returns the per-segment
+    trace and each segment's length in seconds."""
+    from run_pilot_zero import fixed_target_schedule
+
+    clock = Clock()
+    seq = [cells[i % len(cells)] for i in range(200)]
+    trace = run_session_v2(
+        ScriptedHR(clock, lambda t: 70.0), FakeRenderer(clock), NullPlayer(),
+        CrossfadeMixer(sample_rate=SR, fade_bars=0.25, fade_mode='tail_out'),
+        ladder, ScriptedController(ladder, seq),
+        SessionConfigV2(bars_per_segment=8, sample_rate=SR, fade_bars=0.25, hr_poll_s=1.0,
+                        stale_hr_policy='hold', max_segments=int(minutes * 60 / 12)),
+        hr_target_bpm=80.0, hr_baseline_bpm=70.0, initial_rung=ladder.index('lofi', 3),
+        target_schedule=fixed_target_schedule(10.0, minutes, 70.0),
+        segment_source=SessionSegmentSource(1, develop=True),
+        sleep_fn=clock.sleep, time_fn=clock.time, perf_counter_fn=clock.perf)
+    seg = pd.DataFrame([r._asdict() for r in trace]).groupby('segment_idx').first().reset_index()
+    return seg, 8 * 240.0 / seg.tempo_bpm
+
+
+@pytest.mark.parametrize('cells', [[('calm', 1)], [('pop', 3)], [('rock', 5)],
+                                   [('calm', 2), ('pop', 1), ('hiphop', 1), ('rock', 3)]],
+                         ids=['calm 65 bpm', 'pop 118 bpm', 'rock 130 bpm', 'mixed'])
+def test_fixed_session_ends_by_music_time(stack, cells):
+    """--session-minutes T plays segments while planned session time is below T
+    and lets the last one finish. Session time counts from the session start and
+    the music starts after the first render (here 1.2 s), so the music lasts
+    between T - first render and T + one segment. The old rule (T * 60 / 20
+    segments) is off by the tempo: 65 bpm overran by 50%, 118 bpm and 130 bpm
+    fell 19-26% short."""
+    ladder, _ = stack
+    T = 3.0 * 60
+    seg, length = _fixed_session(ladder, cells, 3.0)
+    end = float(seg.session_time.iloc[-1] + length.iloc[-1])            # session clock
+    assert seg.session_time.iloc[-1] < T <= end + 1e-6
+    music = end - float(seg.session_time.iloc[0])
+    assert T - RENDER_S - 1e-6 <= music < T + length.max()
+    starts = seg.session_time - seg.session_time.iloc[0]
+    assert (seg.phase == '').all() and (seg.hr_target_bpm == 80.0).all()
+    old = float(length[:int(T / 20)].sum()) if len(length) >= int(T / 20) else None
+    if cells == [('calm', 1)]:
+        assert old is None or old > 1.4 * T             # old rule: 9 segments x 29.5 s
+    if cells in ([('pop', 3)], [('rock', 5)]):
+        assert old is not None and old < 0.85 * T
+
+
+def test_fixed_target_schedule_is_one_unnamed_phase():
+    from run_pilot_zero import fixed_target_schedule, make_target_schedule
+
+    f = fixed_target_schedule(10.0, 10.0, 60.0)
+    assert f(0.0) == ('', 70.0) and f(599.9) == ('', 70.0) and f(600.0) is None
+    g = make_target_schedule([('up', 10.0, 5.0), ('down', -6.0, 6.0)], 60.0)   # --phases unchanged
+    assert g(299.9) == ('up', 70.0) and g(300.0) == ('down', 54.0) and g(660.0) is None
