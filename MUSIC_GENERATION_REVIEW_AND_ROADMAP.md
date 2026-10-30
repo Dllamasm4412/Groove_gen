@@ -262,6 +262,98 @@ schedule. Physiology never enters the generator.
 Martens & Janata, 2014). Loudness drives perceived arousal (Dean, Bailes & Schubert, 2011). Pitch
 choice changes loudness through Musyng_Kite sample-zone level jumps of up to about 7 dB [P].
 
+### 3.4 Danceability, musical energy and emotional arousal
+
+**Proxies in use today** [C]:
+
+| Construct | Proxy in the system | Status |
+|---|---|---|
+| Musical energy | `E` = LUFS 0.40, drum onset rate 0.25, tempo 0.20, centroid 0.10, flux 0.05 (rendered audio); ladder `u` | Controlled (one dimension, via cell choice) |
+| Danceability | None as a control variable. `pulse_clarity` (onset-envelope autocorrelation), drum on-beat ratio (±0.05) and the protected skeleton act as guards. Experiment 1 asks "want to move or dance" | Held (partly), measured; not controlled |
+| Arousal | HR from PPG is the controlled output; the generator never sees it (`test_generator_boundary.py`) | Kept outside the generator, correctly |
+
+**Where they are entangled** [C][R]:
+
+- The ladder is one-dimensional. Tempo, loudness, density, timbre and genre move together, and
+  groove-relevant features co-vary without control. Pulse clarity ranges from 0.595 (latin:1) to
+  0.946 (rock:2). Syncopation is a fixed property of each genre's patterns.
+- Tempo is inside `E`. It is also the most consistent musical driver of HR and respiration
+  (Bernardi et al., 2006; Koelsch & Jäncke, 2015) and a strong groove factor. An `E`-to-HR
+  relation therefore cannot be attributed to non-tempo features without a design that separates
+  them.
+- Experiment 1's "calming or relaxing" item mixes valence and arousal.
+- The code itself does not equate the constructs: the generator boundary and the claims
+  language are sound.
+
+**Independent manipulation is not possible today**: there is one control dimension, and within-
+genre levers are weak (1.5).
+
+**Correlated vs independently controllable**:
+
+| Feature | Expected relation | Use |
+|---|---|---|
+| Tempo | Correlated with energy, groove and HR | Treat as correlated |
+| Loudness | Mainly perceived intensity / arousal (Dean et al., 2011) | Energy lever |
+| Syncopation | Inverted-U relation to groove (Witek et al., 2014; Matthews et al., 2019); at a fixed onset count, roughly orthogonal to energy | **The most promising lever to dissociate groove from energy** |
+| Harmonic complexity | Interacts with groove (Matthews et al., 2019) | Coupled; keep moderate in high-groove cells |
+
+**Recommended representation**: three layers, kept apart in code and in claims.
+
+1. **Musical features (measured exactly, generator-side).** Tempo, per-role onset rates,
+   syncopation index, pulse clarity, LUFS, centroid, harmonic rhythm, novelty events. This is
+   what the system can claim to **control**. Code: a `features.py` registry used by the contract
+   and the trace.
+2. **Perceptual predictions (versioned models fitted to listener ratings).** Predicted perceived
+   energy and predicted groove, each with its validity statistics. They are hypotheses, and are
+   labelled as such wherever the controller uses them. Code: `perceptual_models/<version>.json`.
+3. **Physiological responses (HR, HRV).** Measured in experiments; never an input to the
+   generator.
+
+**How to validate.** Use within-genre factorial stimuli (tempo x syncopation x loudness x
+density). Rate them for perceived energy, EGQ urge-to-move and pleasure, felt arousal (SAM) and
+liking, and fit mixed models to estimate the couplings. Then run open-loop (yoked) physiological
+sessions. Only after that can mappings from layer 1 to layers 2 and 3 be claimed.
+
+### 3.5 Real-time biofeedback: slow structure vs fast parameters
+
+**Actual capabilities** [C][P]:
+
+- One decision per 8-bar segment (14.8–29.5 s); a 3.0 s render lead; about 1 s worst-case
+  headroom.
+- Changes happen only at segment boundaries, through a quarter-bar `tail_out` join.
+- HR is polled at 1 Hz with a 10 s median.
+
+**Assessment.** Separating slow structure from fast parameters is appropriate, with "fast"
+defined as **per segment**:
+
+| Layer | Timescale | What changes |
+|---|---|---|
+| Slowest | Session | Session plan and genre |
+| Slow | Genre material block, about 1–3 min | Material identity |
+| Fast | Per segment, 15–30 s | Intensity: layers, per-role density, velocity |
+
+Sub-segment (per-bar) adaptation is not justified yet. The HR estimate's effective bandwidth
+(10 s median) and cardiac response latencies already match segment-level updates, and shorter
+units would add more seams [Eng, consistent with the project's own timescale argument]. The real
+problem is that today's fast control action (the cell) also changes slow structure (genre and
+material).
+
+**Requirements met by the recommended architecture**:
+
+- **Real-time parameter changes.** Intensity per segment; material is unchanged within a genre
+  block.
+- **Smooth transitions.** A transition-in at the start of the incoming segment (the decision is
+  known by then); staggered entrances; session keys chosen close to the ladder neighbours'
+  keys. Same-tempo joins already keep the beat grid.
+- **Stable groove.** Tempo, kick/snare skeleton, pulse clarity and syncopation stay controlled
+  features while intensity changes.
+- **Boundary scheduling.** Segment boundaries are 8-bar phrase boundaries. Material changes
+  happen only at block boundaries.
+- **Responsiveness vs quality.** The MPC's one-rung step is kept. With wider within-genre spans
+  (phase 5), a step changes intensity instead of identity.
+- **Latency.** Speculative pre-composition (phase 6). A streaming renderer is a later option for
+  tempo ramps and sustained notes across boundaries.
+
 ---
 
 ## 4. Alternative approaches
@@ -500,7 +592,7 @@ v2c.* kept green. Numeric targets are provisional engineering targets [Eng] unle
    profile, and possibly tempo (as hiphop and rock already do). Re-measure; rebuild the ladder;
    retune the controller offline.
 3. **Rationale.** Lets the controller act mainly on intensity, with genre on a slower clock.
-   That realises the slow/fast separation (section 9 of the review).
+   That realises the slow/fast separation (section 3.5).
 4. **Files.** `composer/intensity.py`, `music_features_measured.py --table`, `ladder.py`,
    `run_pilot_zero.build_live_ladder`, `control.ControllerConfig` (rotation may become
    unnecessary).
@@ -703,6 +795,7 @@ without a construct rationale.
 ## References
 
 - Berlyne, D. E. (1971). *Aesthetics and Psychobiology*. Appleton-Century-Crofts.
+- Bernardi, L., Porta, C., & Sleight, P. (2006). Cardiovascular, cerebrovascular, and respiratory changes induced by different types of music in musicians and non-musicians. *Heart*, 92(4), 445–452.
 - Bradley, M. M. (2009). Natural selective attention: Orienting and emotion. *Psychophysiology*, 46(1), 1–11.
 - Bradley, M. M., & Lang, P. J. (1994). Measuring emotion: The Self-Assessment Manikin. *J. Behav. Ther. Exp. Psychiatry*, 25(1), 49–59.
 - Butler, M. J. (2006). *Unlocking the Groove*. Indiana University Press.
@@ -722,6 +815,7 @@ without a construct rationale.
 - Huron, D. (2006). *Sweet Anticipation*. MIT Press.
 - Hurley, B. K., Martens, P. A., & Janata, P. (2014). Spontaneous sensorimotor coupling with multipart music. *JEP: HPP*, 40(4), 1679–1696.
 - Janata, P., Tomic, S. T., & Haberman, J. M. (2012). Sensorimotor coupling in music and the psychology of the groove. *JEP: General*, 141(1), 54–75.
+- Koelsch, S., & Jäncke, L. (2015). Music and the heart. *European Heart Journal*, 36(44), 3043–3049.
 - Lerdahl, F. (2001). *Tonal Pitch Space*. Oxford University Press.
 - Longuet-Higgins, H. C., & Lee, C. S. (1984). The rhythmic interpretation of monophonic music. *Music Perception*, 1(4), 424–441.
 - Madison, G., Gouyon, F., Ullén, F., & Hörnström, K. (2011). Modeling the tendency for music to induce movement in humans. *JEP: HPP*, 37(5), 1578–1594.
