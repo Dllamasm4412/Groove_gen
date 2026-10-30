@@ -94,10 +94,38 @@ def test_finish_clip_matches_live_trim_and_fade():
     clip = bs.finish_clip(audio, tempo)
     bar = bar_duration_frames(tempo, 4, 44100)
     fade = round(bar * 0.25)
-    assert clip.shape[0] == 8 * bar + fade
-    assert np.all(clip[:8 * bar] == 1.0)                 # the bars are untouched
-    assert clip[8 * bar, 0] == pytest.approx(1.0) and abs(clip[-1, 0]) < 1e-6
-    assert np.all(np.diff(clip[8 * bar:, 0]) <= 0)       # monotone fade-out
+    n = bs.CLIP_BARS * bar
+    assert bs.CLIP_BARS == 4 and clip.shape[0] == n + fade
+    assert np.all(clip[:n] == 1.0)                       # the bars are untouched
+    assert clip[n, 0] == pytest.approx(1.0) and abs(clip[-1, 0]) < 1e-6
+    assert np.all(np.diff(clip[n:, 0]) <= 0)             # monotone fade-out
+
+
+def test_first_bars_cuts_at_the_bar_line():
+    import pretty_midi
+
+    import build_stimuli as bs
+
+    pm = pretty_midi.PrettyMIDI(initial_tempo=120.0)       # bar = 2 s
+    pm.text_events.append(pretty_midi.Text('groovegen_render gain_db=+3.00', 0.0))
+    inst = pretty_midi.Instrument(0)
+    inst.notes = [pretty_midi.Note(90, 60, 0.0, 1.0), pretty_midi.Note(90, 62, 7.5, 9.0),   # held across bar 4
+                  pretty_midi.Note(90, 64, 8.0, 8.5), pretty_midi.Note(90, 65, 12.0, 13.0)]  # bar 5 on: dropped
+    inst.pitch_bends = [pretty_midi.PitchBend(100, 7.0), pretty_midi.PitchBend(0, 8.0)]
+    pm.instruments.append(inst)
+    cut = bs.first_bars(pm, 4, 120.0)
+    assert [(n.pitch, n.start, n.end) for n in cut.instruments[0].notes] == [(60, 0.0, 1.0), (62, 7.5, 8.0)]
+    assert [b.time for b in cut.instruments[0].pitch_bends] == [7.0]
+    assert [e.text for e in cut.text_events] == ['groovegen_render gain_db=+3.00']   # Rock directive kept
+    assert len(pm.instruments[0].notes) == 4                                        # original untouched
+    with pytest.raises(ValueError):
+        bs.first_bars(pm, 4, 100.0)
+
+
+def test_stimulus_ids_depend_on_clip_length():
+    import build_stimuli as bs
+
+    assert bs.stimulus_id('main', 'pop:3', 1, 4) != bs.stimulus_id('main', 'pop:3', 1, 8)
 
 
 def test_provenance_ignores_docs_only():
@@ -127,6 +155,8 @@ def test_real_set_intact_and_complete():
         assert abs(s['master_gain_db_measured'] + 2.5) <= 0.05
         assert s['stim_seed'] == (1 if s['kind'] == 'main' else 2)
         assert s['visit_idx'] == 0
+        assert s['n_bars'] == 4 and s['segment_bars'] == 8 and s['prefix_identical_to_segment'] is True
+        assert s['duration_s'] == pytest.approx(4.25 * 240 / s['bpm'], abs=0.01)   # 4 bars + quarter-bar tail
 
 
 @needs_real

@@ -3,12 +3,18 @@ Build or verify the frozen Experiment 1 stimulus set from the locked GrooveGen
 system (pilot-zero-v2c-locked). Offline tool for the researcher; participants
 never run it, and the participant app never generates music.
 
-One stimulus per live ladder cell (27), exactly what the live runner plays as
-the first segment of a session in that cell:
+One stimulus per live ladder cell (27): the first CLIP_BARS (4) bars of what
+the live runner plays as the first segment of a session in that cell:
     --generator v2c --ladder ear --stim-seed 1, a fresh SessionSegmentSource
-    (visit 0), SymbolicSegmentRenderer.render_pm (Musyng_Kite.sf2, gain 0.8,
-    Rock presentation, -2.5 dB master), run_session_v2's trim (8 bars plus one
-    quarter-bar of release), and the live tail_out fade on that quarter bar.
+    (visit 0, an 8-bar segment), cut to its first 4 bars (notes from bar 5 on
+    dropped, notes held across the bar line end there; Rock directive kept),
+    SymbolicSegmentRenderer.render_pm (Musyng_Kite.sf2, gain 0.8, Rock
+    presentation, -2.5 dB master), run_session_v2's trim (the bars plus one
+    quarter-bar of release) and the live tail_out fade on that quarter bar.
+build checks that each clip's bars are sample-identical to the same bars of
+the full 8-bar segment's render (up to a 50 ms guard before the cut, where
+Rock's look-ahead limiter may see the cut).
+The 4-bar length is the researcher's choice (2026-10-09) to shorten sessions.
 Each cell comes from its own fresh session, so a stimulus does not depend on
 which cells were rendered before it. Practice and volume-check clips use the
 same path with stim seed 2 (material not in the main set).
@@ -64,6 +70,8 @@ PRACTICE_STIM_SEED = 2             # different material for practice / volume cl
 PRACTICE_CELLS = ('lofi:2', 'pop:4')
 VOLUME_CELL = 'pop:3'
 SAMPLE_RATE = 44100
+CLIP_BARS = 4                      # researcher decision 2026-10-09 (rc1 used the full 8-bar segment)
+PREFIX_GUARD_S = 0.05              # Rock limiter look-ahead is 2 x 20 ms
 PEAK_CEILING_DBFS = -1.0           # every stimulus must stay at or below this
 MASTER_TOLERANCE_DB = 0.05
 
@@ -118,8 +126,30 @@ def live_cells() -> tuple[list[Any], dict[str, Any]]:
                                 'n_cells': len(ladder.cells)}
 
 
-def finish_clip(audio: np.ndarray, tempo_bpm: float) -> np.ndarray:
-    """run_session_v2 trim (8 bars + one crossfade of release), then the live
+def first_bars(pm, n_bars: int, tempo_bpm: float):
+    """Copy of the segment cut at the end of bar n_bars: notes and pitch bends
+    from the cut on are dropped, notes held across it end at it. Everything
+    else (instruments, programs, text events such as the Rock directive) is
+    kept, so the bars before the cut render exactly as in the full segment."""
+    import copy
+
+    tempi = pm.get_tempo_changes()[1]
+    if len(tempi) != 1 or abs(float(tempi[0]) - tempo_bpm) > 0.01:   # MIDI stores tempo in whole microseconds per beat
+        raise ValueError(f'expected one tempo {tempo_bpm}, got {list(tempi)}')
+    cut = n_bars * 4 * 60.0 / tempo_bpm
+    eps = 1e-4
+    out = copy.deepcopy(pm)
+    for inst in out.instruments:
+        inst.notes = [n for n in inst.notes if n.start < cut - eps]
+        for n in inst.notes:
+            n.end = min(n.end, cut)
+        inst.pitch_bends = [b for b in inst.pitch_bends if b.time < cut - eps]
+        inst.control_changes = [c for c in inst.control_changes if c.time < cut - eps]
+    return out
+
+
+def finish_clip(audio: np.ndarray, tempo_bpm: float, n_bars: int = CLIP_BARS) -> np.ndarray:
+    """run_session_v2 trim (the bars + one crossfade of release), then the live
     tail_out fade (CrossfadeMixer gain_out) over that last quarter bar."""
     from crossfade import _equal_power_gains, bar_duration_frames
     from run_session_v2 import SessionConfigV2
@@ -127,7 +157,7 @@ def finish_clip(audio: np.ndarray, tempo_bpm: float) -> np.ndarray:
     cfg = SessionConfigV2()
     bar = bar_duration_frames(tempo_bpm, cfg.beats_per_bar, SAMPLE_RATE)
     fade = int(round(bar * cfg.fade_bars))
-    clip = audio[:cfg.bars_per_segment * bar + fade].astype(np.float32, copy=True)
+    clip = audio[:n_bars * bar + fade].astype(np.float32, copy=True)
     fade = min(fade, clip.shape[0])
     clip[clip.shape[0] - fade:] *= _equal_power_gains(fade)[0][:, None]
     return clip
@@ -157,8 +187,17 @@ def clip_stats(pcm: np.ndarray) -> dict[str, Any]:
     }
 
 
-def stimulus_id(kind: str, cell: str, seed: int) -> str:
-    return 's' + hashlib.sha256(f'{st.SOURCE_TAG}|{kind}|{cell}|seed{seed}'.encode()).hexdigest()[:7]
+def stimulus_id(kind: str, cell: str, seed: int, n_bars: int = CLIP_BARS) -> str:
+    """Opaque ID; includes the clip length so rc1 (8-bar) IDs never name a 4-bar clip."""
+    return 's' + hashlib.sha256(f'{st.SOURCE_TAG}|{kind}|{cell}|seed{seed}|bars{n_bars}'.encode()).hexdigest()[:7]
+
+
+def prefix_identical(clip_raw: np.ndarray, full_raw: np.ndarray, tempo_bpm: float, n_bars: int) -> bool:
+    """The clip's bars equal the full segment's bars, sample for sample, up to the guard."""
+    from crossfade import bar_duration_frames
+
+    n = n_bars * bar_duration_frames(tempo_bpm, 4, SAMPLE_RATE) - int(PREFIX_GUARD_S * SAMPLE_RATE)
+    return clip_raw.shape[0] >= n and full_raw.shape[0] >= n and np.array_equal(clip_raw[:n], full_raw[:n])
 
 
 def render_one(renderer, kind: str, genre: str, tier: int, seed: int, out_dir: Path) -> dict[str, Any]:
@@ -166,9 +205,12 @@ def render_one(renderer, kind: str, genre: str, tier: int, seed: int, out_dir: P
     from session_generator import SessionSegmentSource
     from stimulus_metrics import midi_sha256
 
-    pm, info = SessionSegmentSource(seed, develop=True).next_segment(genre, tier)   # fresh session, visit 0
+    seg, info = SessionSegmentSource(seed, develop=True).next_segment(genre, tier)   # fresh session, visit 0
     tempo = float(info['tempo_bpm'])
-    clip = finish_clip(renderer.render_pm(pm), tempo)
+    pm = first_bars(seg, CLIP_BARS, tempo)
+    raw = renderer.render_pm(pm)
+    same = prefix_identical(raw, renderer.render_pm(seg), tempo, CLIP_BARS)
+    clip = finish_clip(raw, tempo)
     ref = finish_clip(renderer._render_pm_to_audio(pm, master=False), tempo)
     cell = f'{genre}:{tier}'
     sid = stimulus_id(kind, cell, seed)
@@ -176,9 +218,10 @@ def render_one(renderer, kind: str, genre: str, tier: int, seed: int, out_dir: P
     _write_wav(path, clip, SAMPLE_RATE)
     row = {
         'stimulus_id': sid, 'kind': kind, 'file': path.name, 'cell': cell, 'genre': genre, 'tier': tier,
-        'bpm': tempo, 'n_bars': 8, 'stim_seed': seed, 'visit_idx': info['visit_idx'],
+        'bpm': tempo, 'n_bars': CLIP_BARS, 'segment_bars': 8, 'stim_seed': seed, 'visit_idx': info['visit_idx'],
         'gen_version': info['gen_version'], 'dev_version': info.get('dev_version'),
-        'midi_sha256': midi_sha256(pm), 'audio_sha256': st.file_sha256(path),
+        'segment_midi_sha256': midi_sha256(seg), 'midi_sha256': midi_sha256(pm),
+        'prefix_identical_to_segment': same, 'audio_sha256': st.file_sha256(path),
         **clip_stats(read_pcm16(path)),
         'master_gain_db': MASTER_GAIN_DB,
         'master_gain_db_measured': round(_rms_db(clip) - _rms_db(ref), 3),
@@ -188,6 +231,8 @@ def render_one(renderer, kind: str, genre: str, tier: int, seed: int, out_dir: P
 
 def level_problems(row: dict[str, Any], master_gain_db: float) -> list[str]:
     sid, out = row['stimulus_id'], []
+    if not row['prefix_identical_to_segment']:
+        out.append(f'{sid}: clip bars differ from the full segment render')
     if row['n_full_scale']:
         out.append(f"{sid}: {row['n_full_scale']} full-scale samples")
     if row['peak_dbfs'] > PEAK_CEILING_DBFS:
@@ -231,7 +276,8 @@ def render_all(out_dir: Path) -> tuple[list[dict[str, Any]], dict[str, Any], dic
     from session_generator import SessionSegmentSource
     render_info = {
         'sample_rate': SAMPLE_RATE, 'format': 'PCM 16-bit stereo WAV, no metadata chunks',
-        'n_bars': 8, 'tail': '0.25 bar of release, live tail_out equal-power fade',
+        'n_bars': CLIP_BARS, 'clip': f'first {CLIP_BARS} of the 8 bars of the segment (MIDI cut at the bar line)',
+        'tail': '0.25 bar of release, live tail_out equal-power fade',
         'renderer': 'SymbolicSegmentRenderer.render_pm (gain 0.8)', 'master_gain_db': MASTER_GAIN_DB,
         'peak_ceiling_dbfs': PEAK_CEILING_DBFS, 'loudness_normalization': 'none (locked levels)',
         'generator': SessionSegmentSource(STIM_SEED, develop=True).config(),
@@ -274,7 +320,7 @@ def cmd_verify(stim_dir: Path) -> int:
     with tempfile.TemporaryDirectory() as td:
         rows, _, _ = render_all(Path(td))
     want = {s['stimulus_id']: s for s in manifest['stimuli']}
-    bad = [f"{r['stimulus_id']}: {k}" for r in rows for k in ('midi_sha256', 'audio_sha256')
+    bad = [f"{r['stimulus_id']}: {k}" for r in rows for k in ('segment_midi_sha256', 'midi_sha256', 'audio_sha256')
            if want.get(r['stimulus_id'], {}).get(k) != r[k]]
     if bad or set(want) != {r['stimulus_id'] for r in rows}:
         raise SystemExit('regeneration differs from the frozen set:\n  ' + '\n  '.join(bad or ['stimulus IDs differ']))

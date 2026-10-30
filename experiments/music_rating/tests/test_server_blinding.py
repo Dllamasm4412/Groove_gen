@@ -57,6 +57,9 @@ def served(new_session):
 
 
 def rate(c: Client, seq: int):
+    if json.loads(c.get('/api/state')[2]).get('break'):
+        assert c.post('/api/play_start', {'seq': seq})[0] == 409           # no clip before the break ends
+        assert c.post('/api/break_done')[0] == 200
     assert c.post('/api/play_start', {'seq': seq})[0] == 200
     assert c.post('/api/play_end', {'seq': seq, 'client': {'played_s': 0.05}})[0] == 200
     return c.post('/api/response', {'seq': seq, 'danceability': 55, 'calming': 45,
@@ -115,7 +118,9 @@ def test_page_ui_requirements():
     for slider in ('danceability', 'calming'):
         tag = re.search(rf'<input[^>]*id="{slider}"[^>]*>', html, re.S).group(0)
         assert 'class="vas untouched"' in tag and 'min="0"' in tag and 'max="100"' in tag
-    assert re.search(r'<button id="submit" disabled>', html)                # Continue starts disabled
+    assert re.search(r'<button id="submit"[^>]*\bdisabled>', html)          # Continue starts disabled
+    assert len(re.findall(r'<div class="ticks" aria-hidden="true">((?:<span></span>){6})</div>', html)) == 2
+    assert 'id="break"' in html and 'id="break-next"' in html
     assert re.search(r'<div id="ratings" hidden>', html)                    # sliders hidden until the clip ends
     assert 'untouched::-webkit-slider-thumb { opacity: 0; }' in html        # no visible default answer
     assert 'controls' not in re.sub(r'<script.*?</script>', '', html, flags=re.S)  # no audio controls
@@ -164,14 +169,16 @@ def test_localhost_only(new_session):
 def test_startup_refuses_altered_stimuli(tmp_path, stim_dir, capsys):
     m, _ = st.load_manifest(stim_dir)
     (stim_dir / m['stimuli'][0]['file']).write_bytes(b'RIFF')
-    rc = app.main(['--participant', 'P001', '--data-root', str(tmp_path / 'd'), '--stim-dir', str(stim_dir)])
+    rc = app.main(['--participant', 'P001', '--data-root', str(tmp_path / 'd'), '--stim-dir', str(stim_dir),
+                   '--port', '0'])
     assert rc == 2 and 'integrity' in capsys.readouterr().err
     assert not (tmp_path / 'd' / 'P001').exists()
 
 
 def test_startup_refuses_overwrite(tmp_path, stim_dir, capsys, new_session):
     new_session('P001')
-    rc = app.main(['--participant', 'P001', '--data-root', str(new_session.root), '--stim-dir', str(stim_dir)])
+    rc = app.main(['--participant', 'P001', '--data-root', str(new_session.root), '--stim-dir', str(stim_dir),
+                   '--port', '0'])
     assert rc == 2 and 'already exists' in capsys.readouterr().err
 
 

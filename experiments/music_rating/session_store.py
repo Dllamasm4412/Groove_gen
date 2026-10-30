@@ -32,12 +32,13 @@ from typing import Any, Optional
 
 import stimuli as st
 
-EXPERIMENT_VERSION = 'music-rating-1.0'
+EXPERIMENT_VERSION = 'music-rating-1.1'
 SEED_SALT = 'groovegen-music-rating-v1'
 CODE_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_-]{0,31}$')
 STAGES = ('welcome', 'instructions', 'volume', 'trials', 'done')
 MAX_ABS_RANK_CORR = 0.5          # reject orders too close to ladder order (or its reverse)
 MAX_SHUFFLES = 100_000
+BREAK_AFTER_MAIN = 14            # optional rest screen after this many experimental trials (0 = none)
 
 RATING_FIELDS = (
     'participant_code', 'session_id', 'trial_index', 'presentation_order', 'stimulus_id',
@@ -187,6 +188,7 @@ class Session:
             'session_start_utc': now, 'session_end_utc': None, 'status': 'in_progress',
             'stage': 'welcome', 'trials': trials, 'next_seq': 0, 'current': None,
             'volume_plays': 0, 'resumed_utc': [], 'app': app_info or {},
+            'break_after_main': BREAK_AFTER_MAIN, 'break_done_utc': None,
         }
         for name in ('ratings.csv', 'practice.csv'):
             with (folder / name).open('x', encoding='utf-8', newline='') as f:
@@ -315,7 +317,25 @@ class Session:
                 'total': len(same_kind), 'first_main': t['kind'] == 'main' and t['presentation_order'] == 1,
                 'plays': cur.get('plays', 0), 'ended': bool(cur.get('ended')),
             }
+            out['break'] = self._break_pending()
         return out
+
+    def _break_pending(self) -> bool:
+        """True on the trial after the break point until the participant continues
+        (sessions created before the break existed have no break)."""
+        m = self.meta
+        n = m.get('break_after_main') or 0
+        if not n or m.get('break_done_utc') or m['stage'] != 'trials':
+            return False
+        t = m['trials'][m['next_seq']]
+        return t['kind'] == 'main' and t['presentation_order'] == n + 1
+
+    def break_done(self, client: Optional[dict] = None) -> None:
+        if not self._break_pending():
+            raise Conflict('no break now')
+        self.meta['break_done_utc'] = utc_now()
+        self._event('break_end', next_seq=self.meta['next_seq'], client=client)
+        self._save()
 
     # ---- stage flow ----------------------------------------------------------
 
@@ -362,6 +382,8 @@ class Session:
 
     def play_start(self, seq: Any, client: Optional[dict] = None) -> None:
         t = self._current_trial(seq)
+        if self._break_pending():
+            raise Conflict('continue from the break first')
         cur = self.meta['current'] or {'seq': t['seq'], 'plays': 0, 'ended': False}
         if cur['ended']:
             raise Conflict('this clip has already been played')
@@ -437,6 +459,6 @@ class Session:
         self._save()
         return row
 
-    def stop(self) -> None:
-        self._event('server_stopped', stage=self.meta['stage'], next_seq=self.meta['next_seq'])
+    def stop(self, reason: str | None = None) -> None:
+        self._event('server_stopped', reason=reason, stage=self.meta['stage'], next_seq=self.meta['next_seq'])
         (self.dir / self.LOCK).unlink(missing_ok=True)

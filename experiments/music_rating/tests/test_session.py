@@ -253,3 +253,24 @@ def test_one_server_per_session(new_session, loaded):
     assert 'stale_lock_removed' in (sess.dir / 'events.jsonl').read_text()
     again.stop()
     assert not lock.exists()
+
+
+def test_midpoint_break(new_session):
+    sess = new_session()
+    run_to_trials(sess)
+    with pytest.raises(ss.Conflict):
+        sess.break_done()                                    # not at the break yet
+    for _ in range(2 + ss.BREAK_AFTER_MAIN):
+        assert not sess.public_state()['break']
+        do_trial(sess)
+    assert sess.public_state()['break']
+    assert sess.public_state()['trial']['number'] == ss.BREAK_AFTER_MAIN + 1
+    seq = sess.meta['next_seq']
+    with pytest.raises(ss.Conflict, match='break'):
+        sess.play_start(seq)
+    sess.break_done()
+    assert not sess.public_state()['break'] and sess.meta['break_done_utc']
+    with pytest.raises(ss.Conflict):
+        sess.break_done()
+    do_trial(sess)
+    assert '"break_end"' in (sess.dir / 'events.jsonl').read_text()

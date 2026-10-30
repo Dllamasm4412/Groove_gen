@@ -13,7 +13,9 @@ Usage (from the repository root; the researcher enters the participant code):
     .venv/bin/python experiments/music_rating/app.py --participant P001
     .venv/bin/python experiments/music_rating/app.py --participant P001 --resume
     .venv/bin/python experiments/music_rating/app.py --participant P001 --withdraw [--note TEXT]
-then open http://127.0.0.1:8765/ in a browser and switch it to full screen.
+The page (http://127.0.0.1:8765/) opens in Chrome automatically (--no-browser to
+skip); switch it to full screen. start_study.command wraps this for operators
+and works from any folder.
 Data: study_data/music_rating/<code>/ (gitignored). Ctrl+C stops the server;
 the session can be resumed at the first unrated trial. --withdraw marks an
 in-progress session withdrawn (status only; no data is deleted or changed).
@@ -23,6 +25,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
+import signal
 import subprocess
 import sys
 import threading
@@ -109,6 +113,7 @@ class Handler(BaseHTTPRequestHandler):
         routes = {
             '/api/advance': lambda: sess.advance(body.get('from'), client),
             '/api/volume_play': lambda: sess.volume_played(client),
+            '/api/break_done': lambda: sess.break_done(client),
             '/api/play_start': lambda: sess.play_start(body.get('seq'), client),
             '/api/play_end': lambda: sess.play_end(body.get('seq'), client),
             '/api/response': lambda: sess.submit(body.get('seq'), body),
@@ -133,6 +138,23 @@ def make_server(session: ss.Session | None, port: int = 8765, host: str = '127.0
     server.session = session
     server.lock = threading.Lock()
     return server
+
+
+class Stopped(BaseException):
+    """A termination signal (the terminal window closed, kill) ends serve_forever."""
+
+
+def _raise_stopped(signum, frame):
+    raise Stopped(signal.Signals(signum).name)
+
+
+def open_browser(url: str) -> None:
+    """Open the page in Chrome if installed, else the default browser."""
+    if sys.platform == 'darwin' and Path('/Applications/Google Chrome.app').exists():
+        subprocess.run(['open', '-a', 'Google Chrome', url], check=False)
+        return
+    import webbrowser
+    webbrowser.open(url)
 
 
 def app_info() -> dict:
@@ -163,6 +185,7 @@ def main(argv=None) -> int:
     ap.add_argument('--data-root', type=Path, default=DATA_ROOT)
     ap.add_argument('--stim-dir', type=Path, default=st.STIM_DIR)
     ap.add_argument('--port', type=int, default=8765)
+    ap.add_argument('--no-browser', action='store_true', help='do not open the page in a browser')
     args = ap.parse_args(argv)
     try:
         if args.withdraw:
@@ -186,18 +209,34 @@ def main(argv=None) -> int:
         return 2
     server.session = sess
     m = sess.meta
+    url = f'http://127.0.0.1:{server.server_address[1]}/'
     print(f"participant {m['participant_code']}  session {m['session_id']}  stage {m['stage']}  "
           f"next trial {m['next_seq'] + 1}/{len(m['trials'])}")
     print(f'data: {sess.dir}')
-    print(f'open http://127.0.0.1:{server.server_address[1]}/ in the browser (full screen); Ctrl+C to stop', flush=True)
+    print(f'study page: {url}  (switch the browser to full screen)')
+    print('KEEP THIS WINDOW OPEN while the study runs. Ctrl+C here stops the study server;')
+    print('to copy text from this window use Cmd+C, not Ctrl+C.', flush=True)
+    signal.signal(signal.SIGINT, signal.default_int_handler)   # Ctrl+C, even if the parent ignored SIGINT
+    for sig in (signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, _raise_stopped)
+    reason = None
     try:
+        if not args.no_browser:
+            threading.Timer(0.5, open_browser, (url,)).start()
         server.serve_forever()
     except KeyboardInterrupt:
-        pass
+        reason = 'SIGINT (Ctrl+C)'
+    except Stopped as exc:
+        reason = str(exc)
+    except BaseException as exc:
+        reason = f'error: {exc!r}'
+        raise
     finally:
         with server.lock:
-            sess.stop()
+            sess.stop(reason)
         server.server_close()
+        if reason:
+            print(f'\nstudy server stopped: {reason}')
     print(f"stopped: status {m['status']}, {m['next_seq']}/{len(m['trials'])} trials saved")
     return 0
 

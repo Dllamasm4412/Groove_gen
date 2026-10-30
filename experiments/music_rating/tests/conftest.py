@@ -95,6 +95,8 @@ def run_to_trials(sess) -> None:
 
 def do_trial(sess, d=40, c=60):
     seq = sess.meta['next_seq']
+    if sess.public_state().get('break'):
+        sess.break_done()
     sess.play_start(seq)
     sess.play_end(seq, {'played_s': 0.05})
     return sess.submit(seq, {'danceability': d, 'calming': c, 'touched_danceability': True,
