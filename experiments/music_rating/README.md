@@ -2,12 +2,35 @@
 
 Standalone listening-and-rating study built on the locked GrooveGen release
 `pilot-zero-v2c-locked`. The app uses no PPG, HR, haptics or controller, and generates no
-music during sessions. Participants rate 27 frozen clips (one per live ladder cell) on two
-0-100 scales. Only the verbal end anchors are shown on screen.
+music during sessions.
+- Participants rate 27 frozen clips, one per live ladder cell, on two 0-100 scales.
+- Each clip is the first 4 bars of the cell's first segment, about 8-16 s long.
+- On screen, each slider shows only its verbal end anchors and six unlabeled tick marks.
+- An optional break screen appears after main trial 14.
+
+rc1 used the full 8-bar segments. That set is archived as
+`music-rating-stimuli-fdcc3927179a.tar`, and its clip IDs differ from the 4-bar set.
 
 The ratings describe each clip as the system plays it, loudness included. The clips keep the
 locked system's levels and are not normalized. Do not report the ratings as measurements of
 composition independent of loudness.
+
+## Remote version (Qualtrics)
+
+The remote study runs on Qualtrics. Everything for it is in `qualtrics/`:
+
+| File | Purpose |
+|---|---|
+| `QUALTRICS_BUILD.md` | Build, import, checks and pre-launch tests |
+| `prepare_qualtrics.py` | Sound files, link check, and the importable survey file (`qsf`) |
+| `build_qsf.py` | The survey itself: blocks, questions, wording, loops and flow |
+| `headphone_check.py` | Huggins-pitch headphone screen (optional; not in the current survey) |
+| `import_qualtrics.py` | Qualtrics CSV export to analysis tables with quality flags |
+| `analyze_ratings.py` | Analysis of all exports: per-clip and per-genre tables, ladder correlations, figures, report |
+| `IRB_SUMMARY_REMOTE.md` | IRB support summary for the remote procedure |
+
+The clips are the same frozen 4-bar set. The local app below remains available for in-lab
+sessions.
 
 ## Before a study day
 
@@ -22,18 +45,35 @@ the hashes every time it starts.
 
 ## Running a session
 
+Double-click `experiments/music_rating/start_study.command` in Finder, or run it from any folder:
+
 ```
-.venv/bin/python3.12 experiments/music_rating/app.py --participant P001
+~/Desktop/PhD/groove_gen_project/experiments/music_rating/start_study.command P002
 ```
 
-1. Open `http://127.0.0.1:8765/` and switch the browser to full screen.
-2. Set the system output to the study headphones.
-3. The participant sets the volume on the setup screen and is told not to change it afterwards.
+1. The launcher asks for the participant code if you didn't give one. If that code already has
+   an unfinished session, it offers to resume it.
+2. It opens the study page in Chrome (`http://127.0.0.1:8765/`). Switch Chrome to full screen.
+3. Set the system output to the study headphones. The participant sets the volume on the setup
+   screen and is told not to change it afterwards.
 
-Ctrl+C stops the server.
+**Keep the Terminal window open until the participant has finished.** The page works only while
+that window is running:
+- closing the window, or pressing Ctrl+C in it, stops the study;
+- to copy text from that window, use Cmd+C.
+
+Each stop is logged with its reason in `events.jsonl`. The participant's answers so far are kept,
+and the session can be resumed.
+
+The app can also be run directly, from the repository root:
+`.venv/bin/python3.12 experiments/music_rating/app.py --participant P002`. Add `--no-browser`
+to skip opening Chrome.
 
 - **Interrupted session:** `--participant P001 --resume` continues at the first unrated trial.
   An interrupted clip replays from the start, and the restart is logged as `n_plays` = 2.
+  The same applies to a clip paused mid-play, for example by AirPods ear detection or a media
+  key: the participant presses Play again and the clip starts over. Each pause is logged in
+  `events.jsonl` with the page's visibility and focus at that moment.
 - **Withdrawal:** `--participant P001 --withdraw --note "..."` marks the session withdrawn. It
   deletes and changes no data. Whether the data are kept, excluded or deleted follows the final
   consent form; do that step by hand.

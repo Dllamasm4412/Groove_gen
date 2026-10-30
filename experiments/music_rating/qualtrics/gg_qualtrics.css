@@ -1,0 +1,18 @@
+/* GrooveGen Experiment 1 (remote, Qualtrics): player and slider styling. */
+.gg-player { text-align: center; padding: 18px 0 8px; }
+.gg-title { font-weight: 600; margin: 0 0 10px; }
+.gg-msg { color: #52606d; min-height: 1.6em; margin: 0 0 18px; }
+.gg-play { font: inherit; font-size: 20px; font-weight: 500; min-width: 200px; min-height: 60px; padding: 8px 28px;
+           border: 0; border-radius: 32px; background: #2f5d8a; color: #fff; cursor: pointer;
+           display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.gg-play:hover:not(:disabled) { background: #264d73; }
+.gg-play:disabled { background: #cbd2d9; color: #f5f7fa; cursor: default; }
+.gg-play:focus-visible { outline: 4px solid #e0a000; outline-offset: 4px; }
+.gg-meter { height: 12px; max-width: 480px; margin: 22px auto 0; background: #e4e7eb; border-radius: 6px; overflow: hidden; }
+.gg-meter > div { height: 100%; width: 0; background: #7fa7cc; border-radius: 6px; }
+.gg-intervals { display: flex; justify-content: center; gap: 18px; margin: 0 0 20px; }
+.gg-intervals span { width: 56px; height: 56px; line-height: 56px; border-radius: 50%; background: #e4e7eb;
+                     color: #52606d; font-size: 22px; font-weight: 600; transition: background .1s; }
+.gg-intervals span.on { background: #2f5d8a; color: #fff; }
+/* Slider handle hidden until touched (GG.slider). Selectors cover the classic slider markup. */
+.gg-untouched .handle, .gg-untouched .ui-slider-handle, .gg-untouched .slider-handle { opacity: 0 !important; }

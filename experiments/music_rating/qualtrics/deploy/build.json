@@ -1,0 +1,11 @@
+{
+ "build": "music-rating-remote-1.0+stim.af013dca2341+hp.b2c8e15e",
+ "stimulus_manifest_sha256": "af013dca2341c36c0666db5c66ccbe1840ce9aa6e1666831f4b83071599fc63a",
+ "urls_checked_by_download": true,
+ "n_sounds": 36,
+ "break_after_main": 14,
+ "base_url": "https://dllamasm4412.github.io/audio_files/",
+ "template": "GG_template.qsf",
+ "headphone_check": false,
+ "qsf_sha256": "9d887d910053d7033d65e99e87d29d1232ddb1f312e463c09f0d2ed7d5a9a7a4"
+}
