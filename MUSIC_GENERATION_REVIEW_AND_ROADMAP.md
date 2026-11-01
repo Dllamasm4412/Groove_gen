@@ -3,6 +3,14 @@
 Status: review and proposal only (2026-10-30). No source code, stimuli, ladder, tests or
 research artifacts were changed. This file is the only addition.
 
+> **Revised 2026-11-01.** `MUSIC_GENERATION_V3_ARCHITECTURE.md` supersedes the architecture
+> (sections 3.2, 5 and 6) and the roadmap of this document. The diagnosis in sections 1–2 still
+> stands. Errata (details in the revision, section 1.3):
+> 1. The phase 2 target "≤ 2/9 chord-cycle recurrence" is impossible with 3-visit blocks; at
+>    least 6/9 repeats are planned. The correct measure is unplanned cross-block recurrence
+>    (baseline 2/3).
+> 2. "40 of 58 boundaries change genre" came from a scripted path, not from the controller.
+
 **What was reviewed.** Release `pilot-zero-v2c-locked` (commit `65f2338`), which lives on
 branch `experiment-music-ratings`. It is **not** on `main` (main stops at `650e66a`), so paths
 below refer to that commit. The Experiment 1 rating study (`dc2db77`, same branch) was read
