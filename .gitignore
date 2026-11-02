@@ -79,3 +79,6 @@ groovegen_qualtrics_27_candidate_v3*/
 groovegen_qualtrics_27_candidate_v3*.zip
 # before / after audio of revised candidate excerpts (delivered, not committed)
 groovegen_v3*_revised_excerpts*.zip
+# v3 final candidate packages (audio, MIDI, survey drafts): delivered, not committed
+groovegen_qualtrics_27_final_candidate*/
+groovegen_qualtrics_27_final_candidate*.zip
