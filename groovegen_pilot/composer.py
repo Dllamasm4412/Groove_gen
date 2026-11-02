@@ -8,7 +8,8 @@ Public API (locked signature — do not change):
 
     GENRE_CFG: dict[str, dict]  — per-genre configuration (tempo range, instruments, etc.)
 
-Genres: 'calm', 'pop', 'rnb', 'latin'.
+Genres: 'calm', 'lofi', 'pop', 'rnb', 'latin', 'hiphop', 'rock' (the last two
+delegate to composer/hiphop_cell.py and composer/rock_cell.py).
 
 History
 -------
@@ -43,6 +44,9 @@ Consolidated Stage 2 composer, four iterations:
         stay in the arousal envelope Sophia's regression assumes.
       * Variants documented in _POP_DRUM_VARIANTS, _RNB_DRUM_VARIANTS,
         _LATIN_DRUM_VARIANTS below.
+  - v1.5 latin closed hi-hat (2026-09-25): latin had no hi-hat at any tier
+    and measured below its neighbours on the ladder; adds quarter / 8th /
+    8th + 16th-pickup hats by density. All other latin notes unchanged.
 
 Verified on bank_v1: 108 segments generated, density spread ~68-78% across
 d=0.3/0.6/0.9 for all four genres. Bank_v1 was generated with pre-v1.1 rules;
@@ -110,6 +114,40 @@ GENRE_CFG: dict[str, dict] = {
         instruments={'nylon_guitar': 24, 'bass': 33, 'other': 0},
         include_drums=True, drum_program=0,
         notes_per_sec_target=4.6,
+    ),
+    # hiphop and rock delegate to the frozen cell modules (composer/*_cell.py).
+    # Those cells derive their internal tier from tempo, so tier_tempo gives
+    # the per-tier tempo (copied from the cell's _TIER_TEMPO) for the session
+    # loop. velocity_boost=0: the cells are tuned without the +12 boost.
+    'hiphop': dict(
+        strategy='cell',
+        tempo_default=90, tempo_range=(85, 96),
+        tier_tempo={1: 85, 2: 87, 3: 90, 4: 93, 5: 96},
+        key_signature='minor (seeded)',
+        instruments={},  # set by composer/hiphop_cell.py (piano, bass, lead)
+        include_drums=True, drum_program=0,
+        notes_per_sec_target=4.0,
+        velocity_boost=0,
+    ),
+    'rock': dict(
+        strategy='cell',
+        tempo_default=120, tempo_range=(110, 130),
+        tier_tempo={1: 110, 2: 115, 3: 120, 4: 125, 5: 130},
+        key_signature='major (seeded)',
+        instruments={},  # set by composer/rock_cell.py (guitar, bass)
+        include_drums=True, drum_program=0,
+        notes_per_sec_target=4.8,
+        velocity_boost=0,
+        # Presentation only, composition unchanged (developer listening,
+        # 2026-10-05; V2_CONTEXT.md "Rock timbre / mix calibration"): drum
+        # velocities x1.20 (accents kept, clamped 1..127), and a fixed Rock
+        # output gain per tier that the renderer applies after a float render,
+        # followed by a fixed peak limiter (see render_directive).
+        drum_velocity_scale=1.20,
+        # rock:1 +4 dB chosen by ear (hiphop2 -> rock1 -> latin1); tiers 2-5 keep
+        # the same LUFS offset over their live neighbours (+3.1 LU), rounded
+        # to 0.5 dB, rock:5 not cut.
+        render_gain_db={1: 4.0, 2: 3.0, 3: 3.0, 4: 1.5, 5: 0.0},
     ),
 }
 
@@ -800,6 +838,19 @@ def _gen_latin(tempo_bpm, duration_bars, seed, cfg, density):
             t = bar_start + beat_off * beat_duration
             drums.notes.append(pretty_midi.Note(velocity=95, pitch=36, start=t, end=t + 0.1))
 
+        # v1.5 closed hi-hat time-keeper (latin had none at any tier):
+        # quarters (d<0.25), 8ths, 8ths + 16th pickups (d>=0.8); velocity
+        # rises with density. No rng draws, so every other note is unchanged.
+        hat_vel = int(round(50 + 20 * density))
+        hat_steps = [0, 4, 8, 12] if density < 0.25 else list(range(0, 16, 2))
+        if density >= 0.8:
+            hat_steps += [7, 15]
+        for step in sorted(hat_steps):
+            t = bar_start + step * sixteenth
+            drums.notes.append(pretty_midi.Note(
+                velocity=hat_vel - (8 if step % 4 else 0), pitch=42,
+                start=t, end=t + 0.05))
+
         # Congas / auxiliary percussion — variant + density scaled
         if density < 0.5:
             # d<0.5: beat-level only (4 congas per bar) — same across variants
@@ -904,12 +955,64 @@ def _gen_lofi(tempo_bpm, duration_bars, seed, cfg, density):
     return pm
 
 
+def _score_to_pm(score) -> pretty_midi.PrettyMIDI:
+    """music21 Score -> temporary MIDI -> PrettyMIDI (one direction only)."""
+    import tempfile
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as td:
+        midi_path = Path(td) / 'cell.mid'
+        score.write('midi', fp=str(midi_path))
+        return pretty_midi.PrettyMIDI(str(midi_path))
+
+
+def _gen_hiphop(tempo_bpm, duration_bars, seed, cfg, density):
+    # Lazy import: composer/__init__.py executes this file, so a top-level
+    # import of the package's cell modules would be circular.
+    from composer.hiphop_cell import generate_segment_hiphop_adapter
+    return _score_to_pm(generate_segment_hiphop_adapter(
+        'hiphop', tempo_bpm, density, duration_bars, seed))
+
+
+def _gen_rock(tempo_bpm, duration_bars, seed, cfg, density):
+    from composer.rock_cell import generate_segment_rock_adapter
+    pm = _score_to_pm(generate_segment_rock_adapter(
+        'rock', tempo_bpm, density, duration_bars, seed))
+    scale = cfg.get('drum_velocity_scale', 1.0)
+    for inst in pm.instruments:
+        if inst.is_drum and scale != 1.0:
+            for note in inst.notes:
+                note.velocity = max(1, min(127, int(round(note.velocity * scale))))
+    # The cell picks its tier as the nearest tier tempo; the gain follows it.
+    tier = min(cfg['tier_tempo'], key=lambda t: abs(cfg['tier_tempo'][t] - tempo_bpm))
+    pm.text_events.append(pretty_midi.Text(
+        f"{RENDER_DIRECTIVE} gain_db={cfg['render_gain_db'][tier]:+.2f}", 0.0))
+    return pm
+
+
+# Text event that asks the renderer for the float + gain + limiter path. It
+# travels with the MIDI, so live and audition renders treat a segment the same
+# way; MIDI without it renders as before. Energy measurement and certification
+# drop it (music_features_measured.energy_audio): the gain is a loudness match
+# by ear, not energy.
+RENDER_DIRECTIVE = 'groovegen_render'
+
+
+def render_directive(pm: pretty_midi.PrettyMIDI) -> float | None:
+    """Output gain (dB) requested by the segment, or None for the plain render."""
+    for ev in pm.text_events:
+        if ev.text.startswith(RENDER_DIRECTIVE + ' gain_db='):
+            return float(ev.text.split('=', 1)[1])
+    return None
+
+
 _GENERATORS = {
-    'calm':  _gen_calm,
-    'lofi':  _gen_lofi,
-    'pop':   _gen_pop,
-    'rnb':   _gen_rnb,
-    'latin': _gen_latin,
+    'calm':   _gen_calm,
+    'lofi':   _gen_lofi,
+    'pop':    _gen_pop,
+    'rnb':    _gen_rnb,
+    'latin':  _gen_latin,
+    'hiphop': _gen_hiphop,
+    'rock':   _gen_rock,
 }
 
 # Velocity boost applied to all melodic (non-drum) tracks post-generation.
@@ -926,7 +1029,7 @@ def generate_segment(genre: str, tempo_bpm: int | None = None,
 
     Parameters
     ----------
-    genre : {'calm', 'pop', 'rnb', 'latin'}
+    genre : {'calm', 'lofi', 'pop', 'rnb', 'latin', 'hiphop', 'rock'}
     tempo_bpm : int | None
         Clamped to the genre's tempo_range. If None, uses genre's tempo_default.
     density : float in [0, 1]
@@ -937,7 +1040,7 @@ def generate_segment(genre: str, tempo_bpm: int | None = None,
         RNG seed — same seed produces bit-identical MIDI.
     velocity_boost : int | None
         Added to every non-drum note's velocity (clamped at 127).
-        None uses DEFAULT_VELOCITY_BOOST.
+        None uses the genre's cfg['velocity_boost'], else DEFAULT_VELOCITY_BOOST.
 
     Returns
     -------
@@ -954,7 +1057,9 @@ def generate_segment(genre: str, tempo_bpm: int | None = None,
     pm = _GENERATORS[genre](tempo_bpm, duration_bars, seed, cfg, density)
 
     # Post-gen velocity boost (drums untouched)
-    boost = DEFAULT_VELOCITY_BOOST if velocity_boost is None else velocity_boost
+    if velocity_boost is None:
+        velocity_boost = cfg.get('velocity_boost', DEFAULT_VELOCITY_BOOST)
+    boost = velocity_boost
     if boost != 0:
         for inst in pm.instruments:
             if inst.is_drum:

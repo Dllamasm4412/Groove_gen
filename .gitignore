@@ -46,8 +46,22 @@ groovegen_pilot/sessions/*.csv
 
 # PPG recording data
 **/rr_recordings/*.csv
+new_biofeedback/ppg_live_recordings/
 
 # OS/editor cruft
 *.swp
 *~
 Thumbs.db
+
+# Experiment 1 (music rating): frozen stimulus audio (regenerated and verified
+# against the committed manifest) and participant data
+experiments/music_rating/stimuli/*.wav
+study_data/
+experiments/music_rating/qualtrics/deploy/upload/
+
+# Raw Qualtrics exports (contain IP addresses and locations)
+surveys/
+
+# Qualtrics survey files (contain account and survey IDs; repository is public)
+experiments/music_rating/qualtrics/template/
+experiments/music_rating/qualtrics/deploy/*.qsf

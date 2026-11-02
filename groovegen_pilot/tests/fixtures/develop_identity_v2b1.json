@@ -1,0 +1,4417 @@
+{
+ "default": {
+  "calm:1:v0": "49eb568191affbda27ebc3cc83d0af4a021c36975139da972beb24f640c67388",
+  "calm:1:v1": "916189d491e262306fd4f915db00e594669d1838f382b126c3604f0212be6b02",
+  "calm:1:v2": "8e8893842a0a2face8cb4f74966a554a6b631ae217e02304e87d846d264907c1",
+  "calm:1:v3": "eb9174cbef99cf556102be239aa6b1c4dc7f4ad57a96bcd4ca84dd749721fe7b",
+  "calm:2:v0": "cd08456a275aacc31b0a68c242c75749b764dece195eff4e8122623945869ab8",
+  "calm:2:v1": "78fd3c85d96d55b8a236a36d95196a10f7e6e7e7e9c92b45e22a5a75795eb4a7",
+  "calm:2:v2": "9f4b74841d980901bb09d6fd1a90136271286831607216077041dbde84628e80",
+  "calm:2:v3": "22fb7d87ba6e1aeef6211acd46964e4b7d6821818c8142ca1b7434b98ba86eda",
+  "calm:3:v0": "a059368fa4989bf9e9ab4c149c711cfd3b61883f58559f31d9f3a96b6527be9a",
+  "calm:3:v1": "bfeb65cf2228bdf2eb28f26a82ee33f1294e785245eccfc7448a9c6964a9a681",
+  "calm:3:v2": "5c128994c5a8a295e4d1f1a337ac03549aaaf40127b6412baff1a7188446e837",
+  "calm:3:v3": "4551dfb946dcb8592faaaa326ca17cd54c59d1146b1eace82d84599642bba048",
+  "calm:4:v0": "84a04002bcac10cbdb8e126d3d0d58842ffa5e0388679097a79d2cf4eb55774a",
+  "calm:4:v1": "4330e0190b67e26247976974f8c7ebea22e1305d6c2b02066a626bd33136af86",
+  "calm:4:v2": "bcebcc679ebe86312e7d9ac55b685abfacc482d63a2e5985717046f6d0cc6f4b",
+  "calm:4:v3": "7cabc192e6fb241c6f24d5334e2c4e4898acca1b4fddb250643ba7614b0eb943",
+  "calm:5:v0": "1d03962356114d299681752d30ddb639085032f536ab69a5ab6a7ed11d510499",
+  "calm:5:v1": "bb7a8afe73cb088e943685f3a76bcbec8f92fbe16407a2c7618ce221f07c18fc",
+  "calm:5:v2": "c93755b2d2ff653e23de45d9d7ad5b3d1b3c151f0cf443f16993cd5b295b50ef",
+  "calm:5:v3": "7379c8dc39a0cb3b1777006fb7049d043c2088ee3d2e91ab2e627583ec439544",
+  "hiphop:1:v0": "c4c21f404b322318f07fc640087d68394a8fecb41e0937b2c3b24061182fb325",
+  "hiphop:1:v1": "384d2b7f6f11baea51b106c0bfed1c4ad7df72cb70f77be754bb92392b795f3b",
+  "hiphop:1:v2": "4d9b331378bb1ca6b1e3f8f82b38abcd71991765be883cbc38bb44de229734d4",
+  "hiphop:1:v3": "f6aef70bd5fb5186a59684a16e56eacd9561a84393792392657e68b6df01ae44",
+  "hiphop:2:v0": "c728fac0f306232f028c1528a11a237cc979a9f5095b366eaf99ab005c8b2bd8",
+  "hiphop:2:v1": "e6d8e74d78236f9428cc78e5675ec1ed4725b76889c3fe175d959a5bdcb7f11a",
+  "hiphop:2:v2": "1dce2050366b3763b4460c9a334a13f51d6e57e7cabfcb4e23f26d5a519f7a22",
+  "hiphop:2:v3": "1f7d2f9bd5dc93c87252991cd4d8e7edec606c6858b66acf9044c8c6c93988d9",
+  "hiphop:3:v0": "548d2b11bc4c07f2dca2fc9791730f0b21da85c4d1ea9f4c4961a7c9e7f0d674",
+  "hiphop:3:v1": "a9f9a6c75459202a61d814a023de6371ff4c09fa603445a8970cd02718678e3f",
+  "hiphop:3:v2": "67fb9f09b276a95d7e0a02b458c3a12b3ec49c2576e3b1f42ab24a45b4fb089c",
+  "hiphop:3:v3": "9e0d2b7d7abb1b3b370b3e4abd019d27fd0460c61a0df4e12c4f1f5c862c2b16",
+  "hiphop:4:v0": "524f1bbb340a44564d0fcaa8d9f66ff1c69dd0037495a900945455b5dd05b0f4",
+  "hiphop:4:v1": "c7ef780aa135502356a168a665a781265b313a735baefbd5e4260f946720a5ab",
+  "hiphop:4:v2": "bc5eceb01218d4434bb3d2f7a1a4d275aa7efbb38050f09d54f4b91c12cf06f9",
+  "hiphop:4:v3": "2e51294bc6c601bd7c4d9f5672e55943ed2e0b46e1a57814ef8ab97846197121",
+  "hiphop:5:v0": "2a1d78547e2df9f5defd3c08260e4ad41e281e72483f670a11b272d37060123f",
+  "hiphop:5:v1": "e4ccca2a94804613d855d26f9569514d6e829c6684fef0a7b49456025383e97a",
+  "hiphop:5:v2": "86bda844cd48b1d2df060eaee696dbee765028a35e2e583a16955325476fbae3",
+  "hiphop:5:v3": "ac892d566f46ef6707aa93ef7e509ce6822e44c87911d7ee95537610d5b20eb5",
+  "latin:1:v0": "32c3259f473fba891832c9db7d43c2ea5d088216d50a1ea45b3c7b7557a4a388",
+  "latin:1:v1": "1a2818ea7124f519c6a81a850719daa005b7083ef01e0289fea9c5b89896d29d",
+  "latin:1:v2": "19aaf0a58dc808eebaa4d69e916b40b6abef5ac31280209be2ce3f701ceaf36e",
+  "latin:1:v3": "5de04c0668618f1851bae32571b15f7bbdb61430426fe62c5312a9930be716d2",
+  "latin:2:v0": "e0630bcc8c8835557a83c45153761fb36438a7715473c422158f90fc183b5420",
+  "latin:2:v1": "4b2a5e38af9f94c1614f4bd74f5eacd16c3234a4fe89bd9b1a028a553fe059dc",
+  "latin:2:v2": "9d5c00f038c0c061c964fd2702563738943e1e724a3347baaa64df9fe5be018c",
+  "latin:2:v3": "1954c6a5cd177fc3c6849e466d2522c84912668a3b345fd3a72f5f31e319aa2d",
+  "latin:3:v0": "00a3dee5de65c0a171ddbe69e4d2d469cc88cb891963972250e756c7c8c1061f",
+  "latin:3:v1": "1b124aa3a75ac1ae0fb0812cc5546330ec8abc63310c88ef3920e51b3e3f3693",
+  "latin:3:v2": "3eb61e27c3e1e19c5b383adbf98c339a1ead616708d02d9ad42ff97166cf8804",
+  "latin:3:v3": "7c6272c547582ba79f30a832b1c8216d871794006ffef5c1fb88935292ecc863",
+  "latin:4:v0": "e2735a42ad145fcd4f32488c0fa3814a3553f066c5612f2cb5a491c9dff37a16",
+  "latin:4:v1": "ff8b5a39f12d53d1111f9794b0e03d2f77ec8cd608ef9655cdb3df1e02c254e5",
+  "latin:4:v2": "a606a8fe0a29873fb14d8ea0eedfb4e9f3cc5bb5dde1a6a2814e31263a49d535",
+  "latin:4:v3": "2e7c7cbeba361911070f263b384d6917249a19f8e165eb54ddc7f06e998708be",
+  "latin:5:v0": "be72bcf1627def3ddd57535a150118998c037c691859e086c0fa21dab125dc9d",
+  "latin:5:v1": "26fd86e880f881fccf9f599d2253bdcabf04b59b5b9596fe26f2026761b134c9",
+  "latin:5:v2": "685fde08abdaeb455de4471471aeb3673a3af8296b4bc1e403c230b4030c4aa1",
+  "latin:5:v3": "2942c91e207eae0378c57feb54c56dcd4eb4d544623a0c871d5ab060266cc403",
+  "lofi:1:v0": "e47512a58148934724bdbfbdfcc0245fd6f538df49323e696a3000defb195100",
+  "lofi:1:v1": "7f5399a7bda4cb1a9716f091ee07b2b00a4660028f0637bdbb3c97f846323d3c",
+  "lofi:1:v2": "73404b862a66169089aaa5f2cdce49fc4b381b19b93b22e7b65530c26f2ceae8",
+  "lofi:1:v3": "d69a462c103a531afa7d61d2478fcb81431705dec1a19f0a34400c7952729977",
+  "lofi:2:v0": "99afe788f7996d1c621e1c1d0f973bc10bcc6717fb9e6ad058350ef920073c76",
+  "lofi:2:v1": "e82ba894b30e78b69a0d51b38103d3eb6a04ea21c2b18f9ed7998d5e5bf9b82e",
+  "lofi:2:v2": "da46b5422839a7248b63d34131e6402c737da1cff0f80c0957197c435cf071b0",
+  "lofi:2:v3": "8cbd47ff62852fa55043bd744c2b3280b7ccc2e4ef5252f8bd29c8c926db10dc",
+  "lofi:3:v0": "f5a6ba847c93c6d9921e41c3e95961d978e46f4b6644d7f82d915d7fc7f223e0",
+  "lofi:3:v1": "affcb3fc68195fb267d6c62ddccf99d0d3110da719958e0904e43b0006a82ea7",
+  "lofi:3:v2": "a2c12e809f9a94f989853e00602bb99f5252358fa709c691a357f4c86239e0e8",
+  "lofi:3:v3": "68c40c6ae51882fc49b48294c803263d1d95a986b071aeaef4d238d84ec6afcb",
+  "lofi:4:v0": "55ce9c0b658d25c6236147fae3282cdba32e5be0d3341a8cf572a432007bf7d7",
+  "lofi:4:v1": "cb9365ee2c5facee6868fa6766d655a39d102e3bf327fd671d10382567021cd4",
+  "lofi:4:v2": "6fccf68894780fd43d2ebffde93dc53e1cf7ec51360abba4759e1fee65bcde2f",
+  "lofi:4:v3": "03c72208ad08286d741661fbf3f1de2d1931df4776e77a0b6953442c0a22f27c",
+  "lofi:5:v0": "cd35c457de0271d8cc9d4130aec1df556e1c7eaf80505d9c68b6ee7f8093115e",
+  "lofi:5:v1": "172e9ecd913ef1468a3f887e8d80b41da3410c0a18c82b87ce9232ce3e627841",
+  "lofi:5:v2": "2685689452113fd9d85a65dc0f9595386c492b859664791a341109c78f3cea6e",
+  "lofi:5:v3": "9be8f669f3ccf09bd8cd2870c0d0e3beda4f5624fad8d78b9e9a40e815212e9e",
+  "pop:1:v0": "8720a9051e22e7c0b80f24ddea5e547931b74cfdbe49f6fe60f0a9fb659f84c3",
+  "pop:1:v1": "e93ffab8282f5aad8d3588459877c4cba6e3a818cd51879eba0ca4b2920828d9",
+  "pop:1:v2": "bdd36d11c48f1178507526bc25fc782144514cb444989bd456cb02151d343fab",
+  "pop:1:v3": "d16fefb9fb13943f84833c87dea7a8b393f987e9c577a0cd3100a6e65dec5211",
+  "pop:2:v0": "b03befa1005ef29ff7168597f78498f22a5bfb72c6a99c2d427f08ed328e98ab",
+  "pop:2:v1": "4a7d8c0a3875613ba91149e53ab650af045716bfec34242344a77f449ade88f4",
+  "pop:2:v2": "d7c199f958153af51071359c853bffb93edbbffeed13a1ab23bb1904d8dcf816",
+  "pop:2:v3": "7672500ed068b211652d392536534a050ff9901e621df35212c6a128a2e57947",
+  "pop:3:v0": "99835d970527bab0ba62db51d7e3595e1fffbd1791a34b62b98c240b46cbd1c8",
+  "pop:3:v1": "49693b6d89cb14522172d0e167cffe1822dd2f6e3931b437bc02964c674400bd",
+  "pop:3:v2": "7443b1beefa24b2f11075e21acc963986ac8f715c3dfe81d7da3d3e21c5b7d17",
+  "pop:3:v3": "6891d082993f14101d6b027ffb197664d140424a3ea5d95a6eb16b34c7ad0a29",
+  "pop:4:v0": "4d4997147107a9df88a5b8bf68a7d5f42abb05ae40b0455414d88105d73ccfda",
+  "pop:4:v1": "7445385becb82945bc6b5b5ac33eb313f4265f3e4c9f2d3bef476dda7ea4ac93",
+  "pop:4:v2": "bff284d5f6d2f1022a9d5b557b9816803c06c01969e842712fa8eb67199a9de5",
+  "pop:4:v3": "d824e21118c98d8e04b4420c11c41150cd82bbc7085908b3f01bc71359658400",
+  "pop:5:v0": "74c0b7aa4998c9a02380dd4d08c23554f2c46eb962c3796f261b39402bad1a59",
+  "pop:5:v1": "27f3e9ad940e46be6d2d787130f60de091ee710d5d8e353104c0585c68c75049",
+  "pop:5:v2": "ae1a3b27a16ec48daf1440d12903565d87b96fe9d9f3f369ccf2e8cc6787060e",
+  "pop:5:v3": "3f50e8db1d32793d9cf8be8f890e59224454085412337f8e69a7f3e1edc68e5d",
+  "rnb:1:v0": "947eef6e0fdea2c3d31d0dbdaef9257938975c22ed95de4ba1c56570df41284d",
+  "rnb:1:v1": "38a4f14b5dfdaf2ea5978265d2833b497b1c9f789c51c1fa48820a5190128767",
+  "rnb:1:v2": "949a3e198ec8f3511ef5a700af8a1d378f17c3f82c0c9811f3a32c754f612599",
+  "rnb:1:v3": "a46f15622129ee856b8eed724e79cd887c083f7bbff90bc354437adab66e24cd",
+  "rnb:2:v0": "09f9022bfa623d1dd8591472b58de775fc5e8c79647d93698ae3c3bb00d6d021",
+  "rnb:2:v1": "1824a6b4e54d379c6126047e6cd962b27668cac32254da2b86033cb73b14f2a1",
+  "rnb:2:v2": "9c8e2b84b435720d57efa86f7f80d7ef5308e1d0511dc0360669ed0680d3ac2d",
+  "rnb:2:v3": "130ec3383e8aeee627770cc29888e4924d14b3ec773ad434d6574dea873840f0",
+  "rnb:3:v0": "cb7667a302f6fe6b4bb4b03311d69cddb7a16056e9e64dff812b1e4b7101bc36",
+  "rnb:3:v1": "573c927feecfb852cf53dbe95103a44b8eacb9b9762f8fe00f3b36b55b2e365e",
+  "rnb:3:v2": "7f35903d239c447ecdda1601a6242fcf50eb8ff38c89e09349aee34c20ede75a",
+  "rnb:3:v3": "dce99ea20c6a87ed04278986d6e805ea61ecf10c19b1eaed61d778fcbc8ae75e",
+  "rnb:4:v0": "75d7580954dcd8bcc8806bb71693a59f6586543f617028df44a21ae10ad4d42e",
+  "rnb:4:v1": "41c34ed9ef242c02df282db82e7329d4771998ef22b07604c45dade5ebb3e83a",
+  "rnb:4:v2": "ec8dd6754cab32a0b719ce550ea7760ea82c17706622a9d00e8bcdf37d638053",
+  "rnb:4:v3": "abe6723794fb459a37b9d26f4877d9510380132abcb7e31c4597a9a377026bb2",
+  "rnb:5:v0": "d327a75e648e51a5fe0437730fe3ef65385b01024be23269231dc347c9a28e8f",
+  "rnb:5:v1": "1e79d9c02b0e957330ae424bc308d05a5722aaed36818cd434605684be011a80",
+  "rnb:5:v2": "f502667f66dff689716c8b0e48f132f277f4e1f620aa8ccf440aa392282593dd",
+  "rnb:5:v3": "e7aecd6c0cd8c0e052e1a3816fb5f5e04dc36d193d1e69ca4a3242f0765badf6",
+  "rock:1:v0": "6a1ade43efa454202fc5519b57956e4ec9f827aab58e18fc41ee67150f800869",
+  "rock:1:v1": "58443ab15f939af66856987731efe9979d2a8aef900b0f943eb663f71b3a1dd2",
+  "rock:1:v2": "2128d144234a9703f37c5dd40566c8c706835afb625a2494ac3cb7db0f507529",
+  "rock:1:v3": "d3690a8e76c449a4f691c338d668eaf70208e07c82af43349320749250e75ead",
+  "rock:2:v0": "ad86a689b00d427cbd9ddbc8cc11a811ff9facc63d7decf891c8973dd1f1c0b7",
+  "rock:2:v1": "532cd1ac8c1cddf7f3779f8ddb8999b0933d1f25ee602a3cbc0accf8190828d3",
+  "rock:2:v2": "444b764e56bcb49efd7c08c0e9a35908b2b57096fd624ddc4693214879d7f372",
+  "rock:2:v3": "b84591d03444304b28fdb1774df4c347b7908e38ced9af3ccf3be3677087914f",
+  "rock:3:v0": "338785712aa01c2f1b5b903d8b300ccba2e32ed153d1edc34216acaf3a87b551",
+  "rock:3:v1": "1d239cd9826da511493b50a5830684e1830255916984cd80bc3aad2852c21611",
+  "rock:3:v2": "6210e6a306001b08dfc6cb3077b5da03a8a51fbebd5f18f19745093dd44d2a69",
+  "rock:3:v3": "70674f11e2c7c01a50068822be9299d49503002b133f1763efda4737c99be1e2",
+  "rock:4:v0": "952ae7730b0e6367893f46a040197a31416c57a8899457edc55d9eefa8ffbbeb",
+  "rock:4:v1": "7f1f358342589212f34612ba262b16ec9d7051704dda17f642608bbe4ec41022",
+  "rock:4:v2": "23fd5130dce23ffee88e2663f07c0c0c76ed4c103c65237766a3e3fdfe0ec46c",
+  "rock:4:v3": "09a7524a01c2c2895321735c1a0c80f35255b162b2f942518314d8e33a01e8cc",
+  "rock:5:v0": "ee19f1b6eca5eedc94afabc2e4c4fd5e3b9369d3f02228271b7b651833991930",
+  "rock:5:v1": "d17882bf0b1c7a6853b6d52f977f00bd4e2771b7628094fcb7b91d1c7105e2f0",
+  "rock:5:v2": "3de9ee27a214419b35a0d9999568585bdbac290d83af4a484babce03a4c7d9a8",
+  "rock:5:v3": "76cb91d3659804343e6f495aa68cbbfb16ec6af1e7b8c862c0aa4d5e9bc4e715"
+ },
+ "hiphop": {
+  "s19:hiphop:1:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4c7ce68e",
+   "motif_ops": [
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "4c7ce68e",
+    "4c7ce68e",
+    "4c7ce68e",
+    "24e52f8d"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7ce68e",
+   "sha256": "77c654ae5f492ec9e4cff63ecb4a72965695b2658599a4ea12a0e03124477cc7"
+  },
+  "s19:hiphop:1:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "8a800ee8",
+   "motif_ops": [
+    "chord@8:-2",
+    "ending@28:+2",
+    "balance@28:+2"
+   ],
+   "motif_plan": [
+    "8a800ee8",
+    "8a800ee8",
+    "8a800ee8",
+    "8a800ee8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7ce68e",
+   "sha256": "7aec0c4aa5564f3c4ed623d7dbea7473cdb9578c0d236c97f2e9d8127c2c8964"
+  },
+  "s19:hiphop:1:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "07a5b9a9",
+   "motif_ops": [
+    "chord@8:-2",
+    "balance@12:+2"
+   ],
+   "motif_plan": [
+    "07a5b9a9",
+    "07a5b9a9",
+    "e58811ee",
+    "07a5b9a9"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "gentle",
+   "motif_theme_id": "cf2feb95",
+   "sha256": "9ba9593613e288c73ac3174b640ead349e85702716fe9d64ff8db76c4dde13ff"
+  },
+  "s19:hiphop:1:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "365e0e29",
+   "motif_ops": [
+    "ending@28:+2",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "365e0e29",
+    "365e0e29",
+    "365e0e29",
+    "07a5b9a9"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf2feb95",
+   "sha256": "473bde91e9fab90058f404aa6d447bbba55569fd87ee1930c9b43e3fda424b9b"
+  },
+  "s19:hiphop:1:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "477bb36f",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "477bb36f",
+    "477bb36f",
+    "477bb36f",
+    "5cbd63c5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7ce68e",
+   "sha256": "a81377de31aef1cafd3baceed67969a4a9b0e22ee48e62b7c657ff92bfa8fc47"
+  },
+  "s19:hiphop:1:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2f385962",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@8:-2"
+   ],
+   "motif_plan": [
+    "2f385962",
+    "2f385962",
+    "2f385962",
+    "f0929570"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2f385962",
+   "sha256": "c6e202ed7d944a17bff88b7dd4d9967803de8ffa5fa8ec2dc7687664a2c13db4"
+  },
+  "s19:hiphop:1:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ebd56978",
+   "motif_ops": [
+    "chord@12:-1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "ebd56978",
+    "ebd56978",
+    "bf7a47fb",
+    "a4dd2416"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2f385962",
+   "sha256": "f633b5ccad9d3b1a584c2b8a95134f45d1a7d6e7e2f6c5fcf149d7995bd98a49"
+  },
+  "s19:hiphop:1:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f0929570",
+   "motif_ops": [
+    "neighbor@28:-1",
+    "ending@28:+2",
+    "balance@12:+1"
+   ],
+   "motif_plan": [
+    "f0929570",
+    "f0929570",
+    "f0929570",
+    "6339cc22"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2f385962",
+   "sha256": "f48e1b02e7a0aa826642d516633fe6b3463d2081aecdca19a872feb970a835a8"
+  },
+  "s19:hiphop:1:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "63da57f8",
+   "motif_ops": [
+    "neighbor@14:-1",
+    "chord@28:+2",
+    "ending@28:+2",
+    "balance@14:+1",
+    "balance@12:-1"
+   ],
+   "motif_plan": [
+    "63da57f8",
+    "63da57f8",
+    "63da57f8",
+    "a40f51fc"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63da57f8",
+   "sha256": "493b2da44cc8d0973570e52aa5ffda2238ab0552239a3587f6ecaf1d8e19cdea"
+  },
+  "s19:hiphop:1:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "544afe91",
+   "motif_ops": [
+    "chord@28:-2",
+    "ending@28:+2",
+    "balance@28:+1"
+   ],
+   "motif_plan": [
+    "544afe91",
+    "544afe91",
+    "0e8f4f03",
+    "63da57f8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63da57f8",
+   "sha256": "749c3c2988e448cfc1c175d5a37a59e1473dc35d75ee835cc741d0fbdc507744"
+  },
+  "s19:hiphop:1:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5757c9c6",
+   "motif_ops": [
+    "neighbor@4:+1",
+    "ending@28:-1",
+    "balance@4:-2",
+    "balance@4:-2"
+   ],
+   "motif_plan": [
+    "5757c9c6",
+    "5757c9c6",
+    "5757c9c6",
+    "91dd00de"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63da57f8",
+   "sha256": "c08e9289fc81c2601562b56caefd0ae647780017576285d54fb9b9b81b44f71d"
+  },
+  "s19:hiphop:1:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cf2feb95",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "cf2feb95",
+    "cf2feb95",
+    "cf2feb95",
+    "07f6dc6c"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cf2feb95",
+   "sha256": "214fff0dea18fde7a119d9ce60af841241dfb2b591d2ac3c3770bd2e578c4c94"
+  },
+  "s19:hiphop:2:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4c7ce68e",
+   "motif_ops": [
+    "ending:none"
+   ],
+   "motif_plan": [
+    "4c7ce68e",
+    "4c7ce68e",
+    "4c7ce68e",
+    "4c7ce68e"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7ce68e",
+   "sha256": "88d7476976ceafbe710cb168cf115751599496ae75ceba19de4032b60cf017ac"
+  },
+  "s19:hiphop:2:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7fc8e8ee",
+   "motif_ops": [
+    "chord@16:+2",
+    "ending@28:+2",
+    "balance@8:-2"
+   ],
+   "motif_plan": [
+    "7fc8e8ee",
+    "7fc8e8ee",
+    "7fc8e8ee",
+    "14c7b1de"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7ce68e",
+   "sha256": "c28b564f9aac7bc000663e4ef6bb9794c16d89c5247ad5f07928b0ccfef27861"
+  },
+  "s19:hiphop:2:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4b24ab75",
+   "motif_ops": [
+    "chord@20:-1",
+    "ending@28:+1",
+    "balance@20:-2"
+   ],
+   "motif_plan": [
+    "4b24ab75",
+    "4b24ab75",
+    "4b24ab75",
+    "6ae93e7f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4b35801f",
+   "sha256": "b8f175c5347507f6da45244f8d3a10f37621b79f48d2a0f81f44b7f79c148746"
+  },
+  "s19:hiphop:2:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6ae93e7f",
+   "motif_ops": [
+    "ending@28:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "6ae93e7f",
+    "6ae93e7f",
+    "6ae93e7f",
+    "dcd07432"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4b35801f",
+   "sha256": "7ceed012b5ec9019872ac491875c9a64f6566073220c2227d37b47a3d12bb698"
+  },
+  "s19:hiphop:2:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7a5068ed",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "7a5068ed",
+    "7a5068ed",
+    "7a5068ed",
+    "7fc8e8ee"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4c7ce68e",
+   "sha256": "6f386a5610ee4ee7cc7d810bfa88fad9373762e6d9b2313719c757ec164a3d3a"
+  },
+  "s19:hiphop:2:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "21c53cd3",
+   "motif_ops": [
+    "derive_inversion@-3",
+    "ending@28:-1",
+    "balance@16:-2",
+    "balance@8:-2"
+   ],
+   "motif_plan": [
+    "21c53cd3",
+    "21c53cd3",
+    "21c53cd3",
+    "729ba0c0"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "21c53cd3",
+   "sha256": "424f842fca30f4a279cebf542f2865a11e553470b8685f41b655d1737e91432e"
+  },
+  "s19:hiphop:2:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "729ba0c0",
+   "motif_ops": [
+    "neighbor@28:-1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "729ba0c0",
+    "729ba0c0",
+    "682b8d87",
+    "9cf0ccaf"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "21c53cd3",
+   "sha256": "f483af800b15021f7c7c0c093315c7842ddafc1eca40b8baa9798089d4b4bb35"
+  },
+  "s19:hiphop:2:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "00733966",
+   "motif_ops": [
+    "ending@28:-1",
+    "ending@28:+1",
+    "balance@12:-1"
+   ],
+   "motif_plan": [
+    "00733966",
+    "00733966",
+    "00733966",
+    "55191f23"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "21c53cd3",
+   "sha256": "f11995d6c4fcd038312444f44972dfd0cfa6f30329085aa36e45564704a5351f"
+  },
+  "s19:hiphop:2:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "8a800ee8",
+   "motif_ops": [
+    "neighbor@30:+1",
+    "chord@28:+2",
+    "ending@30:-1",
+    "balance@30:-1",
+    "balance@8:-2"
+   ],
+   "motif_plan": [
+    "8a800ee8",
+    "8a800ee8",
+    "8a800ee8",
+    "8a800ee8"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "8a800ee8",
+   "sha256": "a62cddd5ea68af45dc8bdebf25fbc4cb17a97f6df3dce538a8fd574fa4ccca40"
+  },
+  "s19:hiphop:2:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "477bb36f",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "477bb36f",
+    "477bb36f",
+    "8a800ee8",
+    "5cbd63c5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "8a800ee8",
+   "sha256": "778f0314a29edf102c16b1f1e173b2cd225741df2661365f13b692700fbd513c"
+  },
+  "s19:hiphop:2:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fd29a58b",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "fd29a58b",
+    "fd29a58b",
+    "fd29a58b",
+    "477bb36f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "8a800ee8",
+   "sha256": "d8c43811d11ee87333e316394be404878f545d3964022d27cd1cafe5cc898e1f"
+  },
+  "s19:hiphop:2:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4b35801f",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "4b35801f",
+    "4b35801f",
+    "4b35801f",
+    "34036d3a"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "4b35801f",
+   "sha256": "c4f9d421a3ca30f61b27f96e946dcc4fc092cda7364deddf3184bbd736a3316e"
+  },
+  "s19:hiphop:3:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "63788e47",
+   "motif_ops": [
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "63788e47",
+    "63788e47",
+    "63788e47",
+    "0ba5d315"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "ff9b887f21e4f35e0eae2365a1eb11799daf3696471ac8f9f5eb2ec5d79fa45b"
+  },
+  "s19:hiphop:3:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ab817a8d",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "ab817a8d",
+    "ab817a8d",
+    "ab817a8d",
+    "6d7dc080"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "d7eb49f0bba7f8cf6f9e003ddba95133c563bbbf41586794afa2bb486fc1f452"
+  },
+  "s19:hiphop:3:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d78eac31",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "d78eac31",
+    "d78eac31",
+    "d78eac31",
+    "53cd6b12"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "53cd6b12",
+   "sha256": "2155f3c9bdff44d5d95aac15d97bb4857c069f6c586ed31db22e88d703bc7b07"
+  },
+  "s19:hiphop:3:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ce1b65dd",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "ce1b65dd",
+    "ce1b65dd",
+    "ce1b65dd",
+    "777539d1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "53cd6b12",
+   "sha256": "0b6ccf647de2ae757f47f9bcea89f24cf8a31610e8671cd777907e2ace71d8f3"
+  },
+  "s19:hiphop:3:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d6363784",
+   "motif_ops": [
+    "neighbor@3:-1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "d6363784",
+    "d6363784",
+    "d6363784",
+    "1b53c5cf"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "bf52588402ef652ec4cddaa9115ad0248c29cdd74663f96f71125cc53d9d3fc7"
+  },
+  "s19:hiphop:3:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "d6363784",
+   "motif_ops": [],
+   "motif_plan": [
+    "63788e47",
+    "63788e47",
+    "63788e47",
+    "63788e47"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "unchanged",
+   "motif_theme_id": "63788e47",
+   "sha256": "dc2777ed539d4a585674225a3a485792d53c9409772711d4556361494566d7e1"
+  },
+  "s19:hiphop:3:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "785f2183",
+   "motif_ops": [
+    "chord@28:+2",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "785f2183",
+    "785f2183",
+    "0ba5d315",
+    "25b76e02"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "08b78ffe15e3d07bc107e5ed0291c2f02ddc82f14dd35d6cffcd0f7614211153"
+  },
+  "s19:hiphop:3:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "dcd851b9",
+   "motif_ops": [
+    "neighbor@19:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "dcd851b9",
+    "dcd851b9",
+    "dcd851b9",
+    "d23283fb"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "6969451ef856c0d95b2846b1fd264a0df55350923b0ad3554ec6ab69549fa911"
+  },
+  "s19:hiphop:3:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "49b9444d",
+   "motif_ops": [
+    "neighbor@4:-1",
+    "sequence@0:-2",
+    "ending@28:+2",
+    "balance@7:+1",
+    "balance@3:+1"
+   ],
+   "motif_plan": [
+    "49b9444d",
+    "49b9444d",
+    "49b9444d",
+    "55acc1ee"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "49b9444d",
+   "sha256": "905c54af537422e628a6ddbe7c7bd659b0ee6ec20a45f4c63d41053882b901fb"
+  },
+  "s19:hiphop:3:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6db79e6b",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "6db79e6b",
+    "6db79e6b",
+    "63788e47",
+    "ea366ae8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "49b9444d",
+   "sha256": "b0a5fba597a37bbcfcb614640973767f4c2c432c04d05df0ba7a871132ac49af"
+  },
+  "s19:hiphop:3:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ea366ae8",
+   "motif_ops": [
+    "ending@28:+2",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "ea366ae8",
+    "ea366ae8",
+    "ea366ae8",
+    "6db79e6b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "49b9444d",
+   "sha256": "50a40a87e82baca5ac3c25f72d0ca1dcb55113b25e3024afab4ad6a34746572e"
+  },
+  "s19:hiphop:3:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "53cd6b12",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "53cd6b12",
+    "53cd6b12",
+    "53cd6b12",
+    "d78eac31"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "53cd6b12",
+   "sha256": "6ea114660f2cc8b6b1a7ebc08a6714c042775173aee55c3265c4ce3f890a606a"
+  },
+  "s19:hiphop:4:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "63788e47",
+   "motif_ops": [
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "63788e47",
+    "63788e47",
+    "63788e47",
+    "0ba5d315"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "9e97f3ae548613f460b15b92ced7bb185442dde7be5ad7a7319044a01eaccd39"
+  },
+  "s19:hiphop:4:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ab817a8d",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "ab817a8d",
+    "ab817a8d",
+    "ab817a8d",
+    "6d7dc080"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "7bc6e2f1d4e2c03388b593de242863aa8b3b84cfa7ec738d4104b3a36334ba06"
+  },
+  "s19:hiphop:4:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b6721598",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "b6721598",
+    "b6721598",
+    "b6721598",
+    "fe313945"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5060bf9a",
+   "sha256": "ae4fe543712bd96f1a01d5310f3e3ae88840c0e5ed6aefef07f2169ca9d94cfc"
+  },
+  "s19:hiphop:4:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ee1e77b8",
+   "motif_ops": [
+    "neighbor@19:+1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "ee1e77b8",
+    "ee1e77b8",
+    "ee1e77b8",
+    "97ff3482"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5060bf9a",
+   "sha256": "1169f804891a72bef5c8fcddc3b4efd4ffc81a02622a32910159722ac9368dfa"
+  },
+  "s19:hiphop:4:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6d7dc080",
+   "motif_ops": [
+    "ending@28:+2",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "6d7dc080",
+    "6d7dc080",
+    "6d7dc080",
+    "ab817a8d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "345cb178d35961a645e11e4a91cdb2ed71db57b39a9f74042fc3b38f31988aab"
+  },
+  "s19:hiphop:4:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "6a055501",
+   "motif_ops": [
+    "derive_sequence@-1",
+    "ending@30:-2",
+    "balance@20:-2",
+    "balance@16:+1"
+   ],
+   "motif_plan": [
+    "6a055501",
+    "6a055501",
+    "6a055501",
+    "9ccf1077"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "6a055501",
+   "sha256": "28cf62a96b6e8d08f3952562891e043b77844a2c31347aeb68042154adc26ff6"
+  },
+  "s19:hiphop:4:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1c56d2aa",
+   "motif_ops": [
+    "neighbor@19:+1",
+    "ending@30:-2"
+   ],
+   "motif_plan": [
+    "1c56d2aa",
+    "1c56d2aa",
+    "1c56d2aa",
+    "8bf27a55"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "6a055501",
+   "sha256": "1340aa7c533482c388c845298b92a580d6ace0934547964003192704f90f4430"
+  },
+  "s19:hiphop:4:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cfcb9afe",
+   "motif_ops": [
+    "ending@30:+1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "cfcb9afe",
+    "cfcb9afe",
+    "cfcb9afe",
+    "1c56d2aa"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "6a055501",
+   "sha256": "fdc7fd7c931b3aa607cf7ee5c665742bde35d21acad7c7085b7032b6ce72972a"
+  },
+  "s19:hiphop:4:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5ea1e981",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "chord@16:+2",
+    "ending@28:+1"
+   ],
+   "motif_plan": [
+    "5ea1e981",
+    "5ea1e981",
+    "5ea1e981",
+    "3447705f"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5ea1e981",
+   "sha256": "63a69ed676a9a529e0b35d7a92ce6608cdae58aa26014a1c1f141443208a719d"
+  },
+  "s19:hiphop:4:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5e2b68fa",
+   "motif_ops": [
+    "chord@16:-2",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "5e2b68fa",
+    "5e2b68fa",
+    "5e2b68fa",
+    "d5bda421"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5ea1e981",
+   "sha256": "1bdfb7cee78c39a0af6345722b6786212c770fec7a4c369693b876beeb681064"
+  },
+  "s19:hiphop:4:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "63788e47",
+   "motif_ops": [
+    "ending@28:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "63788e47",
+    "63788e47",
+    "63788e47",
+    "0ba5d315"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5ea1e981",
+   "sha256": "ffea8495224721ebc129b39676da3969baaac16f10760f9ca24acc331114db97"
+  },
+  "s19:hiphop:4:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5060bf9a",
+   "motif_ops": [
+    "derive_sequence@-1",
+    "ending@30:-2",
+    "balance@16:-2",
+    "balance@20:+1"
+   ],
+   "motif_plan": [
+    "5060bf9a",
+    "5060bf9a",
+    "5060bf9a",
+    "be557a27"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5060bf9a",
+   "sha256": "3c12bee753c0563f26ceffc23add96dfb195054fe561dde7a60394040e0d5747"
+  },
+  "s19:hiphop:5:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "63788e47",
+   "motif_ops": [
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "63788e47",
+    "63788e47",
+    "63788e47",
+    "0ba5d315"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "51a6d75b582d770e4b24f8253a09767003fa123127ade3273030cc7784aa2105"
+  },
+  "s19:hiphop:5:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5e2b68fa",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@28:+1"
+   ],
+   "motif_plan": [
+    "5e2b68fa",
+    "5e2b68fa",
+    "5e2b68fa",
+    "0ba5d315"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "31aacf93834022c70766fae5cbea84ce932f89693742a1d846259334106f37ba"
+  },
+  "s19:hiphop:5:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "dcc76f1a",
+   "motif_ops": [
+    "chord@3:-2",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "dcc76f1a",
+    "dcc76f1a",
+    "aebb91d4",
+    "9abb1c3d"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "aebb91d4",
+   "sha256": "c52ef0c43fada6ca4057cf010128277e0c921c978d11988888b2a8a14561d84b"
+  },
+  "s19:hiphop:5:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2be35722",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "2be35722",
+    "2be35722",
+    "2be35722",
+    "888fd6e6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "aebb91d4",
+   "sha256": "fc13ed12735ffb8421f4d82d1d97a2320996953f5458a95f2dff11d592febed9"
+  },
+  "s19:hiphop:5:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "41c7ed5f",
+   "motif_ops": [
+    "neighbor@30:+1",
+    "ending@28:+1"
+   ],
+   "motif_plan": [
+    "41c7ed5f",
+    "41c7ed5f",
+    "41c7ed5f",
+    "15e6514c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "63788e47",
+   "sha256": "275a432195666adb349bca20a8e233b67fab3f94b69a8ed3742d5a1732f44d78"
+  },
+  "s19:hiphop:5:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5060bf9a",
+   "motif_ops": [
+    "derive_sequence@-1",
+    "ending@30:-2",
+    "balance@16:-2",
+    "balance@20:+1"
+   ],
+   "motif_plan": [
+    "5060bf9a",
+    "5060bf9a",
+    "5060bf9a",
+    "be557a27"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5060bf9a",
+   "sha256": "fcadba200019cf7a213c45feff7e4ca367eab1f38010f3a5ea14c8e38022ffd3"
+  },
+  "s19:hiphop:5:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2176e838",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@30:-2"
+   ],
+   "motif_plan": [
+    "2176e838",
+    "2176e838",
+    "5060bf9a",
+    "0b9f76d3"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5060bf9a",
+   "sha256": "815c49bb739887842b7ccd7a8a54bd56f1e7c6b185f5c8e70a560921a00be19f"
+  },
+  "s19:hiphop:5:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "be79531f",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "be79531f",
+    "be79531f",
+    "be79531f",
+    "e173f8f1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "5060bf9a",
+   "sha256": "3aaadc95c00701768c7ec2eedb20f75535b80e56af884a0de197cb28d5e84c6b"
+  },
+  "s19:hiphop:5:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cfabcba5",
+   "motif_ops": [
+    "neighbor@7:+1",
+    "chord@14:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "cfabcba5",
+    "cfabcba5",
+    "cfabcba5",
+    "0588fa19"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cfabcba5",
+   "sha256": "e44b90182d86482ea728b55175f08d635225852dcf6b59d06e79e808e1704cdf"
+  },
+  "s19:hiphop:5:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "699d31df",
+   "motif_ops": [
+    "chord@12:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "699d31df",
+    "699d31df",
+    "63788e47",
+    "82153d79"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cfabcba5",
+   "sha256": "c491e58b8a84bf9f0e06752f955689cd2750f724aa0a16555132c91ac0c9b9b7"
+  },
+  "s19:hiphop:5:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "adfb6f8b",
+   "motif_ops": [
+    "ending@30:-1",
+    "ending@30:-2"
+   ],
+   "motif_plan": [
+    "adfb6f8b",
+    "adfb6f8b",
+    "adfb6f8b",
+    "9c5bdfc2"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "cfabcba5",
+   "sha256": "b7d4d7f3ae8a07d22dccf6558afe7f7392b0530d3cbb2c3dd051cda258d199ae"
+  },
+  "s19:hiphop:5:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "aebb91d4",
+   "motif_ops": [
+    "derive_sequence@-1",
+    "ending@30:-1",
+    "balance@20:-2",
+    "balance@16:+1"
+   ],
+   "motif_plan": [
+    "aebb91d4",
+    "aebb91d4",
+    "aebb91d4",
+    "79a811a5"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "aebb91d4",
+   "sha256": "13162928b35c755a93519f1890c0ff72ed8862afe8d8086c8102a908ca389df3"
+  },
+  "s1:hiphop:1:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "68a28928",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "68a28928",
+    "68a28928",
+    "68a28928",
+    "f382f853"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "0b784dbe27590fc22cfdf3d29ec82b56ff0d314d98b8611f505caec16398c93d"
+  },
+  "s1:hiphop:1:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "da4e81fb",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@28:-1",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "da4e81fb",
+    "da4e81fb",
+    "da4e81fb",
+    "68a28928"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "492888043a0789af716b05a796cd36b9645955b0b315e6078f6b3a03264041a9"
+  },
+  "s1:hiphop:1:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f8fa34ed",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "f8fa34ed",
+    "f8fa34ed",
+    "26638bf1",
+    "31ea9b9c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "80e8f6ea822a8a71e5dae09a6ff94208a0b4cf1d8afac30f3c5e717047da6a4f"
+  },
+  "s1:hiphop:1:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2787d2ea",
+   "motif_ops": [
+    "neighbor@28:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "2787d2ea",
+    "2787d2ea",
+    "2787d2ea",
+    "469bbf16"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "02a6fab1f68e1cf1bbfc068a727ee1894f34809ddbf4cf371703603a797e5ea4"
+  },
+  "s1:hiphop:1:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "111963fc",
+   "motif_ops": [
+    "neighbor@4:+1",
+    "ending@30:-1",
+    "balance@16:-2"
+   ],
+   "motif_plan": [
+    "111963fc",
+    "111963fc",
+    "111963fc",
+    "b00c1c37"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "03bcc38731a543a93d02ca5fda57e17a891ae1f738497ec31f4908a14d8d6834"
+  },
+  "s1:hiphop:1:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "469bbf16",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:+1",
+    "balance@12:-1",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "469bbf16",
+    "469bbf16",
+    "469bbf16",
+    "ba795372"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "469bbf16",
+   "sha256": "cba9374cfe3782100faabb963af0619a0c9cfd83319f979df1ccb9994c18b6a7"
+  },
+  "s1:hiphop:1:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "9b95547a",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "9b95547a",
+    "9b95547a",
+    "1d8a5894",
+    "53d988d1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "469bbf16",
+   "sha256": "d770150b97affe35a987f8035728a59a1e59c5abd2ff49b3aa3907c214d13605"
+  },
+  "s1:hiphop:1:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "222ab16f",
+   "motif_ops": [
+    "ending@28:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "222ab16f",
+    "222ab16f",
+    "222ab16f",
+    "459d0b8e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "469bbf16",
+   "sha256": "2599ea01a9aa4ac479a81b565ab27b8bcc3d1335c1b9b145bafa9c295651bc9a"
+  },
+  "s1:hiphop:1:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "23201376",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "23201376",
+    "23201376",
+    "23201376",
+    "23201376"
+   ],
+   "motif_role": "return",
+   "motif_selection": "gentle",
+   "motif_theme_id": "23201376",
+   "sha256": "7e9d345b37a4883b4dd0969b78ce6fdfb74c4f22298f2be167b2cb9a3b524c7b"
+  },
+  "s1:hiphop:1:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5fcd3cc2",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "5fcd3cc2",
+    "5fcd3cc2",
+    "e20830a3",
+    "23201376"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "23201376",
+   "sha256": "ce247bf6c1a71aa07e22f6a6fbe86f5021c5eb5a0e919f6117cc5543b9776a2b"
+  },
+  "s1:hiphop:1:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d5cdd888",
+   "motif_ops": [
+    "ending@28:+2",
+    "ending@30:+1",
+    "balance@16:-2",
+    "balance@30:+1"
+   ],
+   "motif_plan": [
+    "d5cdd888",
+    "d5cdd888",
+    "d5cdd888",
+    "d5cdd888"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "23201376",
+   "sha256": "7bf65271960143ee04426f6d8d1ba13ccd98749c0b99fc9fd0bc33ba96fe5d77"
+  },
+  "s1:hiphop:1:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "31ea9b9c",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:+1",
+    "balance@12:-1",
+    "balance@28:-1"
+   ],
+   "motif_plan": [
+    "31ea9b9c",
+    "31ea9b9c",
+    "31ea9b9c",
+    "ba795372"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "a02667161e080676ab14b246908fba0ec73c551a4b430cbd524354377d08037d"
+  },
+  "s1:hiphop:2:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "68a28928",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "68a28928",
+    "68a28928",
+    "68a28928",
+    "f382f853"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "c387d784c7ac926e55cf984c7fcc96d281b8c019fef0526169097765927e5d0e"
+  },
+  "s1:hiphop:2:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "31ea9b9c",
+   "motif_ops": [
+    "chord@16:-2",
+    "ending@28:+2",
+    "balance@12:-1"
+   ],
+   "motif_plan": [
+    "31ea9b9c",
+    "31ea9b9c",
+    "31ea9b9c",
+    "ba795372"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "e01f9a62dfe81be288fb9a9f5354db61f655dc1808bf6597db8c699d85b34615"
+  },
+  "s1:hiphop:2:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f452f394",
+   "motif_ops": [
+    "chord@28:+1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "f452f394",
+    "f452f394",
+    "f452f394",
+    "f33c4b63"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f33c4b63",
+   "sha256": "61a8ec30ed70605553dbe932be4d071491c65662bac2260c859082abe10aa0b3"
+  },
+  "s1:hiphop:2:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "55de1a4a",
+   "motif_ops": [
+    "ending@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "55de1a4a",
+    "55de1a4a",
+    "55de1a4a",
+    "f452f394"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f33c4b63",
+   "sha256": "07b7e4e0669e0662d1b9450027eacc50592b5b9593c3be1577816c4bfbd277d6"
+  },
+  "s1:hiphop:2:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f8fa34ed",
+   "motif_ops": [
+    "ending@30:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "f8fa34ed",
+    "f8fa34ed",
+    "f8fa34ed",
+    "17aaabc3"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "428e51fa04583d379478957b3e8bef2c58c74454d4fd3de40d242cb37454e992"
+  },
+  "s1:hiphop:2:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c1ce3b8d",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@20:+2",
+    "balance@28:-1"
+   ],
+   "motif_plan": [
+    "c1ce3b8d",
+    "c1ce3b8d",
+    "c1ce3b8d",
+    "c1ce3b8d"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c1ce3b8d",
+   "sha256": "83adf07c170f367a574f00787ee333b4f9facaf79f21b88b6db6ea828fbad2ba"
+  },
+  "s1:hiphop:2:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "4da58473",
+   "motif_ops": [
+    "chord@14:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "4da58473",
+    "4da58473",
+    "c1ce3b8d",
+    "a56765c0"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c1ce3b8d",
+   "sha256": "0224165fa345544e1f4b34e7f98fbc835308b4b416a7a2dff7032817a20cd8dc"
+  },
+  "s1:hiphop:2:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "cc32b496",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@28:+1",
+    "balance@12:-2",
+    "balance@14:+1"
+   ],
+   "motif_plan": [
+    "cc32b496",
+    "cc32b496",
+    "cc32b496",
+    "bef092b9"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c1ce3b8d",
+   "sha256": "fdf92a357c39e54227dba548ce87d23dbe4037a1d8f7367869a0e8330f41c475"
+  },
+  "s1:hiphop:2:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "7090728b",
+   "motif_ops": [
+    "neighbor@4:+1",
+    "chord@30:+2",
+    "ending@30:-2",
+    "balance@30:-2",
+    "balance@16:-2"
+   ],
+   "motif_plan": [
+    "7090728b",
+    "7090728b",
+    "7090728b",
+    "7090728b"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7090728b",
+   "sha256": "3abbfdb182a08b8d8c49e09921a2fcbe4507aeae6a02f2916b3bcd65b6a6068b"
+  },
+  "s1:hiphop:2:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fcea4daa",
+   "motif_ops": [
+    "chord@4:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "fcea4daa",
+    "fcea4daa",
+    "fc1adeab",
+    "e7614575"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7090728b",
+   "sha256": "0b229dc43a1645a7f57132235a3ff9b6746bdf02e4226d515bf4ca7e013b8a57"
+  },
+  "s1:hiphop:2:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a83475ca",
+   "motif_ops": [
+    "ending@30:+2",
+    "ending@30:-2",
+    "balance@30:+1"
+   ],
+   "motif_plan": [
+    "a83475ca",
+    "a83475ca",
+    "a83475ca",
+    "fcea4daa"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "7090728b",
+   "sha256": "a7b5229f759cd75bc5dffd482cc9a17e672796fbf21f5283759ffa81d11ba0f5"
+  },
+  "s1:hiphop:2:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f33c4b63",
+   "motif_ops": [
+    "derive_inversion@2",
+    "ending@30:-2",
+    "balance@30:-2"
+   ],
+   "motif_plan": [
+    "f33c4b63",
+    "f33c4b63",
+    "f33c4b63",
+    "f33c4b63"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f33c4b63",
+   "sha256": "fe6ef4e50dbd217428a5f3636bd6f37dad1e11ac7630904c50de9ac53ae41340"
+  },
+  "s1:hiphop:3:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "dea21d7f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "b32918b3920ec0c1586913303df033146620cab9c6e71fde55ef0b7a4daf8c27"
+  },
+  "s1:hiphop:3:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c1671b40",
+   "motif_ops": [
+    "neighbor@3:-1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "c1671b40",
+    "c1671b40",
+    "c1671b40",
+    "72947dde"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "597cf356c6211e7328a7629dde7c0593fc5778e1e5781732e4ec3c1ef4fddd83"
+  },
+  "s1:hiphop:3:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "efb60ee1",
+   "motif_ops": [
+    "chord@24:-2",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "efb60ee1",
+    "efb60ee1",
+    "1f09b16a",
+    "ffb80f06"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "01579fa72d8c9317e65c0ddc3ce1822d100927eae8edbe9c433d2b516d82fbb6"
+  },
+  "s1:hiphop:3:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d24acc95",
+   "motif_ops": [
+    "neighbor@19:+1",
+    "ending@28:+1"
+   ],
+   "motif_plan": [
+    "d24acc95",
+    "d24acc95",
+    "d24acc95",
+    "49fa660b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "7d0318a2657d7beb31f77eb7fef972dc2cf182553d999359ad1c95be353a4f75"
+  },
+  "s1:hiphop:3:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "10f2bb55",
+   "motif_ops": [
+    "neighbor@28:-1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "10f2bb55",
+    "10f2bb55",
+    "10f2bb55",
+    "6016dcd4"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "376fec2bb6a37a82e5c5749ee438d144fe1ae86e301b6444f99a865979a2932f"
+  },
+  "s1:hiphop:3:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "666edc00",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@30:-1",
+    "balance@4:+2",
+    "balance@12:-2"
+   ],
+   "motif_plan": [
+    "666edc00",
+    "666edc00",
+    "666edc00",
+    "d721b737"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "05d4580eddf3d536b1b51cd48d18fb4443dd6123c1b51a148c1b1c0ffaf82a7c"
+  },
+  "s1:hiphop:3:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "be06d8ec",
+   "motif_ops": [
+    "chord@16:-1",
+    "ending@30:-1",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "be06d8ec",
+    "be06d8ec",
+    "ad27ece7",
+    "2efc6d67"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "e99bdd0fbfcbccd575758e4ee1d1fbee4dbfbe5222b10d17c3cdb378e26a4d34"
+  },
+  "s1:hiphop:3:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c4bb3049",
+   "motif_ops": [
+    "ending@28:-2",
+    "ending@28:+1",
+    "balance@20:+2",
+    "balance@12:+2"
+   ],
+   "motif_plan": [
+    "c4bb3049",
+    "c4bb3049",
+    "c4bb3049",
+    "cbc4a622"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "b2d00f05fabe87e25d2fb157cde5a2283befe06218a2d0dfde562ab64375ad86"
+  },
+  "s1:hiphop:3:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e7fe2f2a",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "chord@24:-2",
+    "ending@28:-1",
+    "balance@28:-1"
+   ],
+   "motif_plan": [
+    "e7fe2f2a",
+    "e7fe2f2a",
+    "e7fe2f2a",
+    "e7fe2f2a"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e7fe2f2a",
+   "sha256": "e3a562f08a9e9b9473241d785586e01667bb544bb0b35e5f7b5b03898763514c"
+  },
+  "s1:hiphop:3:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a473c154",
+   "motif_ops": [
+    "chord@20:+2",
+    "ending@30:-1",
+    "balance@28:-2",
+    "balance@20:+1"
+   ],
+   "motif_plan": [
+    "a473c154",
+    "a473c154",
+    "4612f132",
+    "07d60a8b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e7fe2f2a",
+   "sha256": "38befa3d74b892530fbb405dcea2efabed60c425940bab8eaadea48dad75608b"
+  },
+  "s1:hiphop:3:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d646197d",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "d646197d",
+    "d646197d",
+    "d646197d",
+    "3bc8511c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "e7fe2f2a",
+   "sha256": "58a19a22a1770f071b356ac9fc2b06eb4e247dadb108b1e98bc083b8826ae867"
+  },
+  "s1:hiphop:3:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c4d5db10",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@30:-1",
+    "balance@4:+2",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "c4d5db10",
+    "c4d5db10",
+    "c4d5db10",
+    "9be114cd"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "cf421709047e4280897cb3aa6b5ebddc8162be131122d0c60de6f1c4d12c3074"
+  },
+  "s1:hiphop:4:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "547a7ea8"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "76f838925eb1e9ec0942abef2b8fb2e9ee0d6acceeaec05badab3b631a715fb5"
+  },
+  "s1:hiphop:4:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e7fe2f2a",
+   "motif_ops": [
+    "chord@24:-2",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "e7fe2f2a",
+    "e7fe2f2a",
+    "e7fe2f2a",
+    "e6ce276c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "a8ed884f6a67aa7f3efcedd2e4fd80c583983b6bf2888b16fabe266c2edbb6ab"
+  },
+  "s1:hiphop:4:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 11,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1fce7dbc",
+   "motif_ops": [
+    "neighbor@30:+1",
+    "ending@28:-1",
+    "balance@19:-2",
+    "balance@12:-1"
+   ],
+   "motif_plan": [
+    "1fce7dbc",
+    "1fce7dbc",
+    "cd0039f2",
+    "ee2fb76e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f0b2b92d",
+   "sha256": "a90c60fa3be722b07bae79138a772eb8020f132133658fc581328036bea0519c"
+  },
+  "s1:hiphop:4:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a8207697",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@28:+1"
+   ],
+   "motif_plan": [
+    "a8207697",
+    "a8207697",
+    "a8207697",
+    "18202a3b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f0b2b92d",
+   "sha256": "61f3caee96f7f9603d7b9a7b6acde0b782fc9a9987438a929b07326b631df4c3"
+  },
+  "s1:hiphop:4:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "579fc47a",
+   "motif_ops": [
+    "neighbor@19:+1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "579fc47a",
+    "579fc47a",
+    "579fc47a",
+    "5b7e04f0"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "9d35a954576d536b1eb77830cf541b03e7685c68f01e1d57768c7cb5fdd2c3f3"
+  },
+  "s1:hiphop:4:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "666edc00",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@30:-1",
+    "balance@4:+2",
+    "balance@12:-2"
+   ],
+   "motif_plan": [
+    "666edc00",
+    "666edc00",
+    "666edc00",
+    "d721b737"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "e27fcbb0bebbdc853d5a245dc0159a87a8495a2c66595470f2b4489fed077f38"
+  },
+  "s1:hiphop:4:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a7add014",
+   "motif_ops": [
+    "chord@24:-2",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "a7add014",
+    "a7add014",
+    "ac99965a",
+    "a37c3d4a"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "64ce665d98c9168735975533fef1fc5b0fc18f187eb0924bb1e81afd928ff906"
+  },
+  "s1:hiphop:4:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "8b2f2b12",
+   "motif_ops": [
+    "neighbor@4:+1",
+    "ending@28:+1"
+   ],
+   "motif_plan": [
+    "8b2f2b12",
+    "8b2f2b12",
+    "8b2f2b12",
+    "1e79b028"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "7249d8c5fcd2637f04465b46df7a7aef9daab6dda5d23fa0242fbfe7d6a42809"
+  },
+  "s1:hiphop:4:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "db5f6e2a",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "chord@3:-2",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "db5f6e2a",
+    "db5f6e2a",
+    "db5f6e2a",
+    "490bfcd7"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "db5f6e2a",
+   "sha256": "9e2a86d54c3b45339fd3d97b5f032c6a44d3f850e071eb71f6fc41bef096773e"
+  },
+  "s1:hiphop:4:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "73021261",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "73021261",
+    "73021261",
+    "373c06a8",
+    "6e8cb5a1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "db5f6e2a",
+   "sha256": "e723cbfe44eb555b32be9c9e49a7869c80ba9cdcea3d6e68fc6f71c503ac2934"
+  },
+  "s1:hiphop:4:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fb671f61",
+   "motif_ops": [
+    "neighbor@14:-1",
+    "ending@28:-2",
+    "balance@3:-1"
+   ],
+   "motif_plan": [
+    "fb671f61",
+    "fb671f61",
+    "fb671f61",
+    "5d602432"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "db5f6e2a",
+   "sha256": "e4d5e7ca634dc39ad7998419f66f677aae179f1eeaadade9cde92d73707ba34a"
+  },
+  "s1:hiphop:4:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f0b2b92d",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@4:+1",
+    "balance@3:+1"
+   ],
+   "motif_plan": [
+    "f0b2b92d",
+    "f0b2b92d",
+    "f0b2b92d",
+    "a795dce2"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "f0b2b92d",
+   "sha256": "fdd7c78515e59a8f0a3b283f41de158abdce7cb15954a7e9477a273a52b3cde8"
+  },
+  "s1:hiphop:5:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "dea21d7f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "e68ba1cfa07af26da2abd99b38122bc87929778a66e22588654f100361e6f4a2"
+  },
+  "s1:hiphop:5:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "13593687",
+   "motif_ops": [
+    "neighbor@19:-1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "13593687",
+    "13593687",
+    "13593687",
+    "55f9fbb3"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "239d62614f018923962699956ac7c4e6aed6cab18fe7e5df3a44ed621763d3d5"
+  },
+  "s1:hiphop:5:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "420fb844",
+   "motif_ops": [
+    "chord@7:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "420fb844",
+    "420fb844",
+    "a2bd4c86",
+    "320c4535"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a2bd4c86",
+   "sha256": "bc51ec9f290ea46233498403a6afe450e9c76451324772c571dab5f825948ce0"
+  },
+  "s1:hiphop:5:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "eb790420",
+   "motif_ops": [
+    "neighbor@19:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "eb790420",
+    "eb790420",
+    "eb790420",
+    "6ab46de4"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a2bd4c86",
+   "sha256": "84daf44c7e8a6feee47a1f5fa791b331b66a088bae52641cae4a8445105ae7a6"
+  },
+  "s1:hiphop:5:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f864b37c",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "f864b37c",
+    "f864b37c",
+    "f864b37c",
+    "6ff26dd0"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "175e495cbb9051e28fa81ac50eab7d953850cdee2a2187e619de671f0d2fe0e7"
+  },
+  "s1:hiphop:5:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0c489b55",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@4:+2",
+    "balance@28:-1"
+   ],
+   "motif_plan": [
+    "0c489b55",
+    "0c489b55",
+    "0c489b55",
+    "0c489b55"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0c489b55",
+   "sha256": "b865dc23a19f226d2522a64be16565bf681a10aba94383761d6f59836e949acc"
+  },
+  "s1:hiphop:5:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0335b874",
+   "motif_ops": [
+    "chord@4:-2",
+    "ending@30:-1",
+    "balance@20:+2"
+   ],
+   "motif_plan": [
+    "0335b874",
+    "0335b874",
+    "0335b874",
+    "26a8e304"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0c489b55",
+   "sha256": "8831b0fce8e64ce29f411721ef9daa480ac638caba91f934e92d7b98dfeca028"
+  },
+  "s1:hiphop:5:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c58ebb0c",
+   "motif_ops": [
+    "ending@28:-2",
+    "ending@28:-1",
+    "balance@4:+2"
+   ],
+   "motif_plan": [
+    "c58ebb0c",
+    "c58ebb0c",
+    "c58ebb0c",
+    "5c840a15"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0c489b55",
+   "sha256": "b9ef1625c40b1b1593d226ea7f0aec39ed7f48d8df03f873533b7831f6625855"
+  },
+  "s1:hiphop:5:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a289f168",
+   "motif_ops": [
+    "chord@3:-2",
+    "sequence@0:+1",
+    "ending@28:+2",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "a289f168",
+    "a289f168",
+    "a289f168",
+    "bb7612bb"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a289f168",
+   "sha256": "940e23cadc3f04a0af70b723ba7349aa5641971f6e7fd23ec1831de78ccfbb5f"
+  },
+  "s1:hiphop:5:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ba0dc43d",
+   "motif_ops": [
+    "neighbor@4:+1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "ba0dc43d",
+    "ba0dc43d",
+    "669c8e53",
+    "674072fd"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a289f168",
+   "sha256": "a8e4323d62e4faedf139255ebeceec6428e2e18fd267a577e63deb2558532305"
+  },
+  "s1:hiphop:5:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "8382d661",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "8382d661",
+    "8382d661",
+    "8382d661",
+    "35d61e45"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a289f168",
+   "sha256": "5776f07396939be349f31bce2243bc3fbc22e6b3ce2d073e18fccb43e3048eee"
+  },
+  "s1:hiphop:5:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a2bd4c86",
+   "motif_ops": [
+    "derive_sequence@-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "a2bd4c86",
+    "a2bd4c86",
+    "a2bd4c86",
+    "b0d467f9"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "a2bd4c86",
+   "sha256": "475d46a1aaf3a31e72ed507345e53b2144009850bf18abdb2eb64399cb3ce216"
+  },
+  "s2:hiphop:1:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "68a28928",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "68a28928",
+    "68a28928",
+    "68a28928",
+    "f382f853"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "6b30f5f3be130b0b5273a8e55feb192e84bd3d732fb7b3a976bf352e6195826b"
+  },
+  "s2:hiphop:1:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "23201376",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "ending@28:-2",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "23201376",
+    "23201376",
+    "23201376",
+    "23201376"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "45a7c68310f689a3e859c117f554eba5b72956d79fd3365a48816089d4c10edf"
+  },
+  "s2:hiphop:1:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "08fcf7dd",
+   "motif_ops": [
+    "sequence@0:+1",
+    "ending@30:+1",
+    "balance@4:+2"
+   ],
+   "motif_plan": [
+    "08fcf7dd",
+    "08fcf7dd",
+    "f8fa34ed",
+    "dccb5421"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "1802d068f3db5780c833c0e6187244dfa993b381014e89b4d16af86cd67acc97"
+  },
+  "s2:hiphop:1:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "dccb5421",
+   "motif_ops": [
+    "ending@30:+1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "dccb5421",
+    "dccb5421",
+    "dccb5421",
+    "08fcf7dd"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "9bd679a12051696c5378769b4886f83027c82f4876b2f0ab4466cef0b26d8137"
+  },
+  "s2:hiphop:1:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "5fcd3cc2",
+   "motif_ops": [
+    "ending@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "5fcd3cc2",
+    "5fcd3cc2",
+    "5fcd3cc2",
+    "23201376"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "0696fd818b47acc27f46115de098415d792466febde159afefc6ad888fd14471"
+  },
+  "s2:hiphop:1:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "b20476df",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@12:-1",
+    "balance@24:-2"
+   ],
+   "motif_plan": [
+    "b20476df",
+    "b20476df",
+    "b20476df",
+    "fb0b58ee"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b20476df",
+   "sha256": "9d18edccbd232b351ea5f4d7ad60b657ce078cee2db757917654aae1573d8f90"
+  },
+  "s2:hiphop:1:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "fef6db83",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "fef6db83",
+    "fef6db83",
+    "cfd2a049",
+    "b1880fb7"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b20476df",
+   "sha256": "016eafa00f4856d6efe2a01bf451ed5dcc8bd774b28f68e11b6bcefe7bc8aed3"
+  },
+  "s2:hiphop:1:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "706993d1",
+   "motif_ops": [
+    "ending@30:+2",
+    "ending@30:+2",
+    "balance@30:+1",
+    "balance@12:+2"
+   ],
+   "motif_plan": [
+    "706993d1",
+    "706993d1",
+    "706993d1",
+    "d19f4020"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "b20476df",
+   "sha256": "837ab695c273fbf510ba1bafd482b02b5bb077a794d36b6cdcc7ac25e82eada9"
+  },
+  "s2:hiphop:1:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "31ea9b9c",
+   "motif_ops": [
+    "chord@16:-2",
+    "neighbor@12:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "31ea9b9c",
+    "31ea9b9c",
+    "31ea9b9c",
+    "2eabb184"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "5394e0d87d32fc403e263bd8c7d70a3c1e3c05310b0bd2c7bce0d72ccf9bc4dc"
+  },
+  "s2:hiphop:1:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f8fa34ed",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "f8fa34ed",
+    "f8fa34ed",
+    "f8fa34ed",
+    "17aaabc3"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "9587c34fd825364fcb98eba6b1337f53b043f6e1f068a8e9cf8959db7353849e"
+  },
+  "s2:hiphop:1:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e087789d",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "e087789d",
+    "e087789d",
+    "e087789d",
+    "222ab16f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "1593ef86d4d4758c144381b5fd85581c1c39f4d980cad1e6c0f9a8840e40e94b"
+  },
+  "s2:hiphop:1:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "e087789d",
+   "motif_ops": [
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "e087789d",
+    "e087789d",
+    "e087789d",
+    "3064ef9d"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "previous",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "eaa6ab057f99a76df90f05a6f57496be34430fb778b1ef3a2ddf0cd4dd5f1829"
+  },
+  "s2:hiphop:2:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "68a28928",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "68a28928",
+    "68a28928",
+    "68a28928",
+    "f382f853"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "0488fdd43a27f39e454f809c4dae1ca95af0d9a04de4d4b24f9f0519e90c7e1b"
+  },
+  "s2:hiphop:2:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "32e495ed",
+   "motif_ops": [
+    "neighbor@14:+1",
+    "ending@30:-1",
+    "balance@14:+2"
+   ],
+   "motif_plan": [
+    "32e495ed",
+    "32e495ed",
+    "32e495ed",
+    "1e10eef8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "2fb325dd699a30dc3785ea2b1e79d482d1ef7aab641c2de9945e6364f3892ebd"
+  },
+  "s2:hiphop:2:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a229607e",
+   "motif_ops": [
+    "chord@14:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "a229607e",
+    "a229607e",
+    "c9d7ca81",
+    "b3f0e98b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c9d7ca81",
+   "sha256": "c1b37efd23fa354977d6682df34966db9e8d6ec153d59464820c273b2a473fbf"
+  },
+  "s2:hiphop:2:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "13e4c79e",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@28:-2",
+    "balance@14:+1"
+   ],
+   "motif_plan": [
+    "13e4c79e",
+    "13e4c79e",
+    "13e4c79e",
+    "0b6ff795"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c9d7ca81",
+   "sha256": "820a4cdcbbd89ad1a94ab3cd7b071f1b778a24d5324bcaed94140076fb824a05"
+  },
+  "s2:hiphop:2:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "da11bd7a",
+   "motif_ops": [
+    "neighbor@28:-1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "da11bd7a",
+    "da11bd7a",
+    "da11bd7a",
+    "0f15f38a"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "68a28928",
+   "sha256": "e565d4c6ab1d034436e9de82d6cbddf3c78460cf0fe3372b0f2cfb40202fb455"
+  },
+  "s2:hiphop:2:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "31ea9b9c",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:+1",
+    "balance@12:-1",
+    "balance@28:-1"
+   ],
+   "motif_plan": [
+    "31ea9b9c",
+    "31ea9b9c",
+    "31ea9b9c",
+    "ba795372"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "90f1f08d62065e68c5ed632e434e768eee30dee50f4f43e6b61689b7f1d257f7"
+  },
+  "s2:hiphop:2:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f8fa34ed",
+   "motif_ops": [
+    "chord@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "f8fa34ed",
+    "f8fa34ed",
+    "26638bf1",
+    "31ea9b9c"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "da6b7a18c7dbbc8a549bac57d5260b3ef4ef556ebe155a167e55d61a8a6233f7"
+  },
+  "s2:hiphop:2:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2787d2ea",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@30:+1",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "2787d2ea",
+    "2787d2ea",
+    "2787d2ea",
+    "469bbf16"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "31ea9b9c",
+   "sha256": "a0bdb905b3cf59f59dcd9548d598d8079257c1710e112ad263d8ecf4c3098cd8"
+  },
+  "s2:hiphop:2:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "2bcc3682",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "chord@16:+2",
+    "ending@28:-2",
+    "balance@20:+2",
+    "balance@16:-2"
+   ],
+   "motif_plan": [
+    "2bcc3682",
+    "2bcc3682",
+    "2bcc3682",
+    "1615c9b8"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2bcc3682",
+   "sha256": "91b75ee48e4a3ca0f96babf01bed7ee3ff2f17ab130092e0dd5c61dda58657b3"
+  },
+  "s2:hiphop:2:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "3b0e4b1d",
+   "motif_ops": [
+    "neighbor@12:+1",
+    "ending@28:+2",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "3b0e4b1d",
+    "3b0e4b1d",
+    "01df66ff",
+    "e988046f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2bcc3682",
+   "sha256": "73b5beb67ef3cee4940238be07d94d5960683c3e1d6a76cc6afdf3f48b94a326"
+  },
+  "s2:hiphop:2:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "1256fec9",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "ending@28:+2",
+    "balance@12:-1"
+   ],
+   "motif_plan": [
+    "1256fec9",
+    "1256fec9",
+    "1256fec9",
+    "5496c243"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "2bcc3682",
+   "sha256": "5862c8667d9b26899db58dfc12a1fca95c2628f04ce54fa4039bdeb3e8e07822"
+  },
+  "s2:hiphop:2:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c9d7ca81",
+   "motif_ops": [
+    "derive_inversion@2",
+    "ending@28:+1",
+    "balance@30:-2",
+    "balance@28:+2"
+   ],
+   "motif_plan": [
+    "c9d7ca81",
+    "c9d7ca81",
+    "c9d7ca81",
+    "0b6ff795"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c9d7ca81",
+   "sha256": "96450022e54d168efe9cff9bef88235ff8e69101d9a7a265b14b8cfe48a0819a"
+  },
+  "s2:hiphop:3:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "dea21d7f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "5ee360310ddc5b87a403c8dbff1603202370ab01aef8f6cf291a8c37d16522a3"
+  },
+  "s2:hiphop:3:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e7fe2f2a",
+   "motif_ops": [
+    "chord@24:-2",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "e7fe2f2a",
+    "e7fe2f2a",
+    "e7fe2f2a",
+    "50a522e7"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "3688fc172ff36dbf0d86040ad8faf4be3fede7e40077f253d70eb4ab902c74f7"
+  },
+  "s2:hiphop:3:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "3be2dc61",
+   "motif_ops": [
+    "chord@14:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "3be2dc61",
+    "3be2dc61",
+    "ce87e165",
+    "8be7a985"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ce87e165",
+   "sha256": "ec656a3736d87526b3ff99818cf03501b9b7db581d64980b06744e3bceaa2480"
+  },
+  "s2:hiphop:3:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "19576166",
+   "motif_ops": [
+    "neighbor@20:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "19576166",
+    "19576166",
+    "19576166",
+    "043e6618"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ce87e165",
+   "sha256": "33e0e964188f3d02a99b5bbd9fc9472275fc2a12bc8786cd2156b38af60b2d81"
+  },
+  "s2:hiphop:3:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f57116c2",
+   "motif_ops": [
+    "neighbor@14:+1",
+    "ending@28:-2",
+    "balance@14:+2",
+    "balance@19:-1"
+   ],
+   "motif_plan": [
+    "f57116c2",
+    "f57116c2",
+    "f57116c2",
+    "72ac6111"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "8da8217c80dfa501b6dc1b13d3e889b772d9c5496c33b0d0a102a531d8869d02"
+  },
+  "s2:hiphop:3:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 1,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "666edc00",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:+1",
+    "balance@4:+2",
+    "balance@12:-2"
+   ],
+   "motif_plan": [
+    "666edc00",
+    "666edc00",
+    "666edc00",
+    "a0b1c15b"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "3fdca421811e145c27b2b6392c0043679e28cffb71c81785fa4ea9df43016846"
+  },
+  "s2:hiphop:3:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "15e68836",
+   "motif_ops": [
+    "chord@12:-2",
+    "ending@28:+1",
+    "balance@20:+1"
+   ],
+   "motif_plan": [
+    "15e68836",
+    "15e68836",
+    "dcd158f6",
+    "8c7a812e"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "61e197d2d0360c1e2bd0068e19630004b3a3d2f8513ce5f66d79a87dac7f0c66"
+  },
+  "s2:hiphop:3:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "345c7fd0",
+   "motif_ops": [
+    "neighbor@14:-1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "345c7fd0",
+    "345c7fd0",
+    "345c7fd0",
+    "0b9235fc"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "666edc00",
+   "sha256": "836ac3bf4780dc7d576e8c49af2404a9ca5c5dfedb58a152d9bb759ae559996f"
+  },
+  "s2:hiphop:3:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "24af8271",
+   "motif_ops": [
+    "sequence@0:+1",
+    "chord@28:+2",
+    "ending@30:+2",
+    "balance@4:+2",
+    "balance@3:-2"
+   ],
+   "motif_plan": [
+    "24af8271",
+    "24af8271",
+    "24af8271",
+    "a90cf0ee"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "24af8271",
+   "sha256": "13e594c41fd6acc8ecfd91223baf5f1f85de54a1e047e028ed9cd87f58b1c1ed"
+  },
+  "s2:hiphop:3:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "753c7189",
+   "motif_ops": [
+    "chord@16:-2",
+    "ending@30:+2",
+    "balance@12:-1"
+   ],
+   "motif_plan": [
+    "753c7189",
+    "753c7189",
+    "a0b1c15b",
+    "f25b7459"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "24af8271",
+   "sha256": "c5d6eee6765ca6cd4a849d708c3efcefd8922ab480a6ffe7bca34bb0a56f67eb"
+  },
+  "s2:hiphop:3:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "a757a2d2",
+   "motif_ops": [
+    "neighbor@28:+1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "a757a2d2",
+    "a757a2d2",
+    "a757a2d2",
+    "30e4f743"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "24af8271",
+   "sha256": "32b0298bb1f1b36c84c655dd7da38fd36d65181e2200a82d37eebf6c9c670ae7"
+  },
+  "s2:hiphop:3:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 9,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "ce87e165",
+   "motif_ops": [
+    "derive_sequence@-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "ce87e165",
+    "ce87e165",
+    "ce87e165",
+    "9ec26ff1"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "ce87e165",
+   "sha256": "d90918a9ca919da3f3bf6cd72ce300e4ca920412b102d10be2b066306d3a1e56"
+  },
+  "s2:hiphop:4:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "dea21d7f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "c25409b5613585e83c900fc0923b5661d35f91e19d8486027b29edbe1405a5f3"
+  },
+  "s2:hiphop:4:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 2,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c1671b40",
+   "motif_ops": [
+    "chord@30:+2",
+    "ending@30:+2",
+    "balance@3:-1",
+    "balance@30:-2"
+   ],
+   "motif_plan": [
+    "c1671b40",
+    "c1671b40",
+    "c1671b40",
+    "801aedc6"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "51789a83771e65f5f2dd467df356d4a2152d2f053b408bbeccfb5796334e0689"
+  },
+  "s2:hiphop:4:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "f07a6475",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@30:+1"
+   ],
+   "motif_plan": [
+    "f07a6475",
+    "f07a6475",
+    "4f9d4b9c",
+    "98ec8e29"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "669c8e53",
+   "sha256": "e3b603334391b7ee3d9c40fe4419ecc703f208b8c6c4f6924a27654da960214b"
+  },
+  "s2:hiphop:4:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 10,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "bb87809c",
+   "motif_ops": [
+    "neighbor@19:+1",
+    "ending@28:+2",
+    "balance@12:+1"
+   ],
+   "motif_plan": [
+    "bb87809c",
+    "bb87809c",
+    "bb87809c",
+    "67b47069"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "669c8e53",
+   "sha256": "2251b3b5ab9b476471d2ecc7d3a8ef4adf6f0e42b74f80f1d6a4e88bdbb362b5"
+  },
+  "s2:hiphop:4:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 7,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0d5fe58e",
+   "motif_ops": [
+    "ending@30:-1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "0d5fe58e",
+    "0d5fe58e",
+    "0d5fe58e",
+    "2475fb56"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "bc0582771859fbc2f1c0b65149b9521a375cd24659cf82a5c75371e1795fc749"
+  },
+  "s2:hiphop:4:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c4d5db10",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@30:-1",
+    "balance@4:+2",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "c4d5db10",
+    "c4d5db10",
+    "c4d5db10",
+    "9be114cd"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "409aab7a3e9f83b11d11cb1930c9a2d5f8fcebb5c5eb5504652f4613a74f52eb"
+  },
+  "s2:hiphop:4:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "e5ca6fef",
+   "motif_ops": [
+    "neighbor@19:-1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "e5ca6fef",
+    "e5ca6fef",
+    "3af4ef87",
+    "33a402d4"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "5605a18ae4df7977fa12b5e0a5e7bdb69a2e3e9a2c64dc5a1af13f6c1410a525"
+  },
+  "s2:hiphop:4:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 5,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "930f6a5f",
+   "motif_ops": [
+    "ending@28:+1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "930f6a5f",
+    "930f6a5f",
+    "930f6a5f",
+    "4fe2f5f5"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "e2eaa9b78aa1ec925023779a39314285ac3128d7bb368b55c9aa0eb90c924615"
+  },
+  "s2:hiphop:4:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "669c8e53",
+   "motif_ops": [
+    "neighbor@20:+1",
+    "chord@4:+2",
+    "ending@28:-2",
+    "balance@20:-1",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "669c8e53",
+    "669c8e53",
+    "669c8e53",
+    "669c8e53"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "669c8e53",
+   "sha256": "617442bbcb31a57bd8e2df01257120f842b39849b4c85dd0e6cb5a06a842c411"
+  },
+  "s2:hiphop:4:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "10a269b3",
+   "motif_ops": [
+    "chord@4:+2",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "10a269b3",
+    "10a269b3",
+    "669c8e53",
+    "d4cfc0ac"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "669c8e53",
+   "sha256": "6e655cd057ee6ae8581f122a9e9009ab13e71db2c7ec589fbf87522efb31d7ac"
+  },
+  "s2:hiphop:4:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "98ec8e29",
+   "motif_ops": [
+    "neighbor@12:-1",
+    "ending@28:-1"
+   ],
+   "motif_plan": [
+    "98ec8e29",
+    "98ec8e29",
+    "98ec8e29",
+    "1d3031f4"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "669c8e53",
+   "sha256": "964eaf86ba9699de48e89d467fb9adc9ce036fc60b882d10c272f69f9c33e969"
+  },
+  "s2:hiphop:4:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": null,
+   "motif_candidates": 24,
+   "motif_error": null,
+   "motif_fallback": true,
+   "motif_id": "98ec8e29",
+   "motif_ops": [
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "98ec8e29",
+    "98ec8e29",
+    "98ec8e29",
+    "048ac028"
+   ],
+   "motif_role": "fallback",
+   "motif_selection": "previous",
+   "motif_theme_id": "669c8e53",
+   "sha256": "477637c64c2c4242a4edea557333a2b8a8c24ec9c3b5f919b9c01dd8b7d6685c"
+  },
+  "s2:hiphop:5:v0": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "dea21d7f"
+   ],
+   "motif_role": "base",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "42d0693854b51b5348d3620bf9a96e71a65686ae050c95902f9b4a5d13eca1f0"
+  },
+  "s2:hiphop:5:v1": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "21b8a303",
+   "motif_ops": [
+    "chord@28:+2",
+    "ending@28:-2",
+    "balance@12:-2"
+   ],
+   "motif_plan": [
+    "21b8a303",
+    "21b8a303",
+    "21b8a303",
+    "9ef3c11f"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "1200935755e455c4df100499a989b2afc520e344f836fa7a3d4e41d7928609ec"
+  },
+  "s2:hiphop:5:v10": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "d89fa1b3",
+   "motif_ops": [
+    "chord@16:+2",
+    "ending@30:+2",
+    "balance@4:-2"
+   ],
+   "motif_plan": [
+    "d89fa1b3",
+    "d89fa1b3",
+    "d89fa1b3",
+    "547a7ea8"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0c489b55",
+   "sha256": "cd6889924f454281b05a498b6fba891e7cb41124c12317203528ab874d421295"
+  },
+  "s2:hiphop:5:v11": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "13593687",
+   "motif_ops": [
+    "neighbor@19:-1",
+    "ending@30:-1"
+   ],
+   "motif_plan": [
+    "13593687",
+    "13593687",
+    "13593687",
+    "9dced39b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0c489b55",
+   "sha256": "12258c0f46fef3c92bd67ff981dde1fe62c3d4b0c70a0c1575c0435f0a05f4b2"
+  },
+  "s2:hiphop:5:v2": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 6,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "990ede15",
+   "motif_ops": [
+    "ending@30:+2",
+    "ending@30:+2",
+    "balance@19:-1",
+    "balance@30:-2"
+   ],
+   "motif_plan": [
+    "990ede15",
+    "990ede15",
+    "990ede15",
+    "c4f4b925"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "d89fa1b3",
+   "sha256": "871769eb4872bc2cd82bd52f90be45bd4f8e3ff4dbc07be878580a1f579a7abf"
+  },
+  "s2:hiphop:5:v3": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 4,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "c4d5db10",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@4:+2",
+    "balance@28:-2"
+   ],
+   "motif_plan": [
+    "c4d5db10",
+    "c4d5db10",
+    "c4d5db10",
+    "0c489b55"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "f8c28376025c09a7ecabf5817701dfd79399a22dd0fe00287b7a8df4689d8011"
+  },
+  "s2:hiphop:5:v4": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "807cb204",
+   "motif_ops": [
+    "chord@12:-1",
+    "ending@30:+2"
+   ],
+   "motif_plan": [
+    "807cb204",
+    "807cb204",
+    "67b7cd3b",
+    "f6ffb833"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "875356a0291c79cbdcbcde6dc5bd1bbdeb54c60d47f6ae2b40675e763875f49f"
+  },
+  "s2:hiphop:5:v5": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 3,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "68a62a8d",
+   "motif_ops": [
+    "ending@28:+1",
+    "ending@28:+2"
+   ],
+   "motif_plan": [
+    "68a62a8d",
+    "68a62a8d",
+    "68a62a8d",
+    "b527ed4b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "c4d5db10",
+   "sha256": "3013290688d0fa22a919e4f77486c7c2e3db2f951b1cb07baa43a3d60b0019d3"
+  },
+  "s2:hiphop:5:v6": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0335b874",
+   "motif_ops": [
+    "chord@20:+2",
+    "neighbor@30:+1",
+    "ending@30:-2",
+    "balance@16:-2",
+    "balance@30:-1"
+   ],
+   "motif_plan": [
+    "0335b874",
+    "0335b874",
+    "0335b874",
+    "26a8e304"
+   ],
+   "motif_role": "return",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0335b874",
+   "sha256": "43a42a56bd4c05d22ebbd26511bad5c7896dbf1e543a21ea9e10021d8d75b2fd"
+  },
+  "s2:hiphop:5:v7": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 8,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "26a8e304",
+   "motif_ops": [
+    "neighbor@30:-1",
+    "ending@28:-2"
+   ],
+   "motif_plan": [
+    "26a8e304",
+    "26a8e304",
+    "4d621ed0",
+    "8dcfa75b"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0335b874",
+   "sha256": "fc7051c5ee16b3d82e43e4d80622e59d393fef8388ab6aebc1c2f3d8a77fc284"
+  },
+  "s2:hiphop:5:v8": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "577882f2",
+   "motif_ops": [
+    "neighbor@14:-1",
+    "ending@30:+1",
+    "balance@3:-2"
+   ],
+   "motif_plan": [
+    "577882f2",
+    "577882f2",
+    "577882f2",
+    "81659dd1"
+   ],
+   "motif_role": "develop",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0335b874",
+   "sha256": "67dfd4b555d9616330cba210acdb46b70b3886ba642ab2f9c6b1663886949217"
+  },
+  "s2:hiphop:5:v9": {
+   "dev_version": "v2b.1",
+   "gen_version": "v2a.3+v2b.1",
+   "motif_candidate_idx": 0,
+   "motif_candidates": 12,
+   "motif_error": null,
+   "motif_fallback": false,
+   "motif_id": "0c489b55",
+   "motif_ops": [
+    "derive_sequence@0",
+    "ending@28:-1",
+    "balance@4:+2",
+    "balance@28:-1"
+   ],
+   "motif_plan": [
+    "0c489b55",
+    "0c489b55",
+    "0c489b55",
+    "0c489b55"
+   ],
+   "motif_role": "derive",
+   "motif_selection": "candidate",
+   "motif_theme_id": "0c489b55",
+   "sha256": "1548a7c25429e8cf2c1b31ed0bb4bcce39ecdd0cdaae5e8ba054dfb23375f2cc"
+  }
+ },
+ "meta": {
+  "accepted_audition_hiphop3_s1": [
+   "b32918b3920ec0c1586913303df033146620cab9c6e71fde55ef0b7a4daf8c27",
+   "597cf356c6211e7328a7629dde7c0593fc5778e1e5781732e4ec3c1ef4fddd83",
+   "376fec2bb6a37a82e5c5749ee438d144fe1ae86e301b6444f99a865979a2932f",
+   "05d4580eddf3d536b1b51cd48d18fb4443dd6123c1b51a148c1b1c0ffaf82a7c",
+   "e99bdd0fbfcbccd575758e4ee1d1fbee4dbfbe5222b10d17c3cdb378e26a4d34",
+   "b2d00f05fabe87e25d2fb157cde5a2283befe06218a2d0dfde562ab64375ad86",
+   "e3a562f08a9e9b9473241d785586e01667bb544bb0b35e5f7b5b03898763514c",
+   "38befa3d74b892530fbb405dcea2efabed60c425940bab8eaadea48dad75608b"
+  ],
+  "created": "2026-10-05T13:59:44",
+  "default_stim": 1,
+  "default_visits": 4,
+  "description": "SessionComposer MIDI sha256 freeze; see tests/test_develop_identity.py",
+  "git_branch": "v2-controlled-live-generation",
+  "git_dirty": true,
+  "git_head": "e33067761ae9ee42b245311201cbb0aeeab01a9b",
+  "hiphop_stims": [
+   1,
+   2,
+   19
+  ],
+  "hiphop_visits": 12,
+  "versions": {
+   "numpy": "2.5.2",
+   "pretty_midi": "0.2.11.post0",
+   "python": "3.12.13"
+  }
+ }
+}

@@ -1,0 +1,67 @@
+{
+ "schema": "groovegen-headphone-check/1",
+ "method": "Huggins pitch after Milne et al. (2021)",
+ "params": {
+  "sr": 44100,
+  "hp_f0_hz": 600.0,
+  "hp_half_bandwidth": 0.06,
+  "interval_s": 1.0,
+  "gap_s": 0.5,
+  "ramp_s": 0.02,
+  "rms_dbfs": -23.0,
+  "seed": 20261012,
+  "interval_times_s": [
+   [
+    0,
+    1
+   ],
+   [
+    1.5,
+    2.5
+   ],
+   [
+    3,
+    4
+   ]
+  ]
+ },
+ "pass_min_correct": 5,
+ "trials": [
+  {
+   "id": "hp1",
+   "file": "hp1.wav",
+   "answer": 2,
+   "audio_sha256": "2033f899ad3a766488417943de37e06f36ed246a58b6a56024752ccfa5747512"
+  },
+  {
+   "id": "hp2",
+   "file": "hp2.wav",
+   "answer": 1,
+   "audio_sha256": "d1ef3f05d3a7f05979f16764437a8ddeb459ed0a1f4c2d32c0efea9bfbba6c53"
+  },
+  {
+   "id": "hp3",
+   "file": "hp3.wav",
+   "answer": 3,
+   "audio_sha256": "c8bfa0e3d5a302e4431abb1aa7e3801a0f07db395c3a20980bfc364b4a45262d"
+  },
+  {
+   "id": "hp4",
+   "file": "hp4.wav",
+   "answer": 3,
+   "audio_sha256": "1fed6bd84b31100df046c08516c82269892af181b50d358ad78a27c2f9e146e8"
+  },
+  {
+   "id": "hp5",
+   "file": "hp5.wav",
+   "answer": 2,
+   "audio_sha256": "9a9714295c16f3dceeea7fb186434b772989432623e4b81825ea74411330c21a"
+  },
+  {
+   "id": "hp6",
+   "file": "hp6.wav",
+   "answer": 1,
+   "audio_sha256": "129899a281980d5066a20f049e625694ce742d6e12b167c8f3d29de6b43d1770"
+  }
+ ]
+}

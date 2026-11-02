@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening study</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: #eef1f5; color: #1f2933; }
+  body { font: 21px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; justify-content: center; }
+  main { width: 100%; max-width: 780px; padding: 40px 24px; }
+  .card { background: #fff; border-radius: 18px; box-shadow: 0 1px 3px rgba(31, 41, 51, .08), 0 8px 24px rgba(31, 41, 51, .06);
+          padding: 44px 48px; }
+  h1 { font-size: 32px; font-weight: 600; margin: 0 0 22px; letter-spacing: -.01em; }
+  p { margin: 0 0 16px; }
+  .muted { color: #616e7c; }
+  .small { font-size: 17px; }
+  button { font: inherit; font-size: 22px; font-weight: 500; min-height: 60px; min-width: 200px; padding: 10px 30px;
+           border: 0; border-radius: 12px; background: #2f5d8a; color: #fff; cursor: pointer;
+           display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: background .15s; }
+  button:hover:not(:disabled) { background: #264d73; }
+  button:disabled { background: #cbd2d9; color: #f5f7fa; cursor: default; }
+  button:focus-visible, input:focus-visible { outline: 4px solid #e0a000; outline-offset: 4px; }
+  button.secondary { background: #fff; color: #2f5d8a; box-shadow: inset 0 0 0 2px #2f5d8a; }
+  button.secondary:hover:not(:disabled) { background: #f0f4f8; }
+  button.big { min-width: 240px; min-height: 76px; font-size: 26px; border-radius: 40px; }
+  .row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 30px; }
+  .center { justify-content: center; }
+  label.check { display: flex; gap: 16px; align-items: center; margin: 26px 0 0; cursor: pointer; }
+  label.check input { width: 30px; height: 30px; accent-color: #2f5d8a; }
+  ol.qs { padding-left: 1.3em; margin: 0 0 16px; }
+  ol.qs li { margin-bottom: 6px; font-weight: 500; }
+
+  /* progress through the clips */
+  .top { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; }
+  .top .label { font-size: 17px; color: #616e7c; white-space: nowrap; }
+  .bar { flex: 1; height: 8px; background: #e4e7eb; border-radius: 4px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: #2f5d8a; border-radius: 4px; transition: width .3s; }
+
+  /* listening */
+  .stage { text-align: center; padding: 26px 0 6px; }
+  .listening-text { font-size: 26px; color: #2f5d8a; margin-bottom: 26px; }
+  .meter { height: 14px; background: #e4e7eb; border-radius: 7px; overflow: hidden; max-width: 520px; margin: 0 auto; }
+  .meter > div { height: 100%; width: 0; background: #7fa7cc; border-radius: 7px; }
+
+  /* rating scales */
+  .question { margin: 8px 0 6px; font-weight: 600; font-size: 23px; }
+  .question + .scale { margin-bottom: 30px; }
+  .scale { position: relative; }
+  input[type=range].vas { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 56px;
+                          background: transparent; margin: 0; touch-action: none; cursor: pointer; }
+  input[type=range].vas::-webkit-slider-runnable-track { height: 10px; background: #cbd2d9; border-radius: 5px; }
+  input[type=range].vas::-moz-range-track { height: 10px; background: #cbd2d9; border-radius: 5px; }
+  input[type=range].vas::-webkit-slider-thumb { -webkit-appearance: none; width: 40px; height: 40px; margin-top: -15px;
+                                                border-radius: 50%; background: #2f5d8a; border: 4px solid #fff;
+                                                box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+  input[type=range].vas::-moz-range-thumb { width: 32px; height: 32px; border-radius: 50%; background: #2f5d8a;
+                                            border: 4px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+  input[type=range].vas.untouched::-webkit-slider-thumb { opacity: 0; }
+  input[type=range].vas.untouched::-moz-range-thumb { opacity: 0; }
+  /* six unlabeled tick marks; 20px insets = half the thumb, where its centre stops */
+  .ticks { position: relative; height: 12px; margin: -14px 20px 0; pointer-events: none; }
+  .ticks span { position: absolute; top: 0; width: 2px; height: 12px; background: #9aa5b1; transform: translateX(-1px); }
+  .ticks span:nth-child(1) { left: 0; }
+  .ticks span:nth-child(2) { left: 20%; }
+  .ticks span:nth-child(3) { left: 40%; }
+  .ticks span:nth-child(4) { left: 60%; }
+  .ticks span:nth-child(5) { left: 80%; }
+  .ticks span:nth-child(6) { left: 100%; }
+  .anchors { display: flex; justify-content: space-between; color: #52606d; font-size: 18px; margin-top: 6px; }
+
+  .note { background: #f0f4f8; border-radius: 10px; padding: 12px 18px; color: #3e4c59; font-size: 18px; margin-bottom: 22px; }
+  .error { background: #fbe3e3; color: #7a1b1b; padding: 16px 20px; border-radius: 10px; margin-bottom: 20px; }
+  .saved { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); background: #1f2933; color: #fff;
+           padding: 8px 20px; border-radius: 20px; font-size: 17px; opacity: 0; transition: opacity .25s; pointer-events: none; }
+  .saved.show { opacity: .92; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div id="saved" class="saved" role="status" aria-live="polite">✓ Saved</div>
+<main>
+  <div id="error" class="error" hidden>Something went wrong. Please tell the researcher.</div>
+
+  <section id="loading" class="card"><p class="muted">Loading…</p></section>
+
+  <section id="welcome" class="card" hidden>
+    <h1>Welcome</h1>
+    <p>Thank you for taking part in this listening study.</p>
+    <p>Before you start, the researcher will have gone through the consent form with you.</p>
+    <label class="check"><input type="checkbox" id="consent"> I have given my consent to take part.</label>
+    <div class="row">
+      <button id="welcome-next" class="primary" disabled>Begin</button>
+      <button id="fullscreen" class="secondary">Full screen</button>
+    </div>
+  </section>
+
+  <section id="instructions" class="card" hidden>
+    <h1>Instructions</h1>
+    <p>You will hear 29 short music clips: 2 practice clips, then 27 clips for the study.
+       Each clip lasts about 8 to 16 seconds and plays once.</p>
+    <p>After each clip, please answer two questions by moving each slider:</p>
+    <ol class="qs">
+      <li>How much does this music make you want to move or dance?</li>
+      <li>How calming or relaxing does this music feel?</li>
+    </ol>
+    <p>Please answer both questions for every clip. There are no right or wrong answers;
+       we are interested in your own impression of each clip on its own.</p>
+    <p>Halfway through there is a short break. You can stop at any time by telling the researcher.</p>
+    <div class="row"><button id="instructions-next" class="primary">Continue</button></div>
+  </section>
+
+  <section id="volume" class="card" hidden>
+    <h1>Headphones and volume</h1>
+    <p>Please put on the headphones now.</p>
+    <p>Press <b>Play sample</b> to hear a short piece of music. Adjust the computer's volume so the music is
+       clearly audible and comfortable. You can play the sample as often as you like.</p>
+    <p class="note">Please do not change the volume after this step.</p>
+    <div class="row">
+      <button id="volume-play" class="secondary" disabled>Loading…</button>
+      <button id="volume-next" class="primary" disabled>The volume is comfortable</button>
+    </div>
+  </section>
+
+  <section id="break" class="card" hidden>
+    <h1>Short break</h1>
+    <p>You are halfway through. Take a moment to rest if you like.</p>
+    <p class="muted">Please keep the headphones on and leave the volume as it is.</p>
+    <div class="row"><button id="break-next" class="primary">Continue when ready</button></div>
+  </section>
+
+  <section id="trial" class="card" hidden>
+    <div class="top">
+      <span class="label" id="trial-label"></span>
+      <div class="bar" aria-hidden="true"><div id="progress-fill"></div></div>
+    </div>
+    <p id="trial-note" class="note" hidden></p>
+    <div id="play-area" class="stage">
+      <p id="play-msg" class="muted"></p>
+      <div class="row center">
+        <button id="play" class="primary big" disabled>Loading…</button>
+      </div>
+    </div>
+    <div id="listening" class="stage" hidden>
+      <p class="listening-text">Listening…</p>
+      <div class="meter" aria-hidden="true"><div id="meter-fill"></div></div>
+    </div>
+    <div id="ratings" hidden>
+      <p class="question" id="q-dance">How much does this music make you want to move or dance?</p>
+      <div class="scale">
+        <input type="range" class="vas untouched" id="danceability" min="0" max="100" step="1" value="50"
+               aria-labelledby="q-dance">
+        <div class="ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="anchors"><span>Not at all</span><span>Extremely</span></div>
+      </div>
+      <p class="question" id="q-calming">How calming or relaxing does this music feel?</p>
+      <div class="scale">
+        <input type="range" class="vas untouched" id="calming" min="0" max="100" step="1" value="50"
+               aria-labelledby="q-calming">
+        <div class="ticks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="anchors"><span>Not at all calming</span><span>Extremely calming</span></div>
+      </div>
+      <div class="row">
+        <button id="submit" class="primary" disabled>Continue</button>
+        <span id="rate-hint" class="muted small">Please move both sliders to continue.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="done" class="card" hidden>
+    <h1>Thank you</h1>
+    <p>You have finished. Please take off the headphones and let the researcher know.</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const SLIDERS = ["danceability", "calming"];
+const PLAY_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>';
+let state = null;
+let clip = null;            // {seq, url, audio}
+let volume = null;          // {url, audio}
+let startSent = false, perfStart = null, perfEnd = null, ratingsSeq = null, meterRaf = null;
+let touched = {};
+
+function clientStamp(extra) { return Object.assign({wall_ms: Date.now(), perf_ms: performance.now()}, extra || {}); }
+
+async function post(path, body, extra) {
+  body = Object.assign({}, body || {}, {client: clientStamp(extra)});
+  const r = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || String(r.status)); e.status = r.status; throw e; }
+  return j;
+}
+
+function fail(err) {
+  console.error(err);
+  $("error").hidden = false;
+  post("/api/client_event", {kind: "audio_error", seq: state && state.trial ? state.trial.seq : null,
+                             detail: String(err && err.message || err)}).catch(() => {});
+}
+
+// 409 = the server's state moved on (another tab, a reload): resync instead of failing.
+async function guarded(fn) {
+  try { await fn(); }
+  catch (e) { if (e.status === 409) { await refresh(); } else { fail(e); } }
+}
+
+async function refresh(newState) {
+  if (newState) { state = newState; }
+  else {
+    const r = await fetch("/api/state", {cache: "no-store"});
+    if (!r.ok) throw new Error("state " + r.status);
+    state = await r.json();
+  }
+  render();
+}
+
+function show(id) { for (const s of document.querySelectorAll("section")) s.hidden = s.id !== id; }
+
+function render() {
+  if (state.stage !== "volume") stopVolume();
+  if (state.stage === "welcome") show("welcome");
+  else if (state.stage === "instructions") show("instructions");
+  else if (state.stage === "volume") { show("volume"); $("volume-next").disabled = !state.volume_played; loadVolume(); }
+  else if (state.stage === "trials" && state.break) { dropClip(); show("break"); $("break-next").focus(); }
+  else if (state.stage === "trials") renderTrial().catch(fail);
+  else if (state.stage === "done") { dropClip(); show("done"); }
+}
+
+function flashSaved() {
+  $("saved").classList.add("show");
+  setTimeout(() => $("saved").classList.remove("show"), 1400);
+}
+
+// Enter presses the main button of the current screen (buttons handle Enter themselves when focused).
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || e.repeat || e.target.tagName === "BUTTON") return;
+  const sec = [...document.querySelectorAll("section")].find((s) => !s.hidden);
+  const btn = sec && [...sec.querySelectorAll("button.primary")].find((b) => !b.disabled && b.offsetParent !== null);
+  if (btn) { e.preventDefault(); btn.click(); }
+});
+
+// ---- welcome / instructions -------------------------------------------------
+
+$("consent").addEventListener("change", () => { $("welcome-next").disabled = !$("consent").checked; });
+$("welcome-next").addEventListener("click", () => guarded(async () => {
+  $("welcome-next").disabled = true;
+  await refresh(await post("/api/advance", {from: "welcome"}));
+}));
+$("fullscreen").addEventListener("click", () => {
+  const el = document.documentElement;
+  (el.requestFullscreen ? el.requestFullscreen() : Promise.reject()).then(
+    () => post("/api/client_event", {kind: "fullscreen", detail: "on"}).catch(() => {}), () => {});
+});
+$("instructions-next").addEventListener("click", () => guarded(async () => {
+  $("instructions-next").disabled = true;
+  await refresh(await post("/api/advance", {from: "instructions"}));
+}));
+
+// ---- volume check -------------------------------------------------------------
+
+async function loadVolume() {
+  if (volume) return;
+  volume = {};
+  const r = await fetch("/clip?n=volume", {cache: "no-store"});
+  if (!r.ok) { fail(new Error("volume clip " + r.status)); return; }
+  volume.url = URL.createObjectURL(await r.blob());
+  volume.audio = new Audio(volume.url);
+  volume.audio.addEventListener("playing", () => {
+    $("volume-play").textContent = "Stop";
+    post("/api/volume_play", {}).then((s) => { state = s; $("volume-next").disabled = !s.volume_played; }).catch(fail);
+  });
+  volume.audio.addEventListener("pause", () => { $("volume-play").textContent = "Play sample"; });
+  $("volume-play").textContent = "Play sample";
+  $("volume-play").disabled = false;
+}
+function stopVolume() {
+  if (!volume || !volume.audio) return;
+  volume.audio.pause();
+  URL.revokeObjectURL(volume.url);
+  volume = null;
+}
+$("volume-play").addEventListener("click", () => {
+  if (!volume || !volume.audio) return;
+  if (volume.audio.paused) { volume.audio.currentTime = 0; volume.audio.play().catch(fail); }
+  else volume.audio.pause();
+});
+$("volume-next").addEventListener("click", () => guarded(async () => {
+  $("volume-next").disabled = true;
+  stopVolume();
+  await refresh(await post("/api/advance", {from: "volume"}));
+}));
+
+// ---- break --------------------------------------------------------------------------
+
+$("break-next").addEventListener("click", () => guarded(async () => {
+  $("break-next").disabled = true;
+  try { await refresh(await post("/api/break_done", {})); }
+  finally { $("break-next").disabled = false; }
+}));
+
+// ---- trials ---------------------------------------------------------------------
+
+function dropClip() {
+  stopMeter();
+  if (!clip) return;
+  if (clip.audio) clip.audio.pause();
+  if (clip.url) URL.revokeObjectURL(clip.url);
+  clip = null;
+}
+
+function startMeter(c) {
+  stopMeter();
+  const step = () => {
+    if (c !== clip || !c.audio) return;
+    const d = c.audio.duration;
+    $("meter-fill").style.width = (d > 0 ? Math.min(100, 100 * c.audio.currentTime / d) : 0) + "%";
+    meterRaf = requestAnimationFrame(step);
+  };
+  step();
+}
+function stopMeter() { if (meterRaf) cancelAnimationFrame(meterRaf); meterRaf = null; }
+
+async function loadClip(seq) {
+  if (clip && clip.seq === seq) return clip.ready;
+  dropClip();
+  const c = {seq: seq};
+  clip = c;
+  c.ready = (async () => {
+    const r = await fetch("/clip?n=" + seq, {cache: "no-store"});
+    if (!r.ok) { const e = new Error("clip " + r.status); e.status = r.status; throw e; }
+    c.url = URL.createObjectURL(await r.blob());
+    const a = new Audio();
+    a.preload = "auto";
+    await new Promise((res, rej) => {
+      a.addEventListener("canplaythrough", res, {once: true});
+      a.addEventListener("error", () => rej(new Error("audio decode")), {once: true});
+      a.src = c.url;
+      a.load();
+    });
+    a.addEventListener("playing", () => onPlaying(c));
+    a.addEventListener("pause", () => onPause(c));
+    a.addEventListener("ended", () => guarded(() => onEnded(c)));
+    a.addEventListener("error", () => fail(new Error("audio playback")));
+    c.audio = a;
+  })();
+  return c.ready;
+}
+
+async function renderTrial() {
+  const t = state.trial;
+  show("trial");
+  $("trial-label").textContent = (t.practice ? "Practice " : "Clip ") + t.number + " of " + t.total;
+  $("progress-fill").style.width = (t.practice ? 0 : 100 * (t.number - 1) / t.total) + "%";
+  let note = "";
+  if (t.practice && t.number === 1) note = "These two practice clips help you get used to the task.";
+  if (t.first_main && !t.ended) note = "Practice is over. The study clips start now.";
+  $("trial-note").textContent = note;
+  $("trial-note").hidden = !note;
+  if (t.ended) { showRatings(t); return; }
+  $("ratings").hidden = true;
+  $("listening").hidden = true;
+  $("play-area").hidden = false;
+  $("play-msg").textContent = t.plays > 0
+    ? "The clip was interrupted. Press Play to hear it again from the start."
+    : "Press Play when you are ready. The clip plays once.";
+  $("play").disabled = true;
+  $("play").textContent = "Loading…";
+  try { await loadClip(t.seq); }
+  catch (e) { if (e.status === 409) { await refresh(); return; } throw e; }
+  if (state.trial && state.trial.seq === t.seq && !state.trial.ended && !state.break) {
+    $("play").disabled = false;
+    $("play").innerHTML = PLAY_ICON + "<span>Play</span>";
+    $("play").focus();
+  }
+}
+
+$("play").addEventListener("click", () => {
+  if (!clip || !clip.audio || clip.seq !== state.trial.seq) return;
+  $("play").disabled = true;
+  startSent = false;
+  perfEnd = null;
+  clip.audio.currentTime = 0;
+  $("meter-fill").style.width = "0%";
+  clip.audio.play().catch((e) => { $("play").disabled = false; fail(e); });
+});
+
+function onPlaying(c) {
+  if (c !== clip) return;
+  $("play-area").hidden = true;
+  $("listening").hidden = false;
+  startMeter(c);
+  if (startSent) return;
+  startSent = true;
+  perfStart = performance.now();
+  post("/api/play_start", {seq: c.seq}).catch((e) => {
+    c.audio.pause();
+    if (e.status === 409) refresh().catch(fail); else fail(e);
+  });
+}
+
+// An interrupted clip (headphones removed, a media key, ...) is not resumed mid-way:
+// the participant plays it again from the start, which the server logs as a restart.
+function onPause(c) {
+  if (c !== clip || c.audio.ended || !startSent) return;
+  stopMeter();
+  startSent = false;
+  post("/api/client_event", {kind: "audio_paused", seq: c.seq, detail: JSON.stringify({
+    at_s: c.audio.currentTime, page_hidden: document.hidden, page_focus: document.hasFocus()})}).catch(() => {});
+  $("listening").hidden = true;
+  $("play-area").hidden = false;
+  $("play-msg").textContent = "The clip was interrupted. Press Play to hear it again from the start.";
+  $("play").disabled = false;
+  $("play").innerHTML = PLAY_ICON + "<span>Play</span>";
+}
+
+async function onEnded(c) {
+  if (c !== clip) return;
+  stopMeter();
+  $("meter-fill").style.width = "100%";
+  perfEnd = performance.now();
+  const played = (perfEnd - perfStart) / 1000;
+  await refresh(await post("/api/play_end", {seq: c.seq}, {played_s: played}));
+}
+
+function showRatings(t) {
+  $("play-area").hidden = true;
+  $("listening").hidden = true;
+  $("ratings").hidden = false;
+  if (ratingsSeq === t.seq) return;
+  ratingsSeq = t.seq;
+  if (perfEnd === null) perfEnd = performance.now();     // after a reload: latency from when the sliders appear
+  touched = {};
+  for (const id of SLIDERS) { $(id).value = 50; $(id).classList.add("untouched"); }
+  $("submit").disabled = true;
+  $("rate-hint").hidden = false;
+  $("ratings").scrollIntoView({block: "nearest"});     // both sliders and Continue on screen in short windows
+}
+
+function markTouched(id) {
+  touched[id] = true;
+  $(id).classList.remove("untouched");
+  const all = SLIDERS.every((s) => touched[s]);
+  $("submit").disabled = !all;
+  $("rate-hint").hidden = all;
+}
+for (const id of SLIDERS) {
+  for (const ev of ["input", "change", "pointerup"]) $(id).addEventListener(ev, () => markTouched(id));
+}
+
+$("submit").addEventListener("click", () => guarded(async () => {
+  if (!SLIDERS.every((s) => touched[s])) return;
+  $("submit").disabled = true;
+  const body = {seq: state.trial.seq, latency_ms: performance.now() - perfEnd};
+  for (const id of SLIDERS) { body[id] = parseInt($(id).value, 10); body["touched_" + id] = true; }
+  const s = await post("/api/response", body);
+  dropClip();
+  ratingsSeq = null;
+  perfEnd = null;
+  flashSaved();
+  await refresh(s);
+}));
+
+window.addEventListener("beforeunload", (e) => {
+  if (state && state.stage === "trials") { e.preventDefault(); e.returnValue = ""; }
+});
+
+post("/api/client_event", {kind: "page_loaded"}).catch(() => {});
+refresh().catch(fail);
+</script>
+</body>
+</html>
