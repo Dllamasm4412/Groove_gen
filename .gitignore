@@ -71,3 +71,6 @@ groovegen_v3_audition*/
 groovegen_v3_audition*.zip
 # a soundfonts link into the main checkout, for a v3 worktree (composer/v3/NEXT_ITERATION.md)
 /soundfonts
+# v3 listening evaluation packages (audio, MIDI, archives; delivered, not committed)
+groovegen_v3_listening_evaluation*/
+groovegen_v3_listening_evaluation*.zip

@@ -53,7 +53,9 @@ or `v2c`) is unchanged.
 | `checks.py` | rule checks (`rule_violations`) and transposition-invariant identity |
 | `source.py` | `HipHopV3Source` (hip-hop only) and `V3SegmentSource` (drop-in for `SessionSegmentSource`: hip-hop from v3, other genres from v2c) |
 | `../../audition_v3.py` | renders, measures and packages the audition samples (Tests A-D) |
+| `../../listening_eval_v3.py` | renders the second listening package (Tests A-E: blind v2c / v3 pairs, tempo and intensity comparisons) |
 | `../../tests/test_v3_hiphop.py` | 29 tests |
+| `../../tests/test_listening_eval_v3.py` | 5 tests for the listening package's sample definitions |
 | `NEXT_ITERATION.md` | Musyng Kite re-render steps, upper-level energy, listening agenda, interface risks |
 
 ## Running
