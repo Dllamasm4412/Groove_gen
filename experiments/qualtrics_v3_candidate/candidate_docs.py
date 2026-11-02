@@ -146,7 +146,7 @@ def write_docs(out: Path, E: Path, rows, audit, practice, env, label, prelim, mo
           '- **The six other genres:** new, opt-in `composer/v3/genres.py` (v3.genres.0), written for this corpus. '
           'Each genre has its own harmony grammar, drum / percussion patterns per tier, bass-drum relationship, '
           'comping, melodic cells and palettes, building on the instruments the developer chose by ear for the '
-          'locked cells (calm: piano with the original calm configuration's light pulse; lo-fi: Rhodes, upright bass, soft swung drums; R&B: Rhodes, synth '
+          'locked cells (calm: piano with the original calm configuration\'s light pulse; lo-fi: Rhodes, upright bass, soft swung drums; R&B: Rhodes, synth '
           'sub-bass, straight half-time 16ths; pop: acoustic-guitar or piano lead; Latin: son clave, tumbao bass, '
           'montuno piano, percussion growing from shaker to congas, bongos and cowbell; rock: clean triads at low '
           'tiers, palm-muted then open power chords above). Shared from v3: the motif and chord-fitting machinery, '

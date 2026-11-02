@@ -66,3 +66,8 @@ def test_preview_is_about_ten_seconds():
     for tempo in (65, 78, 90, 104, 118, 130):
         n = bc.preview_bars(tempo)
         assert 2 <= n <= 8 and abs(n * 240.0 / tempo - 10.0) <= 120.0 / tempo + 1e-9
+
+
+def test_report_modules_import():
+    import candidate_docs  # noqa: F401
+    import qc_report  # noqa: F401
