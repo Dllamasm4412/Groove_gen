@@ -22,7 +22,9 @@ The six other genres are written here, each with its own
     lo-fi: Rhodes and upright bass; R&B: Rhodes and synth sub-bass,
     straight half-time 16ths; pop: acoustic-guitar lead; Latin: montuno piano,
     tumbao bass, percussion built shaker -> clave -> congas -> cowbell ->
-    timbales; rock: clean triads at low tiers, driven power chords above).
+    timbales; rock (v3.genres.1): riff-based hard rock on driven guitars at
+    every tier, after the stadium / melodic hard-rock style the developer
+    asked for - riffs and hooks are generated, no song is reproduced).
 
 The composition (key, harmony, palette, groove variant, motif) depends only on
 the seed; the tier changes only the realisation (layers, rhythmic activity,
@@ -47,7 +49,10 @@ from composer.v3.state import Motif, MotifNote
 from composer.v3.theory import (BARS, MODES, STEPS_PER_BAR, Chord, Grid, degree_to_midi, directed, lead_voice,
                                 melodic_pcs, place, weighted)
 
-GEN_VERSION = 'v3.genres.0'
+GEN_VERSION = 'v3.genres.1'
+# v3.genres.1 (2026-11-02, after the developer's listening of the candidate corpus): rock rewritten as
+# riff-based hard rock; pop tier 1 re-arranged. Every other genre and pop tiers 2-5 are byte-identical to
+# v3.genres.0.
 GENRES = ('calm', 'lofi', 'rnb', 'pop', 'latin', 'rock')
 VOCAL_PROGRAMS = {52, 53, 54, 85, 91}
 
@@ -98,30 +103,34 @@ STYLES: dict[str, dict] = {
                'p7': ((2, 2), (6, 2), (8, 4), (14, 2))},
     ),
     'rock': dict(
-        modes={'aeolian': 3, 'mixolydian': 2, 'ionian': 2, 'dorian': 1},
+        # Riff-based hard rock in the stadium-rock / heavy-melodic tradition the developer named
+        # (driving straight-8th backbeat, power-chord riffs with space, pedal-point 16th riffs,
+        # palm-muted chugs, melodic lead hooks at the top tiers). Riffs and hooks are generated from
+        # these techniques; no existing song's riff, melody or arrangement is reproduced.
+        modes={'aeolian': 3, 'mixolydian': 3, 'dorian': 1},
         loops={
-            'aeolian': {_L(('i', 'm'), ('bVII', 'M'), ('bVI', 'M'), ('bVII', 'M')): 3,
-                        _L(('i', 'm'), ('bVI', 'M'), ('bIII', 'M'), ('bVII', 'M')): 2,
-                        _L(('i', 'm'), ('iv', 'm'), ('bVII', 'M'), ('i', 'm')): 1},
-            'dorian': {_L(('i', 'm'), ('i', 'm'), ('IV', 'M'), ('IV', 'M')): 1,
-                       _L(('i', 'm'), ('bVII', 'M'), ('IV', 'M'), ('i', 'm')): 1},
-            'mixolydian': {_L(('I', 'M'), ('bVII', 'M'), ('IV', 'M'), ('I', 'M')): 2,
-                           _L(('I', 'M'), ('bVII', 'M'), ('IV', 'M'), ('IV', 'M')): 1},
-            'ionian': {_L(('I', 'M'), ('IV', 'M'), ('V', 'M'), ('IV', 'M')): 2,
-                       _L(('I', 'M'), ('V', 'M'), ('vi', 'm'), ('IV', 'M')): 1,
-                       _L(('vi', 'm'), ('IV', 'M'), ('I', 'M'), ('V', 'M')): 1}},
+            'aeolian': {_L(('i', 'm'), ('i', 'm'), ('bVII', 'M'), ('bVI', 'M')): 3,
+                        _L(('i', 'm'), ('bVI', 'M'), ('bVII', 'M'), ('i', 'm')): 2,
+                        _L(('i', 'm'), ('bIII', 'M'), ('bVII', 'M'), ('i', 'm')): 2,
+                        _L(('i', 'm'), ('i', 'm'), ('iv', 'm'), ('bVII', 'M')): 1},
+            'mixolydian': {_L(('I', 'M'), ('bVII', 'M'), ('IV', 'M'), ('I', 'M')): 3,
+                           _L(('I', 'M'), ('I', 'M'), ('bVII', 'M'), ('IV', 'M')): 2,
+                           _L(('I', 'M'), ('IV', 'M'), ('I', 'M'), ('bVII', 'M')): 2},
+            'dorian': {_L(('i', 'm'), ('IV', 'M'), ('i', 'm'), ('IV', 'M')): 1,
+                       _L(('i', 'm'), ('bVII', 'M'), ('IV', 'M'), ('i', 'm')): 1}},
         colors={},
         cadence={'aeolian': (('bVII', 'M'), ('bVI', 'M')), 'dorian': (('bVII', 'M'), ('IV', 'M')),
-                 'mixolydian': (('bVII', 'M'), ('IV', 'M')), 'ionian': (('V', 'M'), ('IV', 'M'))},
-        tonic={'aeolian': ('i', 'm'), 'dorian': ('i', 'm'), 'mixolydian': ('I', 'M'), 'ionian': ('I', 'M')},
-        keys=(4, 9, 2, 7, 0, 11), swing=(0.5, 0.5),
-        palettes=({'clean': 27, 'drive': 29, 'bass': 34, 'lead': 29},
-                  {'clean': 26, 'drive': 30, 'bass': 34, 'lead': 27},
-                  {'clean': 27, 'drive': 29, 'bass': 33, 'lead': 18}),
+                 'mixolydian': (('bVII', 'M'), ('IV', 'M'))},
+        tonic={'aeolian': ('i', 'm'), 'dorian': ('i', 'm'), 'mixolydian': ('I', 'M')},
+        keys=(4, 4, 9, 9, 11, 2, 7, 0), swing=(0.5, 0.5),
+        palettes=({'riff': 29, 'bed': 30, 'lead': 29, 'bass': 34},
+                  {'riff': 30, 'bed': 29, 'lead': 30, 'bass': 34},
+                  {'riff': 29, 'bed': 29, 'lead': 30, 'bass': 33}),
         grooves=('a', 'b', 'c'),
+        riffs={'space': 3, 'drive': 2, 'chug': 2, 'pedal16': 2},
         cells={'r1': ((0, 2), (2, 2), (4, 2), (6, 2), (8, 4), (12, 4)), 'r2': ((0, 4), (6, 2), (8, 2), (10, 2), (12, 4)),
                'r3': ((0, 2), (3, 3), (6, 2), (8, 8)), 'r4': ((2, 2), (4, 2), (6, 2), (8, 2), (10, 6)),
-               'r5': ((0, 6), (6, 2), (8, 6), (14, 2))},
+               'r5': ((0, 6), (6, 2), (8, 6), (14, 2)), 'r6': ((0, 3), (3, 3), (6, 4), (12, 4))},
         pentatonic=True,
     ),
     'latin': dict(
@@ -224,7 +233,7 @@ STYLES: dict[str, dict] = {
 
 # Melody register per program (lowest, highest MIDI pitch) and the comping
 # register per program.
-LEAD_RANGE = {25: (55, 79), 0: (62, 86), 29: (52, 76), 27: (55, 79), 18: (60, 84), 73: (67, 91), 56: (58, 82),
+LEAD_RANGE = {25: (55, 79), 0: (62, 86), 29: (62, 86), 30: (62, 86), 27: (55, 79), 18: (60, 84), 73: (67, 91), 56: (58, 82),
               24: (55, 79), 11: (62, 86), 26: (55, 79), 65: (58, 82), 59: (60, 84), 49: (62, 84)}
 COMP_RANGE = {4: (52, 76), 5: (52, 76), 0: (50, 76), 25: (50, 74), 24: (50, 74), 27: (50, 74), 26: (50, 74),
               29: (40, 64), 30: (40, 64)}
@@ -243,7 +252,7 @@ PROGRAM_TRIM_DB = {0: 3.0, 4: -1.5, 5: -1.0, 11: 2.0, 18: -3.0, 24: 2.0, 25: 1.0
 # accompaniment under the melody.
 GENRE_MIX = {
     'pop': {'lead': -3.0, 'comp': -4.5, 'bass': -2.5, 'pad': -12.0, 'drums': 0.0},
-    'rock': {'lead': 0.0, 'clean': -5.0, 'drive': -3.0, 'bass': -4.5, 'drums': -1.0},
+    'rock': {'lead': -2.5, 'riff': -4.0, 'bed': -2.0, 'bass': -2.5, 'drums': 1.0},
     'rnb': {'lead': 0.0, 'comp': -6.0, 'bass': -4.0, 'pad': -12.0, 'drums': 0.0},
     'lofi': {'lead': -6.3, 'comp': -6.0, 'arp': -4.0, 'bass': -2.5, 'pad': -12.0, 'drums': 3.0},
     'latin': {'lead': -3.0, 'comp': -2.0, 'bass': -2.5, 'drums': 1.5},
@@ -280,6 +289,8 @@ class ExcerptSpec:
     motif: Motif
     mel_range: tuple[int, int]
     mel_tonic: int
+    riff: tuple = ()           # rock: the 2-bar guitar riff, ((step, dur, kind, interval), ...)
+    riff_family: str = ''      # rock: space | drive | chug | pedal16
 
     def program(self, role: str) -> Optional[int]:
         return dict(self.palette).get(role)
@@ -371,7 +382,86 @@ def create_spec(genre: str, seed: int) -> ExcerptSpec:
                        Motif((), ()), (lo, hi), tonic)
     harm = spec.harmony()
     motif = make_motif(rng, st['cells'], lambda m: fit_line(spec, m.notes, lambda s: _chord_at(harm, s)))
-    return replace(spec, motif=motif)
+    spec = replace(spec, motif=motif)
+    if genre == 'rock':
+        family = weighted(rng, st['riffs'])
+        spec = replace(spec, riff=make_riff(rng, family), riff_family=family)
+    return spec
+
+
+# =============================================================================
+# Rock riffs
+# =============================================================================
+
+# Intervals above the chord root a riff may use: minor-pentatonic with the blue note (6) and, for
+# the heavy chug riffs, the flat second (1). Major chords take the same minor-pentatonic colour,
+# the blues-rock sound.
+RIFF_IV = (0, 3, 5, 6, 7, 10, 12)
+
+
+def thin_riff(riff: tuple, family: str) -> tuple:
+    """The level-1 (intro) form of a riff: 8th-note drives and chugs keep their
+    accents on the beat, pedal riffs keep the moving line at 8th-note speed,
+    stab riffs (already sparse) are unchanged."""
+    if family == 'drive':
+        return tuple(e for e in riff if e[2] != 'P' or e[0] % 4 == 0)
+    if family == 'chug':
+        return tuple(e for e in riff if e[2] != 'M' or e[0] % 4 == 0)
+    if family == 'pedal16':
+        out = []
+        for st, dur, kind, iv in riff:
+            if st % 4 == 0:
+                out.append((st, 1.8, kind, iv))
+            elif st % 4 == 1:
+                out.append((st + 1, 1.8, kind, iv))       # the line note moves onto the off-beat 8th
+        return tuple(out)
+    return riff
+
+
+def make_riff(rng, family: str) -> tuple:
+    """A 2-bar riff: (step 0-31, duration in 16ths, kind, interval) with kind P a
+    power chord, M a palm-muted root and fifth, N a single note `interval`
+    semitones above the chord root, D the low root as a pedal."""
+    ev = []
+    if family == 'space':           # power-chord stabs with rests, a pentatonic run into the next bar
+        for b0 in (0, 16):
+            ev.append((b0, 1.5, 'P', 0))
+            ev.append((b0 + rng.choice((3, 6)), rng.choice((1.5, 2.5)), 'P', 0))
+            if rng.random() < 0.5:
+                ev.append((b0 + 8, 1.5, 'P', 0))
+            run = rng.choice(((10, 7, 5, 3), (3, 5, 6, 7), (12, 10, 7, 5), (0, 3, 5, 7)))
+            start = rng.choice((12, 11)) if b0 == 0 else rng.choice((12, 10))
+            for k, iv in enumerate(run):
+                if b0 + start + k < b0 + 16:
+                    ev.append((b0 + start + k, 0.9, 'N', iv))
+    elif family == 'drive':         # stadium 8ths: power chords on every 8th, a lick at the end of bar 2
+        for st in range(0, 32, 2):
+            if st < 28:
+                ev.append((st, 1.7, 'P', 0))
+        lick = rng.choice(((7, 5, 3, 0), (10, 7, 5, 3), (3, 5, 7, 10)))
+        for k, iv in enumerate(lick):
+            ev.append((28 + k, 0.9, 'N', iv))
+    elif family == 'chug':          # palm-muted pulse with syncopated power-chord accents and a dark passing note
+        accents = rng.choice(((0, 6, 10), (0, 3, 10, 14), (0, 6, 12)))
+        for st in range(0, 32, 2):
+            ev.append((st, 1.7, 'P', 0) if st % 16 in accents else (st, 0.7, 'M', 0))
+        ev = [e for e in ev if e[0] != 30] + [(30, 0.9, 'N', rng.choice((1, 6))), (31, 0.9, 'N', 0)]
+    else:                           # pedal16: the low root on every other 16th, a moving line in between
+        line = rng.choice(((12, 10, 7, 10), (7, 10, 12, 10), (12, 7, 10, 5), (3, 5, 7, 5)))
+        ladder = (0, 3, 5, 7, 10, 12, 15)
+        shift = -1 if line[0] > 5 else 1            # the second half of each bar moves one pentatonic step
+
+        def moved(iv):
+            return ladder[max(0, min(len(ladder) - 1, ladder.index(iv) + shift))]
+        k = 0
+        for st in range(32):
+            if st % 2 == 0:
+                ev.append((st, 0.8, 'P' if st % 16 == 0 else 'D', 0))
+            else:
+                iv = line[k % len(line)]
+                ev.append((st, 0.8, 'N', iv if (st // 8) % 2 == 0 else moved(iv)))
+                k += 1
+    return tuple(sorted(ev))
 
 
 # =============================================================================
@@ -552,13 +642,16 @@ def _melody(ctx: Ctx, part: _Part, vel: float, anchor: bool = False, lag: float 
         ctx.note(part, p + 12 * octave, g, max(0.5, d * articulation), vel * accent, lag=lag, jitter=0.006)
 
 
-def _finish(spec: ExcerptSpec, tempo: float, parts: list[tuple[_Part, str]]) -> pretty_midi.PrettyMIDI:
+def _finish(spec: ExcerptSpec, tempo: float, parts: list[tuple[_Part, str]],
+            pans: Optional[dict] = None) -> pretty_midi.PrettyMIDI:
     pm = pretty_midi.PrettyMIDI(initial_tempo=float(tempo))
     for part, role in parts:
         inst = part.finish()
         if not inst.notes:
             continue
         inst.control_changes.append(pretty_midi.ControlChange(7, channel_volume(inst.program, role, spec.genre), 0.0))
+        if pans and role in pans:
+            inst.control_changes.append(pretty_midi.ControlChange(10, pans[role], 0.0))
         pm.instruments.append(inst)
     return pm
 
@@ -589,12 +682,9 @@ def _pop(ctx: Ctx) -> pretty_midi.PrettyMIDI:
         for s in (4, 12):
             if last and fill and s == 12:
                 continue
-            if T == 1:
-                ctx.note(dr, SIDE, b0 + s, 0.6, 58)
-            else:
-                ctx.note(dr, SNARE, b0 + s, 0.8, (0, 84, 90, 94, 98)[T - 1])
-                if T >= 3:
-                    ctx.note(dr, CLAP, b0 + s, 0.6, (0, 0, 66, 74, 84)[T - 1])
+            ctx.note(dr, SNARE, b0 + s, 0.8, (70, 84, 90, 94, 98)[T - 1])
+            if T >= 3:
+                ctx.note(dr, CLAP, b0 + s, 0.6, (0, 0, 66, 74, 84)[T - 1])
         if T == 1:
             hats = [(s, 42, CH) for s in (0, 4, 8, 12)]
         elif T in (2, 3):
@@ -629,13 +719,13 @@ def _pop(ctx: Ctx) -> pretty_midi.PrettyMIDI:
     comp_prog = sp.program('comp')
     lo, hi = COMP_RANGE.get(comp_prog, (52, 76))
     comp = _melodic_part(sp, 'comp')
-    pats = {1: ((0, 15.5, 0.85),), 2: ((0, 7.5, 0.9), (8, 7.5, 0.8)),
+    pats = {1: ((0, 7.5, 0.95), (8, 7.5, 0.85)), 2: ((0, 7.5, 0.9), (8, 7.5, 0.8)),
             3: ((0, 5.5, 1.0), (6, 1.8, 0.8), (8, 5.5, 0.9), (14, 1.8, 0.8)),
             4: tuple((s, 1.6, 1.0 if s in (0, 6, 8, 14) else 0.75) for s in range(0, 16, 2)),
             5: tuple((s, 1.6, 1.0 if s in (0, 6, 8, 14) else 0.8) for s in range(0, 16, 2))}
     _comp_hits(ctx, comp, pats[T], lo, hi, 70 + dyn, strum=0.012 if comp_prog == 25 else 0.0)
     lead = _melodic_part(sp, 'lead')
-    _melody(ctx, lead, 90 + dyn, anchor=T == 1, articulation=0.85)
+    _melody(ctx, lead, 90 + dyn, anchor=False, articulation=0.85)     # v3.genres.1: the full melody at every tier
     parts = [(dr, 'drums'), (bass, 'bass'), (comp, 'comp'), (lead, 'lead')]
     if T >= 4:
         pad = _Part(sp.program('pad'), 'pad')
@@ -645,6 +735,11 @@ def _pop(ctx: Ctx) -> pretty_midi.PrettyMIDI:
 
 
 def _rock(ctx: Ctx) -> pretty_midi.PrettyMIDI:
+    """Riff-based hard rock. Every tier is driven-guitar rock; the tier sets how
+    much is going on: 1 the riff over a plain backbeat (an intro), 2 the full
+    riff and 8th-note hats, 3 a second guitar under the riff, 4 a lead guitar
+    answering the riff and ride-cymbal drive, 5 the full stadium texture with
+    the lead hook throughout, crashes and tom fills."""
     T, sp, g = ctx.tier, ctx.spec, ctx.spec.groove
     dyn = TIER_DYN[T]
     dr = _drums_part()
@@ -652,68 +747,104 @@ def _rock(ctx: Ctx) -> pretty_midi.PrettyMIDI:
     for bar in range(BARS):
         b0, last = bar * 16, bar == BARS - 1
         fill = last and T >= 3
-        kicks = {1: (0, 8), 2: (0, 8, 10), 3: var, 4: var + ((2,) if bar % 2 else ()), 5: (0, 2, 8, 10)}[T]
+        kicks = {1: (0, 8), 2: (0, 8) + ((10,) if bar % 2 else ()), 3: var,
+                 4: var + ((3,) if bar % 2 else ()), 5: (0, 2, 8, 10)}[T]
         for s in kicks:
             if not (fill and s >= 12):
-                ctx.note(dr, KICK, b0 + s, 0.6, (82, 90, 98, 102, 108)[T - 1])
+                ctx.note(dr, KICK, b0 + s, 0.6, (86, 92, 100, 104, 110)[T - 1])
         for s in (4, 12):
             if not (fill and s == 12):
-                ctx.note(dr, SNARE, b0 + s, 0.9, (80, 90, 100, 104, 110)[T - 1])
+                ctx.note(dr, SNARE, b0 + s, 0.9, (88, 96, 104, 108, 112)[T - 1])
         if T >= 4 and bar % 2 == 1:
-            ctx.note(dr, SNARE, b0 + 15, 0.4, 36)                       # ghost before the downbeat
-        cym = RIDE if T == 4 else CH
-        for s in range(0, 16, 2):
-            if fill and s >= 12:
-                continue
-            v = {1: 48, 2: 60, 3: 70, 4: 74, 5: 78}[T] + (8 if s % 4 == 0 else 0)
-            ctx.note(dr, cym, b0 + s, 0.6, v)
-        if T == 5:
-            for s in (0, 4, 8, 12):
-                ctx.note(dr, BELL, b0 + s, 0.5, 62)
-        crash_bars = {2: (0,), 3: (0, 4), 4: (0, 4), 5: (0, 2, 4, 6)}.get(T, ())
-        if bar in crash_bars:
-            ctx.note(dr, CRASH, b0, 4, 88 + 2 * T)
-        if fill:
+            ctx.note(dr, SNARE, b0 + 15, 0.4, 40)
+        if T == 1:
+            cym = [(s, CH, 60 if s % 8 == 0 else 52) for s in (0, 4, 8, 12)]
+        elif T in (2, 3):
+            cym = [(s, CH, (66 if s % 4 == 0 else 56) + 4 * (T - 2)) for s in range(0, 16, 2)]
+            if T == 3 and bar in (3, 7):
+                cym[-1] = (14, OH, 70)
+        else:
+            cym = [(s, RIDE, 76 if s % 4 == 0 else 66) for s in range(0, 16, 2)]
+            if T == 5:
+                cym += [(s, BELL, 64) for s in (0, 4, 8, 12)]
+        for s, p, v in cym:
+            if not (fill and s >= 12):
+                ctx.note(dr, p, b0 + s, 1.4 if p == OH else 0.6, v)
+        crash = {2: (0,), 3: (0, 4), 4: (0, 4), 5: (0, 2, 4, 6)}.get(T, ())
+        if bar in crash:
+            ctx.note(dr, CRASH, b0, 6, 90 + 2 * T)
+        if fill or (T >= 4 and bar == 3):
             seq = ((12, SNARE), (13, SNARE), (14, SNARE), (15, SNARE)) if T == 3 else \
+                  ((12, HTOM), (13, HTOM), (14, MTOM), (15, LTOM)) if bar == 3 else \
                   ((8, HTOM), (9, HTOM), (10, MTOM), (11, MTOM), (12, LTOM), (13, LTOM), (14, SNARE), (15, SNARE))
             for k, (s, p) in enumerate(seq):
-                if s >= 8 and T == 3 and s < 12:
-                    continue
-                ctx.note(dr, p, b0 + s, 0.5, 70 + 4 * k)
-    bass = _melodic_part(sp, 'bass')
-    figs = {1: lambda b: ((0, 7.5, 'R'), (8, 7.5, 'R')),
-            2: lambda b: tuple((s, 3.5, 'R') for s in (0, 4, 8, 12)),
-            3: lambda b: tuple((s, 1.7, 'R') for s in range(0, 16, 2)),
-            4: lambda b: tuple((s, 1.7, '5' if s in (6,) else 'R') for s in range(0, 14, 2)) + ((14, 1.7, 'A'),),
-            5: lambda b: tuple((s, 1.6, '8' if s in (6, 10) else 'R') for s in range(0, 14, 2)) + ((14, 1.6, 'A'),)}
-    _bass_line(ctx, bass, figs[T], 92 + dyn, lo=28, hi=43)
-    parts = [(dr, 'drums'), (bass, 'bass')]
-    if T <= 2:      # clean open triads
-        gtr = _Part(sp.program('clean'), 'guitar')
-        pat = ((0, 7.5, 1.0), (8, 7.5, 0.85)) if T == 1 else \
-              ((0, 2.5, 1.0), (3, 2.5, 0.8), (6, 1.8, 0.85), (8, 2.5, 0.95), (11, 2.5, 0.8), (14, 1.8, 0.85))
-        _comp_hits(ctx, gtr, pat, 50, 74, 72 + dyn, strum=0.014)
-        parts.append((gtr, 'clean'))
-    else:           # driven power chords: palm-muted pulse plus accents
-        gtr = _Part(sp.program('drive'), 'guitar')
+                ctx.note(dr, p, b0 + s, 0.5, 74 + 4 * k)
+    # the riff: low register, transposed to each chord; level 1 plays its intro form (thin_riff)
+    riff = _Part(sp.program('riff'), 'riff')
+    roots = []
+    events = thin_riff(sp.riff, sp.riff_family) if T == 1 else sp.riff
+    for rep in range(BARS // 2):
+        for step, dur, kind, iv in events:
+            gs = rep * 32 + step
+            if gs >= SEG:
+                continue
+            chord = ctx.chord(gs + 2 if step % 16 >= 14 and kind == 'P' and gs + 2 < SEG and rep * 32 + step >= 0
+                              and (gs // 16) < BARS - 1 else gs)
+            r = place(chord.root_pc(sp.key_pc), 40, 51, 45)
+            v = {'P': 92, 'M': 76, 'N': 86, 'D': 78}[kind] + dyn
+            if kind == 'P':
+                notes = (r, r + 7, r + 12)
+                roots.append((gs, r))
+            elif kind == 'M':
+                notes = (r, r + 7)
+                roots.append((gs, r))
+            elif kind == 'D':
+                notes = (r,)
+            else:
+                notes = (r + iv if r + iv <= 64 else r + iv - 12,)
+            for p in notes:
+                ctx.note(riff, p, gs, dur, v, jitter=0.003)
+    parts = [(dr, 'drums'), (riff, 'riff')]
+    # second guitar (level 3 up): palm-muted 8ths under stab / pedal riffs, held power chords under 8th riffs
+    if T >= 3:
+        bed = _Part(sp.program('bed'), 'bed')
+        busy = any(k in ('M',) for _, _, k, _ in sp.riff) or sum(k == 'P' for _, _, k, _ in sp.riff) >= 10
         for bar in range(BARS):
             b0 = bar * 16
-            mutes = {3: range(0, 16, 2), 4: (0, 2, 3, 4, 6, 7, 8, 10, 11, 12, 14, 15), 5: range(0, 16, 2)}[T]
-            for s in mutes:
-                ch = ctx.chord(b0 + s)
-                r = place(ch.root_pc(sp.key_pc), 40, 52, 46)
-                accent = s in (0, 8) if T < 5 else s % 4 == 0
-                if T == 5:      # open power chords on every 8th, quarters accented
-                    dur, v = (3.5 if s in (0, 8) else 1.7), (84 if accent else 72) + dyn
-                else:           # palm-muted pulse with full-chord accents
-                    dur, v = (1.6 if accent else 0.7), (86 if accent else 74) + dyn
-                for p in (r, r + 7) + ((r + 12,) if accent else ()):
-                    ctx.note(gtr, p, b0 + s, dur, v, jitter=0.003)
-        parts.append((gtr, 'drive'))
-    lead = _Part(sp.program('lead'), 'lead')
-    _melody(ctx, lead, 88 + dyn, anchor=T == 1, articulation=0.8)
-    parts.append((lead, 'lead'))
-    return _finish(sp, ctx.tempo, parts)
+            r = place(ctx.chord(b0).root_pc(sp.key_pc), 40, 51, 45)
+            if busy:
+                for s, d in ((0, 7.5), (8, 7.5)) if T < 5 else ((s, 1.7) for s in range(0, 16, 2)):
+                    for p in (r, r + 7, r + 12):
+                        ctx.note(bed, p, b0 + s, d, 76 + dyn, jitter=0.004)
+            else:
+                for s in range(0, 16, 2):
+                    for p in (r, r + 7):
+                        ctx.note(bed, p, b0 + s, 0.7 if T < 5 else 1.7, 72 + dyn, jitter=0.004)
+        parts.append((bed, 'bed'))
+    # bass: picked roots locked to the riff's chord hits (level 1-2), driving 8ths (level 3 up)
+    bass = _melodic_part(sp, 'bass')
+    if T <= 2:
+        hits = sorted(set(roots))
+        for i, (gs, r) in enumerate(hits):
+            nxt = hits[i + 1][0] if i + 1 < len(hits) else SEG
+            ctx.note(bass, r - 12 if r - 12 >= 28 else r, gs, max(0.8, min(nxt - gs - 0.3, 6)), 90 + dyn, jitter=0.003)
+    else:
+        figs = {3: lambda b: tuple((s, 1.7, 'R') for s in range(0, 16, 2)),
+                4: lambda b: tuple((s, 1.7, '8' if s in (6, 14) else 'R') for s in range(0, 14, 2)) + ((14, 1.7, 'A'),),
+                5: lambda b: tuple((s, 1.6, '8' if s in (6, 10) else 'R') for s in range(0, 14, 2)) + ((14, 1.6, 'A'),)}
+        _bass_line(ctx, bass, figs[T], 94 + dyn, lo=28, hi=43)
+    parts.append((bass, 'bass'))
+    # lead guitar: answers the riff in bars 3-4 and 7-8 (level 4), the melodic hook throughout (level 5)
+    if T >= 4:
+        lead = _Part(sp.program('lead'), 'lead')
+        if T == 4:
+            keep = [n for n in melody_notes(sp) if (n[0] // 32) % 2 == 1]
+            for g_, d, p, strong in keep:
+                ctx.note(lead, p, g_, max(0.5, d * 0.85), (90 if strong else 80) + dyn, jitter=0.005)
+        else:
+            _melody(ctx, lead, 92 + dyn, articulation=0.9)
+        parts.append((lead, 'lead'))
+    return _finish(sp, ctx.tempo, parts, pans={'riff': 40, 'bed': 88, 'lead': 64})
 
 
 SON_CLAVE = {'son32': (0, 6, 12, 20, 24), 'son23': (4, 8, 16, 22, 28)}
@@ -1011,7 +1142,7 @@ def compose_excerpt(genre: str, tier: int, seed: int) -> tuple[pretty_midi.Prett
 # =============================================================================
 
 RANGES = {'bass': (24, 57), 'comp': (36, 88), 'lead': (48, 100), 'pad': (40, 88), 'arp': (55, 96),
-          'guitar': (36, 84), 'piano_rh': (48, 96), 'piano_lh': (28, 62)}
+          'guitar': (36, 84), 'piano_rh': (48, 96), 'piano_lh': (28, 62), 'riff': (36, 76), 'bed': (36, 70)}
 BACKBONE = {   # (drum pitch, steps in bar that must sound in every bar, from tier)
     'pop': ((KICK, (0,), 1), (SNARE, (4, 12), 2)),
     'rock': ((KICK, (0,), 1), (SNARE, (4, 12), 1)),
@@ -1050,7 +1181,10 @@ def rule_violations(pm: pretty_midi.PrettyMIDI, spec: ExcerptSpec, tier: int) ->
                 break
     if 'drums' not in inst:
         bad.append('missing:drums')
-    for need in ('lead',) + (('bass',) if spec.genre != 'calm' else ('piano_lh',)):
+    needs = ('bass',) if spec.genre != 'calm' else ('piano_lh',)
+    needs += ('riff',) if spec.genre == 'rock' else ()
+    needs += ('lead',) if spec.genre != 'rock' or tier >= 4 else ()
+    for need in needs:
         if need not in inst:
             bad.append(f'missing:{need}')
     if bad and any(b.startswith('missing') for b in bad):
@@ -1105,12 +1239,24 @@ def rule_violations(pm: pretty_midi.PrettyMIDI, spec: ExcerptSpec, tier: int) ->
     if _chord_at(harm, SEG - 1).root_pc(spec.key_pc) != spec.key_pc:
         bad.append('phrase_does_not_end_on_tonic')
     # comping: chord tones of the current or anticipated chord
-    for name in ('comp', 'guitar', 'pad', 'arp', 'piano_rh'):
+    for name in ('comp', 'guitar', 'pad', 'arp', 'piano_rh', 'bed'):
         if name not in inst:
             continue
         for n in inst[name].notes:
             k = step_of(n.start)
             if k is not None and n.pitch % 12 not in pcs_around(k):
                 bad.append(f'{name}_not_chord_tone:{k}')
+                break
+    # rock riff: power chords and riff notes from the chord root's blues-pentatonic set
+    if 'riff' in inst:
+        for n in inst['riff'].notes:
+            k = step_of(n.start)
+            if k is None:
+                continue
+            roots = {_chord_at(harm, k).root_pc(spec.key_pc)}
+            if k % 16 >= 12:
+                roots.add(_chord_at(harm, min(k - k % 16 + 16, SEG - 1)).root_pc(spec.key_pc))
+            if not any((n.pitch - r) % 12 in {0, 1, 3, 5, 6, 7, 10} for r in roots):
+                bad.append(f'riff_out_of_scale:{k}')
                 break
     return bad

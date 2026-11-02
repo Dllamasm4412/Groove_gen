@@ -111,7 +111,9 @@ def monotonicity(rows: list[dict]) -> list[dict]:
 
 
 def write_reports(out: Path, dirs: dict, rows: list[dict], log: list[dict], audit: list[dict],
-                  practice: list[dict], verification: list[dict], env: dict, cond_src: dict, label: str) -> None:
+                  practice: list[dict], verification: list[dict], env: dict, cond_src: dict, label: str,
+                  changes: list[dict] | None = None) -> None:
+    from build_candidate import CORPUS_VERSION
     E = dirs['E']
     prelim = not env['soundfont_is_locked_musyng']
     sims = similarity(out, rows)
@@ -124,7 +126,9 @@ def write_reports(out: Path, dirs: dict, rows: list[dict], log: list[dict], audi
     by_rung = sorted(rows, key=lambda r: r['ladder_rung'])
 
     # ---- data files -------------------------------------------------------
-    manifest = {'corpus_version': 'qualtrics-27-candidate-v3.0', 'status': 'CANDIDATE - not frozen, not approved',
+    if changes:
+        _csv(E / 'changes_vs_previous_version.csv', changes)
+    manifest = {'corpus_version': CORPUS_VERSION, 'status': 'CANDIDATE - not frozen, not approved',
                 'preliminary_soundfont': prelim, 'environment': env, 'conditions_source': cond_src,
                 'stimuli': [{k: v for k, v in r.items() if not k.startswith('_')} for r in by_sid],
                 'practice_volume_candidates': practice}
@@ -233,8 +237,9 @@ def write_reports(out: Path, dirs: dict, rows: list[dict], log: list[dict], audi
           'built this package. The MIDI is final for this candidate version; the audio must be re-rendered with '
           'Musyng Kite (README, "Render with Musyng Kite") before any researcher decision on sound.' if prelim else
           'Rendered with the locked Musyng Kite file.'), '',
-         'Nobody has listened to these files. Everything below is automated measurement; it cannot establish musical '
-         'quality, coherence or perceived danceability.', '',
+         ('The researcher listened to v3.0; the excerpts revised since then have not been heard. ' if changes else
+          'Nobody has listened to these files. ') + 'Everything below is automated measurement; it cannot establish '
+         'musical quality, coherence or perceived danceability.', '',
          '## 1. File verification', '',
          f"All 27 WAV masters and MP3s pass every check: **{'yes' if ok else 'NO'}**.", '',
          '| Check | Passed |', '|---|---|']
@@ -344,4 +349,4 @@ def write_reports(out: Path, dirs: dict, rows: list[dict], log: list[dict], audi
     (E / 'researcher_listening_sheet.md').write_text('\n'.join(S) + '\n')
 
     from candidate_docs import write_docs
-    write_docs(out, E, rows, audit, practice, env, label, prelim, mono, sims)
+    write_docs(out, E, rows, audit, practice, env, label, prelim, mono, sims, changes)

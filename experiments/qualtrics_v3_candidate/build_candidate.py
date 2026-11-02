@@ -66,7 +66,7 @@ from music_features_measured import SR, audio_features  # noqa: E402
 
 ORIGINAL_MANIFEST = REPO / 'experiments' / 'music_rating' / 'stimuli' / 'manifest.json'
 ENERGY_TABLE = PILOT / 'energy_table_v1.json'
-CORPUS_VERSION = 'qualtrics-27-candidate-v3.0'
+CORPUS_VERSION = 'qualtrics-27-candidate-v3.1'
 SEED_SALT = 'qualtrics-27-v3-candidate-1'
 ID_SALT = 'qualtrics-27-v3-ids-1'
 N_CANDIDATES = 4
@@ -374,7 +374,7 @@ def environment(sf2: Path) -> dict:
             'platform': platform.platform()}
 
 
-def build(sf2: Path, out: Path | None, make_zip: bool, selection: Path | None) -> Path:
+def build(sf2: Path, out: Path | None, make_zip: bool, selection: Path | None, compare: Path | None = None) -> Path:
     from segment_renderer import SymbolicSegmentRenderer
     from stimulus_metrics import midi_sha256
     from composer.v3.genres import GEN_VERSION as GENRES_VERSION
@@ -382,7 +382,7 @@ def build(sf2: Path, out: Path | None, make_zip: bool, selection: Path | None) -
 
     env = environment(sf2)
     label = sf2.stem + ('' if env['soundfont_is_locked_musyng'] else '_PRELIMINARY')
-    out = out or REPO / f'groovegen_qualtrics_27_candidate_v3_{label}'
+    out = out or REPO / f"groovegen_qualtrics_27_candidate_{CORPUS_VERSION.rsplit('-', 1)[1]}_{label}"
     if out.exists():
         shutil.rmtree(out)
     dirs = {k: out / v for k, v in {'A': 'A_qualtrics_mp3', 'B': 'B_wav_masters', 'C': 'C_midi_sources',
@@ -526,12 +526,32 @@ def build(sf2: Path, out: Path | None, make_zip: bool, selection: Path | None) -
     bad = [v for v in verification if not v['ok']]
 
     from qc_report import write_reports
-    write_reports(out, dirs, rows, log, audit, practice_rows, verification, env, cond_src, label)
+    changes = compare_previous(out, dirs, rows, compare) if compare else None
+    write_reports(out, dirs, rows, log, audit, practice_rows, verification, env, cond_src, label, changes)
     if make_zip:
         zip_package(out)
     if bad:
         raise SystemExit(f'verification failed: {[v["stimulus_id"] for v in bad]}')
     return out
+
+
+def compare_previous(out: Path, dirs: dict, rows: list[dict], prev: Path) -> list[dict]:
+    """Which excerpts differ from an earlier package (MIDI hash), with that
+    package's MP3 next to the new one for each changed excerpt."""
+    old = {r['stimulus_id']: r for r in json.loads((prev / 'E_analysis' / 'stimulus_manifest.json').read_text())['stimuli']}
+    d = dirs['L'] / f'changed_since_{prev.name}'
+    out_rows = []
+    for r in sorted(rows, key=lambda r: r['stimulus_id']):
+        o = old.get(r['stimulus_id'], {})
+        same = o.get('midi_sha256') == r['midi_sha256']
+        if not same:
+            d.mkdir(parents=True, exist_ok=True)
+            shutil.copy(prev / o['mp3_file'], d / f"{r['stimulus_id']}_before.mp3")
+            shutil.copy(out / r['mp3_file'], d / f"{r['stimulus_id']}_after.mp3")
+        out_rows.append({'stimulus_id': r['stimulus_id'], 'condition_id': r['condition_id'], 'midi_unchanged': same,
+                         'previous_generator_version': o.get('generator_version'),
+                         'generator_version': r['generator_version'], 'previous_seed': o.get('seed'), 'seed': r['seed']})
+    return out_rows
 
 
 def verify(wav: Path, mp3_path: Path, r: dict) -> dict:
@@ -610,11 +630,13 @@ def main(argv=None) -> int:
     b.add_argument('--sf2', required=True, type=Path)
     b.add_argument('--out', type=Path, default=None)
     b.add_argument('--zip', action='store_true')
+    b.add_argument('--compare', type=Path, default=None,
+                   help='an earlier package folder: list what changed and add before/after MP3s of changed excerpts')
     b.add_argument('--selection', type=Path, default=None,
                    help='stimulus_manifest.json of an earlier package: same seeds and MIDI, no re-screening')
     a = p.parse_args(argv)
     if a.cmd == 'build':
-        build(a.sf2, a.out, a.zip, a.selection)
+        build(a.sf2, a.out, a.zip, a.selection, a.compare)
     return 0
 
 

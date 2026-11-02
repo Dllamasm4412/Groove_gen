@@ -19,7 +19,14 @@ def _eta2(rows, key='ladder_rung') -> float:
     return ss_b / ss_t if ss_t else 0.0
 
 
-def write_docs(out: Path, E: Path, rows, audit, practice, env, label, prelim, mono, sims) -> None:
+def write_docs(out: Path, E: Path, rows, audit, practice, env, label, prelim, mono, sims, changes=None) -> None:
+    changed = [c for c in (changes or []) if not c['midi_unchanged']]
+    heard = ('The researcher listened to version v3.0 (2026-11-02): most excerpts were judged to sound good; S03 '
+             '(rock, tier 1) and S04 (pop, tier 1) were judged poor, and rock was asked to sound like classic stadium '
+             'and melodic hard rock. ' + (f"{len(rows) - len(changed)} excerpts are unchanged since v3.0 (identical "
+             f"MIDI); the {len(changed)} revised ones ({', '.join(c['stimulus_id'] for c in changed)}) have not been "
+             'heard yet.' if changes else '')) if changes else \
+        'Nobody has listened to these files yet. They were generated, rendered and checked by software only.'
     by_rung = sorted(rows, key=lambda r: r['ladder_rung'])
     genres = sorted({r['genre'] for r in rows}, key=lambda g: fmean(r['ladder_rung'] for r in rows if r['genre'] == g))
     eta = _eta2(rows)
@@ -38,7 +45,10 @@ def write_docs(out: Path, E: Path, rows, audit, practice, env, label, prelim, mo
          '**Status: CANDIDATE. Not frozen, not approved for participants.** A separately versioned set for the '
          'researcher\'s listening and decisions. The original study\'s stimuli, manifest and Qualtrics files are '
          'unchanged and were only read.', '', sf_note, '',
-         'Nobody has listened to these files yet. They were generated, rendered and checked by software only.', '',
+         heard, '',
+         *(['Before / after MP3s of the revised excerpts: `listening/' + next(iter(
+             p.name for p in (out / 'listening').iterdir() if p.name.startswith('changed_since_'))) + '/`.', '']
+           if changed else []),
          '## Folders', '',
          '| Folder | Contents |', '|---|---|',
          '| `A_qualtrics_mp3/` | Exactly 27 experimental excerpts, `S01.mp3`-`S27.mp3` (192 kbps, 44.1 kHz stereo, no tags). Names reveal nothing about genre, condition or generator. |',
@@ -148,10 +158,12 @@ def write_docs(out: Path, E: Path, rows, audit, practice, env, label, prelim, mo
           'comping, melodic cells and palettes, building on the instruments the developer chose by ear for the '
           'locked cells (calm: piano with the original calm configuration\'s light pulse; lo-fi: Rhodes, upright bass, soft swung drums; R&B: Rhodes, synth '
           'sub-bass, straight half-time 16ths; pop: acoustic-guitar or piano lead; Latin: son clave, tumbao bass, '
-          'montuno piano, percussion growing from shaker to congas, bongos and cowbell; rock: clean triads at low '
-          'tiers, palm-muted then open power chords above). Shared from v3: the motif and chord-fitting machinery, '
-          'voice leading, swing grid, part-overlap handling and rule checks. **None of these six has been heard by '
-          'anyone yet.**',
+          'montuno piano, percussion growing from shaker to congas, bongos and cowbell; rock (revised in v3.1): '
+          'riff-based hard rock on driven guitars at every tier, in the stadium / melodic hard-rock style the '
+          'researcher named, generated from that style\'s techniques without reproducing any song). '
+          'Shared from v3: the motif and chord-fitting machinery, '
+          'voice leading, swing grid, part-overlap handling and rule checks. The researcher has heard v3.0 of these '
+          'six; the rock revision (v3.1) has not been heard yet.',
           '- Generator version is uniform (v3) across genres in this candidate, so it is not confounded with genre or '
           'tier; but the hip-hop generator is more mature (listened to and iterated) than the other six.', '',
           '## 7. Generation and selection procedure', '',
@@ -183,10 +195,21 @@ def write_docs(out: Path, E: Path, rows, audit, practice, env, label, prelim, mo
           'PLP, bass band ratio, onset density, beat consistency) from the repository\'s re-implementation of the '
           'corpus extractor, with approximate percentiles in the corpus. None of these measures perceived '
           'danceability; the participants\' ratings do.', '',
-          '## 10. Readiness', '',
+          '## 10. Revisions', '',
+          '- **v3.0** (2026-11-02): first candidate. The researcher listened: most excerpts good; S03 (rock:1) and '
+          'S04 (pop:1) poor; rock should follow classic stadium / melodic hard rock.',
+          '- **v3.1** (2026-11-02): generator v3.genres.1. Rock rewritten as riff-based hard rock on driven guitars '
+          'at every tier (power-chord stabs with space, 8th-note drives, palm-muted chugs, pedal-point 16th riffs; a '
+          'second guitar from tier 3; a lead guitar answering the riff at tier 4 and carrying a melodic hook at tier '
+          '5; tier 1 plays an intro form of the riff). Pop tier 1 re-arranged: the full melody instead of held notes '
+          'only, a soft snare instead of a side-stick, half-note strums instead of whole notes. Seeds, conditions, '
+          'selection rule, loudness matching and rendering unchanged; every other excerpt is byte-identical to v3.0 '
+          '(`changes_vs_previous_version.csv`). The rock riffs and hooks are generated from the style\'s techniques; '
+          'no existing song is reproduced.', '',
+          '## 11. Readiness', '',
           '**Not ready to freeze.** Before this set (or a revision) can be frozen:', '',
-          '1. Render with Musyng Kite (one command above) and listen to all 27 (`researcher_listening_sheet.csv`); '
-          'six of the seven genres are new v3 code nobody has heard.',
+          '1. Render with Musyng Kite (one command above) and listen again, at least to the excerpts revised in '
+          'v3.1 (`changes_vs_previous_version.csv`).',
           '2. Decide and document the intended-danceability coding before enrolment (section 3).',
           '3. Decide whether replacing the stimuli (v2c -> v3; 4 -> 8 bars, as the protocol already says) needs an '
           'IRB modification or notification, given that representative examples were attached to the submission.',

@@ -93,3 +93,30 @@ def test_live_path_does_not_import_genres():
     for name in ('run_session_v2.py', 'run_pilot_zero.py', 'control.py', 'session_generator.py', 'segment_renderer.py'):
         src = (PILOT / name).read_text()
         assert 'composer.v3.genres' not in src and 'from composer.v3 import genres' not in src, name
+
+
+def test_rock_is_riff_based_on_driven_guitars_at_every_tier():
+    for seed in range(1, 21):
+        spec = G.create_spec('rock', seed)
+        assert spec.riff and spec.riff_family in ('space', 'drive', 'chug', 'pedal16')
+        for tier in range(1, 6):
+            pm = G.realize(spec, tier)
+            progs = {i.name: i.program for i in pm.instruments}
+            assert progs['riff'] in (29, 30)                        # overdriven / distortion guitar
+            assert ('lead' in progs) == (tier >= 4) and ('bed' in progs) == (tier >= 3)
+            assert not {26, 27} & set(progs.values())               # no clean guitars any more
+
+
+def test_rock_tier1_is_an_intro_form_of_the_riff():
+    for seed in range(1, 21):
+        spec = G.create_spec('rock', seed)
+        n1 = len(next(i for i in G.realize(spec, 1).instruments if i.name == 'riff').notes)
+        n2 = len(next(i for i in G.realize(spec, 2).instruments if i.name == 'riff').notes)
+        assert n1 <= n2
+
+
+def test_pop_tier1_plays_the_full_melody():
+    for seed in range(1, 11):
+        spec = G.create_spec('pop', seed)
+        lead = lambda tier: [n.pitch for i in G.realize(spec, tier).instruments if i.name == 'lead' for n in i.notes]  # noqa: E731
+        assert lead(1) == lead(2)
