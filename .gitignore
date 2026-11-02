@@ -65,3 +65,20 @@ surveys/
 # Qualtrics survey files (contain account and survey IDs; repository is public)
 experiments/music_rating/qualtrics/template/
 experiments/music_rating/qualtrics/deploy/*.qsf
+
+# v3 audition output (audio and MIDI renders; delivered as an archive, not committed)
+groovegen_v3_audition*/
+groovegen_v3_audition*.zip
+# a soundfonts link into the main checkout, for a v3 worktree (composer/v3/NEXT_ITERATION.md)
+/soundfonts
+# v3 listening evaluation packages (audio, MIDI, archives; delivered, not committed)
+groovegen_v3_listening_evaluation*/
+groovegen_v3_listening_evaluation*.zip
+# candidate Qualtrics stimulus corpora (audio, MIDI, archives; delivered, not committed)
+groovegen_qualtrics_27_candidate_v3*/
+groovegen_qualtrics_27_candidate_v3*.zip
+# before / after audio of revised candidate excerpts (delivered, not committed)
+groovegen_v3*_revised_excerpts*.zip
+# v3 final candidate packages (audio, MIDI, survey drafts): delivered, not committed
+groovegen_qualtrics_27_final_candidate*/
+groovegen_qualtrics_27_final_candidate*.zip
