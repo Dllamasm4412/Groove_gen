@@ -13,10 +13,15 @@ tail_out crossfade). Features are measured as music_features_measured builds
 the energy table (energy_audio at the reference level, 8 bars + fade, the same
 audio and MIDI features, the table's z parameters, u over the live ladder).
 
-Usage:
-    python audition_v3.py --sf2 ../soundfonts/Musyng_Kite.sf2 --out ../groovegen_v3_audition
+Usage (step by step for the Mac: composer/v3/NEXT_ITERATION.md, section 1):
+    python audition_v3.py --sf2 <sf2> --measure-levels        # once per soundfont: v3 loudness table
+    python audition_v3.py --sf2 <sf2> --out ../groovegen_v3_audition_x --zip groovegen_v3_audition_x.zip
     python audition_v3.py --sf2 <sf2> --calibrate             # level loudness vs v2c, mix balance
     python audition_v3.py --rerender <audition dir> --sf2 <sf2> --out <dir>   # same MIDI, other soundfont
+
+v3 calibrates its mix with composer/v3/levels_<sf2 stem>.json, the table
+measured on the soundfont it renders with; without that table the script
+stops (--levels <name> uses another soundfont's table on purpose).
 """
 
 from __future__ import annotations
@@ -48,11 +53,13 @@ from segment_renderer import SymbolicSegmentRenderer  # noqa: E402
 BARS = 8
 ENERGY_TABLE = HERE / 'energy_table_v1.json'
 EAR_ORDER = HERE / 'energy_order_by_ear.json'
+# the locked project soundfont (soundfonts/Musyng_Kite.sf2), as pinned by experiments/music_rating
+LOCKED_SF2_SHA256 = 'ed8c5a34c28b0fbbc805d6bbae74a169582c1881b57219972052e822c7be35f0'
 
 # Each sample: id, test, generator, stim seed, the tier / level per segment, and what it shows.
 SAMPLES = (
     dict(id='A1', test='A', generator='v3', stim_seed=1, levels=(3, 3, 3),
-         about='Composition 1 of stim seed 1 at level 3 (opening, statement, first development).'),
+         about='Composition 1 of stim seed 1 at level 3: the first three sections of its form (roles in Timelines).'),
     dict(id='A2', test='A', generator='v3', stim_seed=2, levels=(3, 3, 3),
          about='Composition 1 of stim seed 2 at level 3.'),
     dict(id='A3', test='A', generator='v3', stim_seed=3, levels=(3, 3, 3),
@@ -81,11 +88,26 @@ SAMPLES = (
 # =============================================================================
 
 
-def generate(sample: dict) -> list[tuple[pretty_midi.PrettyMIDI, dict]]:
+def levels_table_for(sf2: Path, name: str | None = None) -> str:
+    """The v3 loudness table to calibrate with: `name` if given, else the one
+    measured on this soundfont (composer/v3/levels_<sf2 stem>.json). Stops
+    rather than calibrating with another soundfont's table by accident."""
+    from composer.v3.levels import load_table
+
+    chosen = name or sf2.stem
+    if load_table(chosen) is None:
+        raise SystemExit(
+            f'No v3 loudness table composer/v3/levels_{chosen}.json. Measure it on this soundfont first:\n'
+            f'  python audition_v3.py --sf2 {sf2} --measure-levels\n'
+            'or pass --levels <name> to calibrate with another soundfont\'s table on purpose.')
+    return chosen
+
+
+def generate(sample: dict, levels_table: str) -> list[tuple[pretty_midi.PrettyMIDI, dict]]:
     if sample['generator'] == 'v3':
         from composer.v3.source import HipHopV3Source
 
-        src = HipHopV3Source(sample['stim_seed'], tempo_policy='composition')
+        src = HipHopV3Source(sample['stim_seed'], tempo_policy='composition', levels_table=levels_table)
     else:
         from session_generator import SessionSegmentSource
 
@@ -184,7 +206,7 @@ def read_wav(path: Path) -> tuple[np.ndarray, int]:
     return x, sr
 
 
-def environment(sf2: Path) -> dict:
+def environment(sf2: Path, levels_table: str | None = None) -> dict:
     fs = subprocess.run(['fluidsynth', '--version'], capture_output=True, text=True).stdout.splitlines()
     try:
         git = subprocess.run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, cwd=HERE).stdout.strip()
@@ -195,7 +217,17 @@ def environment(sf2: Path) -> dict:
     return {'fluidsynth': fs[0] if fs else None, 'soundfont': sf2.name, 'soundfont_sha256': sha256(sf2),
             'python': platform.python_version(), 'numpy': np.__version__, 'pretty_midi': pretty_midi.__version__
             if hasattr(pretty_midi, '__version__') else None, 'platform': platform.platform(), 'git_head': git,
-            'git_dirty': dirty}
+            'git_dirty': dirty, **_levels_provenance(levels_table)}
+
+
+def _levels_provenance(name: str | None) -> dict:
+    if name is None:
+        return {}
+    from composer.v3.levels import HERE as LEVELS_DIR
+
+    t = json.loads((LEVELS_DIR / f'levels_{name}.json').read_text())
+    return {'levels_table': name, 'levels_table_soundfont_sha256': t.get('soundfont_sha256'),
+            'levels_target_lufs_l3': t.get('target_lufs_l3')}
 
 
 # =============================================================================
@@ -376,19 +408,27 @@ def readme(manifest: dict) -> str:
         '',
         '## Read first: soundfont',
         '',
-        f"Rendered with **{env['soundfont']}** (sha256 `{env['soundfont_sha256'][:16]}...`), "
-        f"**not** the project's `Musyng_Kite.sf2`, which was not obtainable in the build environment. "
-        'v2c and v3 samples use the same soundfont, so they compare fairly with each other, but '
-        'timbre and absolute loudness differ from the locked system. Energy values (`energy_u`) '
-        'use the locked table\'s scale but are measured on this soundfont, so compare them '
-        'between samples here, not with the table. To hear the same MIDI through Musyng Kite:',
-        '',
-        '```',
-        'cd groovegen_pilot',
-        '../.venv/bin/python3.12 audition_v3.py --rerender ../groovegen_v3_audition '
-        '--sf2 ../soundfonts/Musyng_Kite.sf2 --out ../groovegen_v3_audition_musyng',
-        '```',
-        '',
+    ]
+    levels = (f"v3 mix calibrated with `composer/v3/levels_{env['levels_table']}.json` (level-3 target "
+              f"{env['levels_target_lufs_l3']} LUFS"
+              + ('' if env.get('levels_table_soundfont_sha256') == env['soundfont_sha256'] else
+                 '; **measured on a different soundfont than this render**') + ').') \
+        if env.get('levels_table') else ''
+    if env['soundfont_sha256'] == LOCKED_SF2_SHA256:
+        lines += [f"Rendered with the project soundfont **{env['soundfont']}** (sha256 matches the locked file). "
+                  'Energy values (`energy_u`) are measured on the soundfont of the locked energy table, so they '
+                  f'are comparable with it. {levels}', '']
+    else:
+        lines += [
+            f"Rendered with **{env['soundfont']}** (sha256 `{env['soundfont_sha256'][:16]}...`), "
+            "**not** the project's `Musyng_Kite.sf2`. v2c and v3 samples use the same soundfont, so they "
+            'compare fairly with each other, but timbre and absolute loudness differ from the locked system. '
+            "Energy values (`energy_u`) use the locked table's scale but are measured on this soundfont, so "
+            f'compare them between samples here, not with the table. {levels} To render this audition with '
+            'Musyng Kite, including its own loudness calibration, follow section 1 of '
+            '`groovegen_pilot/composer/v3/NEXT_ITERATION.md`.',
+            '']
+    lines += [
         f"FluidSynth: {env['fluidsynth']}. Every render: gain 0.8, master -2.5 dB, no normalisation, "
         'segments joined as the live runner joins them (8 bars + quarter-bar tail_out crossfade). '
         'Intensity differences are preserved; nothing is loudness-normalised.',
@@ -473,7 +513,9 @@ def readme(manifest: dict) -> str:
 # =============================================================================
 
 
-def run(sf2: Path, out: Path, only: set | None = None, zip_name: str | None = None) -> dict:
+def run(sf2: Path, out: Path, only: set | None = None, zip_name: str | None = None,
+        levels: str | None = None) -> dict:
+    table = levels_table_for(sf2, levels)
     out.mkdir(parents=True, exist_ok=True)
     renderer = SymbolicSegmentRenderer(str(sf2), sr=SR, session_seed=42)
     scale = energy_scale()
@@ -481,13 +523,13 @@ def run(sf2: Path, out: Path, only: set | None = None, zip_name: str | None = No
     for sample in SAMPLES:
         if only and sample['id'] not in only:
             continue
-        res = render_sample(sample, generate(sample), renderer, scale, out)
+        res = render_sample(sample, generate(sample, table), renderer, scale, out)
         summaries.append(res['summary'])
         rows += res['rows']
         s = res['summary']
         print(f"{s['id']}: {s['wav']} {s['duration_s']:.1f}s LUFS {s['lufs_integrated']:.1f} "
               f"drums {s['mean_drum_rate']:.2f}/s u {s['mean_energy_u']:.2f}", flush=True)
-    manifest = {'created': time.strftime('%Y-%m-%d %H:%M:%S'), 'environment': environment(sf2),
+    manifest = {'created': time.strftime('%Y-%m-%d %H:%M:%S'), 'environment': environment(sf2, table),
                 'energy_scale': {'source': ENERGY_TABLE.name, 'e_min': scale['e_min'], 'e_max': scale['e_max']},
                 'samples': summaries, 'segments': rows}
     if not only:
@@ -527,9 +569,10 @@ def rerender(src: Path, sf2: Path, out: Path) -> None:
         print(f"{s['id']}: {wav} u {fmean(us):.2f}")
 
 
-def calibrate(sf2: Path) -> None:
+def calibrate(sf2: Path, levels: str | None = None) -> None:
     """Per-level loudness / drum rate / u of v3 against the v2c hip-hop tiers on
     this soundfont, and the loudness of each v3 part (mix balance)."""
+    table = levels_table_for(sf2, levels)
     from composer.v3.hiphop import plan_segment, realize
     from composer.v3.source import HipHopV3Source
     from session_generator import SessionSegmentSource
@@ -545,7 +588,7 @@ def calibrate(sf2: Path) -> None:
             v2 += [measure_segment(renderer, src.next_segment('hiphop', lv)[0], scale) for _ in range(2)]
         v3 = []
         for stim in range(1, 7):
-            st = HipHopV3Source(stim).current_state()
+            st = HipHopV3Source(stim, levels_table=table).current_state()
             for o in (1, 2):
                 v3.append(measure_segment(renderer, realize(plan_segment(replace(st, ordinal=o), lv)), scale))
         f = lambda rows, k: median(r[k] for r in rows)
@@ -554,7 +597,7 @@ def calibrate(sf2: Path) -> None:
     print('\nmix balance at L3 (LUFS of each part rendered alone, median over compositions)')
     parts: dict[str, list] = {}
     for stim in range(1, 7):
-        st = HipHopV3Source(stim).current_state()
+        st = HipHopV3Source(stim, levels_table=table).current_state()
         pm = realize(plan_segment(replace(st, ordinal=1), 3))
         for inst in pm.instruments:
             solo = pretty_midi.PrettyMIDI(initial_tempo=float(pm.get_tempo_changes()[1][0]))
@@ -637,15 +680,17 @@ def main(argv=None) -> int:
     p.add_argument('--calibrate', action='store_true')
     p.add_argument('--measure-levels', action='store_true')
     p.add_argument('--rerender', type=Path, default=None)
+    p.add_argument('--levels', default=None,
+                   help='v3 loudness table name (default: the one measured on --sf2, levels_<sf2 stem>.json)')
     args = p.parse_args(argv)
     if args.measure_levels:
         measure_levels(args.sf2)
     elif args.calibrate:
-        calibrate(args.sf2)
+        calibrate(args.sf2, args.levels)
     elif args.rerender:
         rerender(args.rerender, args.sf2, args.out)
     else:
-        run(args.sf2, args.out, set(args.only.split(',')) if args.only else None, args.zip)
+        run(args.sf2, args.out, set(args.only.split(',')) if args.only else None, args.zip, args.levels)
     return 0
 
 

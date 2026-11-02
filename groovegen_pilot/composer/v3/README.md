@@ -53,7 +53,8 @@ or `v2c`) is unchanged.
 | `checks.py` | rule checks (`rule_violations`) and transposition-invariant identity |
 | `source.py` | `HipHopV3Source` (hip-hop only) and `V3SegmentSource` (drop-in for `SessionSegmentSource`: hip-hop from v3, other genres from v2c) |
 | `../../audition_v3.py` | renders, measures and packages the audition samples (Tests A-D) |
-| `../../tests/test_v3_hiphop.py` | 27 tests |
+| `../../tests/test_v3_hiphop.py` | 29 tests |
+| `NEXT_ITERATION.md` | Musyng Kite re-render steps, upper-level energy, listening agenda, interface risks |
 
 ## Running
 
@@ -62,11 +63,14 @@ From `groovegen_pilot/`:
 ```
 python -m pytest tests/test_v3_hiphop.py -q
 python audition_v3.py --sf2 /path/to/FluidR3_GM.sf2 --zip groovegen_v3_audition.zip
-python audition_v3.py --sf2 /path/to/other.sf2 --measure-levels   # new soundfont: re-measure the loudness table first
-python audition_v3.py --sf2 /path/to/other.sf2 --rerender ../groovegen_v3_audition --out ../groovegen_v3_audition_other
+python audition_v3.py --sf2 /path/to/other.sf2 --measure-levels   # new soundfont: measure its loudness table first
+python audition_v3.py --sf2 /path/to/other.sf2 --out ../groovegen_v3_audition_other
 ```
 
-The audition output (`groovegen_v3_audition*/`, `*.zip`) is gitignored.
+v3 calibrates with `levels_<sf2 stem>.json`. The audition stops when that
+table is missing, unless `--levels <name>` names another one on purpose. The
+audition output (`groovegen_v3_audition*/`, `*.zip`) is gitignored. For the
+Mac with Musyng Kite, follow `NEXT_ITERATION.md` section 1.
 
 To use v3 inside the runner, pass `V3SegmentSource(stim_seed)` where
 `run_session_v2` takes a SessionSegmentSource. The runner is not changed and
@@ -83,9 +87,14 @@ shows the call.
 - **Soundfont.** Renders and the loudness table use FluidR3_GM, because the
   live soundfont (Musyng Kite) was not available in the build environment.
   Re-run `--measure-levels` on the live soundfont before any comparison.
-- **Brightness.** v3 is darker than v2c (spectral centroid about 2.5 kHz
-  against 4.9 kHz). It therefore scores a lower energy u at the same loudness
-  and drum rate. The live ladder's measured energy table does not include v3.
+- **Measured energy.** From L3 to L5, v3 rises about as much as v2c. It sits
+  lower because it is darker (spectral centroid about 2.8 kHz against
+  4.9 kHz) and, at composition tempo, misses the tempo-driven gains. See
+  `NEXT_ITERATION.md` section 2. The live ladder's energy table does not
+  include v3.
+- **Calibration in the source.** `HipHopV3Source` loads the FluidR3 table by
+  default, and a missing table name plays uncalibrated. See
+  `NEXT_ITERATION.md` section 4.
 - **Size.** `hiphop.py` is about 1050 lines, over the plan's 900-line budget.
 - **Evidence.** Rule checks and audio measurements show that the parts agree
   with the plan. They are not evidence of musical quality, which needs

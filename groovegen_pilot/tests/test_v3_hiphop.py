@@ -242,6 +242,32 @@ def test_drop_in_source_matches_v2c_for_other_genres():
     assert info['tempo_bpm'] == GENRE_CFG['hiphop']['tier_tempo'][3]
     fields = trace_fields(info)
     assert fields['motif_role'] == info['role'] and fields['gen_visit_idx'] == 0
+    assert fields['gen_version'] == 'v3.hiphop.0'      # the trace can tell v3 segments from v2c
+
+
+def test_other_genres_do_not_depend_on_hip_hop_visits():
+    """Routing hip-hop to v3 leaves every other genre byte-identical to a v2c
+    session on the same controller path, hip-hop visits interleaved."""
+    from session_generator import SessionSegmentSource
+
+    path = [('lofi', 3), ('hiphop', 3), ('lofi', 3), ('hiphop', 4), ('pop', 4), ('hiphop', 3),
+            ('lofi', 2), ('rock', 2), ('hiphop', 2), ('lofi', 3)]
+    v3, v2c = V3SegmentSource(7), SessionSegmentSource(7, develop=True)
+    for g, t in path:
+        a, b = v3.next_segment(g, t)[0], v2c.next_segment(g, t)[0]
+        if g != 'hiphop':
+            assert sm.midi_sha256(a) == sm.midi_sha256(b), (g, t)
+
+
+def test_audition_refuses_a_soundfont_without_its_loudness_table(tmp_path):
+    pytest.importorskip('librosa')
+    pytest.importorskip('pyloudnorm')
+    import audition_v3 as av3
+
+    assert av3.levels_table_for(Path('/x/FluidR3_GM.sf2')) == 'FluidR3_GM'
+    assert av3.levels_table_for(Path('/x/Other.sf2'), 'FluidR3_GM') == 'FluidR3_GM'
+    with pytest.raises(SystemExit, match='--measure-levels'):
+        av3.levels_table_for(tmp_path / 'Unmeasured.sf2')
 
 
 def test_runs_inside_the_unmodified_session_runner():

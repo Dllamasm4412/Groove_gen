@@ -69,3 +69,5 @@ experiments/music_rating/qualtrics/deploy/*.qsf
 # v3 audition output (audio and MIDI renders; delivered as an archive, not committed)
 groovegen_v3_audition*/
 groovegen_v3_audition*.zip
+# a soundfonts link into the main checkout, for a v3 worktree (composer/v3/NEXT_ITERATION.md)
+/soundfonts
