@@ -131,6 +131,7 @@ def write_survey_drafts(original: Path, pkg: Path, out: Path, base_url: str) -> 
         upload.append({'id': i, 'file_in_package': f'G_candidate_practice_volume/{f}', 'url': base_url + f,
                        'sha256': sha256(p) if p.exists() else '', 'needed_by': 'v3practice draft only'})
     _csv(out / 'audio_upload_list.csv', upload)
+    results['assembled_at'] = assembly_commit()
     (out / 'survey_build.json').write_text(json.dumps(results, indent=1, default=str))
     _survey_docs(out, results, base_url)
     return results
@@ -292,6 +293,15 @@ def within_genre_rank_r(rows: list[dict], key: str) -> float:
     return round(float(np.corrcoef(xs, ys)[0, 1]), 2)
 
 
+def assembly_commit() -> dict:
+    """The commit that assembled this package (coding, docs, survey drafts); the audio's own build commit is in
+    the manifest's environment."""
+    import subprocess
+    git = lambda *a: subprocess.run(['git', *a], cwd=REPO, capture_output=True, text=True).stdout.strip()  # noqa: E731
+    return {'git_head': git('rev-parse', 'HEAD'), 'git_branch': git('branch', '--show-current'),
+            'git_dirty': bool(git('status', '--porcelain', '--untracked-files=no'))}
+
+
 def write_docs(out: Path, src_manifest: dict, coding: list[dict], steps: list[dict], audit: list[dict],
                survey: dict, label: str, prelim: bool) -> None:
     E = out / 'E_analysis'
@@ -326,6 +336,7 @@ def write_docs(out: Path, src_manifest: dict, coding: list[dict], steps: list[di
                   'review_status': rv[r['stimulus_id']]['review_status'],
                   'revision_history': rv[r['stimulus_id']]['revision_history']})
     src_manifest['package_version'] = PACKAGE_VERSION
+    src_manifest['package_assembled_at'] = assembly_commit()
     src_manifest['status'] = 'FINAL CANDIDATE - not frozen, not approved for participant use'
     (E / 'stimulus_manifest.json').write_text(json.dumps(src_manifest, indent=1, default=str))
     _csv(E / 'stimulus_manifest.csv', sorted(rows, key=lambda r: r['stimulus_id']))
@@ -573,7 +584,10 @@ def _readme(out: Path, m: dict, survey: dict, sf: str, prelim: bool, label: str)
          '```', '',
          'It checks the soundfont\'s sha256, renders the same 27 MIDI files (stops if any differs), measures, '
          'verifies, rebuilds the survey drafts and writes the Musyng Kite final candidate package and its zip.', '',
-         f"Built from commit {env.get('git_head', '')[:10]}; survey drafts validated: " +
+         f"Audio and measurements built at commit {env.get('git_head', '')[:10]}"
+         f"{' (uncommitted changes present)' if env.get('git_dirty') else ''}; package (coding, documents, survey "
+         f"drafts) assembled at commit {assembly_commit()['git_head'][:10]}"
+         f"{' (uncommitted changes present)' if assembly_commit()['git_dirty'] else ''}; survey drafts validated: " +
          ', '.join(f"{k}: {sum(c['passed'] for c in d['checks'])}/{len(d['checks'])}" for k, d in survey['drafts'].items()) + '.', '']
     (out / 'README.md').write_text('\n'.join(R))
 
