@@ -74,3 +74,6 @@ groovegen_v3_audition*.zip
 # v3 listening evaluation packages (audio, MIDI, archives; delivered, not committed)
 groovegen_v3_listening_evaluation*/
 groovegen_v3_listening_evaluation*.zip
+# candidate Qualtrics stimulus corpora (audio, MIDI, archives; delivered, not committed)
+groovegen_qualtrics_27_candidate_v3*/
+groovegen_qualtrics_27_candidate_v3*.zip

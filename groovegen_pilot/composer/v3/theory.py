@@ -30,17 +30,33 @@ QUALITIES: dict[str, tuple[int, ...]] = {
     '7b9': (0, 4, 7, 10, 13),
     'm7b5': (0, 3, 6, 10),
     '7sus4': (0, 5, 7, 10),
+    # added for the multi-genre styles (genres.py); hip-hop never draws these
+    'add9': (0, 4, 7, 14),
+    'sus2': (0, 2, 7),
+    'sus4': (0, 5, 7),
+    '6': (0, 4, 7, 9),
+    '5': (0, 7),
+    'm11': (0, 3, 7, 10, 14, 17),
+    '9sus4': (0, 5, 7, 10, 14),
+    '13': (0, 4, 7, 10, 14, 21),
 }
 
 # Roman numeral -> root in semitones above the (minor) tonic.
 ROMAN_ROOT: dict[str, int] = {
     'i': 0, 'bII': 1, 'ii': 2, 'bIII': 3, 'iv': 5, 'IV': 5, 'v': 7, 'V': 7, 'bVI': 8, 'bVII': 10,
+    # added for major-key and modal styles (genres.py)
+    'I': 0, 'II': 2, 'iii': 4, 'III': 4, 'vi': 9, 'vii': 11,
 }
 
 MODES: dict[str, tuple[int, ...]] = {
     'aeolian': (0, 2, 3, 5, 7, 8, 10),
     'dorian': (0, 2, 3, 5, 7, 9, 10),
     'phrygian': (0, 1, 3, 5, 7, 8, 10),
+    # added for the multi-genre styles (genres.py)
+    'ionian': (0, 2, 4, 5, 7, 9, 11),
+    'mixolydian': (0, 2, 4, 5, 7, 9, 10),
+    'lydian': (0, 2, 4, 6, 7, 9, 11),
+    'harmonic': (0, 2, 3, 5, 7, 8, 11),
 }
 
 PC_NAMES = ('C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B')
