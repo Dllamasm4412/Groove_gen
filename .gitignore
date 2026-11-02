@@ -65,3 +65,7 @@ surveys/
 # Qualtrics survey files (contain account and survey IDs; repository is public)
 experiments/music_rating/qualtrics/template/
 experiments/music_rating/qualtrics/deploy/*.qsf
+
+# v3 audition output (audio and MIDI renders; delivered as an archive, not committed)
+groovegen_v3_audition*/
+groovegen_v3_audition*.zip
